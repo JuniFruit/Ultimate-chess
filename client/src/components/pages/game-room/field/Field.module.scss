@@ -1,0 +1,31 @@
+
+
+.field {
+    @apply flex flex-wrap border-wooden-900 m-auto mt-10 shadow;
+    width: calc(8 * 5rem);
+    height: calc(8 * 5rem);
+    
+
+    .cell {
+        @apply flex items-center justify-center relative;
+        width: 5rem;
+        height: 5rem;
+        >img {
+            width: 4rem;
+            height: 4rem;
+        }
+        .available_dot {
+            @apply absolute rounded-full bg-green-500 h-1 w-1 top-1/2 left-1/2;
+            transform: translateX(-50% -50%);
+        }
+    }
+    .white {
+        @apply bg-wooden-700;
+    }
+    .black {
+        @apply bg-complimentary;
+    }
+    .selected {
+        @apply bg-green-500;
+    }
+}

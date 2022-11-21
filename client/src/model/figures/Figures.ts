@@ -16,6 +16,7 @@ export interface IFigure {
     cell: ICell
     sprite: string;
     canMove: (target:ICell) => boolean;
+    moveFigure: (target: ICell) => void;
 }
 
 export class Figure {
@@ -32,4 +33,11 @@ export class Figure {
         if (target.figure?.type === FigureTypes.KING) return false;
         return true;
     }
+
+    moveFigure(target:ICell) {
+    
+        this.cell = target;
+        target.figure = this.cell.figure;
+    }
+
 }

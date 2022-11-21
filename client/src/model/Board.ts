@@ -27,9 +27,9 @@ export class Board implements IBoard {
             const row: ICell[] = [];
             for (let j=0; j<8; j++) {
                 if ((i+j) % 2 !== 0) {
-                    row.push(new Cell({x: j, y: i, color: Colors.BLACK, figure: null}))
+                    row.push(new Cell({x: j, y: i, color: Colors.BLACK, figure: null, board: this}))
                 } else {
-                    row.push(new Cell({x: j, y: i, color: Colors.WHITE, figure: null}))
+                    row.push(new Cell({x: j, y: i, color: Colors.WHITE, figure: null, board: this}))
                 }
             }
             this.cells.push(row);

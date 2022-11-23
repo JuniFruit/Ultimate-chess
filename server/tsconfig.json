@@ -9,7 +9,9 @@
     "noImplicitAny": true, 
     "strictNullChecks": true, 
     "strictFunctionTypes": true, 
-    "skipLibCheck": true,    
+    "skipLibCheck": true,  
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,   
   },
   "include": [
     "**/src/*.ts"

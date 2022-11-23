@@ -1,0 +1,43 @@
+.wrapper {
+    @apply relative inline-flex;
+
+    >button {
+        @apply flex items-center justify-center gap-2 outline-none;
+        >div {
+            @apply overflow-hidden w-9 h-9;
+            
+        }
+
+        >span {
+            @apply text-sm;
+            font-weight: 500;
+            color: #e2c9e2aa;
+        }
+
+        .icon {
+            @apply text-gray-500;
+            font-size: 1.2rem;
+        }
+
+    }
+    .menu {
+        @apply absolute left-0 w-full p-3 rounded-lg z-50 shadow bg-wooden-800 min-w-max animate-fadeIn duration-150;
+        top: calc(100% + 1.4rem);
+        
+        >ul {
+            @apply flex-col flex gap-4;
+            >li {
+                @apply text-black  opacity-75 relative;
+
+                &:hover::before {
+                    @apply w-full
+                }
+                &::before {
+                    @apply absolute bottom-0 left-0 w-0 h-1 bg-primary transition-all duration-200;
+                    content: '';
+                    
+                }
+            }
+        }
+    }
+}

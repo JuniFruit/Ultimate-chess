@@ -1,4 +1,4 @@
-import { Dispatch, FC, SetStateAction, useState } from "react";
+import { Dispatch, FC, memo, SetStateAction, useState } from "react";
 import { ICell } from "../../../../model/Cell";
 import { Colors } from "../../../../model/colors.enum";
 import { FigureTypes, IFigure } from "../../../../model/figures/Figures";
@@ -14,7 +14,7 @@ interface ICellComponent {
 }
 
 
-export const Cell: FC<ICellComponent> = ({color,figure, onSelect, cell, selected, isAvailable}) => {
+export const Cell: FC<ICellComponent> = memo(({color,figure, onSelect, cell, selected, isAvailable}) => {
     const isSelected = (selected?.x === cell.x) && (selected?.y === cell.y);
     
     return (
@@ -25,4 +25,4 @@ export const Cell: FC<ICellComponent> = ({color,figure, onSelect, cell, selected
             {(isAvailable && selected) && <div className={styles.available_dot}></div>}
         </div>
     )
-}
+})

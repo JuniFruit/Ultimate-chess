@@ -11,12 +11,18 @@
 }
 body {
   @apply bg-wooden-400;
+  line-height: 1.5rem;
+  letter-spacing: .05rem;
   margin: 0;
   font-family: 'Rubik Distressed', cursive;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   
 
+}
+
+:root {
+  --cellSize: 4.5rem; 
 }
 
 a {

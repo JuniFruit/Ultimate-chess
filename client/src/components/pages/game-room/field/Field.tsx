@@ -1,4 +1,4 @@
-import { Dispatch, FC, SetStateAction, useEffect, useState } from "react"
+import { Dispatch, FC, memo, SetStateAction, useEffect, useState } from "react"
 import { IBoard } from "../../../../model/Board";
 import { ICell } from "../../../../model/Cell";
 import { Cell } from "./Cell";
@@ -29,7 +29,7 @@ export const Field: FC<IField> = ({ board, setBoard }) => {
     const handleSelect = (cell: ICell) => {
        
         if (selectedCell) {
-            if (selectedCell !== cell && cell.isAvailable) {
+            if (selectedCell !== cell) {
                 selectedCell.moveFigure(cell);
                 setSelectedCell(null);
                 

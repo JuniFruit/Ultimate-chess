@@ -1,0 +1,4 @@
+.button {
+    @apply py-1.5 rounded-lg px-5 opacity-80 transition-colors duration-150 hover:opacity-100;
+    font-size: 1.2rem; 
+}

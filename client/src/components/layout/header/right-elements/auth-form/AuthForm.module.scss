@@ -1,0 +1,19 @@
+.wrapper {
+    @apply relative inline-flex;
+
+    .form {
+        @apply flex items-center flex-col gap-6 bg-wooden-900 shadow-block animate-scaleIn p-2 absolute rounded-lg right-2 z-20 w-60;
+        
+        top: calc(100% + 1.4rem);
+
+
+        .register {
+            @apply text-gray-300 opacity-40 block text-center w-full mt-1 transition-opacity duration-150;
+            &:hover {
+                @apply opacity-60
+            }
+           
+        }
+
+    }
+}

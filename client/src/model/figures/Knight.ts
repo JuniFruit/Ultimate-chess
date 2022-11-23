@@ -14,4 +14,15 @@ export class Knight extends Figure {
         this.sprite = color === Colors.BLACK ? SPRITES.blackKnight : SPRITES.whiteKnight;
         this.type = FigureTypes.KNIGHT;
     }
+
+    canMove(target: ICell): boolean {
+        if (!super.canMove(target)) return false;
+        if (target.x === this.cell.x || target.y === this.cell.y) return false;
+        const rangeX = Math.abs(target.x - this.cell.x);
+        const rangeY = Math.abs(target.y - this.cell.y);
+
+        if (rangeX + rangeY === 3) return true;
+
+        return false;
+    }
 }

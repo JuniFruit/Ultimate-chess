@@ -1,18 +1,18 @@
 
 
 .field {
-    @apply flex flex-wrap border-wooden-900 m-auto mt-10 shadow;
-    width: calc(8 * 5rem);
-    height: calc(8 * 5rem);
+    @apply flex flex-wrap border-wooden-900 shadow animate-slideInLeft;
+    width: calc(8 * var(--cellSize));
+    height: calc(8 * var(--cellSize));
     
 
     .cell {
         @apply flex items-center justify-center relative;
-        width: 5rem;
-        height: 5rem;
+        width: var(--cellSize);
+        height: var(--cellSize);
         >img {
-            width: 4rem;
-            height: 4rem;
+            width: calc(var(--cellSize) - .5rem);
+            height: calc(var(--cellSize) - .5rem);
         }
         .available_dot {
             @apply absolute rounded-full bg-green-500 h-1 w-1 top-1/2 left-1/2;

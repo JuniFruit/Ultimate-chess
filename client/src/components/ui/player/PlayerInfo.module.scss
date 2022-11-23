@@ -1,0 +1,26 @@
+
+
+.info_container {
+    @apply w-full bg-wooden-700 rounded-2xl p-2 shadow-sm;
+
+    .info_wrapper {
+        @apply flex gap-3;
+
+        >div:first-child{
+            @apply w-11 h-11;
+        }
+        .stats_wrapper {
+            @apply flex flex-col gap-2;
+
+            >h3 {
+                @apply text-tiny;
+            }
+            .stats {
+                @apply flex gap-3;
+                >span {
+                    @apply text-sm
+                }
+            }
+        }
+    }
+}

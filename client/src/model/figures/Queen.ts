@@ -22,8 +22,5 @@ export class Queen extends Figure {
         return false;
     }
 
-    moveFigure(target:ICell) {
-        this.cell.figure = null;
-        target.figure = this;
-    }
+    
 }

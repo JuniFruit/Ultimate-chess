@@ -1,0 +1,21 @@
+
+
+.button_wrapper {
+    @apply animate-slideInLeft;
+    
+    >div {
+        @apply bg-wooden-600 p-3 w-full rounded-lg transition-all duration-150;
+        font-size: 1.2rem;
+
+        &:hover,
+        &:focus {
+            @apply animate-hover_effect;
+            animation-direction: alternate;
+            transform: scale(1.05);
+
+        }
+
+        
+
+    }
+}   

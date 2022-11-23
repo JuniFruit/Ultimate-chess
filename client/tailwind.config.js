@@ -62,7 +62,56 @@ module.exports = {
             transform: 'translateX(150%)'
           }
 
-        }
+        },
+        hover_effect: {
+          '0%': {
+            boxShadow: '0 0 1px #fff, 0 0 2px #fff, 0 0 3px #FF7652, 0 0 4px #FF7652, 0 0 5px #FF7652'
+          },
+          '100%': {
+            boxShadow: '0 0 2px #fff, 0 0 4px #fff, 0 0 6px #FF7652, 0 0 8px #FF7652, 0 0 10px #FF7652'
+          }
+        },
+        slideInLeft: {
+            '0%': {
+              transform: 'translateX(-100%)',
+              opacity: '0'
+            },
+            '100%': {
+              transform: 'translateX(0%)',
+              opacity: '1'
+            }
+        },
+        slideInTop: {
+          '0%': {
+            transform: 'translateY(-100%)',
+            opacity: '0'
+          },
+          '100%': {
+            transform: 'translateY(0%)',
+            opacity: '1'
+          }
+        },
+        slideInRight: {
+          '0%': {
+            transform: 'translateX(100%)',
+            opacity: '0'
+          },
+          '100%': {
+            transform: 'translateX(0%)',
+            opacity: '1'
+          }
+        },
+        slideInBottom: {
+          '0%': {
+            transform: 'translateY(100%)',
+            opacity: '0'
+          },
+          '100%': {
+            transform: 'translateY(0%)',
+            opacity: '1'
+          }
+        },
+
 
       },
       fontSize: {
@@ -83,7 +132,12 @@ module.exports = {
         fadeIn: 'fadeIn .5s ease-in-out',
         scaleIn: 'scaleIn .35s ease-in-out',
         progressCountDown: 'countDown 5s ease',
-        loading: 'loading 2s ease infinite'
+        loading: 'loading 2s ease infinite',
+        hover_effect: 'hover_effect 1s ease infinite',
+        slideInBottom: 'slideInBottom .35s ease',
+        slideInLeft: 'slideInLeft .35s ease',
+        slideInRight: 'slideInRight .35s ease',
+        slideInTop: 'slideInTop .35s ease'
 
       }
     },

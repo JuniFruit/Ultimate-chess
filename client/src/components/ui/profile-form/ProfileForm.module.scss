@@ -1,0 +1,61 @@
+.wrapper {
+    @apply flex flex-col items-center mt-5 bg-wooden-900 rounded-2xl py-2 px-3 shadow-md w-full;
+
+
+    >h1 {
+        @apply text-base text-black my-5 text-center;
+        font-weight: 500;
+    }
+
+    .form_box {
+        @apply rounded-lg;
+        width: 100%;
+
+        >div {
+            @apply mt-4;
+        }
+        >div:last-child {
+            @apply flex justify-center mt-7;
+        }
+
+        @screen md {
+            width: 70%;
+        }
+    }
+
+    @screen md {
+        @apply px-8
+    }
+    
+}
+
+.avatar_field {
+    @apply flex  flex-col gap-2 items-center;
+    width: 100%;
+
+    >div:first-child {
+        @apply my-auto mx-0;
+    } 
+
+    @screen md {
+        @apply flex flex-row justify-around;
+        width: 100%;
+    }
+}
+
+.avatar_preview {
+    @apply p-2 bg-gray-600 rounded-full;
+    width: fit-content;
+
+    >div {
+        @apply w-10 h-10 rounded-full overflow-hidden;
+
+        >img {
+            @apply w-full h-full;
+        }
+
+        @screen md {
+            @apply w-14 h-14; 
+        }
+    }
+}

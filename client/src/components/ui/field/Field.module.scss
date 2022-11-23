@@ -1,0 +1,23 @@
+.input {
+    @apply relative block;
+
+    >input {
+        @apply rounded-lg py-3 px-2 outline-none appearance-none block text-black shadow-md transition-shadow bg-wooden-800 w-full;
+        
+        &:focus {
+            @apply shadow outline-none
+        }
+        
+        &::placeholder {
+            @apply text-black opacity-60;
+           
+        }
+    }
+
+
+}
+
+.error {
+    @apply mt-1 ml-1 text-red-400;
+    font-size: .8rem;
+}

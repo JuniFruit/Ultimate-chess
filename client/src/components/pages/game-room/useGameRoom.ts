@@ -1,50 +1,80 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import ioClient from "../../../api/socketApi";
+import { IStartPayload } from "../../../constants/socketIO/ServerEvents.interface";
 import { Board, IBoard } from "../../../model/Board";
-import { EMIT_EVENTS } from "../../../constants/emitEvents"; 
 import { Colors } from "../../../model/colors.enum";
+import { IPlayerInfo } from "../../ui/player/PlayerInfo.interface";
+
 
 
 export const useGameRoom = (id?: string) => {
-
+    
     const [board, setBoard] = useState<IBoard>(new Board());
     const [isConnected, setIsConnected] = useState(false);
     const [isReadyToStart, setIsReadyToStart] = useState(false);
+    const [enemyUser, setEnemyUser] = useState<IPlayerInfo>();
+    const renders = useRef(0);
+    renders.current++;
+    console.log({ renders: renders.current });
+
+    const handleOnConnect = useCallback(() => {
+        setIsConnected(true);
+        console.log('connected')
+    }, [id])
+
+    const handleNoOpponent = useCallback(() => {
+        setIsReadyToStart(false)
+    }, [id])
+
+    const handleReadyToStart = useCallback((payload:IStartPayload) => {
+        setIsReadyToStart(true);
+        board.initFigures(payload.color, payload.color === Colors.WHITE ? Colors.BLACK : Colors.WHITE)
+        console.log(payload)
+        setEnemyUser(payload.user);
+        setBoard(board);
+    }, [id, board])
+
+
+    //init connection
+    
 
     useEffect(() => {
+        if (!ioClient) return;
         drawBoard()
+        ioClient.on('connect', handleOnConnect);
 
-        ioClient.on('connect', () => {
-            setIsConnected(true);
-            console.log('connected')
-        });
+        return () => {
+            ioClient.off('connect', handleOnConnect)
+        }
 
     }, [id]);
 
     useEffect(() => {
-        if (!isConnected) return;
+        if (!ioClient) return;
 
-        ioClient.emit(EMIT_EVENTS.JOIN_GAME_ROOM, {roomId: id})
+        if (!isConnected) return;
+        ioClient.emit("joinGameRoom", id!)
+
+    }, [isConnected, id])
+
+    useEffect(() => {
+        if (!ioClient) return;
+
+
+        if (!isConnected) return;
+        ioClient.on("noOpponent", handleNoOpponent);
+        ioClient.on("readyToStart", handleReadyToStart);
+
+        return () => {
+            ioClient.off("noOpponent", handleNoOpponent);
+            ioClient.off('readyToStart', handleReadyToStart);
+        }
 
     }, [isConnected])
 
-    useEffect(() => {
-
-        if (!isConnected) return;
-
-        ioClient.on(EMIT_EVENTS.NO_OPPONENT, () => setIsReadyToStart(false));
-        ioClient.on(EMIT_EVENTS.READY_TO_START, (payload) => {
-            setIsReadyToStart(true);         
-            board.initFigures(payload.color, payload.color === Colors.WHITE ? Colors.BLACK : Colors.WHITE)
-            console.log(payload)
-            setBoard(board);
-        })
-
-    }, [isConnected, isReadyToStart])
-
     const drawBoard = () => {
         const newBoard = new Board()
-        newBoard.startNewGame();        
+        newBoard.startNewGame();
         setBoard(newBoard);
     }
 
@@ -55,7 +85,11 @@ export const useGameRoom = (id?: string) => {
         },
         status: {
             isConnected,
+            isReadyToStart,
             setIsReadyToStart
+        },
+        data: {
+            enemyUser
         }
 
     }

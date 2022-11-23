@@ -13,4 +13,12 @@ export class Rook extends Figure {
         this.sprite = color === Colors.BLACK ? SPRITES.blackRook : SPRITES.whiteRook;
         this.type = FigureTypes.ROOK;
     }
+
+    canMove(target: ICell): boolean {
+        if (!super.canMove(target)) return false;
+
+        if (this.cell.isEmptyVertical(target) || this.cell.isEmptyHorizontal(target)) return true;
+
+        return false;
+    }
 }

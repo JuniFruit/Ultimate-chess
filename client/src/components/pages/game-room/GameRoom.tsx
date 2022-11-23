@@ -3,18 +3,36 @@ import { useParams } from "react-router-dom";
 import { Layout } from "../../layout/Layout";
 import { Field } from "./field/Field";
 import { useGameRoom } from "./useGameRoom";
+import styles from './GameRoom.module.scss';
+import MatchInfo from "./match-info/MatchInfo";
+import { WaitingModal } from "./WaitingModal";
+import { PlayerInfo } from "../../ui/player/PlayerInfo";
+import { useAuth } from "../../../hooks/useAuth";
+import { api } from "../../../store/api/api";
 
 
+const GameRoom: FC = () => {
 
-const GameRoom: FC = () => {    
+    const { id } = useParams()
+    const { field, status, data } = useGameRoom(id)
 
-    const {id} = useParams()
-    const {field} = useGameRoom(id)
-    
+    const { user } = useAuth();
+    const { data: profile } = api.useGetProfileQuery(null, {
+        skip: !user
+    })
+
     return (
         <Layout title="Ultimate Chess Game Room">
-            <Field board={field.board} setBoard={field.setBoard} />
+            <div className={styles.room_wrapper}>
+                <div className={styles.board_wrapper}> 
+                    <PlayerInfo {...data.enemyUser} />
+                    <Field board={field.board} setBoard={field.setBoard} />
+                    <PlayerInfo {...profile} />
+                </div>
+                <MatchInfo />
 
+            </div>
+            {!status.isReadyToStart && <WaitingModal />}
         </Layout>
     )
 }

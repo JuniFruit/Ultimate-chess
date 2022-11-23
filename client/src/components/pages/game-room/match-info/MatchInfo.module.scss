@@ -1,0 +1,7 @@
+
+
+.match_info_wrapper {
+    @apply bg-wooden-800 rounded-2xl mt-5 shadow animate-slideInRight;
+    width: 40%;
+    min-height: calc(var(--cellSize) * 7);
+}

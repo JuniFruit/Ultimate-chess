@@ -1,0 +1,40 @@
+
+.container {
+    @apply relative;
+
+    .wrapper {
+        @apply fixed inset-0 flex items-center justify-center p-4 z-50;
+
+        .panel_wrapper {
+            @apply w-full max-w-sm bg-wooden-800 px-5 py-3 rounded-lg shadow animate-fadeIn;
+            animation-duration: .2s;
+
+            .panel_title {
+                @apply text-center text-opacity-70 my-2;
+                font-weight: 500;
+                font-size: 1.2rem;
+            }
+
+            .panel_msg {
+                @apply text-sm text-center text-opacity-70 my-5;
+            }
+
+            >img {
+                @apply w-16 h-16 m-auto;
+            }
+
+            .panel_buttons {
+                @apply flex flex-col gap-2 justify-between items-center;
+
+                >button {
+                    @apply p-2 rounded-lg bg-opacity-70 transition-colors hover:bg-opacity-100;
+                    font-size: 1rem;
+                }
+            }
+        }
+       
+    }
+
+
+    
+}

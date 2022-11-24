@@ -1,14 +1,8 @@
-import { Colors } from '../../../../client/src/model/colors.enum';
-import { IPlayerInfo } from '../../../../client/src/components/ui/player/PlayerInfo.interface';
 
+import {IStartPayload} from '../../../../client/src/constants/socketIO/ServerEvents.interface'
+import { IOServerEvents } from '../../../../client/src/constants/socketIO/ServerEvents.interface';
 
-export interface IStartPayload {
-    color?: Colors,
-    score?: number,
-    user?: IPlayerInfo
+export interface IStartData extends IStartPayload {
+    room?:string
 }
-
-export interface IOServerEvents {
-    readyToStart: ({ }: IStartPayload) => void;
-    noOpponent: () => void;
-}
+export interface IServerEvents extends IOServerEvents{}

@@ -1,7 +1,8 @@
 import { getConfigTypeOrm } from '../config/typeorm.config';
 import { DataSource } from 'typeorm';
 import { UserEntity } from '../user/user.entity';
-import { PacksEntity } from '../user/packs.entity';
+import { PacksEntity } from '../packs/packs.entity';
+import { SpriteEntity } from '../packs/sprite.entity';
 
 
 
@@ -19,3 +20,4 @@ postgresDB.initialize()
 
 export const userRepository = postgresDB.getRepository(UserEntity);
 export const packRepository = postgresDB.getRepository(PacksEntity);
+export const spriteRepository = postgresDB.getRepository(SpriteEntity);

@@ -2,7 +2,8 @@ import {DataSourceOptions} from 'typeorm';
 
 import dotenv from 'dotenv';
 import { UserEntity } from '../user/user.entity';
-import { PacksEntity } from '../user/packs.entity';
+import { PacksEntity } from '../packs/packs.entity';
+import {SpriteEntity} from '../packs/sprite.entity';
 
 dotenv.config();
 
@@ -16,6 +17,6 @@ export const getConfigTypeOrm = ():DataSourceOptions => {
         database: process.env.DB_NAME,
         synchronize: true,
         logging: false,
-        entities: [UserEntity, PacksEntity]
+        entities: [UserEntity, PacksEntity, SpriteEntity]
     }
 }

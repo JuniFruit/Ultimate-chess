@@ -1,4 +1,3 @@
-import { NextFunction } from "express";
 import { Socket } from "socket.io";
 import { UserService } from "../user/user.service";
 

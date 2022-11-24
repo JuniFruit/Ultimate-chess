@@ -3,6 +3,7 @@ import { userRepository } from "../database/db.connect"
 import { genSalt, hash, compare } from 'bcrypt'
 import { UserEntity } from "../user/user.entity";
 import JWT from 'jsonwebtoken';
+import { UserService } from "../user/user.service";
 
 export const AuthService = {
 
@@ -15,12 +16,7 @@ export const AuthService = {
         const salt = await genSalt(10);
         const hashedPass = await hash(dto.password, salt);
 
-        const newUser = new UserEntity();
-        newUser.avatarLink = dto.avatarLink;
-        newUser.password = hashedPass;
-        newUser.username = dto.username;
-
-        await userRepository.save(newUser);
+        const newUser = await UserService.create({...dto, password: hashedPass})
 
         return {
             user: this.returnFields(newUser)

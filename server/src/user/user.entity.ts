@@ -1,6 +1,6 @@
 import { BaseEntity } from "../utils/base";
-import { Entity, Column, ManyToMany, JoinColumn, JoinTable } from 'typeorm';
-import { PacksEntity } from "./packs.entity";
+import { Entity, Column, ManyToMany, JoinColumn, JoinTable, ManyToOne } from 'typeorm';
+import { PacksEntity } from "../packs/packs.entity";
 
 
 @Entity({name: 'User'})
@@ -14,6 +14,10 @@ export class UserEntity extends BaseEntity {
 
     @Column({default: '', name: 'avatar_link'})
     avatarLink!: string
+
+    @ManyToOne(() => PacksEntity)
+    @JoinColumn({name: 'pack_in_use'})
+    packInUse!: PacksEntity 
 
     @ManyToMany(() => PacksEntity, pack => pack.owner)
     @JoinTable()

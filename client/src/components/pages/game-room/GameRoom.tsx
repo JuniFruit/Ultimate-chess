@@ -14,8 +14,7 @@ import { api } from "../../../store/api/api";
 const GameRoom: FC = () => {
 
     const { id } = useParams()
-    const { field, status, data } = useGameRoom(id)
-
+    const { field, status, data, move } = useGameRoom(id)
     const { user } = useAuth();
     const { data: profile } = api.useGetProfileQuery(null, {
         skip: !user
@@ -24,10 +23,14 @@ const GameRoom: FC = () => {
     return (
         <Layout title="Ultimate Chess Game Room">
             <div className={styles.room_wrapper}>
-                <div className={styles.board_wrapper}> 
-                    <PlayerInfo {...data.enemyUser} />
-                    <Field board={field.board} setBoard={field.setBoard} />
-                    <PlayerInfo {...profile} />
+                <div className={styles.board_wrapper}>
+                    <PlayerInfo key={data.enemyUser?.username} {...data.enemyUser} />
+                    <Field
+                        board={field.board}
+                        setBoard={field.setBoard}
+                        ioMoveHandlers={move}
+                    />
+                    <PlayerInfo key={profile?.username} {...profile} />
                 </div>
                 <MatchInfo />
 

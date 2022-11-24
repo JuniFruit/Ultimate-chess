@@ -1,3 +1,5 @@
+import { SPRITES } from "../../assets/sprites";
+import { IBoard } from "../Board";
 import { ICell } from "../Cell";
 import { Colors } from "../colors.enum";
 
@@ -13,33 +15,39 @@ export enum FigureTypes {
 export interface IFigure {
     color: Colors;
     type: FigureTypes;
-    cell: ICell
-    sprite: string;
-    canMove: (target:ICell, isUpwards?:boolean) => boolean;
+    x:number;
+    y:number;
+    sprite?: string;
+    canMove: (target:ICell, board:IBoard, isUpwards?:boolean) => boolean;
     moveFigure: (target: ICell) => void;
 }
 
+export type ISpritesObj = typeof SPRITES; 
+
 export class Figure {
     readonly color:Colors;
-    cell:ICell;
+    sprites?: ISpritesObj;
+    x:number;
+    y:number;
 
-    constructor(color:Colors, cell:ICell) {
+    constructor(x:number,y:number,color:Colors, sprites?: ISpritesObj) {
         this.color = color;
-        this.cell = cell
+        this.x = x;
+        this.y = y;
+        this.sprites = sprites;
     }
 
-    canMove(target: ICell, isUpwards = true) {
+    canMove(target: ICell, board:IBoard, isUpwards = true) {
         if (this.color === target.figure?.color) return false;
-        if (this.cell.x === target.x && this.cell.y === target.y) return false;
+        if (this.x === target.x && this.y === target.y) return false;
         // if (target.figure?.type === FigureTypes.KING) return false;
         return true;
     }
 
     moveFigure(target:ICell) {   
         if (target.figure?.type === FigureTypes.KING) return; 
-        target.figure = this.cell.figure;
-        this.cell = target;
-        this.cell.figure = null;
+        this.x = target.x;
+        this.y = target.y;
     }
 
 }

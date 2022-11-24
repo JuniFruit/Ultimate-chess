@@ -1,25 +1,28 @@
-import { SPRITES } from "../../assets/sprites";
+import { IBoard } from "../Board";
 import { ICell } from "../Cell";
 import { Colors } from "../colors.enum";
-import { Figure, FigureTypes } from "./Figures";
+import { Figure, FigureTypes, ISpritesObj } from "./Figures";
 
 
 export class Knight extends Figure {
-    readonly sprite: string;
+    readonly sprite?: string;
     readonly type: FigureTypes;
-
+    x: number;
+    y: number;
     
-    constructor(color: Colors, cell: ICell) {
-        super(color, cell);
-        this.sprite = color === Colors.BLACK ? SPRITES.blackKnight : SPRITES.whiteKnight;
+    constructor(x:number, y:number, color: Colors, sprites?: ISpritesObj) {
+        super(x,y,color, sprites);
+        this.sprite = color === Colors.BLACK ? sprites?.blackKnight : sprites?.whiteKnight;
+        this.x = x;
+        this.y = y;
         this.type = FigureTypes.KNIGHT;
     }
 
-    canMove(target: ICell): boolean {
-        if (!super.canMove(target)) return false;
-        if (target.x === this.cell.x || target.y === this.cell.y) return false;
-        const rangeX = Math.abs(target.x - this.cell.x);
-        const rangeY = Math.abs(target.y - this.cell.y);
+    canMove(target: ICell,board:IBoard): boolean {
+        if (!super.canMove(target, board)) return false;
+        if (target.x === this.x || target.y === this.y) return false;
+        const rangeX = Math.abs(target.x - this.x);
+        const rangeY = Math.abs(target.y - this.y);
 
         if (rangeX + rangeY === 3) return true;
 

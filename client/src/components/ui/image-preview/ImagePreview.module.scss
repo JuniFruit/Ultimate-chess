@@ -1,0 +1,9 @@
+
+
+.wrapper {
+    @apply rounded-2xl w-52 h-52 overflow-hidden;
+
+    >img {
+        @apply w-full h-full
+    }
+}

@@ -5,7 +5,7 @@ import { IUser } from '../../types/user.interface';
 import { TypeRootState } from '../store';
 
 export const api = createApi({
-    tagTypes: ['Profile', 'User'],
+    tagTypes: ['Profile', 'User', 'Packs'],
     baseQuery: fetchBaseQuery({
         baseUrl: BASE_URL,
         prepareHeaders: (headers, { getState }) => {

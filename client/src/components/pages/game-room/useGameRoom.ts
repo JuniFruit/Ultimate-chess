@@ -10,11 +10,12 @@ import { IPlayerInfo } from "../../ui/player/PlayerInfo.interface";
 
 
 export const useGameRoom = (id?: string) => {
-
+    const initFen = 'rnbqkbnr/pppppppp/8/8/P1N1NP2/8/PP1PP1PP/R1BQKB1R';
     const [board, setBoard] = useState<IBoard>(new Board());
     const [isConnected, setIsConnected] = useState(false);
     const [isReadyToStart, setIsReadyToStart] = useState(false);
     const [enemyUser, setEnemyUser] = useState<IPlayerInfo>();
+    const [isFlipped, setIsFlipped] = useState(false);
 
 
     const handleOnConnect = useCallback(() => {
@@ -30,26 +31,28 @@ export const useGameRoom = (id?: string) => {
         if (!payload) return;
 
         setIsReadyToStart(true);
-        board.initFigures(payload.color!, payload.color === Colors.WHITE ? Colors.BLACK : Colors.WHITE, SPRITES)
+        board.cells.length === 0 && board.startNewGame(initFen, SPRITES, SPRITES);
         setEnemyUser(payload.user);
         setBoard(board);
+        setIsFlipped(prev => payload.color === Colors.BLACK);
     }, [id, board])
 
     const handleSendMove = useCallback((move: IMove) => {
         ioClient.emit("sendMove", move)
     }, [board, setBoard])
 
-    const handleReceiveMove = useCallback((payload: IMove) => {
+    const handleReceiveMove = useCallback((payload:IMove) => {
+        
+        board.receiveMove(payload);        
+        setBoard(prev => prev.getCopyBoard());
 
-        board.receiveMove(payload.currentCell, payload.targetCell);
-        setBoard(board);
     }, [board, setBoard])
 
 
     const drawBoard = () => {
         const newBoard = new Board()
-        newBoard.startNewGame();
-        setBoard(newBoard);
+        newBoard.startNewGame(initFen);
+        return newBoard
     }
 
     //init connection
@@ -57,7 +60,7 @@ export const useGameRoom = (id?: string) => {
 
     useEffect(() => {
         if (!ioClient) return;
-        drawBoard()
+        
         ioClient.on('connect', handleOnConnect);
 
         return () => {
@@ -105,7 +108,8 @@ export const useGameRoom = (id?: string) => {
         status: {
             isConnected,
             isReadyToStart,
-            setIsReadyToStart
+            setIsReadyToStart,
+            isFlipped
         },
         data: {
             enemyUser

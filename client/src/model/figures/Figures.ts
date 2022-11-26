@@ -4,12 +4,12 @@ import { ICell } from "../Cell";
 import { Colors } from "../colors.enum";
 
 export enum FigureTypes {
-    ROOK = 'rook',
-    BISHOP = 'bishop',
-    PAWN = 'pawn',
-    KING = 'king',
-    KNIGHT = 'knight',
-    QUEEN = 'queen',
+    ROOK = 'r',
+    BISHOP = 'b',
+    PAWN = 'p',
+    KING = 'k',
+    KNIGHT = 'n',
+    QUEEN = 'q',
 }
 
 export interface IFigure {
@@ -18,7 +18,8 @@ export interface IFigure {
     x:number;
     y:number;
     sprite?: string;
-    canMove: (target:ICell, board:IBoard, isUpwards?:boolean) => boolean;
+    legalMoves: ICell[];
+    canMove: (target:ICell, board:IBoard) => boolean;
     moveFigure: (target: ICell) => void;
 }
 
@@ -29,6 +30,7 @@ export class Figure {
     sprites?: ISpritesObj;
     x:number;
     y:number;
+    legalMoves: ICell[] = [];
 
     constructor(x:number,y:number,color:Colors, sprites?: ISpritesObj) {
         this.color = color;
@@ -37,7 +39,7 @@ export class Figure {
         this.sprites = sprites;
     }
 
-    canMove(target: ICell, board:IBoard, isUpwards = true) {
+    canMove(target: ICell, board:IBoard) {
         if (this.color === target.figure?.color) return false;
         if (this.x === target.x && this.y === target.y) return false;
         // if (target.figure?.type === FigureTypes.KING) return false;

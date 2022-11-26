@@ -10,37 +10,37 @@ export class Pawn extends Figure {
     readonly sprite?: string;
     readonly type: FigureTypes;
     isFirstMove: boolean;
-    x: number;
-    y: number;
 
-    constructor(x:number,y:number,color: Colors, sprites?: ISpritesObj) {
-        super(x,y,color, sprites);
+    constructor(x: number, y: number, color: Colors, sprites?: ISpritesObj) {
+        super(x, y, color, sprites);
         this.sprite = color === Colors.BLACK ? sprites?.blackPawn : sprites?.whitePawn;
-        this.x = x;
-        this.y = y;
         this.type = FigureTypes.PAWN;
         this.isFirstMove = true;
     }
 
-    canMove(target: ICell, board:IBoard,isUpwards = true): boolean {
+    canMove(target: ICell, board: IBoard): boolean {
         if (!super.canMove(target, board)) return false;
-        const direction = isUpwards ? 1 : -1
-        const rangeY = this.y - target.y; // we care about positive vertical values as we move only upwards
-        const rangeX = Math.abs(this.x - target.x); // here our target can be on the left and right side 
+        
+        const direction = this.color === Colors.BLACK ? 1 : -1;
+        const firstStepDirection = this.color === Colors.BLACK ? 2 : -2;
+        
 
+        if ((target.y === this.y + direction || this.isFirstMove && target.y === this.y + firstStepDirection)
+            && target.x === this.x 
+            && board.getCell(target.x, target.y).isEmpty()) {
+                return true
+            }
 
-        if ((((rangeY === 2 && rangeX === 0) && this.isFirstMove) && board.cells[this.y][this.x].isEmptyVertical(target, board)) ||
-            ((rangeY === 1 && rangeX === 0 )&& !this.canAttack(target, board)) ||
-            ((rangeY === direction && rangeX === 1) && this.canAttack(target, board))) return true
+        if ((target.y === this.y + direction) 
+            && (target.x === this.x-1 || target.x === this.x+1) 
+            && board.getCell(this.x,this.y).isEnemy(target.figure)) {
+                return true;
+            }
 
         return false;
     }
 
-    canAttack(target: ICell, board:IBoard): boolean {
-        if (!target.figure) return false;
-        // if (this.cell.x === target.x) return false;
-        return board.cells[this.y][this.x].isEnemy(target.figure);
-    }
+
 
     moveFigure(target: ICell): void {
         super.moveFigure(target);

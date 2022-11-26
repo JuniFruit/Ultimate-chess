@@ -29,6 +29,7 @@ const GameRoom: FC = () => {
                         board={field.board}
                         setBoard={field.setBoard}
                         ioMoveHandlers={move}
+                        isFlipped={status.isFlipped}
                     />
                     <PlayerInfo key={profile?.username} {...profile} />
                 </div>

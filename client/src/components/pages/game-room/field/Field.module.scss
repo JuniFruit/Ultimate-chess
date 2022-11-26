@@ -8,15 +8,15 @@
 
     .cell {
         @apply flex items-center justify-center relative;
+        border: 1px solid transparent;
+       
         width: var(--cellSize);
         height: var(--cellSize);
-        >img {
-            width: calc(var(--cellSize) - .5rem);
-            height: calc(var(--cellSize) - .5rem);
-        }
+
         .available_dot {
-            @apply absolute rounded-full bg-green-500 h-1 w-1 top-1/2 left-1/2;
-            transform: translateX(-50% -50%);
+            @apply absolute rounded-full bg-stone-700 opacity-60 h-5 w-5 top-1/2 left-1/2 animate-fadeIn;
+            animation-duration: .15s;
+            transform: translate(-50%, -50%);
         }
     }
     .white {
@@ -27,5 +27,8 @@
     }
     .selected {
         @apply bg-green-500;
+    }
+    .draggedOver {
+        @apply border-green-500 ;
     }
 }

@@ -9,4 +9,5 @@ export interface IField {
     ioMoveHandlers: {
         handleSendMove: (payload: IMove) => void
     }
+    isFlipped: boolean;
 }

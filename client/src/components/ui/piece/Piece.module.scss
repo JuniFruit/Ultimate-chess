@@ -1,0 +1,13 @@
+
+
+.wrapper {
+    @apply bg-transparent cursor-grab;
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
+    width: calc(var(--cellSize) - .5rem);
+    height: calc(var(--cellSize) - .5rem);
+
+    >img {
+        @apply bg-transparent w-full h-full;
+    }
+}

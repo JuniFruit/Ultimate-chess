@@ -7,14 +7,11 @@ import { Figure, FigureTypes, ISpritesObj } from "./Figures";
 export class Knight extends Figure {
     readonly sprite?: string;
     readonly type: FigureTypes;
-    x: number;
-    y: number;
+    
     
     constructor(x:number, y:number, color: Colors, sprites?: ISpritesObj) {
         super(x,y,color, sprites);
-        this.sprite = color === Colors.BLACK ? sprites?.blackKnight : sprites?.whiteKnight;
-        this.x = x;
-        this.y = y;
+        this.sprite = color === Colors.BLACK ? sprites?.blackKnight : sprites?.whiteKnight;      
         this.type = FigureTypes.KNIGHT;
     }
 

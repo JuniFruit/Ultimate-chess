@@ -1,8 +1,6 @@
 import { Socket } from 'socket.io';
-import { Colors } from '../../../client/src/model/colors.enum';
-
-import {GameRules } from '../model/gameRules'
-import {boardApi} from '../model/board';
+import { GameRules } from '../model/gameRules'
+import { boardApi } from '../model/board';
 import { IClientEvents } from '../constants/socketIO/ClientEvents.interface';
 import { IServerEvents, IStartData } from '../constants/socketIO/ServerEvents.interface';
 
@@ -13,21 +11,21 @@ export const RoomService = {
         socket.join(roomId);
     },
 
-    async onRoomJoin(sockets: Socket<IClientEvents, IServerEvents, any, IStartData>[], roomId:string) {
+    async onRoomJoin(sockets: Socket<IClientEvents, IServerEvents, any, IStartData>[], roomId: string) {
         if (sockets.length < 2) return sockets[0].emit('noOpponent');
         if (sockets.length === 2) {
             this.setSocketsData(sockets, roomId)
-         
+
             sockets.forEach(socket => socket.broadcast.emit('readyToStart', {
                 color: socket.data.color,
                 score: socket.data.score,
                 user: socket.data.user,
-                board: boardApi(roomId).createBoard(sockets[0].data.color!, sockets[1].data.color!)
+                board: boardApi(roomId).createBoard()
             }));
         };
     },
 
-    setSocketsData(sockets: Socket<IClientEvents, IServerEvents, any, IStartData>[], roomId:string) {
+    setSocketsData(sockets: Socket<IClientEvents, IServerEvents, any, IStartData>[], roomId: string) {
         sockets.forEach(socket => {
             socket.data.score = 0
             socket.data.room = roomId

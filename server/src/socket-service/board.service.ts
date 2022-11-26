@@ -8,7 +8,7 @@ import {IServerEvents} from '../constants/socketIO/ServerEvents.interface';
 export const BoardService = {
     handleMove(socket: Socket<IClientEvents, IServerEvents>, move: IMove) {
         const room = socket.data.room
-        boardApi(room).moveFigure(move.currentCell, move.targetCell);
+        boardApi(room).moveFigure(move);
         socket.broadcast.emit("move", {...move});
     }
 }

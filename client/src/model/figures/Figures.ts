@@ -18,9 +18,11 @@ export interface IFigure {
     x:number;
     y:number;
     sprite?: string;
-    legalMoves: ICell[];
-    canMove: (target:ICell, board:IBoard) => boolean;
+    legalMoves: ICell[];   
     moveFigure: (target: ICell) => void;
+    getLegalMoves: (board:IBoard) => void;
+    clearMoves: () =>  void;
+    filterUncheckingMoves: (figureCell:ICell, board:IBoard) => void
 }
 
 export type ISpritesObj = typeof SPRITES; 
@@ -37,19 +39,24 @@ export class Figure {
         this.x = x;
         this.y = y;
         this.sprites = sprites;
-    }
-
-    canMove(target: ICell, board:IBoard) {
-        if (this.color === target.figure?.color) return false;
-        if (this.x === target.x && this.y === target.y) return false;
-        // if (target.figure?.type === FigureTypes.KING) return false;
-        return true;
-    }
+    }   
 
     moveFigure(target:ICell) {   
         if (target.figure?.type === FigureTypes.KING) return; 
         this.x = target.x;
         this.y = target.y;
+    }
+
+    filterUncheckingMoves(figureCell:ICell,board:IBoard) {
+        if (!board.isCheck) return;
+        if (!figureCell.figure) return;
+        if (figureCell.figure.color !== board.currentPlayer) return;
+        const currentFigure = figureCell.figure;
+        currentFigure.legalMoves = currentFigure.legalMoves.filter(move => figureCell.isUncheckingMove(move, board));
+    }
+
+    clearMoves() {
+        this.legalMoves = [];
     }
 
 }

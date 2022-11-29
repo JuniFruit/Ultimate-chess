@@ -1,5 +1,4 @@
 import { IBoard } from "../Board";
-import { ICell } from "../Cell";
 import { Colors } from "../colors.enum";
 import { Figure, FigureTypes, ISpritesObj } from "./Figures";
 
@@ -11,18 +10,20 @@ export class Queen extends Figure {
 
     constructor(x: number, y: number, color: Colors, sprites?: ISpritesObj) {
         super(x, y, color, sprites);
-        this.sprite = color === Colors.BLACK ? sprites?.blackQueen : sprites?.whiteQueen;   
+        this.sprite = color === Colors.BLACK ? sprites?.blackQueen : sprites?.whiteQueen;
         this.type = FigureTypes.QUEEN;
     }
 
-    canMove(target: ICell, board: IBoard): boolean {
-        if (!super.canMove(target, board)) return false;
+    getLegalMoves(board: IBoard) {
+        super.clearMoves()
+        const myCell = board.getCell(this.x, this.y);
 
-        if (board.getCell(this.x, this.y)!.isEmptyDiagonal(target, board) ||
-            board.getCell(this.x, this.y)!.isEmptyVertical(target, board) ||
-            board.getCell(this.x, this.y)!.isEmptyHorizontal(target, board)) return true;
+        myCell.getLegalMovesDiagonal({ board, numCell: 8 });
+        myCell.getLegalMovesHorizontal({ board, numCell: 8 });
+        myCell.getLegalMovesVertical({ board, numCell: 8 });
 
-        return false;
+        super.filterUncheckingMoves(myCell, board);
+
     }
 
 

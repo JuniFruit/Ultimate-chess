@@ -43,7 +43,7 @@ export const useGameRoom = (id?: string) => {
 
     const handleReceiveMove = useCallback((payload:IMove) => {
         
-        board.receiveMove(payload);        
+        board.receiveMove(payload);     
         setBoard(prev => prev.getCopyBoard());
 
     }, [board, setBoard])

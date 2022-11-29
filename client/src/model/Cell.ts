@@ -4,20 +4,29 @@ import { FigureTypes, IFigure } from "./figures/Figures";
 import { Direction } from "./helper.enum";
 import { isInBounds } from "./helpers";
 
+export interface ILegalMoveArg {
+    board: IBoard;
+    direction?: Direction;
+    numCell: number;
+}
+
 export interface ICell {
     readonly x: number;
     readonly y: number;
     color: Colors;
+    prevMove: ICell | null;
     figure: IFigure | null;
     isAvailable: boolean;
     isEmpty: () => boolean;
     isEnemy: (figure: IFigure | null) => boolean;
     isSafeCell: (target: ICell, board: IBoard) => boolean;
-    isEmptyHorizontal: (target: ICell, board: IBoard) => boolean;
-    isEmptyVertical: (target: ICell, board: IBoard) => boolean;
-    isEmptyDiagonal: (target: ICell, board: IBoard) => boolean;
-    moveFigure: (target: ICell) => void;
+    moveFigure: (target: ICell, board: IBoard) => void;
     canMoveFigure: (target: ICell, board: IBoard) => boolean;
+    getLegalMovesVertical: (arg: ILegalMoveArg) => void;
+    getLegalMovesHorizontal: (arg: ILegalMoveArg) => void;
+    getLegalMovesDiagonal: (arg: ILegalMoveArg) => void;
+    addLegalMove: (cell: ICell) => boolean;
+    isUncheckingMove: (target: ICell, board: IBoard) => boolean;
 }
 
 interface ICellInit extends Pick<ICell, 'x' | 'y' | 'color' | 'figure'> { };
@@ -25,6 +34,7 @@ interface ICellInit extends Pick<ICell, 'x' | 'y' | 'color' | 'figure'> { };
 export class Cell implements ICell {
     readonly x: number;
     readonly y: number;
+    prevMove: ICell | null = null;
     color: Colors;
     figure: IFigure | null;
     isAvailable: boolean;
@@ -44,128 +54,145 @@ export class Cell implements ICell {
 
     isSafeCell(target: ICell, board: IBoard): boolean {
 
-        for (let i = 0; i < 8; i++) {
+        // for (let i = 0; i < 8; i++) {
 
-            for (let j = 0; j < 8; j++) {
-                let current = board.getCell(j, i);
-                if (current!.figure && this.isEnemy(current!.figure)) {
+        //     for (let j = 0; j < 8; j++) {
+        //         let current = board.getCell(j, i);
+        //         if (current!.figure && this.isEnemy(current!.figure)) {
 
-                    const potentialTarget = {
-                        ...target,
-                        figure: this.figure
-                    };
+        //             const potentialTarget = {
+        //                 ...target,
+        //                 figure: this.figure
+        //             };
 
-                    if (current!.figure.canMove(potentialTarget, board)) return false;
-                } else {
-                    continue;
-                }
-            }
-        }
+        //             if (current!.figure.canMove(potentialTarget, board)) return false;
+        //         } else {
+        //             continue;
+        //         }
+        //     }
+        // }
 
         return true;
     }
 
     isEnemy(figure: IFigure | null): boolean {
         if (!figure) return false;
-        return this.figure?.color !== figure.color;
+        if (!this.figure) return false;
+        return this.figure.color !== figure.color;
     }
 
-    isEmptyVertical(target: ICell, board: IBoard): boolean {
+    // if direction is not specified, working in both directions
 
-        if (target.x !== this.x) return false;
-        const absY = Math.abs(this.y - target.y);
-        const y = target.y > this.y ? 1 : -1;
 
-        for (let i = 1; i < absY; i++) {
-            if (!board.getCell(this.x, this.y + y * i)!.isEmpty()) return false;
-        }
-        return true;
-    }
-    isEmptyHorizontal(target: ICell, board: IBoard): boolean {
-        if (target.y !== this.y) return false;
-        const absX = Math.abs(this.x - target.x);
-        const x = target.x > this.x ? 1 : -1;
+    getLegalMovesVertical({ board, direction, numCell }: ILegalMoveArg) {
 
-        for (let i = 1; i < absX; i++) {
-            if (!board.getCell(this.x + x * i, this.y)!.isEmpty()) return false;
-        }
-        return true;
-
-    }
-    isEmptyDiagonal(target: ICell, board: IBoard): boolean {
-
-        const absY = Math.abs(this.y - target.y);
-        const absX = Math.abs(this.x - target.x);
-
-        if (absX !== absY) return false //Target is not on diagonal line
-
-        const dy = target.y > this.y ? 1 : -1;
-        const dx = target.x > this.x ? 1 : -1;
-
-        for (let i = 1; i < absY; i++) {
-            if (!board.getCell(this.x + dx * i, this.y + dy * i).isEmpty()) return false;
+        const dir = direction ? direction : Direction.POS;
+        let i = 1;
+        while (i <= numCell) {
+            if (!isInBounds(this.figure!.x, this.figure!.y + i * dir)) break;
+            const current = board.getCell(this.figure!.x, this.figure!.y + i * dir);
+            const isLast = this.addLegalMove(current);
+            if (isLast) break;
+            i++;
         }
 
-        return true;
+        if (!direction) this.getLegalMovesVertical({ board, direction: Direction.NEG, numCell });
     }
+    getLegalMovesHorizontal({ board, direction, numCell }: ILegalMoveArg) {
 
-    
-    getLegalMovesVertical(figure: IFigure, board: IBoard, direction: Direction, numCell: number) {
-
-        
-        for (let i = 1; i < numCell; i++) {
-            if (!isInBounds(figure.x, figure.y + i * direction)) return;
-            const current = board.cells[figure.y + i * direction][figure.x];
-            const isLast = this.addLegalMove(current, figure);
-            if (isLast) return;
+        const dir = direction ? direction : Direction.POS;
+        let i = 1;
+        while (i <= numCell) {
+            if (!isInBounds(this.figure!.x + i * dir, this.figure!.y)) break;
+            const current = board.getCell(this.figure!.x + i * dir, this.figure!.y);
+            const isLast = this.addLegalMove(current);
+            if (isLast) break;
+            i++;
         }
-    }
-    getLegalMovesHorizontal(figure: IFigure, board: IBoard, direction: Direction, numCell: number) {
 
-        for (let i = 1; i < numCell; i++) {
-            if (!isInBounds(figure.x + i*direction, figure.y)) return;
-            const current = board.cells[figure.y][figure.x + i*direction];
-            const isLast = this.addLegalMove(current, figure);
-            if (isLast) return;
+        if (!direction) this.getLegalMovesHorizontal({ board, direction: Direction.NEG, numCell });
+    }
+
+    getLegalMovesDiagonal({ board, direction, numCell }: ILegalMoveArg) {
+
+        const dir = direction ? direction : Direction.POS;
+
+        let currentInd = 1;
+        while (currentInd <= numCell) {
+            if (!isInBounds(this.figure!.x + currentInd * dir, this.figure!.y + currentInd * dir)) break;
+            const current = board.getCell(this.figure!.x + currentInd * dir, this.figure!.y + currentInd * dir);
+            const isLast = this.addLegalMove(current);
+            if (isLast) break
+            currentInd++;
         }
-    }
+        currentInd = 1;
 
-    getLegalMovesDiagonal(figure: IFigure, board: IBoard, direction: Direction, numCell: number) {
-
-        for (let i= 1; i<numCell; i++) {
-            if (!isInBounds(figure.x + i*direction, figure.y+i*direction)) return;
-            const current = board.cells[figure.y+i*direction][figure.x+i*direction];
-            const isLast = this.addLegalMove(current, figure);
-            if (isLast) return;
-            // TODO check all directions 
+        while (currentInd <= numCell) {
+            if (!isInBounds(this.figure!.x - currentInd * dir, this.figure!.y + currentInd * dir)) break;
+            const current = board.getCell(this.figure!.x - currentInd * dir, this.figure!.y + currentInd * dir);
+            const isLast = this.addLegalMove(current);
+            if (isLast) break
+            currentInd++;
         }
-    }
-    
 
-    addLegalMove(cell: ICell, figure: IFigure) {
+        if (!direction) this.getLegalMovesDiagonal({ board, direction: Direction.NEG, numCell });
+    }
+
+
+    addLegalMove(cell: ICell) {
 
         if (cell.isEmpty()) {
-            figure.legalMoves.push(cell);
+            this.figure!.legalMoves.push(cell);
             return false;
-        } else if (!cell.isEmpty() && cell.isEnemy(figure)) {
-            figure.legalMoves.push(cell);
+        } else if (!cell.isEmpty() && cell.isEnemy(this.figure)) {
+            this.figure!.legalMoves.push(cell);
             return true;
         }
+        return true;
     }
 
     canMoveFigure(target: ICell, board: IBoard) {
-        if (!this.figure?.canMove(target, board)) return false;
         if (target.figure?.type === FigureTypes.KING) return false;
-        return true;
+        if (this.figure?.color !== board.currentPlayer) return false;
+
+        const move = this.figure?.legalMoves.find(cell => cell.x === target.x && cell.y === target.y)
+        return !!move;
+    }
+
+    isUncheckingMove(target: ICell, board: IBoard) {
+        const copyBoard = board.getCopyBoard();
+        copyBoard.isCheck = false;
+        copyBoard.updateAllLegalMoves();
+        const copyTarget = copyBoard.getCell(target.x, target.y);
+        const copyStart = copyBoard.getCell(this.x, this.y);
+        console.log(copyStart === this)
+        copyStart.moveFigure(copyTarget, copyBoard);
+        copyBoard.updateAllLegalMoves();
+        copyBoard.isKingChecked();
+
+        if (!copyBoard.isCheck) {
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
 
-    moveFigure(target: ICell) {
+    moveFigure(target: ICell, board: IBoard) {
+        if (!this.figure || !target) return;
+        if (target.figure?.type === FigureTypes.KING) return;
+
         this.figure!.moveFigure(target);
         target.figure = this.figure;
+        target.prevMove = this;
         this.figure = null;
         this.isAvailable = false;
+        this.prevMove = null
+        board.swapPlayer();
     }
+
+
 
 
 

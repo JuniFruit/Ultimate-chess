@@ -1,8 +1,14 @@
 import { ICell } from "../../model/Cell";
 
 export interface IMove {
-    currentCell: ICell,
-    targetCell: ICell
+    currentCell: {
+        x: number,
+        y: number
+    },
+    targetCell: {
+        x: number,
+        y: number
+    }
 }
 
 export interface IOClientEvents {

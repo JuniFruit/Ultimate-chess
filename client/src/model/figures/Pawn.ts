@@ -1,6 +1,8 @@
 import { IBoard } from "../Board";
 import { ICell } from "../Cell";
 import { Colors } from "../colors.enum";
+import { Direction } from "../helper.enum";
+import { isInBounds } from "../helpers";
 import { Figure, FigureTypes, ISpritesObj } from "./Figures";
 
 
@@ -18,33 +20,38 @@ export class Pawn extends Figure {
         this.isFirstMove = true;
     }
 
-    canMove(target: ICell, board: IBoard): boolean {
-        if (!super.canMove(target, board)) return false;
-        
-        const direction = this.color === Colors.BLACK ? 1 : -1;
-        const firstStepDirection = this.color === Colors.BLACK ? 2 : -2;
-        
-
-        if ((target.y === this.y + direction || this.isFirstMove && target.y === this.y + firstStepDirection)
-            && target.x === this.x 
-            && board.getCell(target.x, target.y).isEmpty()) {
-                return true
-            }
-
-        if ((target.y === this.y + direction) 
-            && (target.x === this.x-1 || target.x === this.x+1) 
-            && board.getCell(this.x,this.y).isEnemy(target.figure)) {
-                return true;
-            }
-
-        return false;
-    }
-
-
-
     moveFigure(target: ICell): void {
         super.moveFigure(target);
         this.isFirstMove = false;
+    }
+
+    getLegalMoves(board: IBoard) {
+        super.clearMoves()
+
+        const direction = this.color === Colors.BLACK ? Direction.POS : Direction.NEG;
+        const numCells = this.isFirstMove ? 2 : 1;
+
+        const myCell = board.getCell(this.x, this.y);
+
+        for (let i = 1; i<=numCells; i++) {
+            if (isInBounds(this.x, this.y + direction*i)) {
+                const nextCell = board.getCell(this.x, this.y +direction*i);
+                nextCell.isEmpty() && this.legalMoves.push(nextCell);
+            }
+        }
+        if (isInBounds(this.x + 1, this.y + direction*1)) {
+            const rightDiagonalCell = board.getCell(this.x + 1, this.y + direction * 1)
+            rightDiagonalCell.isEnemy(this) && this.legalMoves.push(rightDiagonalCell) 
+
+        }
+        if (isInBounds(this.x -1, this.y + direction*1)) {
+            const leftDiagonalCell = board.getCell(this.x - 1, this.y + direction * 1);
+            leftDiagonalCell.isEnemy(this) && this.legalMoves.push(leftDiagonalCell)
+
+        }
+
+        super.filterUncheckingMoves(myCell, board);
+
     }
 
 

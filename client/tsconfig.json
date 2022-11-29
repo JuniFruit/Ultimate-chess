@@ -22,6 +22,6 @@
   },
   "include": [
     "**/*.ts","**/*.tsx"
-, "src/setupProxy.js" ],
+, "src/setupProxy.js", "**/*.test.ts" ],
   "exclude": ["node_modules"]
 }

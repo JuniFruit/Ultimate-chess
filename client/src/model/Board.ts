@@ -1,3 +1,4 @@
+import e from "express";
 import { IMove } from "../constants/socketIO/ClientEvents.interface";
 import { Cell } from "./Cell";
 import { ICell } from "./Cell"
@@ -9,96 +10,153 @@ import { Knight } from "./figures/Knight";
 import { Pawn } from "./figures/Pawn";
 import { Queen } from "./figures/Queen";
 import { Rook } from "./figures/Rook";
-import { returnColorCell } from "./helpers";
+import { flipFEN, returnColorCell } from "./helpers";
 
 export interface IBoard {
-    cells: ICell[][]   
-    startNewGame: (fen:string,mySprites?:ISpritesObj, enemySprites?:ISpritesObj) => void;    
+    cells: ICell[][];
+    currentPlayer: Colors;
+    moves: ICell[];
+    isCheck: boolean;
+    startNewGame: (fen: string, mySprites?: ISpritesObj, enemySprites?: ISpritesObj) => void;
     showAvailable: (selected: ICell) => void;
     receiveMove: (move: IMove) => void;
     getCell: (x: number, y: number) => ICell;
     getCopyBoard: () => IBoard;
     isKingChecked: () => boolean;
+    updateAllLegalMoves: () => void;
+    swapPlayer: () => void;
+    undo: () => void;
+    addMove: (move: ICell) => void
+    isCheckMate: () => boolean;
 }
 
 
 
 export class Board implements IBoard {
     cells: ICell[][] = []
-   
-
-    //opponent is always at the top
-
-    initPawns(clientColor: Colors, opponentColor: Colors, spritePack?: ISpritesObj) {
-        this.cells[1].forEach((cell) => {
-
-            cell.figure = new Pawn(cell.x, cell.y, opponentColor, spritePack);
-        })
-        this.cells[6].forEach((cell) => {
-
-            cell.figure = new Pawn(cell.x, cell.y, clientColor, spritePack);
-        })
-    }
+    currentPlayer: Colors = Colors.WHITE;
+    moves: ICell[] = [];
+    isCheck: boolean = false;
 
     showAvailable(selected: ICell) {
         if (!selected.figure) return;
 
         for (let i = 0; i < 8; i++) {
-
             for (let j = 0; j < 8; j++) {
-                // if (selected.figure?.canMove(this.cells[i][j], this)) {
-                //     this.cells[i][j].isAvailable = true;
-                //     selected.figure.legalMoves.push(this.cells[i][j]);
-                // }
-                this.cells[i][j].isAvailable = selected.figure.canMove(this.cells[i][j], this);
+                if (this.cells[i][j].figure?.type !== FigureTypes.KING) {
+                    this.cells[i][j].isAvailable = selected.figure.legalMoves.some(cell => cell.x === j && cell.y === i);
+
+                } else {
+                    this.cells[i][j].isAvailable = false;
+                }
             }
         }
     }
 
 
-    startNewGame(fen:string, mySprites?:ISpritesObj, enemySprites?:ISpritesObj) {
+    startNewGame(fen: string, mySprites?: ISpritesObj, enemySprites?: ISpritesObj) {
         this.initCells(fen, mySprites, enemySprites);
+        this.updateAllLegalMoves();
     }
 
-    getCell(x: number, y: number) {        
+    getCell(x: number, y: number) {
         return this.cells[y][x];
     }
 
     receiveMove({ currentCell, targetCell }: IMove) {
         const start = this.getCell(currentCell.x, currentCell.y);
         const target = this.getCell(targetCell.x, targetCell.y);
-        start!.moveFigure(target!);
+        start.moveFigure(target, this);
+        this.addMove(target);
+    }
+
+    swapPlayer() {
+        this.currentPlayer = this.currentPlayer === Colors.WHITE ? Colors.BLACK : Colors.WHITE;
     }
 
     getCopyBoard() {
         const newBoard = new Board();
-        newBoard.cells = this.cells;
+        newBoard.cells = this.cells.slice();
+        newBoard.currentPlayer = this.currentPlayer;
+        newBoard.moves = this.moves;
+        newBoard.isCheck = this.isCheck;
         return newBoard;
     }
 
     updateAllLegalMoves() {
-        for (let i = 0; i < this.cells.length; i++) {
-            for (let j = 0; j < this.cells[i].length; j++) {
-                const current = this.cells[i][j];
-                this.showAvailable(current)
-                return current.figure!.legalMoves.some(cell => cell.figure?.type === FigureTypes.KING)
-            }
-        }
+        this.cells.forEach(row => {
+            row.forEach(cell => cell.figure?.getLegalMoves(this));
+        })
+
     }
 
 
     isKingChecked() {
 
-        for (let i = 0; i < this.cells.length; i++) {
-            for (let j = 0; j < this.cells[i].length; j++) {
+        for (let i = 0; i < 8; i++) {
+            for (let j = 0; j < 8; j++) {
                 const current = this.cells[i][j];
                 if (!current.figure) continue;
-                this.showAvailable(current)
-                return current.figure!.legalMoves.some(cell => cell.figure?.type === FigureTypes.KING)
+                if (current.figure!.legalMoves.some(cell => cell.figure?.type === FigureTypes.KING)) {
+                    this.isCheck = true;
+                    return true;
+                }
             }
         }
+        this.isCheck = false;
         return false;
 
+    }
+
+    isCheckMate() {
+
+        // let isOver = true;
+
+        // for (let i = 0; i < this.cells.length; i++) {
+        //     for (let j = 0; j < this.cells[i].length; j++) {
+        //         let current = this.cells[i][j];
+        //         if (!isOver) return false;
+        //         if (current.figure?.color === this.currentPlayer) {
+        //             current.figure.legalMoves.forEach(move => {
+        //                 if (!move) return;
+        //                 const thisFigure = move.figure;
+        //                 current.moveFigure(move, this);
+        //                 this.updateAllLegalMoves();
+        //                 this.isKingChecked();
+        //                 if (!this.isCheck) {
+        //                     isOver = false
+        //                     move.moveFigure(move.prevMove!, this);
+        //                     move.figure = thisFigure;
+        //                     this.updateAllLegalMoves();
+        //                     return;
+        //                 } else {
+        //                     move.moveFigure(move.prevMove!, this);
+        //                     move.figure = thisFigure;
+        //                     this.updateAllLegalMoves();
+        //                 }
+        //             })
+
+        //         } else{
+        //             continue
+        //         }
+        //     }
+        // }
+        // return isOver;
+        this.updateAllLegalMoves();
+        return this.cells.some(row => row.some(cell => cell.figure?.legalMoves.length !== 0))
+
+    }
+
+    undo() {
+        if (!this.moves.length) return;
+        const lastMove = this.moves.pop();
+
+        lastMove?.moveFigure(lastMove.prevMove!, this);
+
+    }
+
+    addMove(move: ICell) {
+        this.moves.push(move);
     }
 
 
@@ -128,16 +186,19 @@ export class Board implements IBoard {
                     currentCol++;
                 } else {
                     const blankCells = new Array(+currentPos).fill(null)
-                        .map((spot,ind) => new Cell({x: currentCol +ind, 
-                            y:currentRow, color: returnColorCell(currentRow, currentCol + ind), figure:null}))
+                        .map((spot, ind) => new Cell({
+                            x: currentCol + ind,
+                            y: currentRow, color: returnColorCell(currentRow, currentCol + ind), figure: null
+                        }))
 
                     row.push(...blankCells);
-                    currentCol+= +currentPos;
+                    currentCol += +currentPos;
                 }
             }
             currentInd++;
         }
         this.cells.push(row);
+        this.currentPlayer = currentPlayer === Colors.BLACK ? Colors.BLACK : Colors.WHITE;
 
 
     }
@@ -170,9 +231,5 @@ export class Board implements IBoard {
         }
 
     }
-
-
-
-
 
 }

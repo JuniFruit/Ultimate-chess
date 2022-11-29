@@ -1,6 +1,7 @@
 import { IBoard } from "../Board";
 import { ICell } from "../Cell";
 import { Colors } from "../colors.enum";
+import { isInBounds } from "../helpers";
 import { Figure, FigureTypes, ISpritesObj } from "./Figures";
 
 
@@ -14,27 +15,34 @@ export class King extends Figure {
         this.type = FigureTypes.KING;
     }
 
-    
-    canMove(target: ICell, board: IBoard): boolean {
-        if (!super.canMove(target, board)) return false;
-        const rangeX = Math.abs(target.x - this.x);
-        const rangeY = Math.abs(target.y - this.y)
-        if (rangeX > 1 || rangeY > 1) return false;
-        if (this.isEnemyKingNear(target, board)) return false;
-        if (!board.getCell(this.x, this.y)!.isSafeCell(target, board)) return false;
-        return true;
+    getLegalMoves(board: IBoard) {
+        super.clearMoves()
+
+        const myCell = board.getCell(this.x, this.y);
+        myCell.getLegalMovesHorizontal({ board, numCell: 1 });
+        myCell.getLegalMovesVertical({ board, numCell: 1 });
+        myCell.getLegalMovesDiagonal({ board, numCell: 1 });
+
+        this.legalMoves = this.legalMoves.filter(cell => !this.isEnemyKingNear(cell, board))
+        super.filterUncheckingMoves(myCell, board);
+
     }
 
     isEnemyKingNear(target: ICell, board: IBoard) {
 
-        if (this.isEnemyKing(board.getCell(target.x + 1, target.y + 1))) return true;
+        if (this.isEnemyKing(board.getCell(target.x + 1, target.y))) return true;
         if (this.isEnemyKing(board.getCell(target.x - 1, target.y))) return true;
-        if (this.isEnemyKing(board.getCell(target.x, target.y + 1))) return true;
-        if (this.isEnemyKing(board.getCell(target.x, target.y - 1))) return true;
-        if (this.isEnemyKing(board.getCell(target.x + 1,target.y + 1))) return true;
-        if (this.isEnemyKing(board.getCell(target.x - 1,target.y - 1))) return true;
-        if (this.isEnemyKing(board.getCell(target.x - 1,target.y + 1))) return true;
-        if (this.isEnemyKing(board.getCell(target.x + 1,target.y - 1))) return true;
+        if (isInBounds(target.x, target.y + 1)) {
+            if (this.isEnemyKing(board.getCell(target.x + 1, target.y + 1))) return true;
+            if (this.isEnemyKing(board.getCell(target.x, target.y + 1))) return true;
+            if (this.isEnemyKing(board.getCell(target.x - 1, target.y + 1))) return true;
+        }
+        if (isInBounds(target.x, target.y - 1)) {
+            if (this.isEnemyKing(board.getCell(target.x, target.y - 1))) return true;
+            if (this.isEnemyKing(board.getCell(target.x - 1, target.y - 1))) return true;
+            if (this.isEnemyKing(board.getCell(target.x + 1, target.y - 1))) return true;
+
+        }
 
     }
 

@@ -14,7 +14,7 @@ export interface ICell {
     readonly x: number;
     readonly y: number;
     color: Colors;
-    prevMove: ICell | null;
+    prevFigure: IFigure | null;
     figure: IFigure | null;
     isAvailable: boolean;
     isEmpty: () => boolean;
@@ -34,7 +34,7 @@ interface ICellInit extends Pick<ICell, 'x' | 'y' | 'color' | 'figure'> { };
 export class Cell implements ICell {
     readonly x: number;
     readonly y: number;
-    prevMove: ICell | null = null;
+    prevFigure: IFigure | null = null;
     color: Colors;
     figure: IFigure | null;
     isAvailable: boolean;
@@ -54,25 +54,7 @@ export class Cell implements ICell {
 
     isSafeCell(target: ICell, board: IBoard): boolean {
 
-        // for (let i = 0; i < 8; i++) {
-
-        //     for (let j = 0; j < 8; j++) {
-        //         let current = board.getCell(j, i);
-        //         if (current!.figure && this.isEnemy(current!.figure)) {
-
-        //             const potentialTarget = {
-        //                 ...target,
-        //                 figure: this.figure
-        //             };
-
-        //             if (current!.figure.canMove(potentialTarget, board)) return false;
-        //         } else {
-        //             continue;
-        //         }
-        //     }
-        // }
-
-        return true;
+        return this.isUncheckingMove(target, board);
     }
 
     isEnemy(figure: IFigure | null): boolean {
@@ -144,6 +126,7 @@ export class Cell implements ICell {
         if (cell.isEmpty()) {
             this.figure!.legalMoves.push(cell);
             return false;
+
         } else if (!cell.isEmpty() && cell.isEnemy(this.figure)) {
             this.figure!.legalMoves.push(cell);
             return true;
@@ -162,38 +145,35 @@ export class Cell implements ICell {
     isUncheckingMove(target: ICell, board: IBoard) {
         const copyBoard = board.getCopyBoard();
         copyBoard.isCheck = false;
-        copyBoard.updateAllLegalMoves();
-        const copyTarget = copyBoard.getCell(target.x, target.y);
-        const copyStart = copyBoard.getCell(this.x, this.y);
-        console.log(copyStart === this)
-        copyStart.moveFigure(copyTarget, copyBoard);
-        copyBoard.updateAllLegalMoves();
-        copyBoard.isKingChecked();
 
-        if (!copyBoard.isCheck) {
-            return true;
+
+        if (this.canMoveFigure(target, copyBoard)) {
+            let isValidMove = false;
+            if (this.figure?.type === FigureTypes.KING && this.figure.color === board.currentPlayer) {
+                console.log(isValidMove, target, copyBoard.isCheck)
+            }
+            this.moveFigure(target, board);
+            copyBoard.updateEnemyLegalMoves();
+            copyBoard.isKingChecked();
+            if (!copyBoard.isCheck) {
+                isValidMove = true;
+
+            }
+            target.moveFigure(this, copyBoard);
+            target.figure = target.prevFigure;
+            return isValidMove
         } else {
-            return false;
+            return false
         }
 
     }
 
 
     moveFigure(target: ICell, board: IBoard) {
-        if (!this.figure || !target) return;
-        if (target.figure?.type === FigureTypes.KING) return;
-
         this.figure!.moveFigure(target);
+        target.prevFigure = target.figure;
         target.figure = this.figure;
-        target.prevMove = this;
         this.figure = null;
         this.isAvailable = false;
-        this.prevMove = null
-        board.swapPlayer();
     }
-
-
-
-
-
 }

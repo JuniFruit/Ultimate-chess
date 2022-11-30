@@ -1,22 +1,21 @@
 import { FC, useState, DragEvent } from "react";
-import { ICell } from "../../../../model/Cell";
-import { Colors } from "../../../../model/colors.enum";
-import { IFigure } from "../../../../model/figures/Figures";
 import { Piece } from "../../../ui/piece/Piece";
+import PromotionWindow from "../../../ui/piece/promotion/PromotionWindow";
+import { ICellComponent } from "./Cell.interface";
 
 import styles from './Field.module.scss';
 
-interface ICellComponent {
-    color: Colors;
-    figure: IFigure | null;
-    onSelect: (cell: ICell) => void;
-    selected: ICell | null;
-    cell: ICell;
-    isAvailable: boolean
-}
+export const Cell: FC<ICellComponent> = (
+    {
+        color,
+        figure,
+        onSelect,
+        cell,
+        selected,
+        isAvailable,      
+     }
+) => {
 
-
-export const Cell: FC<ICellComponent> = ({ color, figure, onSelect, cell, selected, isAvailable }) => {
     const isSelected = (selected?.x === cell.x) && (selected?.y === cell.y);
     const [isDraggedOver, setIsDraggedOver] = useState(false);
 
@@ -45,7 +44,7 @@ export const Cell: FC<ICellComponent> = ({ color, figure, onSelect, cell, select
                 />
             }
             {(isAvailable && selected) && <div className={styles.available_dot}></div>}
-            {/* {cell.y} : {cell.x} */}
+
         </div>
     )
 }

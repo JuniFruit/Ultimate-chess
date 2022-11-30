@@ -11,7 +11,7 @@ import { IPlayerInfo } from "../../ui/player/PlayerInfo.interface";
 
 export const useGameRoom = (id?: string) => {
     const initFen = 'rnbqkbnr/pppppppp/8/8/P1N1NP2/8/PP1PP1PP/R1BQKB1R';
-    const [board, setBoard] = useState<IBoard>(new Board());
+    const [board, setBoard] = useState<IBoard>(new Board(SPRITES,SPRITES));
     const [isConnected, setIsConnected] = useState(false);
     const [isReadyToStart, setIsReadyToStart] = useState(false);
     const [enemyUser, setEnemyUser] = useState<IPlayerInfo>();
@@ -31,7 +31,7 @@ export const useGameRoom = (id?: string) => {
         if (!payload) return;
 
         setIsReadyToStart(true);
-        board.cells.length === 0 && board.startNewGame(initFen, SPRITES, SPRITES);
+        board.cells.length === 0 && board.startNewGame(initFen);
         setEnemyUser(payload.user);
         setBoard(board);
         setIsFlipped(prev => payload.color === Colors.BLACK);
@@ -44,6 +44,7 @@ export const useGameRoom = (id?: string) => {
     const handleReceiveMove = useCallback((payload:IMove) => {
         
         board.receiveMove(payload);     
+        board.swapPlayer();
         setBoard(prev => prev.getCopyBoard());
 
     }, [board, setBoard])

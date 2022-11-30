@@ -22,8 +22,7 @@ export class King extends Figure {
         myCell.getLegalMovesHorizontal({ board, numCell: 1 });
         myCell.getLegalMovesVertical({ board, numCell: 1 });
         myCell.getLegalMovesDiagonal({ board, numCell: 1 });
-
-        this.legalMoves = this.legalMoves.filter(cell => !this.isEnemyKingNear(cell, board))
+        this.legalMoves = this.legalMoves.filter(cell => !this.isEnemyKingNear(cell, board));
         super.filterUncheckingMoves(myCell, board);
 
     }

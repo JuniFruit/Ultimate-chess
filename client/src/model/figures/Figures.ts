@@ -15,44 +15,44 @@ export enum FigureTypes {
 export interface IFigure {
     color: Colors;
     type: FigureTypes;
-    x:number;
-    y:number;
+    x: number;
+    y: number;
     sprite?: string;
-    legalMoves: ICell[];   
+    legalMoves: ICell[];
     moveFigure: (target: ICell) => void;
-    getLegalMoves: (board:IBoard) => void;
-    clearMoves: () =>  void;
-    filterUncheckingMoves: (figureCell:ICell, board:IBoard) => void
+    getLegalMoves: (board: IBoard) => void;
+    clearMoves: () => void;
+    filterUncheckingMoves: (figureCell: ICell, board: IBoard) => void
 }
 
-export type ISpritesObj = typeof SPRITES; 
+export type ISpritesObj = typeof SPRITES;
 
 export class Figure {
-    readonly color:Colors;
+    readonly color: Colors;
     sprites?: ISpritesObj;
-    x:number;
-    y:number;
+    x: number;
+    y: number;
     legalMoves: ICell[] = [];
 
-    constructor(x:number,y:number,color:Colors, sprites?: ISpritesObj) {
+    constructor(x: number, y: number, color: Colors, sprites?: ISpritesObj) {
         this.color = color;
         this.x = x;
         this.y = y;
         this.sprites = sprites;
-    }   
+    }
 
-    moveFigure(target:ICell) {   
-        if (target.figure?.type === FigureTypes.KING) return; 
+    moveFigure(target: ICell) {
+        if (target.figure?.type === FigureTypes.KING) return;
         this.x = target.x;
         this.y = target.y;
     }
 
-    filterUncheckingMoves(figureCell:ICell,board:IBoard) {
-        if (!board.isCheck) return;
+    filterUncheckingMoves(figureCell: ICell, board: IBoard) {
         if (!figureCell.figure) return;
         if (figureCell.figure.color !== board.currentPlayer) return;
-        const currentFigure = figureCell.figure;
-        currentFigure.legalMoves = currentFigure.legalMoves.filter(move => figureCell.isUncheckingMove(move, board));
+        figureCell.figure.legalMoves = [...figureCell.figure.legalMoves.filter(move => figureCell.isUncheckingMove(move, board))]
+
+
     }
 
     clearMoves() {

@@ -1,5 +1,4 @@
 import { IBoard } from "../Board";
-import { ICell } from "../Cell";
 import { Colors } from "../colors.enum";
 import { Direction } from "../helper.enum";
 import { isInBounds } from "../helpers";

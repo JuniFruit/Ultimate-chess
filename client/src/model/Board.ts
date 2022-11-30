@@ -1,29 +1,30 @@
-import e from "express";
 import { IMove } from "../constants/socketIO/ClientEvents.interface";
 import { Cell } from "./Cell";
 import { ICell } from "./Cell"
 import { Colors } from "./colors.enum";
 import { Bishop } from "./figures/Bishop";
-import { FigureTypes, ISpritesObj } from "./figures/Figures";
+import { FigureTypes, IFigure, ISpritesObj } from "./figures/Figures";
 import { King } from "./figures/King";
 import { Knight } from "./figures/Knight";
 import { Pawn } from "./figures/Pawn";
 import { Queen } from "./figures/Queen";
 import { Rook } from "./figures/Rook";
-import { flipFEN, returnColorCell } from "./helpers";
+import { returnColorCell } from "./helpers";
 
 export interface IBoard {
     cells: ICell[][];
     currentPlayer: Colors;
     moves: ICell[];
     isCheck: boolean;
-    startNewGame: (fen: string, mySprites?: ISpritesObj, enemySprites?: ISpritesObj) => void;
+    startNewGame: (fen: string) => void;
     showAvailable: (selected: ICell) => void;
     receiveMove: (move: IMove) => void;
     getCell: (x: number, y: number) => ICell;
     getCopyBoard: () => IBoard;
     isKingChecked: () => boolean;
     updateAllLegalMoves: () => void;
+    updateEnemyLegalMoves: () => void;
+    createFigure: (char: string, x: number, y: number) => IFigure | null;
     swapPlayer: () => void;
     undo: () => void;
     addMove: (move: ICell) => void
@@ -37,6 +38,13 @@ export class Board implements IBoard {
     currentPlayer: Colors = Colors.WHITE;
     moves: ICell[] = [];
     isCheck: boolean = false;
+    mySprites?: ISpritesObj;
+    enemySprites?:ISpritesObj;
+
+    constructor(mySprites?:ISpritesObj, enemySprites?:ISpritesObj) {
+        this.mySprites = mySprites;
+        this.enemySprites = enemySprites
+    }
 
     showAvailable(selected: ICell) {
         if (!selected.figure) return;
@@ -54,32 +62,26 @@ export class Board implements IBoard {
     }
 
 
-    startNewGame(fen: string, mySprites?: ISpritesObj, enemySprites?: ISpritesObj) {
-        this.initCells(fen, mySprites, enemySprites);
+    startNewGame(fen: string) {
+        this.initCells(fen);
         this.updateAllLegalMoves();
     }
 
     getCell(x: number, y: number) {
         return this.cells[y][x];
     }
-
-    receiveMove({ currentCell, targetCell }: IMove) {
-        const start = this.getCell(currentCell.x, currentCell.y);
-        const target = this.getCell(targetCell.x, targetCell.y);
-        start.moveFigure(target, this);
-        this.addMove(target);
-    }
-
     swapPlayer() {
         this.currentPlayer = this.currentPlayer === Colors.WHITE ? Colors.BLACK : Colors.WHITE;
     }
 
     getCopyBoard() {
         const newBoard = new Board();
-        newBoard.cells = this.cells.slice();
+        newBoard.cells = this.cells;
         newBoard.currentPlayer = this.currentPlayer;
         newBoard.moves = this.moves;
         newBoard.isCheck = this.isCheck;
+        newBoard.mySprites = this.mySprites;
+        newBoard.enemySprites = this.enemySprites;
         return newBoard;
     }
 
@@ -88,6 +90,14 @@ export class Board implements IBoard {
             row.forEach(cell => cell.figure?.getLegalMoves(this));
         })
 
+    }
+
+    updateEnemyLegalMoves() {
+        this.cells.forEach(row => row.forEach(cell => {
+            if (cell.figure?.color !== this.currentPlayer) {
+                cell.figure?.getLegalMoves(this);
+            }
+        }))
     }
 
 
@@ -109,49 +119,22 @@ export class Board implements IBoard {
     }
 
     isCheckMate() {
-
-        // let isOver = true;
-
-        // for (let i = 0; i < this.cells.length; i++) {
-        //     for (let j = 0; j < this.cells[i].length; j++) {
-        //         let current = this.cells[i][j];
-        //         if (!isOver) return false;
-        //         if (current.figure?.color === this.currentPlayer) {
-        //             current.figure.legalMoves.forEach(move => {
-        //                 if (!move) return;
-        //                 const thisFigure = move.figure;
-        //                 current.moveFigure(move, this);
-        //                 this.updateAllLegalMoves();
-        //                 this.isKingChecked();
-        //                 if (!this.isCheck) {
-        //                     isOver = false
-        //                     move.moveFigure(move.prevMove!, this);
-        //                     move.figure = thisFigure;
-        //                     this.updateAllLegalMoves();
-        //                     return;
-        //                 } else {
-        //                     move.moveFigure(move.prevMove!, this);
-        //                     move.figure = thisFigure;
-        //                     this.updateAllLegalMoves();
-        //                 }
-        //             })
-
-        //         } else{
-        //             continue
-        //         }
-        //     }
-        // }
-        // return isOver;
-        this.updateAllLegalMoves();
-        return this.cells.some(row => row.some(cell => cell.figure?.legalMoves.length !== 0))
+        let isOver = true;
+        this.cells.forEach(row => row.forEach(cell => {
+            if (cell.figure?.color === this.currentPlayer && cell.figure.legalMoves.length) {
+                isOver = false;
+                return;
+            }
+        }))
+        return isOver;
 
     }
 
     undo() {
-        if (!this.moves.length) return;
-        const lastMove = this.moves.pop();
+        // if (!this.moves.length) return;
+        // const lastMove = this.moves.pop();
 
-        lastMove?.moveFigure(lastMove.prevMove!, this);
+        // lastMove?.moveFigure(lastMove.prevMove!, this);
 
     }
 
@@ -160,7 +143,7 @@ export class Board implements IBoard {
     }
 
 
-    initCells(fen: string, mySprites?: ISpritesObj, enemySprites?: ISpritesObj) {
+    initCells(fen: string) {
 
         const splited = fen.split(' ');
         const [positions, currentPlayer, castleRules, enPassant] = splited;
@@ -180,7 +163,7 @@ export class Board implements IBoard {
             } else {
                 if (isNaN(+currentPos)) {
 
-                    const figure = this.createFigure(currentPos, currentCol, currentRow, mySprites, enemySprites);
+                    const figure = this.createFigure(currentPos, currentCol, currentRow);
                     const cell = new Cell({ x: currentCol, y: currentRow, color: returnColorCell(currentRow, currentCol), figure: figure });
                     row.push(cell);
                     currentCol++;
@@ -200,36 +183,49 @@ export class Board implements IBoard {
         this.cells.push(row);
         this.currentPlayer = currentPlayer === Colors.BLACK ? Colors.BLACK : Colors.WHITE;
 
-
     }
 
-    createFigure(char: string, x: number, y: number, mySprites?: ISpritesObj, enemySprites?: ISpritesObj) {
+    createFigure(char: string, x: number, y: number) {
 
         const type = char.toLowerCase()
         const isEnemy = char === char.toLowerCase();
 
         switch (type) {
             case FigureTypes.BISHOP:
-                return new Bishop(x, y, isEnemy ? Colors.BLACK : Colors.WHITE, isEnemy ? enemySprites : mySprites)
+                return new Bishop(x, y, isEnemy ? Colors.BLACK : Colors.WHITE, isEnemy ? this.enemySprites : this.mySprites)
 
             case FigureTypes.KING:
-                return new King(x, y, isEnemy ? Colors.BLACK : Colors.WHITE, isEnemy ? enemySprites : mySprites);
+                return new King(x, y, isEnemy ? Colors.BLACK : Colors.WHITE, isEnemy ? this.enemySprites : this.mySprites);
 
             case FigureTypes.PAWN:
-                return new Pawn(x, y, isEnemy ? Colors.BLACK : Colors.WHITE, isEnemy ? enemySprites : mySprites);
+                return new Pawn(x, y, isEnemy ? Colors.BLACK : Colors.WHITE, isEnemy ? this.enemySprites : this.mySprites);
 
             case FigureTypes.KNIGHT:
-                return new Knight(x, y, isEnemy ? Colors.BLACK : Colors.WHITE, isEnemy ? enemySprites : mySprites);
+                return new Knight(x, y, isEnemy ? Colors.BLACK : Colors.WHITE, isEnemy ? this.enemySprites : this.mySprites);
 
             case FigureTypes.QUEEN:
-                return new Queen(x, y, isEnemy ? Colors.BLACK : Colors.WHITE, isEnemy ? enemySprites : mySprites);
+                return new Queen(x, y, isEnemy ? Colors.BLACK : Colors.WHITE, isEnemy ?this. enemySprites : this.mySprites);
 
             case FigureTypes.ROOK:
-                return new Rook(x, y, isEnemy ? Colors.BLACK : Colors.WHITE, isEnemy ? enemySprites : mySprites);
+                return new Rook(x, y, isEnemy ? Colors.BLACK : Colors.WHITE, isEnemy ? this.enemySprites : this.mySprites);
             default:
                 return null;
         }
 
+    }
+
+
+    
+    receiveMove({ currentCell, targetCell, options }: IMove) {
+        const start = this.getCell(currentCell.x, currentCell.y);
+        const target = this.getCell(targetCell.x, targetCell.y);
+
+        if (options?.isPromotion) {
+            start.figure = this.createFigure(options.figureToPromote!, start.x, start.y);
+        }
+
+        start.moveFigure(target, this);
+        this.addMove(target);
     }
 
 }

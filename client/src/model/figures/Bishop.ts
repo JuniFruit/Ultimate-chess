@@ -3,6 +3,8 @@ import { Colors } from "../colors.enum";
 import { Figure, FigureTypes, ISpritesObj } from "./Figures";
 
 
+//TODO add dynamic moving capacity
+
 export class Bishop extends Figure {
     readonly sprite?: string;
     readonly type: FigureTypes

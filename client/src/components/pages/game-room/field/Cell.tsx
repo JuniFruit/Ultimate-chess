@@ -20,7 +20,7 @@ export const Cell: FC<ICellComponent> = (
     const [isDraggedOver, setIsDraggedOver] = useState(false);
 
     const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
-        if (!isAvailable) return;
+        // if (!isAvailable) return;
         e.preventDefault();
         setIsDraggedOver(true);
     }

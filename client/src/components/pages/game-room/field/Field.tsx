@@ -8,9 +8,9 @@ import { useField } from './useField';
 
 
 
-export const Field: FC<IField> = ({ board, setBoard, ioMoveHandlers, isFlipped }) => {
+export const Field: FC<IField> = ({ board, setBoard, ioMoveHandlers, isFlipped, myColor }) => {
 
-    const { handlers, status } = useField({ board, setBoard, ioMoveHandlers })
+    const { handlers, status } = useField({ board, setBoard, ioMoveHandlers, myColor })
 
     const direction = (ind: number) => {
         return isFlipped ? 7 - ind : ind;
@@ -40,7 +40,6 @@ export const Field: FC<IField> = ({ board, setBoard, ioMoveHandlers, isFlipped }
 
             </div>
             {status.isPromotion && <PromotionWindow handlePromotion={handlers.handlePromotion} />}
-            {/* <button onClick={() => { board.undo(); setBoard(prev => prev.getCopyBoard()) }}>Undo</button> */}
         </div>
     )
 }

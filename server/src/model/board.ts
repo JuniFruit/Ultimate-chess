@@ -1,7 +1,6 @@
 import { IMove } from '../../../client/src/constants/socketIO/ClientEvents.interface';
 import { Board, IBoard } from '../../../client/src/model/Board';
-import { ICell } from '../../../client/src/model/Cell';
-import { Colors } from '../../../client/src/model/colors.enum';
+
 
 let ROOM_GAME_BOARDS = new Map();
 
@@ -22,11 +21,25 @@ export const boardApi = (roomId: string) => {
     const moveFigure = (move: IMove) => {
         const board: IBoard = ROOM_GAME_BOARDS.get(roomId);
         board.receiveMove(move);
+        board.swapPlayer();
+        board.updateAllLegalMoves();
+        ROOM_GAME_BOARDS.set(roomId, board);
+    }
+
+    const isWinningMove = (move: IMove) => {
+        const board: IBoard = ROOM_GAME_BOARDS.get(roomId);
+        board.receiveMove(move);
+        board.updateAllLegalMoves();
+        if (board.isKingChecked()) {
+            return board.isCheckMate();
+        }
+        return false
     }
 
     return {
         getBoard,
         createBoard,
+        isWinningMove,
         moveFigure
     }
 

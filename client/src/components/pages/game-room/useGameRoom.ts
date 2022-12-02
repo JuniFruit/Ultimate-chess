@@ -16,30 +16,29 @@ export const useGameRoom = (id?: string) => {
     const [isReadyToStart, setIsReadyToStart] = useState(false);
     const [enemyUser, setEnemyUser] = useState<IPlayerInfo>();
     const [isFlipped, setIsFlipped] = useState(false);
+    const [myColor, setMyColor] = useState<Colors>(Colors.WHITE)
 
 
     const handleOnConnect = useCallback(() => {
-        setIsConnected(true);
+        setIsConnected(prev => true);
         console.log('connected')
     }, [id])
 
     const handleNoOpponent = useCallback(() => {
-        setIsReadyToStart(false)
-    }, [id])
+        setIsReadyToStart(prev => false)
+    }, [id, isReadyToStart, setIsReadyToStart])
 
     const handleReadyToStart = useCallback((payload: IStartPayload) => {
         if (!payload) return;
-
-        setIsReadyToStart(true);
-        board.cells.length === 0 && board.startNewGame(initFen);
-        setEnemyUser(payload.user);
-        setBoard(board);
+        setIsReadyToStart(prev => true);
+        setEnemyUser(prev => payload.user);
+        setMyColor(prev => payload.color!);
         setIsFlipped(prev => payload.color === Colors.BLACK);
-    }, [id, board])
+    }, [isConnected, setIsReadyToStart, isReadyToStart])
 
     const handleSendMove = useCallback((move: IMove) => {
         ioClient.emit("sendMove", move)
-    }, [board, setBoard])
+    }, [])
 
     const handleReceiveMove = useCallback((payload:IMove) => {
         
@@ -50,11 +49,12 @@ export const useGameRoom = (id?: string) => {
     }, [board, setBoard])
 
 
-    const drawBoard = () => {
-        const newBoard = new Board()
-        newBoard.startNewGame(initFen);
-        return newBoard
-    }
+    const drawBoard = useCallback(() => {
+        board.clearBoard();
+        board.startNewGame(initFen);
+        setBoard(prev => prev.getCopyBoard());
+
+    }, [board, setBoard])
 
     //init connection
 
@@ -79,10 +79,7 @@ export const useGameRoom = (id?: string) => {
     }, [isConnected, id])
 
     useEffect(() => {
-        if (!ioClient) return;
-
-
-        if (!isConnected) return;
+        
         ioClient.on("noOpponent", handleNoOpponent);
         ioClient.on("readyToStart", handleReadyToStart);
 
@@ -101,6 +98,11 @@ export const useGameRoom = (id?: string) => {
         }
     }, [board])
 
+    useEffect(() => {
+
+        drawBoard();
+    }, [isConnected, isReadyToStart])
+
     return {
         field: {
             board,
@@ -110,7 +112,8 @@ export const useGameRoom = (id?: string) => {
             isConnected,
             isReadyToStart,
             setIsReadyToStart,
-            isFlipped
+            isFlipped, 
+            myColor
         },
         data: {
             enemyUser

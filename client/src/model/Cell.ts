@@ -1,6 +1,8 @@
 import { IBoard } from "./Board";
 import { Colors } from "./colors.enum";
 import { FigureTypes, IFigure } from "./figures/Figures";
+import { IKing } from "./figures/King";
+import { IRook } from "./figures/Rook";
 import { Direction } from "./helper.enum";
 import { isInBounds } from "./helpers";
 
@@ -20,13 +22,15 @@ export interface ICell {
     isEmpty: () => boolean;
     isEnemy: (figure: IFigure | null) => boolean;
     isSafeCell: (target: ICell, board: IBoard) => boolean;
-    moveFigure: (target: ICell, board: IBoard) => void;
+    moveFigure: (target: ICell, board: IBoard, isFake?: boolean) => void;
     canMoveFigure: (target: ICell, board: IBoard) => boolean;
     getLegalMovesVertical: (arg: ILegalMoveArg) => void;
     getLegalMovesHorizontal: (arg: ILegalMoveArg) => void;
     getLegalMovesDiagonal: (arg: ILegalMoveArg) => void;
     addLegalMove: (cell: ICell) => boolean;
+    isCastlingMove: (target: ICell, board: IBoard) => boolean;
     isUncheckingMove: (target: ICell, board: IBoard) => boolean;
+    canPerformCastle: (target: ICell, board: IBoard) => boolean;
 }
 
 interface ICellInit extends Pick<ICell, 'x' | 'y' | 'color' | 'figure'> { };
@@ -54,7 +58,16 @@ export class Cell implements ICell {
 
     isSafeCell(target: ICell, board: IBoard): boolean {
 
-        return this.isUncheckingMove(target, board);
+        let isValidMove = false;
+        this.moveFigure(target, board, true);
+        board.updateEnemyLegalMoves();
+        board.isKingChecked();
+        if (!board.isCheck) {
+            isValidMove = true;
+        }
+        target.moveFigure(this, board, true);
+        target.figure = target.prevFigure;
+        return isValidMove
     }
 
     isEnemy(figure: IFigure | null): boolean {
@@ -63,8 +76,14 @@ export class Cell implements ICell {
         return this.figure.color !== figure.color;
     }
 
-    // if direction is not specified, working in both directions
 
+
+    /* 
+        these legal moves getters are used to get potential moves in all directions. 
+        If a figure has special conditions we can filter out these potential moves later in a figure class
+
+        if direction is not specified, working in both directions 
+     */
 
     getLegalMovesVertical({ board, direction, numCell }: ILegalMoveArg) {
 
@@ -135,42 +154,70 @@ export class Cell implements ICell {
     }
 
     canMoveFigure(target: ICell, board: IBoard) {
+
         if (target.figure?.type === FigureTypes.KING) return false;
         if (this.figure?.color !== board.currentPlayer) return false;
+        if (this.isCastlingMove(target)) return this.canPerformCastle(target, board);
 
         const move = this.figure?.legalMoves.find(cell => cell.x === target.x && cell.y === target.y)
         return !!move;
     }
 
     isUncheckingMove(target: ICell, board: IBoard) {
+
+        // run a fake move to check if a king is checked after the move then undo
         const copyBoard = board.getCopyBoard();
         copyBoard.isCheck = false;
 
 
         if (this.canMoveFigure(target, copyBoard)) {
-            let isValidMove = false;
-            if (this.figure?.type === FigureTypes.KING && this.figure.color === board.currentPlayer) {
-                console.log(isValidMove, target, copyBoard.isCheck)
-            }
-            this.moveFigure(target, board);
-            copyBoard.updateEnemyLegalMoves();
-            copyBoard.isKingChecked();
-            if (!copyBoard.isCheck) {
-                isValidMove = true;
-
-            }
-            target.moveFigure(this, copyBoard);
-            target.figure = target.prevFigure;
-            return isValidMove
+            return this.isSafeCell(target, copyBoard);
         } else {
             return false
         }
 
     }
 
+    isCastlingMove(target: ICell) {
+        if (this.figure?.type === FigureTypes.KING && target.figure?.type === FigureTypes.ROOK) return true;
+        return false
+    }
 
-    moveFigure(target: ICell, board: IBoard) {
-        this.figure!.moveFigure(target);
+    canPerformCastle(target: ICell, board: IBoard) {
+        // check if none of the pieces moved and they are on the same row
+        if (!(this.figure as IKing).isCastlingAvailable || target.figure?.type !== FigureTypes.ROOK) return false;
+        if (this.figure!.color !== target.figure.color) return false;
+        if (board.isCheck) return false;
+        if (this.y !== target.y) return false;
+        if (!(target.figure as IRook).isFirstMove) return false;
+
+        // check if no pieces between
+        const range = Math.abs(target.x - this.x);
+        const dir = target.x < this.x ? -1 : 1;
+
+        for (let i = 1; i < range; i++) {
+            if (!board.getCell(this.x + i * dir, this.y).isEmpty()) return false;
+        }
+
+        if (!this.isSafeCell(board.getCell(target.x + dir * (-1), this.y), board)) return false;
+
+        return true;
+    }
+
+    performCastle(target: ICell, board: IBoard) {
+        const dir = target.x < this.x ? 1 : -1;
+        const targetForKing = board.getCell(target.x + dir, this.y);
+        const targetForRook = board.getCell(target.x + 2 * dir, this.y);
+
+        this.moveFigure(targetForKing, board);
+        target.moveFigure(targetForRook, board);
+    }
+
+
+    moveFigure(target: ICell, board: IBoard, isFake: boolean = false) {
+        if (this.isCastlingMove(target)) return this.performCastle(target, board);
+
+        this.figure!.moveFigure(target, isFake);
         target.prevFigure = target.figure;
         target.figure = this.figure;
         this.figure = null;

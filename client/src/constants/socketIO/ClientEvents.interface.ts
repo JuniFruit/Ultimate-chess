@@ -3,7 +3,7 @@ import { FigureTypes } from "../../model/figures/Figures";
 
 export interface IMoveOptions {
     isPromotion?: boolean;
-    figureToPromote?: FigureTypes
+    figureToPromote?: string | FigureTypes
 
 }
 

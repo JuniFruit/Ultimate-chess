@@ -2,17 +2,23 @@ import { IBoard } from "../Board";
 import { ICell } from "../Cell";
 import { Colors } from "../colors.enum";
 import { isInBounds } from "../helpers";
-import { Figure, FigureTypes, ISpritesObj } from "./Figures";
+import { Figure, FigureTypes, IFigure, ISpritesObj } from "./Figures";
 
 
-export class King extends Figure {
+export interface IKing extends IFigure {
+    isCastlingAvailable:boolean;
+}
+
+export class King extends Figure implements IKing {
     readonly sprite?: string;
     readonly type: FigureTypes;
+    isCastlingAvailable:boolean;
 
-    constructor(x: number, y: number, color: Colors, sprites?: ISpritesObj) {
+    constructor(x: number, y: number, color: Colors, sprites?: ISpritesObj, isCastlingAvailable:boolean = true) {
         super(x, y, color, sprites);
         this.sprite = color === Colors.BLACK ? sprites?.blackKing : sprites?.whiteKing;
         this.type = FigureTypes.KING;
+        this.isCastlingAvailable = isCastlingAvailable;
     }
 
     getLegalMoves(board: IBoard) {
@@ -42,6 +48,7 @@ export class King extends Figure {
             if (this.isEnemyKing(board.getCell(target.x + 1, target.y - 1))) return true;
 
         }
+        return false;
 
     }
 
@@ -51,4 +58,14 @@ export class King extends Figure {
 
         return target.figure?.type === FigureTypes.KING && target.figure.color !== this.color;
     }
+
+    moveFigure(target: ICell, isFake:boolean = false): void {
+        super.moveFigure(target);
+
+        if (isFake) return;
+
+        this.isCastlingAvailable = false;
+    }
+
+    
 }

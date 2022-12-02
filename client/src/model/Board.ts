@@ -27,6 +27,7 @@ export interface IBoard {
     createFigure: (char: string, x: number, y: number) => IFigure | null;
     swapPlayer: () => void;
     undo: () => void;
+    clearBoard: () => void;
     addMove: (move: ICell) => void
     isCheckMate: () => boolean;
 }
@@ -39,9 +40,9 @@ export class Board implements IBoard {
     moves: ICell[] = [];
     isCheck: boolean = false;
     mySprites?: ISpritesObj;
-    enemySprites?:ISpritesObj;
+    enemySprites?: ISpritesObj;
 
-    constructor(mySprites?:ISpritesObj, enemySprites?:ISpritesObj) {
+    constructor(mySprites?: ISpritesObj, enemySprites?: ISpritesObj) {
         this.mySprites = mySprites;
         this.enemySprites = enemySprites
     }
@@ -107,7 +108,7 @@ export class Board implements IBoard {
             for (let j = 0; j < 8; j++) {
                 const current = this.cells[i][j];
                 if (!current.figure) continue;
-                if (current.figure!.legalMoves.some(cell => cell.figure?.type === FigureTypes.KING)) {
+                if (current.figure!.legalMoves.some(move => move.figure?.type === FigureTypes.KING && current.figure?.color !== move.figure.color)) {
                     this.isCheck = true;
                     return true;
                 }
@@ -140,6 +141,10 @@ export class Board implements IBoard {
 
     addMove(move: ICell) {
         this.moves.push(move);
+    }
+
+    clearBoard() {
+        this.cells = [];
     }
 
 
@@ -204,7 +209,7 @@ export class Board implements IBoard {
                 return new Knight(x, y, isEnemy ? Colors.BLACK : Colors.WHITE, isEnemy ? this.enemySprites : this.mySprites);
 
             case FigureTypes.QUEEN:
-                return new Queen(x, y, isEnemy ? Colors.BLACK : Colors.WHITE, isEnemy ?this. enemySprites : this.mySprites);
+                return new Queen(x, y, isEnemy ? Colors.BLACK : Colors.WHITE, isEnemy ? this.enemySprites : this.mySprites);
 
             case FigureTypes.ROOK:
                 return new Rook(x, y, isEnemy ? Colors.BLACK : Colors.WHITE, isEnemy ? this.enemySprites : this.mySprites);
@@ -215,10 +220,12 @@ export class Board implements IBoard {
     }
 
 
-    
+
     receiveMove({ currentCell, targetCell, options }: IMove) {
         const start = this.getCell(currentCell.x, currentCell.y);
         const target = this.getCell(targetCell.x, targetCell.y);
+
+        if (!start || !target) return;
 
         if (options?.isPromotion) {
             start.figure = this.createFigure(options.figureToPromote!, start.x, start.y);

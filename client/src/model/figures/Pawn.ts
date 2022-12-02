@@ -3,29 +3,32 @@ import { ICell } from "../Cell";
 import { Colors } from "../colors.enum";
 import { Direction } from "../helper.enum";
 import { isInBounds } from "../helpers";
-import { Figure, FigureTypes, ISpritesObj } from "./Figures";
+import { Figure, FigureTypes, IFigure, ISpritesObj } from "./Figures";
+
+
+export interface IPawn extends IFigure {
+    isFirstMove: boolean;   
+}
 
 
 
-
-export class Pawn extends Figure {
+export class Pawn extends Figure implements IPawn {
     readonly sprite?: string;
     readonly type: FigureTypes;
     isFirstMove: boolean;
-    isPromotion: boolean;
+   
 
     constructor(x: number, y: number, color: Colors, sprites?: ISpritesObj) {
         super(x, y, color, sprites);
         this.sprite = color === Colors.BLACK ? sprites?.blackPawn : sprites?.whitePawn;
         this.type = FigureTypes.PAWN;
         this.isFirstMove = true;
-        this.isPromotion = false;
+     
     }
 
     moveFigure(target: ICell): void {
         super.moveFigure(target);
-        this.isFirstMove = this.y === 1 || this.y === 6;
-        this.isPromotion = this.y === 0 || this.y === 7;
+        this.isFirstMove = this.y === 1 || this.y === 6;        
     }
 
     getLegalMoves(board: IBoard) {

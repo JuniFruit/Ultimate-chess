@@ -3,14 +3,15 @@ import { useEffect, useState, useCallback } from 'react';
 import { ICell } from "../../../../model/Cell";
 import { FigureTypes } from "../../../../model/figures/Figures";
 import { IMoveOptions } from "../../../../constants/socketIO/ClientEvents.interface";
+import { Colors } from "../../../../model/colors.enum";
 
 
-interface IUseField extends Pick<IField, 'board' | 'setBoard' | 'ioMoveHandlers'> {
+interface IUseField extends Pick<IField, 'board' | 'setBoard' | 'ioMoveHandlers' | 'myColor'> {
 
 }
 
 
-export const useField = ({ board, setBoard, ioMoveHandlers }: IUseField) => {
+export const useField = ({ board, setBoard, ioMoveHandlers, myColor }: IUseField) => {
 
     const [selectedCell, setSelectedCell] = useState<ICell | null>(null);
     const [isPromotion, setIsPromotion] = useState(false);
@@ -22,21 +23,24 @@ export const useField = ({ board, setBoard, ioMoveHandlers }: IUseField) => {
     }
 
     const handleSelect = (cell: ICell) => {
-        if (isPromotion) return; 
+        if (isPromotion) return;
 
         if (selectedCell) {
-            if (selectedCell !== cell && selectedCell.figure?.color !== cell.figure?.color) {
-                if (selectedCell.figure?.type === FigureTypes.PAWN && (cell.y === 0 || cell.y === 7)) {
-                    setLastChosenCell(prev => cell);
-                    setIsPromotion(prev => true);                    
-                    return
-                }
-                handleMove(cell);
-                setSelectedCell(prev => null);
-                return;
-            } else if (selectedCell === cell) {
-                return setSelectedCell(prev => null);
-            } else if (selectedCell !== cell && cell.figure) return setSelectedCell(cell);
+            if (selectedCell !== cell
+                && board.currentPlayer === myColor) {
+
+                if (selectedCell.canMoveFigure(cell, board)) {
+                    if (selectedCell.figure?.type === FigureTypes.PAWN && (cell.y === 0 || cell.y === 7)) {
+                        setLastChosenCell(prev => cell);
+                        setIsPromotion(prev => true);
+                        return
+                    }
+                    handleMove(cell);
+                    setSelectedCell(prev => null);
+                    return;
+                } else if (cell.figure) return setSelectedCell(prev => cell);
+            } else if (selectedCell.figure?.color === cell.figure?.color) return setSelectedCell(prev => cell);
+            return setSelectedCell(prev => null);
         } else {
             if (!cell.figure) return;
             setSelectedCell(prev => cell);
@@ -47,58 +51,56 @@ export const useField = ({ board, setBoard, ioMoveHandlers }: IUseField) => {
 
     const handlePromotion = (figureType: FigureTypes) => {
 
-        if (!lastChosenCell || !selectedCell) return;        
+        if (!lastChosenCell || !selectedCell) return;
         setSelectedCell(prev => {
-            prev!.figure = board.createFigure(figureType,prev!.x,prev!.y);
+            prev!.figure = board.createFigure(myColor === Colors.BLACK ? figureType : figureType.toUpperCase(), prev!.x, prev!.y);
             prev?.figure?.legalMoves.push(lastChosenCell);
             return prev;
-        })      
-        // start.figure = board.createFigure(figureType,start.x,start.y);
-        console.log(selectedCell.figure?.legalMoves);
-        handleMove(lastChosenCell, {isPromotion: true, figureToPromote: figureType});
+        })
+
+        handleMove(lastChosenCell, { isPromotion: true, figureToPromote: myColor === Colors.BLACK ? figureType : figureType.toUpperCase() });
         setIsPromotion(prev => false);
         setSelectedCell(prev => null);
-        
+
 
     }
 
-    const handleMove = (cell: ICell, options?:IMoveOptions) => {
+    const handleMove = (cell: ICell, options?: IMoveOptions) => {
         if (!cell || !selectedCell) return;
 
-        const canMove = selectedCell.canMoveFigure(cell, board);
+        selectedCell!.moveFigure(cell, board);
+        board.swapPlayer();
+        ioMoveHandlers.handleSendMove({
+            targetCell: {
+                x: cell.x,
+                y: cell.y
+            }, currentCell: {
+                x: selectedCell.x,
+                y: selectedCell.y
+            },
+            options
+        });
+        board.addMove(cell);
 
-        if (canMove) {
-            selectedCell!.moveFigure(cell, board);
-            board.swapPlayer();
-            ioMoveHandlers.handleSendMove({
-                targetCell: {
-                    x: cell.x,
-                    y: cell.y
-                }, currentCell: {
-                    x: selectedCell.x,
-                    y: selectedCell.y
-                },
-                options
-            });
-            board.addMove(cell);
-        }
         setBoard(prev => prev.getCopyBoard())
     }
 
     useEffect(() => {
         if (!selectedCell) return;
+        if (selectedCell.figure?.color !== myColor) return;
         showAvailableMoves(selectedCell);
     }, [selectedCell, setSelectedCell])
 
     useEffect(() => {
 
-        console.log(board);
+        // console.log(board);
         if (!board.cells.length) return;
         board.updateAllLegalMoves();
         board.isKingChecked();
-        console.log(board.isCheck, board.currentPlayer);
+
+        console.log(board.isCheck, board.currentPlayer)
         if (board.isCheck) {
-            console.log(board.isCheckMate());
+            console.log(board.isCheckMate())
 
         }
 

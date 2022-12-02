@@ -19,7 +19,7 @@ export interface IFigure {
     y: number;
     sprite?: string;
     legalMoves: ICell[];
-    moveFigure: (target: ICell) => void;
+    moveFigure: (target: ICell, isFake?:boolean) => void;
     getLegalMoves: (board: IBoard) => void;
     clearMoves: () => void;
     filterUncheckingMoves: (figureCell: ICell, board: IBoard) => void
@@ -42,7 +42,7 @@ export class Figure {
     }
 
     moveFigure(target: ICell) {
-        if (target.figure?.type === FigureTypes.KING) return;
+        // if (target.figure?.type === FigureTypes.KING) return;
         this.x = target.x;
         this.y = target.y;
     }

@@ -18,10 +18,8 @@ export class Bishop extends Figure {
     }    
 
     getLegalMoves(board:IBoard) {
-        super.clearMoves()
-
-        const myCell = board.getCell(this.x, this.y);
-        myCell.getLegalMovesDiagonal({board, numCell: 8});
-        super.filterUncheckingMoves(myCell, board);
+        super.clearMoves();
+        super.getLegalMovesDiagonal({board, numCell: 8});
+        super.filterUncheckingMoves(board);
     }
 }

@@ -5,6 +5,7 @@ import { IMove } from "../../../constants/socketIO/ClientEvents.interface";
 import { IStartPayload } from "../../../constants/socketIO/ServerEvents.interface";
 import { Board, IBoard } from "../../../model/Board";
 import { Colors } from "../../../model/colors.enum";
+import { Results } from "../../../model/helper.enum";
 import { IPlayerInfo } from "../../ui/player/PlayerInfo.interface";
 
 
@@ -29,11 +30,12 @@ export const useGameRoom = (id?: string) => {
     }, [id, isReadyToStart, setIsReadyToStart])
 
     const handleReadyToStart = useCallback((payload: IStartPayload) => {
-        if (!payload) return;
+        if (!payload) return; // payload with info about the opponent
+
         setIsReadyToStart(prev => true);
         setEnemyUser(prev => payload.user);
-        setMyColor(prev => payload.color!);
-        setIsFlipped(prev => payload.color === Colors.BLACK);
+        setMyColor(prev => payload.color === Colors.WHITE ? Colors.BLACK : Colors.WHITE);
+        setIsFlipped(prev => payload.color === Colors.WHITE);
     }, [isConnected, setIsReadyToStart, isReadyToStart])
 
     const handleSendMove = useCallback((move: IMove) => {
@@ -54,7 +56,11 @@ export const useGameRoom = (id?: string) => {
         board.startNewGame(initFen);
         setBoard(prev => prev.getCopyBoard());
 
-    }, [board, setBoard])
+    }, [])
+
+    const handleResults = useCallback((results: Results) => {
+
+    }, [])
 
     //init connection
 
@@ -124,3 +130,6 @@ export const useGameRoom = (id?: string) => {
 
     }
 }
+
+
+

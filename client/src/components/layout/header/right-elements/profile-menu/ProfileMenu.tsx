@@ -21,7 +21,6 @@ const ProfileMenu: FC = () => {
     const { isMobile } = useIsMobile();
 
     if (isLoading) return null;
-
     return (
         <div ref={ref} className={styles.wrapper}>
 

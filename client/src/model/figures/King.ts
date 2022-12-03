@@ -23,13 +23,11 @@ export class King extends Figure implements IKing {
 
     getLegalMoves(board: IBoard) {
         super.clearMoves()
-
-        const myCell = board.getCell(this.x, this.y);
-        myCell.getLegalMovesHorizontal({ board, numCell: 1 });
-        myCell.getLegalMovesVertical({ board, numCell: 1 });
-        myCell.getLegalMovesDiagonal({ board, numCell: 1 });
+        super.getLegalMovesHorizontal({ board, numCell: 1 });
+        super.getLegalMovesVertical({ board, numCell: 1 });
+        super.getLegalMovesDiagonal({ board, numCell: 1 });
         this.legalMoves = this.legalMoves.filter(cell => !this.isEnemyKingNear(cell, board));
-        super.filterUncheckingMoves(myCell, board);
+        super.filterUncheckingMoves(board);
 
     }
 

@@ -3,14 +3,6 @@ import { Colors } from "./colors.enum";
 import { FigureTypes, IFigure } from "./figures/Figures";
 import { IKing } from "./figures/King";
 import { IRook } from "./figures/Rook";
-import { Direction } from "./helper.enum";
-import { isInBounds } from "./helpers";
-
-export interface ILegalMoveArg {
-    board: IBoard;
-    direction?: Direction;
-    numCell: number;
-}
 
 export interface ICell {
     readonly x: number;
@@ -23,11 +15,7 @@ export interface ICell {
     isEnemy: (figure: IFigure | null) => boolean;
     isSafeCell: (target: ICell, board: IBoard) => boolean;
     moveFigure: (target: ICell, board: IBoard, isFake?: boolean) => void;
-    canMoveFigure: (target: ICell, board: IBoard) => boolean;
-    getLegalMovesVertical: (arg: ILegalMoveArg) => void;
-    getLegalMovesHorizontal: (arg: ILegalMoveArg) => void;
-    getLegalMovesDiagonal: (arg: ILegalMoveArg) => void;
-    addLegalMove: (cell: ICell) => boolean;
+    canMoveFigure: (target: ICell, board: IBoard) => boolean;    
     isCastlingMove: (target: ICell, board: IBoard) => boolean;
     isUncheckingMove: (target: ICell, board: IBoard) => boolean;
     canPerformCastle: (target: ICell, board: IBoard) => boolean;
@@ -74,84 +62,7 @@ export class Cell implements ICell {
         if (!figure) return false;
         if (!this.figure) return false;
         return this.figure.color !== figure.color;
-    }
-
-
-
-    /* 
-        these legal moves getters are used to get potential moves in all directions. 
-        If a figure has special conditions we can filter out these potential moves later in a figure class
-
-        if direction is not specified, working in both directions 
-     */
-
-    getLegalMovesVertical({ board, direction, numCell }: ILegalMoveArg) {
-
-        const dir = direction ? direction : Direction.POS;
-        let i = 1;
-        while (i <= numCell) {
-            if (!isInBounds(this.figure!.x, this.figure!.y + i * dir)) break;
-            const current = board.getCell(this.figure!.x, this.figure!.y + i * dir);
-            const isLast = this.addLegalMove(current);
-            if (isLast) break;
-            i++;
-        }
-
-        if (!direction) this.getLegalMovesVertical({ board, direction: Direction.NEG, numCell });
-    }
-    getLegalMovesHorizontal({ board, direction, numCell }: ILegalMoveArg) {
-
-        const dir = direction ? direction : Direction.POS;
-        let i = 1;
-        while (i <= numCell) {
-            if (!isInBounds(this.figure!.x + i * dir, this.figure!.y)) break;
-            const current = board.getCell(this.figure!.x + i * dir, this.figure!.y);
-            const isLast = this.addLegalMove(current);
-            if (isLast) break;
-            i++;
-        }
-
-        if (!direction) this.getLegalMovesHorizontal({ board, direction: Direction.NEG, numCell });
-    }
-
-    getLegalMovesDiagonal({ board, direction, numCell }: ILegalMoveArg) {
-
-        const dir = direction ? direction : Direction.POS;
-
-        let currentInd = 1;
-        while (currentInd <= numCell) {
-            if (!isInBounds(this.figure!.x + currentInd * dir, this.figure!.y + currentInd * dir)) break;
-            const current = board.getCell(this.figure!.x + currentInd * dir, this.figure!.y + currentInd * dir);
-            const isLast = this.addLegalMove(current);
-            if (isLast) break
-            currentInd++;
-        }
-        currentInd = 1;
-
-        while (currentInd <= numCell) {
-            if (!isInBounds(this.figure!.x - currentInd * dir, this.figure!.y + currentInd * dir)) break;
-            const current = board.getCell(this.figure!.x - currentInd * dir, this.figure!.y + currentInd * dir);
-            const isLast = this.addLegalMove(current);
-            if (isLast) break
-            currentInd++;
-        }
-
-        if (!direction) this.getLegalMovesDiagonal({ board, direction: Direction.NEG, numCell });
-    }
-
-
-    addLegalMove(cell: ICell) {
-
-        if (cell.isEmpty()) {
-            this.figure!.legalMoves.push(cell);
-            return false;
-
-        } else if (!cell.isEmpty() && cell.isEnemy(this.figure)) {
-            this.figure!.legalMoves.push(cell);
-            return true;
-        }
-        return true;
-    }
+    }    
 
     canMoveFigure(target: ICell, board: IBoard) {
 
@@ -164,11 +75,9 @@ export class Cell implements ICell {
     }
 
     isUncheckingMove(target: ICell, board: IBoard) {
-
         // run a fake move to check if a king is checked after the move then undo
         const copyBoard = board.getCopyBoard();
         copyBoard.isCheck = false;
-
 
         if (this.canMoveFigure(target, copyBoard)) {
             return this.isSafeCell(target, copyBoard);

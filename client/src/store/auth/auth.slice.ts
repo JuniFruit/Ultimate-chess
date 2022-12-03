@@ -1,16 +1,19 @@
 import { IUserFields } from "../../types/auth.interface"
 import { createSlice } from '@reduxjs/toolkit';
 import {login, register, logout} from './auth.actions';
+import { loginSpan } from "../../constants/constants";
 
 
 interface IAuthInitial extends IUserFields {
     isLoading: boolean
+    expirationDate: string | null;
 }
 
 
 const initialState: IAuthInitial = {
     user: null,
-    isLoading: false
+    isLoading: false,
+    expirationDate: window.localStorage.getItem('tokenExp')
 }
 
 export const authSlice = createSlice({
@@ -25,10 +28,13 @@ export const authSlice = createSlice({
             .addCase(register.fulfilled, (state, { payload }) => {
                 state.isLoading = false;
                 state.user = payload.user;
+                state.expirationDate = loginSpan.toString();
+                window.localStorage.setItem('tokenExp', loginSpan.toString());
             })
             .addCase(register.rejected, (state, { payload }) => {
                 state.isLoading = false;
                 state.user = null;
+               
             })
             .addCase(login.pending, (state) => {
                 state.isLoading = true;
@@ -36,14 +42,21 @@ export const authSlice = createSlice({
             .addCase(login.fulfilled, (state, { payload }) => {
                 state.isLoading = false;
                 state.user = payload.user;
+                state.expirationDate = loginSpan.toString();
+                window.localStorage.setItem('tokenExp', loginSpan.toString());
+
             })
             .addCase(login.rejected, (state, { payload }) => {
                 state.isLoading = false;
                 state.user = null;
+                
             })
             .addCase(logout.fulfilled, (state) => {
                 state.isLoading = false;
                 state.user = null;
+                state.expirationDate = null;
+                window.localStorage.removeItem('tokenExp')
+                window.localStorage.removeItem('persist:root');
             })
     }
 })

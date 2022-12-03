@@ -54,7 +54,6 @@ export const useField = ({ board, setBoard, ioMoveHandlers, myColor }: IUseField
         if (!lastChosenCell || !selectedCell) return;
         setSelectedCell(prev => {
             prev!.figure = board.createFigure(myColor === Colors.BLACK ? figureType : figureType.toUpperCase(), prev!.x, prev!.y);
-            prev?.figure?.legalMoves.push(lastChosenCell);
             return prev;
         })
 
@@ -93,7 +92,7 @@ export const useField = ({ board, setBoard, ioMoveHandlers, myColor }: IUseField
 
     useEffect(() => {
 
-        // console.log(board);
+        console.log(board);
         if (!board.cells.length) return;
         board.updateAllLegalMoves();
         board.isKingChecked();
@@ -102,6 +101,8 @@ export const useField = ({ board, setBoard, ioMoveHandlers, myColor }: IUseField
         if (board.isCheck) {
             console.log(board.isCheckMate())
 
+        } else if (board.isDraw()) {
+            console.log('draw');
         }
 
     }, [board, setBoard])

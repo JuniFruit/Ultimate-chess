@@ -35,26 +35,24 @@ export class Pawn extends Figure implements IPawn {
         super.clearMoves()
 
         const direction = this.color === Colors.BLACK ? Direction.POS : Direction.NEG;
-        const numCells = this.isFirstMove ? 2 : 1;
-
-        const myCell = board.getCell(this.x, this.y);
+        const numCells = this.isFirstMove ? 2 : 1;    
         
-        myCell.getLegalMovesVertical({board, direction, numCell: numCells});
-        this.legalMoves = this.legalMoves.filter(move => !myCell.isEnemy(move.figure))
+        super.getLegalMovesVertical({board, direction, numCell: numCells});
+        super.getLegalMovesDiagonal({board, direction, numCell: 1});      
 
-        if (isInBounds(this.x + 1, this.y + direction*1)) {
-            const rightDiagonalCell = board.getCell(this.x + 1, this.y + direction * 1)
-            rightDiagonalCell.isEnemy(this) && this.legalMoves.push(rightDiagonalCell) 
+        super.filterUncheckingMoves(board);
 
+    }
+
+    addLegalMove(cell: ICell): boolean {
+        if (cell.isEmpty() && this.x === cell.x) {
+            this.legalMoves.push(cell)
+            return false;
+        } else if (cell.isEnemy(this) && this.x !== cell.x) {
+            this.legalMoves.push(cell);
+            return true;
         }
-        if (isInBounds(this.x -1, this.y + direction*1)) {
-            const leftDiagonalCell = board.getCell(this.x - 1, this.y + direction * 1);
-            leftDiagonalCell.isEnemy(this) && this.legalMoves.push(leftDiagonalCell)
-
-        }
-
-        super.filterUncheckingMoves(myCell, board);
-
+        return true;
     }
 
 

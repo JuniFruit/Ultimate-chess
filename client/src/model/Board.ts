@@ -15,18 +15,22 @@ export interface IBoard {
     cells: ICell[][];
     currentPlayer: Colors;
     moves: ICell[];
+    figures: IFigure[];
     isCheck: boolean;
     startNewGame: (fen: string) => void;
     showAvailable: (selected: ICell) => void;
     receiveMove: (move: IMove) => void;
     getCell: (x: number, y: number) => ICell;
     getCopyBoard: () => IBoard;
+    getFigures: () => void;
     isKingChecked: () => boolean;
+    isStalemate: () => boolean;
+    isSufficientMaterial: (player:Colors) => boolean; 
+    isDraw: () => boolean;
     updateAllLegalMoves: () => void;
     updateEnemyLegalMoves: () => void;
     createFigure: (char: string, x: number, y: number) => IFigure | null;
     swapPlayer: () => void;
-    undo: () => void;
     clearBoard: () => void;
     addMove: (move: ICell) => void
     isCheckMate: () => boolean;
@@ -38,6 +42,7 @@ export class Board implements IBoard {
     cells: ICell[][] = []
     currentPlayer: Colors = Colors.WHITE;
     moves: ICell[] = [];
+    figures: IFigure[] = [];
     isCheck: boolean = false;
     mySprites?: ISpritesObj;
     enemySprites?: ISpritesObj;
@@ -65,7 +70,7 @@ export class Board implements IBoard {
 
     startNewGame(fen: string) {
         this.initCells(fen);
-        this.updateAllLegalMoves();
+        this.getFigures();
     }
 
     getCell(x: number, y: number) {
@@ -73,6 +78,13 @@ export class Board implements IBoard {
     }
     swapPlayer() {
         this.currentPlayer = this.currentPlayer === Colors.WHITE ? Colors.BLACK : Colors.WHITE;
+    }
+    getFigures() {
+        this.cells.forEach(row => row.forEach(cell => {
+            if (cell.figure) {
+                this.figures.push(cell.figure);
+            }
+        }))
     }
 
     getCopyBoard() {
@@ -83,60 +95,68 @@ export class Board implements IBoard {
         newBoard.isCheck = this.isCheck;
         newBoard.mySprites = this.mySprites;
         newBoard.enemySprites = this.enemySprites;
+        newBoard.figures = this.figures;
         return newBoard;
     }
 
     updateAllLegalMoves() {
-        this.cells.forEach(row => {
-            row.forEach(cell => cell.figure?.getLegalMoves(this));
-        })
+        this.figures.forEach(figure => figure.getLegalMoves(this));
 
     }
 
     updateEnemyLegalMoves() {
-        this.cells.forEach(row => row.forEach(cell => {
-            if (cell.figure?.color !== this.currentPlayer) {
-                cell.figure?.getLegalMoves(this);
-            }
-        }))
+        this.figures.forEach(figure => {
+            if (figure.color !== this.currentPlayer)
+            figure.getLegalMoves(this)
+        });
+
     }
 
 
     isKingChecked() {
-
-        for (let i = 0; i < 8; i++) {
-            for (let j = 0; j < 8; j++) {
-                const current = this.cells[i][j];
-                if (!current.figure) continue;
-                if (current.figure!.legalMoves.some(move => move.figure?.type === FigureTypes.KING && current.figure?.color !== move.figure.color)) {
-                    this.isCheck = true;
-                    return true;
-                }
-            }
-        }
-        this.isCheck = false;
-        return false;
+        this.isCheck = this.cells.some(rows => {
+            return rows.some(cell => {
+                return cell.figure?.legalMoves.some(move => move.figure?.type === FigureTypes.KING && move.figure.color !== cell.figure?.color)
+            })
+        })
+        
+        return this.isCheck;
+        
 
     }
 
     isCheckMate() {
-        let isOver = true;
-        this.cells.forEach(row => row.forEach(cell => {
-            if (cell.figure?.color === this.currentPlayer && cell.figure.legalMoves.length) {
-                isOver = false;
-                return;
-            }
-        }))
-        return isOver;
+        return !this.figures.some(figure => figure.color === this.currentPlayer && figure.legalMoves.length);
 
     }
 
-    undo() {
-        // if (!this.moves.length) return;
-        // const lastMove = this.moves.pop();
+    isStalemate() {
+        return !this.figures.some(figure => {
+            return figure.color === this.currentPlayer && figure.legalMoves.length && !this.isCheck
+        })
+    }
 
-        // lastMove?.moveFigure(lastMove.prevMove!, this);
+    isSufficientMaterial(player:Colors) {
+        const playerMaterial = this.figures.filter(figure => figure.color === player);
 
+        if (playerMaterial.every(figure => figure.type === FigureTypes.KING)) return false;
+        if (playerMaterial.length === 2 
+            && playerMaterial.every(figure => figure.type === FigureTypes.KING || figure.type === FigureTypes.BISHOP)) return false;
+        if (playerMaterial.length === 2 
+            && playerMaterial.every(figure => figure.type === FigureTypes.KING || figure.type === FigureTypes.KNIGHT)) return false;
+
+        return true;
+
+    }
+
+
+
+    isDraw() {
+        if (this.figures.length > 5) return false;
+        if (this.isStalemate()) return true
+        if (!this.isSufficientMaterial(this.currentPlayer) 
+        && !this.isSufficientMaterial(this.currentPlayer === Colors.WHITE ? Colors.BLACK : Colors.WHITE)) return true;
+        return false;
     }
 
     addMove(move: ICell) {
@@ -145,6 +165,9 @@ export class Board implements IBoard {
 
     clearBoard() {
         this.cells = [];
+        this.moves = [];
+        this.figures = [];
+        this.isCheck = false;
     }
 
 
@@ -200,7 +223,7 @@ export class Board implements IBoard {
                 return new Bishop(x, y, isEnemy ? Colors.BLACK : Colors.WHITE, isEnemy ? this.enemySprites : this.mySprites)
 
             case FigureTypes.KING:
-                return new King(x, y, isEnemy ? Colors.BLACK : Colors.WHITE, isEnemy ? this.enemySprites : this.mySprites);
+                return new King(x, y, isEnemy ? Colors.BLACK : Colors.WHITE, isEnemy ? this.enemySprites : this.mySprites,);
 
             case FigureTypes.PAWN:
                 return new Pawn(x, y, isEnemy ? Colors.BLACK : Colors.WHITE, isEnemy ? this.enemySprites : this.mySprites);

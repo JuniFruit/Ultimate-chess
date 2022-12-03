@@ -27,17 +27,15 @@ export class Knight extends Figure {
         this.checkMoves(board, 1, 2, Direction.POS, Direction.NEG)
         this.checkMoves(board, 2, 1, Direction.NEG, Direction.POS)
         this.checkMoves(board, 2, 1, Direction.POS, Direction.NEG)
-        const myCell = board.getCell(this.x, this.y);
-        super.filterUncheckingMoves(myCell, board);
+        super.filterUncheckingMoves(board);
 
     }
 
     checkMoves(board: IBoard, rangeX: number, rangeY: number, dirX: Direction, dirY: Direction) {
-        const myCell = board.getCell(this.x, this.y);
 
         if (isInBounds(this.x - rangeX * dirX, this.y - rangeY * dirY)) {
-            let current = board.getCell(this.x - rangeX * dirX, this.y - rangeY * dirY)
-            myCell.addLegalMove(current);
+            let current = board.getCell(this.x - rangeX * dirX, this.y - rangeY * dirY);
+            super.addLegalMove(current);
         }
 
 

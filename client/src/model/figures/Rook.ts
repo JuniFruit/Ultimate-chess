@@ -24,12 +24,10 @@ export class Rook extends Figure implements IRook {
 
     getLegalMoves(board: IBoard) {
         super.clearMoves()
+        super.getLegalMovesHorizontal({ board, numCell: 8 });
+        super.getLegalMovesVertical({ board, numCell: 8 });
 
-        const myCell = board.getCell(this.x, this.y);
-        myCell.getLegalMovesHorizontal({ board, numCell: 8 });
-        myCell.getLegalMovesVertical({ board, numCell: 8 });
-
-        super.filterUncheckingMoves(myCell, board);
+        super.filterUncheckingMoves(board);
 
     }
 

@@ -14,6 +14,7 @@ export const boardApi = (roomId: string) => {
         const board = new Board();
         
         board.startNewGame('rnbqkbnr/pppppppp/8/8/P1N1NP2/8/PP1PP1PP/R1BQKB1R');
+        board.updateAllLegalMoves();
         ROOM_GAME_BOARDS.set(roomId, board);
         return board;
     }
@@ -22,7 +23,6 @@ export const boardApi = (roomId: string) => {
         const board: IBoard = ROOM_GAME_BOARDS.get(roomId);
         board.receiveMove(move);
         board.swapPlayer();
-        board.updateAllLegalMoves();
         ROOM_GAME_BOARDS.set(roomId, board);
     }
 

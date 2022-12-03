@@ -14,13 +14,13 @@ export const RoomService = {
     async onRoomJoin(sockets: Socket<IClientEvents, IServerEvents, any, IStartData>[], roomId: string) {
         if (sockets.length < 2) return sockets[0].emit('noOpponent');
         if (sockets.length === 2) {
-            this.setSocketsData(sockets, roomId)
-
+            this.setSocketsData(sockets, roomId);
+            boardApi(roomId).createBoard();
+            
             sockets.forEach(socket => socket.broadcast.emit('readyToStart', {
                 color: socket.data.color,
                 score: socket.data.score,
-                user: socket.data.user,
-                board: boardApi(roomId).createBoard()
+                user: socket.data.user,               
             }));
         };
     },

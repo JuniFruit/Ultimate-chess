@@ -36,8 +36,11 @@ const mainAdapter = ioServer.of('/').adapter
 
 ioServer.on('connection', (socket) => {
     console.log(`New connection ${socket.id}`);
+    
     roomListener(socket, mainAdapter);
     gameListener(socket, mainAdapter);
+
+    socket.on('disconnect', (payload) => console.log(payload));
 
 })
 

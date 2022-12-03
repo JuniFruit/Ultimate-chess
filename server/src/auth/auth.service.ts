@@ -32,7 +32,7 @@ export const AuthService = {
         });
 
         if (!user) throw new Error('User is not found');
-        console.log(user);
+        
         const isMatchingPass = await compare(dto.password, user.password);
 
         if (!isMatchingPass) throw new Error('Password is incorrect');

@@ -21,7 +21,8 @@
     "jsonwebtoken": "^8.5.1",
     "pg": "^8.8.0",
     "socket.io": "^4.5.3",
-    "typeorm": "^0.3.10"
+    "typeorm": "^0.3.10",
+    "uuidv4": "^6.2.13"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",

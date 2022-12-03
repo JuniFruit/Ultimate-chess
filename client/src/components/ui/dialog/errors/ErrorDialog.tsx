@@ -1,12 +1,11 @@
 import { FC, useState } from 'react'
 import { Dialog } from '@headlessui/react'
-import styles from './WaitingDialog.module.scss';
+import styles from '../waiting/WaitingDialog.module.scss';
 import { IDialog } from '../Dialog.interface';
 import { Button } from '../../button/Button';
 import { mockups } from '../../../../assets/mockups/images';
 
-const WaitingDialog: FC<IDialog> = ({ message, onDialog, isOpen, onClose }) => {
-    const [isCopied, setIsCopied] = useState(false);
+const ErrorDialog: FC<IDialog> = ({ message, onDialog, isOpen, onClose }) => {
     return (
         <Dialog
             open={isOpen}
@@ -15,15 +14,13 @@ const WaitingDialog: FC<IDialog> = ({ message, onDialog, isOpen, onClose }) => {
         >
             <div className={styles.wrapper}>
                 <Dialog.Panel className={styles.panel_wrapper}>
-                    <Dialog.Title className={styles.panel_title}>Waiting for an opponent</Dialog.Title>
+                    <Dialog.Title className={styles.panel_title}>Error</Dialog.Title>
                     <p className={styles.panel_msg}>
                         {message}
                     </p>
                     <img src={mockups.waitingGIF} />
                     <div className={styles.panel_buttons}>
-                        <Button onClick={() => { onDialog(); setIsCopied(true) }}>{isCopied ? 'Copied' : 'Copy'}</Button>
-                        <Button onClick={onClose}>Back</Button>
-
+                        <Button onClick={onDialog}>Back</Button>
                     </div>
 
                 </Dialog.Panel>
@@ -32,4 +29,4 @@ const WaitingDialog: FC<IDialog> = ({ message, onDialog, isOpen, onClose }) => {
     )
 }
 
-export default WaitingDialog;
+export default ErrorDialog;

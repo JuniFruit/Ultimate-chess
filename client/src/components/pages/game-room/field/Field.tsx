@@ -31,7 +31,7 @@ export const Field: FC<IField> = ({ board, setBoard, ioMoveHandlers, isFlipped, 
                                     onSelect={handlers.handleSelect}
                                     selected={status.selectedCell}
                                     isAvailable={current.isAvailable}
-                                    key={x + y}
+                                    key={cell.x + cell.y}
                                 />
                             )
                         })

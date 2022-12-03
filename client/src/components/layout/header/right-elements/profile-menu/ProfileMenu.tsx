@@ -13,14 +13,14 @@ const ProfileMenu: FC = () => {
 
     const { user } = useAuth();
 
-    const { isLoading, data } = api.useGetProfileQuery(null, {
+    const { data } = api.useGetProfileQuery(null, {
         skip: !user
     });
     const { logout } = useActions()
     const { ref, isShow, setIsShow } = useClickOutside(false);
     const { isMobile } = useIsMobile();
 
-    if (isLoading) return null;
+
     return (
         <div ref={ref} className={styles.wrapper}>
 

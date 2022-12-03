@@ -5,10 +5,11 @@ import { Field } from "./field/Field";
 import { useGameRoom } from "./useGameRoom";
 import styles from './GameRoom.module.scss';
 import MatchInfo from "./match-info/MatchInfo";
-import { WaitingModal } from "./WaitingModal";
+import { WaitingModal } from "./modals/WaitingModal";
 import { PlayerInfo } from "../../ui/player/PlayerInfo";
 import { useAuth } from "../../../hooks/useAuth";
 import { api } from "../../../store/api/api";
+import { ErrorModal } from "./modals/ErrorModal";
 
 
 const GameRoom: FC = () => {
@@ -19,7 +20,6 @@ const GameRoom: FC = () => {
     const { data: profile } = api.useGetProfileQuery(null, {
         skip: !user
     })
-
     return (
         <Layout title="Ultimate Chess Game Room">
             <div className={styles.room_wrapper}>
@@ -32,12 +32,13 @@ const GameRoom: FC = () => {
                         isFlipped={status.isFlipped}
                         myColor={status.myColor}
                     />
-                    <PlayerInfo key={profile?.username} {...profile} />
+                    <PlayerInfo key={profile?.username} {...data.clientUser} />
                 </div>
                 <MatchInfo />
 
             </div>
-            {!status.isReadyToStart && <WaitingModal />}
+            {!status.isReadyToStart && status.isConnected ? <WaitingModal /> : null}
+            {data.error && <ErrorModal errorMsg={data.error} errorHandler={data.setError} />}
         </Layout>
     )
 }

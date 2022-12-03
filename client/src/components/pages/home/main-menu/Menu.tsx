@@ -14,7 +14,7 @@ const Menu: FC<{ items: IMenuData[] }> = ({ items }) => {
                 {items.map(item => {
                     if (item.link === '/packs' && !user) return null;
                     if (item.link === '/register' && user) return null;
-                    return <MainMenuButton {...item} />
+                    return <MainMenuButton {...item} key={item.link} />
                 })}
             </div>
         </nav>

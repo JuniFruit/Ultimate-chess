@@ -23,6 +23,6 @@ export const menuData: IMenuData[] = [
     },
     {
         title: 'Sign Up',
-        link: '/register',
+        link: '/registration',
     }
 ]

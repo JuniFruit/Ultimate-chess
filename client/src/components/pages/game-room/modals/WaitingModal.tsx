@@ -1,6 +1,6 @@
 import { FC,useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import WaitingDialog from '../../ui/dialog/waiting/WaitingDialog';
+import WaitingDialog from '../../../ui/dialog/waiting/WaitingDialog';
 
 export const WaitingModal: FC = () => {
 

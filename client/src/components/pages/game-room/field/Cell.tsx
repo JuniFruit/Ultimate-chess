@@ -35,12 +35,12 @@ export const Cell: FC<ICellComponent> = (
             onDrop={() => { onSelect(cell); setIsDraggedOver(false) }}
             onDragStart={(e) => { console.log(e); onSelect(cell) }}
             onDragEnd={(e) => { onSelect(cell) }}
+            draggable
         >
             {
                 figure && <Piece
                     sprite={figure.sprite!}
-                    draggable
-
+                    key={figure.sprite}
                 />
             }
             {(isAvailable && selected) && <div className={styles.available_dot}></div>}

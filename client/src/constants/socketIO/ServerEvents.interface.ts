@@ -8,6 +8,7 @@ export interface IStartPayload {
     color?: Colors,
     score?: number,
     user?: IPlayerInfo,
+    opponentUser?: IPlayerInfo,
     board?: IBoard
 }
 
@@ -15,4 +16,5 @@ export interface IOServerEvents {
     readyToStart: ({}:IStartPayload) => void;
     noOpponent: () => void;
     move: ({}:IMove) => void;
+    gameError: (err:string) => void;
 }

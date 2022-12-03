@@ -4,11 +4,18 @@ import { IOServerEvents } from '../constants/socketIO/ServerEvents.interface';
 
 const URL = 'http://localhost:3001';
 
+const tokenDecoder = () => {
 
+    if (!window.localStorage['persist:root']) return '';
+    const root = JSON.parse(window.localStorage['persist:root']).auth;
+    
+    
+    return JSON.parse(root).user?.accessToken
+}
  
 const ioClient: Socket<IOServerEvents, IOClientEvents> = io(URL, {
     auth: {
-        token: "1"
+        token: tokenDecoder()
     }
 });
 

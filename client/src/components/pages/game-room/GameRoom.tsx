@@ -10,6 +10,7 @@ import { PlayerInfo } from "../../ui/player/PlayerInfo";
 import { useAuth } from "../../../hooks/useAuth";
 import { api } from "../../../store/api/api";
 import { ErrorModal } from "./modals/ErrorModal";
+import { Timer } from "../../ui/timer/Timer";
 
 
 const GameRoom: FC = () => {
@@ -24,7 +25,14 @@ const GameRoom: FC = () => {
         <Layout title="Ultimate Chess Game Room">
             <div className={styles.room_wrapper}>
                 <div className={styles.board_wrapper}>
-                    <PlayerInfo key={data.enemyUser?.username} {...data.enemyUser} />
+                    <div className={styles.player_bar}>
+                        {data.enemyUser && <PlayerInfo key={data.enemyUser?.username} {...data.enemyUser} />}
+                        <Timer
+                            initTime={300}
+                            isStopped={status.myColor === field.board.currentPlayer || field.board.isFirstMove || field.board.isGameOver} 
+                            onTimeout={move.handleTimeout}
+                            />
+                    </div>
                     <Field
                         board={field.board}
                         setBoard={field.setBoard}
@@ -32,7 +40,15 @@ const GameRoom: FC = () => {
                         isFlipped={status.isFlipped}
                         myColor={status.myColor}
                     />
-                    <PlayerInfo key={profile?.username} {...data.clientUser} />
+                    <div className={styles.player_bar}>
+                        {data.clientUser && <PlayerInfo key={data.clientUser?.username} {...data.clientUser} />}
+                        <Timer
+                            initTime={300}
+                            isStopped={status.myColor !== field.board.currentPlayer || field.board.isFirstMove || field.board.isGameOver} 
+                            onTimeout={move.handleTimeout}
+
+                            />
+                    </div>
                 </div>
                 <MatchInfo />
 

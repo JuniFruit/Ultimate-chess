@@ -49,7 +49,9 @@ export const useGameRoom = (id?: string) => {
     const handleReceiveMove = useCallback((payload: IMove) => {
 
         board.receiveMove(payload);
+        board.isFirstMove = false;
         board.swapPlayer();
+        board.updateAllLegalMoves();
         setBoard(prev => prev.getCopyBoard());
 
     }, [board, setBoard])
@@ -63,6 +65,7 @@ export const useGameRoom = (id?: string) => {
     const drawBoard = useCallback(() => {
         board.clearBoard();
         board.startNewGame(initFen);
+        board.updateAllLegalMoves();
         setBoard(prev => prev.getCopyBoard());
 
     }, [])
@@ -70,6 +73,17 @@ export const useGameRoom = (id?: string) => {
     const handleResults = useCallback((results: Results) => {
 
     }, [])
+
+    const handleTimeout = useCallback(() => {
+        board.isGameOver = true;
+        const isDraw = !board.isSufficientMaterial(board.currentPlayer === Colors.BLACK ? Colors.WHITE : Colors.BLACK);
+        if (isDraw) {
+            handleResults(Results.DRAW);
+            return;
+        };
+        handleResults(Results.LOSER)
+        setBoard(prev => prev.getCopyBoard());
+    }, [board])
 
     //init connection
 
@@ -82,7 +96,10 @@ export const useGameRoom = (id?: string) => {
         };
 
         ioClient.on('connect', handleOnConnect);
-        ioClient.on('connect_error', () => handleGameError(Errors.CONNECTION_LOST));
+        ioClient.on('connect_error', () => {
+            handleGameError(Errors.CONNECTION_LOST);
+            setTimeout(() => ioClient.connect(), 1000);
+        });
 
         return () => {
             ioClient.off('connect', handleOnConnect);
@@ -147,7 +164,9 @@ export const useGameRoom = (id?: string) => {
             setError
         },
         move: {
-            handleSendMove
+            handleSendMove,
+            handleResults,
+            handleTimeout,
         }
 
     }

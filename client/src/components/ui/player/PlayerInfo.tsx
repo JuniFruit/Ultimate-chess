@@ -3,7 +3,7 @@ import AvatarElement from "../user/avatar/AvatarElement";
 import { IPlayerInfo } from "./PlayerInfo.interface";
 import styles from './PlayerInfo.module.scss';
 
-export const PlayerInfo: FC<IPlayerInfo> = ({username, avatarLink, winsCount, lossesCount}) => {
+export const PlayerInfo: FC<IPlayerInfo> = ({username, avatarLink, winsCount, lossesCount, id}) => {
     return (
         <div className={styles.info_container}>
             <div className={styles.info_wrapper}>

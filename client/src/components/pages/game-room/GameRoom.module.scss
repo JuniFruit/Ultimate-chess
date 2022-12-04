@@ -13,5 +13,9 @@
         >div:last-child {
             @apply animate-slideInBottom;
         }
+
+        .player_bar {
+            @apply flex gap-3;
+        }
     }
 }

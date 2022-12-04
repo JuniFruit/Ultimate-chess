@@ -23,7 +23,7 @@ export const useField = ({ board, setBoard, ioMoveHandlers, myColor }: IUseField
     }
 
     const handleSelect = (cell: ICell) => {
-        if (isPromotion) return;
+        if (isPromotion || board.isGameOver) return;
 
         if (selectedCell) {
             if (selectedCell !== cell
@@ -68,6 +68,7 @@ export const useField = ({ board, setBoard, ioMoveHandlers, myColor }: IUseField
         if (!cell || !selectedCell) return;
 
         selectedCell!.moveFigure(cell, board);
+        board.isFirstMove = false;
         board.swapPlayer();
         ioMoveHandlers.handleSendMove({
             targetCell: {
@@ -94,16 +95,14 @@ export const useField = ({ board, setBoard, ioMoveHandlers, myColor }: IUseField
 
         console.log(board);
         if (!board.cells.length) return;
-        board.updateAllLegalMoves();
+        // board.updateAllLegalMoves();
         board.isKingChecked();
 
         console.log(board.isCheck, board.currentPlayer)
         if (board.isCheck) {
             console.log(board.isCheckMate())
 
-        } else if (board.isDraw()) {
-            console.log('draw');
-        }
+        } 
 
     }, [board, setBoard])
 

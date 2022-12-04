@@ -1,5 +1,6 @@
 import { ICell } from "../../model/Cell";
 import { FigureTypes } from "../../model/figures/Figures";
+import { Results } from "../../model/helper.enum";
 
 export interface IMoveOptions {
     isPromotion?: boolean;
@@ -21,5 +22,6 @@ export interface IMove {
 
 export interface IOClientEvents {
     joinGameRoom: (roomId: string) => void;
-    sendMove: ({ }: IMove) => void
+    sendMove: ({ }: IMove) => void;
+    results: (payload: Results) => void;
 }

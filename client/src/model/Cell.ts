@@ -15,6 +15,7 @@ export interface ICell {
     isEnemy: (figure: IFigure | null) => boolean;
     isSafeCell: (target: ICell, board: IBoard) => boolean;
     moveFigure: (target: ICell, board: IBoard, isFake?: boolean) => void;
+    isUnderAttack: (target: ICell, board:IBoard) => boolean;
     canMoveFigure: (target: ICell, board: IBoard) => boolean;    
     isCastlingMove: (target: ICell, board: IBoard) => boolean;
     isUncheckingMove: (target: ICell, board: IBoard) => boolean;
@@ -56,6 +57,12 @@ export class Cell implements ICell {
         target.moveFigure(this, board, true);
         target.figure = target.prevFigure;
         return isValidMove
+    }
+
+    isUnderAttack(target: ICell, board:IBoard) {
+        return board.figures.some(figure => {
+            return figure.legalMoves.some(move => move === target && figure.color !== board.currentPlayer);
+        })
     }
 
     isEnemy(figure: IFigure | null): boolean {
@@ -105,10 +112,12 @@ export class Cell implements ICell {
         const dir = target.x < this.x ? -1 : 1;
 
         for (let i = 1; i < range; i++) {
-            if (!board.getCell(this.x + i * dir, this.y).isEmpty()) return false;
+            if (!board.getCell(this.x + i * dir, this.y).isEmpty() 
+            || this.isUnderAttack(board.getCell(this.x + i * dir, this.y), board)) return false;
         }
 
-        if (!this.isSafeCell(board.getCell(target.x + dir * (-1), this.y), board)) return false;
+
+        // if (!this.isSafeCell(board.getCell(target.x + dir * (-1), this.y), board)) return false;
 
         return true;
     }
@@ -125,11 +134,14 @@ export class Cell implements ICell {
 
     moveFigure(target: ICell, board: IBoard, isFake: boolean = false) {
         if (this.isCastlingMove(target)) return this.performCastle(target, board);
-
+        if (!isFake && target.figure) board.addLostFigure(target.figure);
+        
         this.figure!.moveFigure(target, isFake);
         target.prevFigure = target.figure;
         target.figure = this.figure;
         this.figure = null;
         this.isAvailable = false;
+
+
     }
 }

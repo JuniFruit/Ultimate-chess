@@ -2,6 +2,7 @@ import { IPack } from "./pack.interface"
 
 
 export interface IUser {
+    id: number;
     username: string
     avatarLink?: string
     packs: IPack[],

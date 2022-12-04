@@ -37,6 +37,8 @@ export interface IFigure {
     addLegalMove: (cell: ICell) => boolean;
 }
 
+export interface ILostFigure extends Pick<IFigure, 'type' | 'color' >{}
+
 export type ISpritesObj = typeof SPRITES;
 
 export class Figure {
@@ -60,7 +62,7 @@ export class Figure {
     }
 
     filterUncheckingMoves(board: IBoard) {
-        
+        // if (!board.isCheck) return;
         if (this.color !== board.currentPlayer) return;
         this.legalMoves = [...this.legalMoves.filter(move => board.getCell(this.x, this.y).isUncheckingMove(move, board))]
 

@@ -3,7 +3,7 @@ import { Cell } from "./Cell";
 import { ICell } from "./Cell"
 import { Colors } from "./colors.enum";
 import { Bishop } from "./figures/Bishop";
-import { FigureTypes, IFigure, ISpritesObj } from "./figures/Figures";
+import { FigureTypes, IFigure, ILostFigure, ISpritesObj } from "./figures/Figures";
 import { King } from "./figures/King";
 import { Knight } from "./figures/Knight";
 import { Pawn } from "./figures/Pawn";
@@ -15,8 +15,11 @@ export interface IBoard {
     cells: ICell[][];
     currentPlayer: Colors;
     moves: ICell[];
+    lostFigures: ILostFigure[];
     figures: IFigure[];
     isCheck: boolean;
+    isFirstMove: boolean;
+    isGameOver: boolean;
     startNewGame: (fen: string) => void;
     showAvailable: (selected: ICell) => void;
     receiveMove: (move: IMove) => void;
@@ -32,6 +35,7 @@ export interface IBoard {
     createFigure: (char: string, x: number, y: number) => IFigure | null;
     swapPlayer: () => void;
     clearBoard: () => void;
+    addLostFigure: (figure: IFigure) => void;
     addMove: (move: ICell) => void
     isCheckMate: () => boolean;
 }
@@ -43,9 +47,12 @@ export class Board implements IBoard {
     currentPlayer: Colors = Colors.WHITE;
     moves: ICell[] = [];
     figures: IFigure[] = [];
+    lostFigures: ILostFigure[] = []
     isCheck: boolean = false;
     mySprites?: ISpritesObj;
     enemySprites?: ISpritesObj;
+    isGameOver: boolean = false;
+    isFirstMove: boolean = true;
 
     constructor(mySprites?: ISpritesObj, enemySprites?: ISpritesObj) {
         this.mySprites = mySprites;
@@ -88,7 +95,7 @@ export class Board implements IBoard {
     }
 
     getCopyBoard() {
-        const newBoard = new Board();
+        const newBoard = new Board();       
         newBoard.cells = this.cells;
         newBoard.currentPlayer = this.currentPlayer;
         newBoard.moves = this.moves;
@@ -96,6 +103,9 @@ export class Board implements IBoard {
         newBoard.mySprites = this.mySprites;
         newBoard.enemySprites = this.enemySprites;
         newBoard.figures = this.figures;
+        newBoard.isGameOver = this.isGameOver;
+        newBoard.isFirstMove = this.isFirstMove;
+        newBoard.lostFigures = this.lostFigures;
         return newBoard;
     }
 
@@ -161,6 +171,13 @@ export class Board implements IBoard {
 
     addMove(move: ICell) {
         this.moves.push(move);
+    }
+
+    addLostFigure(figure: IFigure) {
+        this.lostFigures.push({
+            color: figure.color,
+            type: figure.type
+        });
     }
 
     clearBoard() {

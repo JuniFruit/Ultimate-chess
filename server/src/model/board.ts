@@ -8,6 +8,7 @@ export const boardApi = (roomId: string) => {
 
     const getBoard = () => {
         if (ROOM_GAME_BOARDS.has(roomId)) return ROOM_GAME_BOARDS.get(roomId);
+        return createBoard();
     }
 
     const createBoard = () => {
@@ -26,20 +27,19 @@ export const boardApi = (roomId: string) => {
         ROOM_GAME_BOARDS.set(roomId, board);
     }
 
-    const isWinningMove = (move: IMove) => {
-        const board: IBoard = ROOM_GAME_BOARDS.get(roomId);
-        board.receiveMove(move);
-        board.updateAllLegalMoves();
-        if (board.isKingChecked()) {
-            return board.isCheckMate();
-        }
-        return false
-    }
+    // const isWinningMove = (move: IMove) => {
+    //     const board: IBoard = ROOM_GAME_BOARDS.get(roomId);
+    //     board.receiveMove(move);
+    //     board.updateAllLegalMoves();
+    //     if (board.isKingChecked()) {
+    //         return board.isCheckMate();
+    //     }
+    //     return false
+    // }
 
     return {
         getBoard,
-        createBoard,
-        isWinningMove,
+        createBoard,   
         moveFigure
     }
 

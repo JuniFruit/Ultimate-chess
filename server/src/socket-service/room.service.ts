@@ -4,6 +4,7 @@ import { boardApi } from '../model/board';
 import { IClientEvents } from '../constants/socketIO/ClientEvents.interface';
 import { IServerEvents, IStartData } from '../constants/socketIO/ServerEvents.interface';
 import {Errors} from '../../../client/src/constants/constants';
+import { IBoard } from '../../../client/src/model/Board';
 
 
 export const RoomService = {
@@ -14,6 +15,8 @@ export const RoomService = {
 
     // TODO send board instead creating every time, checking game state
     async onRoomJoin(sockets: Socket<IClientEvents, IServerEvents, any, IStartData>[], roomId: string) {
+        // const currentBoard: IBoard = boardApi(roomId).getBoard();
+
         if (sockets.length < 2) return sockets[0].emit('noOpponent');
         if (sockets.length === 2) {
             this.setSocketsData(sockets, roomId);

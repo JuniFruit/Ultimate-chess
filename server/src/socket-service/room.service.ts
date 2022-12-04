@@ -1,41 +1,41 @@
-import { Socket } from 'socket.io';
+import { RemoteSocket, Socket } from 'socket.io';
 import { GameRules } from '../model/gameRules'
 import { boardApi } from '../model/board';
 import { IClientEvents } from '../constants/socketIO/ClientEvents.interface';
 import { IServerEvents, IStartData } from '../constants/socketIO/ServerEvents.interface';
 import {Errors} from '../../../client/src/constants/constants';
-import { IBoard } from '../../../client/src/model/Board';
 
 
 export const RoomService = {
 
     async join(socket: Socket<IClientEvents, IServerEvents>, roomId: string) {
+        socket.data.room = roomId
         socket.join(roomId);
     },
 
     // TODO send board instead creating every time, checking game state
-    async onRoomJoin(sockets: Socket<IClientEvents, IServerEvents, any, IStartData>[], roomId: string) {
-        // const currentBoard: IBoard = boardApi(roomId).getBoard();
+    async onRoomJoin(sockets: RemoteSocket<IServerEvents, IStartData>[], roomId: string) {
 
+        const currentBoard = boardApi(roomId).getBoard();
         if (sockets.length < 2) return sockets[0].emit('noOpponent');
         if (sockets.length === 2) {
-            this.setSocketsData(sockets, roomId);
-            boardApi(roomId).createBoard();
+            this.setSocketsData(sockets);
+
             if (sockets[0].data.opponentUser?.username === sockets[1].data.opponentUser?.username) return sockets[0].emit('gameError', Errors.SAME_PLAYER)
 
-            sockets.forEach(socket => socket.broadcast.emit('readyToStart', {
+            sockets.forEach(socket => socket.emit('readyToStart', {
                 color: socket.data.color,
                 score: socket.data.score,
                 user: socket.data.user,     
-                opponentUser: socket.data.opponentUser          
+                opponentUser: socket.data.opponentUser,
+                boardData: currentBoard    
             }));
         };
     },
 
-    setSocketsData(sockets: Socket<IClientEvents, IServerEvents, any, IStartData>[], roomId: string) {
+    setSocketsData(sockets: RemoteSocket<IServerEvents, IStartData>[]) {
         sockets.forEach(socket => {
             socket.data.score = 0
-            socket.data.room = roomId
         });
         const colors = GameRules.assignColors()
         sockets[0].data.color = colors[0];

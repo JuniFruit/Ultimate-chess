@@ -11,6 +11,7 @@ import { useAuth } from "../../../hooks/useAuth";
 import { api } from "../../../store/api/api";
 import { ErrorModal } from "./modals/ErrorModal";
 import { Timer } from "../../ui/timer/Timer";
+import { GameOverModal } from "./modals/GameOverModal";
 
 
 const GameRoom: FC = () => {
@@ -29,7 +30,8 @@ const GameRoom: FC = () => {
                         {data.enemyUser && <PlayerInfo key={data.enemyUser?.username} {...data.enemyUser} />}
                         <Timer
                             initTime={300}
-                            isStopped={status.myColor === field.board.currentPlayer || field.board.isFirstMove || field.board.isGameOver} 
+                            isStopped={status.myColor === field.board.states.currentPlayer 
+                                || field.board.states.isFirstMove || field.board.states.isGameOver} 
                             onTimeout={move.handleTimeout}
                             />
                     </div>
@@ -44,7 +46,8 @@ const GameRoom: FC = () => {
                         {data.clientUser && <PlayerInfo key={data.clientUser?.username} {...data.clientUser} />}
                         <Timer
                             initTime={300}
-                            isStopped={status.myColor !== field.board.currentPlayer || field.board.isFirstMove || field.board.isGameOver} 
+                            isStopped={status.myColor !== field.board.states.currentPlayer 
+                                || field.board.states.isFirstMove || field.board.states.isGameOver} 
                             onTimeout={move.handleTimeout}
 
                             />
@@ -55,6 +58,7 @@ const GameRoom: FC = () => {
             </div>
             {!status.isReadyToStart && status.isConnected ? <WaitingModal /> : null}
             {data.error && <ErrorModal errorMsg={data.error} errorHandler={data.setError} />}
+            {status.result && <GameOverModal resultMsg={status.result} />}
         </Layout>
     )
 }

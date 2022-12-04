@@ -1,4 +1,4 @@
-import { Socket } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { IMove } from '../../../client/src/constants/socketIO/ClientEvents.interface'
 import { boardApi } from '../model/board';
 import { IClientEvents } from '../constants/socketIO/ClientEvents.interface';
@@ -20,15 +20,23 @@ export const BoardService = {
     },
 
     async handleResults(socket: Socket<IClientEvents, IServerEvents, any, IStartData>, results: Results) {
-        try {
-            const user = await UserService.getById(socket.data.user?.id!);
-            if (results === Results.LOSER) {
-                socket.data.user!.winsCount!++;
-                await UserService.increaseLoses(user.id);
-            }
-            if (results === Results.WINNER) await UserService.increaseWins(user.id);
-        } catch (error) {
+        // try {
+        //     const user = await UserService.getById(socket.data.user?.id!);
+        //     if (results === Results.LOSER) {
+        //         socket.data.user!.winsCount!++;
+        //         await UserService.increaseLoses(user.id);
+        //     }
+        //     if (results === Results.WINNER) await UserService.increaseWins(user.id);
+        // } catch (error) {
 
+        // }
+    },
+    
+    checkResults(ioServer: Server<IClientEvents,IServerEvents>, roomId:string) {
+        const results = boardApi(roomId).getResults();
+        console.log(results);
+        if (results) {
+            ioServer.in(roomId).emit('results', {...results})
         }
     }
 }

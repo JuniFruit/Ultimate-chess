@@ -3,19 +3,21 @@ import ioClient from "../../../api/socketApi";
 import { SPRITES } from "../../../assets/sprites";
 import { Errors } from "../../../constants/constants";
 import { IMove } from "../../../constants/socketIO/ClientEvents.interface";
-import { IStartPayload } from "../../../constants/socketIO/ServerEvents.interface";
+import { IBoardData, IResultPayload, IStartPayload } from "../../../constants/socketIO/ServerEvents.interface";
 import { Board, IBoard } from "../../../model/Board";
 import { Colors } from "../../../model/colors.enum";
-import { Results } from "../../../model/helper.enum";
+import { GameOver, Results } from "../../../model/helper.enum";
+import { tryReconnect } from "../../../services/socket.service";
 import { IPlayerInfo } from "../../ui/player/PlayerInfo.interface";
 
 
 
 export const useGameRoom = (id?: string) => {
-    const initFen = 'rnbqkbnr/pppppppp/8/8/P1N1NP2/8/PP1PP1PP/R1BQKB1R';
+
     const [board, setBoard] = useState<IBoard>(new Board(SPRITES, SPRITES));
     const [isConnected, setIsConnected] = useState(ioClient.connected);
     const [isReadyToStart, setIsReadyToStart] = useState(false);
+    const [result, setResult] = useState<GameOver | null>(null);
     const [enemyUser, setEnemyUser] = useState<IPlayerInfo>();
     const [clientUser, setClientUser] = useState<IPlayerInfo>()
     const [isFlipped, setIsFlipped] = useState(false);
@@ -26,7 +28,7 @@ export const useGameRoom = (id?: string) => {
         setIsConnected(prev => true);
         if (error === Errors.CONNECTION_LOST) setError(prev => '');
         console.log('connected')
-    }, [id])
+    }, [id, error, isConnected])
 
     const handleNoOpponent = useCallback(() => {
         setIsReadyToStart(prev => false)
@@ -40,6 +42,7 @@ export const useGameRoom = (id?: string) => {
         setClientUser(prev => payload.opponentUser);
         setMyColor(prev => payload.color === Colors.WHITE ? Colors.BLACK : Colors.WHITE);
         setIsFlipped(prev => payload.color === Colors.WHITE);
+        drawBoard(payload.boardData!);
     }, [isConnected, setIsReadyToStart, isReadyToStart])
 
     const handleSendMove = useCallback((move: IMove) => {
@@ -49,7 +52,7 @@ export const useGameRoom = (id?: string) => {
     const handleReceiveMove = useCallback((payload: IMove) => {
 
         board.receiveMove(payload);
-        board.isFirstMove = false;
+        board.states.isFirstMove = false;
         board.swapPlayer();
         board.updateAllLegalMoves();
         setBoard(prev => prev.getCopyBoard());
@@ -62,26 +65,26 @@ export const useGameRoom = (id?: string) => {
     }, [error, setError])
 
 
-    const drawBoard = useCallback(() => {
+    const drawBoard = useCallback((boardData: IBoardData) => {
         board.clearBoard();
-        board.startNewGame(initFen);
+        board.startNewGame(boardData.boardFEN);
+        board.states = boardData.states;
         board.updateAllLegalMoves();
         setBoard(prev => prev.getCopyBoard());
 
     }, [])
 
-    const handleResults = useCallback((results: Results) => {
-
-    }, [])
+    const handleResults = useCallback((payload: IResultPayload) => {
+        board.states.isGameOver = true;
+        setResult(prev => {
+            if (payload.result === Results.DRAW) return GameOver.DRAW;
+            return payload.currentPlayer === Colors.BLACK ? GameOver.WHITE : GameOver.BLACK;
+        });
+        setBoard(prev => prev.getCopyBoard())
+    }, [board])
 
     const handleTimeout = useCallback(() => {
-        board.isGameOver = true;
-        const isDraw = !board.isSufficientMaterial(board.currentPlayer === Colors.BLACK ? Colors.WHITE : Colors.BLACK);
-        if (isDraw) {
-            handleResults(Results.DRAW);
-            return;
-        };
-        handleResults(Results.LOSER)
+        
         setBoard(prev => prev.getCopyBoard());
     }, [board])
 
@@ -90,15 +93,10 @@ export const useGameRoom = (id?: string) => {
 
     useEffect(() => {
         if (!ioClient) return;
-
-        if (!isConnected) {
-            ioClient.connect();
-        };
-
         ioClient.on('connect', handleOnConnect);
         ioClient.on('connect_error', () => {
             handleGameError(Errors.CONNECTION_LOST);
-            setTimeout(() => ioClient.connect(), 1000);
+            tryReconnect();
         });
 
         return () => {
@@ -106,12 +104,12 @@ export const useGameRoom = (id?: string) => {
             ioClient.off('connect_error')
         }
 
-    }, [id, ioClient]);
+    }, [isConnected, error]);
 
     useEffect(() => {
         if (!ioClient) return;
 
-        if (!isConnected) return;
+        if (!isConnected || !id) return;
         ioClient.emit("joinGameRoom", id!)
 
     }, [isConnected, id])
@@ -123,11 +121,13 @@ export const useGameRoom = (id?: string) => {
         ioClient.on("noOpponent", handleNoOpponent);
         ioClient.on('gameError', handleGameError)
         ioClient.on("readyToStart", handleReadyToStart);
-
+        ioClient.on("results", handleResults)
         return () => {
             ioClient.off("noOpponent", handleNoOpponent);
             ioClient.off('readyToStart', handleReadyToStart);
             ioClient.off("gameError", handleGameError);
+            ioClient.off("results", handleResults)
+
         }
 
     }, [isConnected])
@@ -140,10 +140,6 @@ export const useGameRoom = (id?: string) => {
         }
     }, [board])
 
-    useEffect(() => {
-
-        drawBoard();
-    }, [])
 
     return {
         field: {
@@ -155,7 +151,8 @@ export const useGameRoom = (id?: string) => {
             isReadyToStart,
             setIsReadyToStart,
             isFlipped,
-            myColor
+            myColor,
+            result
         },
         data: {
             enemyUser,

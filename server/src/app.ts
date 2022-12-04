@@ -30,20 +30,18 @@ const ioServer = new Server<IClientEvents,IServerEvents>(httpServer, getWSconfig
 
 ioServer.use(userHandler)
 
-const mainAdapter = ioServer.of('/').adapter
-
+// const mainAdapter = ioServer.of('/').adapter;
 
 
 ioServer.on('connection', (socket) => {
     console.log(`New connection ${socket.id}`);
     
-    roomListener(socket, mainAdapter);
-    gameListener(socket, mainAdapter);
-
+    roomListener(socket, ioServer);
+    gameListener(socket, ioServer);
+    
     socket.on('disconnect', (payload) => console.log(payload));
-
+    
 })
-
 
 httpServer.listen(port, () => {
     console.log('Server is online');

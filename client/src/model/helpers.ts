@@ -1,4 +1,5 @@
 import { Colors } from "./colors.enum";
+import { IFigure } from "./figures/Figures";
 
 export const flipFEN = (FEN:string):string => {    
     
@@ -42,4 +43,10 @@ export const flipFEN = (FEN:string):string => {
   export const isInBounds = (x:number, y:number) => {
     if (x < 0 || x > 7 || y < 0 || y > 7) return false;
     return true;
+  }
+
+  export const convertToChar = (figure: IFigure) => {
+      let char:string = figure.type;
+      figure.color === Colors.BLACK ? char = char.toLowerCase() : char = char.toUpperCase();
+      return char;
   }

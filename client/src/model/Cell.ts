@@ -51,7 +51,7 @@ export class Cell implements ICell {
         this.moveFigure(target, board, true);
         board.updateEnemyLegalMoves();
         board.isKingChecked();
-        if (!board.isCheck) {
+        if (!board.states.isCheck) {
             isValidMove = true;
         }
         target.moveFigure(this, board, true);
@@ -61,7 +61,7 @@ export class Cell implements ICell {
 
     isUnderAttack(target: ICell, board:IBoard) {
         return board.figures.some(figure => {
-            return figure.legalMoves.some(move => move === target && figure.color !== board.currentPlayer);
+            return figure.legalMoves.some(move => move === target && figure.color !== board.states.currentPlayer);
         })
     }
 
@@ -74,7 +74,7 @@ export class Cell implements ICell {
     canMoveFigure(target: ICell, board: IBoard) {
 
         if (target.figure?.type === FigureTypes.KING) return false;
-        if (this.figure?.color !== board.currentPlayer) return false;
+        if (this.figure?.color !== board.states.currentPlayer) return false;
         if (this.isCastlingMove(target)) return this.canPerformCastle(target, board);
 
         const move = this.figure?.legalMoves.find(cell => cell.x === target.x && cell.y === target.y)
@@ -84,7 +84,7 @@ export class Cell implements ICell {
     isUncheckingMove(target: ICell, board: IBoard) {
         // run a fake move to check if a king is checked after the move then undo
         const copyBoard = board.getCopyBoard();
-        copyBoard.isCheck = false;
+        copyBoard.states.isCheck = false;
 
         if (this.canMoveFigure(target, copyBoard)) {
             return this.isSafeCell(target, copyBoard);
@@ -103,7 +103,7 @@ export class Cell implements ICell {
         // check if none of the pieces moved and they are on the same row
         if (!(this.figure as IKing).isCastlingAvailable || target.figure?.type !== FigureTypes.ROOK) return false;
         if (this.figure!.color !== target.figure.color) return false;
-        if (board.isCheck) return false;
+        if (board.states.isCheck) return false;
         if (this.y !== target.y) return false;
         if (!(target.figure as IRook).isFirstMove) return false;
 
@@ -135,7 +135,7 @@ export class Cell implements ICell {
     moveFigure(target: ICell, board: IBoard, isFake: boolean = false) {
         if (this.isCastlingMove(target)) return this.performCastle(target, board);
         if (!isFake && target.figure) board.addLostFigure(target.figure);
-        
+
         this.figure!.moveFigure(target, isFake);
         target.prevFigure = target.figure;
         target.figure = this.figure;

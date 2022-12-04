@@ -9,17 +9,13 @@ import { Knight } from "./figures/Knight";
 import { Pawn } from "./figures/Pawn";
 import { Queen } from "./figures/Queen";
 import { Rook } from "./figures/Rook";
-import { returnColorCell } from "./helpers";
+import { convertToChar, returnColorCell } from "./helpers";
 
 export interface IBoard {
     cells: ICell[][];
-    currentPlayer: Colors;
-    moves: ICell[];
-    lostFigures: ILostFigure[];
+    moves: ICell[];   
     figures: IFigure[];
-    isCheck: boolean;
-    isFirstMove: boolean;
-    isGameOver: boolean;
+    states: IBoardStates;
     startNewGame: (fen: string) => void;
     showAvailable: (selected: ICell) => void;
     receiveMove: (move: IMove) => void;
@@ -28,8 +24,9 @@ export interface IBoard {
     getFigures: () => void;
     isKingChecked: () => boolean;
     isStalemate: () => boolean;
-    isSufficientMaterial: (player:Colors) => boolean; 
+    isSufficientMaterial: (player: Colors) => boolean;
     isDraw: () => boolean;
+    isCheckMate: () => boolean;
     updateAllLegalMoves: () => void;
     updateEnemyLegalMoves: () => void;
     createFigure: (char: string, x: number, y: number) => IFigure | null;
@@ -37,22 +34,35 @@ export interface IBoard {
     clearBoard: () => void;
     addLostFigure: (figure: IFigure) => void;
     addMove: (move: ICell) => void
-    isCheckMate: () => boolean;
+    convertToFEN: () => string;
+}
+
+export interface IBoardStates {
+    currentPlayer: Colors;
+    // moves: ICell[];
+    lostFigures: ILostFigure[];
+    isCheck: boolean;
+    isFirstMove: boolean;
+    isGameOver: boolean;    
 }
 
 
 
 export class Board implements IBoard {
     cells: ICell[][] = []
-    currentPlayer: Colors = Colors.WHITE;
     moves: ICell[] = [];
     figures: IFigure[] = [];
-    lostFigures: ILostFigure[] = []
-    isCheck: boolean = false;
+
+    states: IBoardStates = {
+        currentPlayer: Colors.WHITE,
+        lostFigures: [],
+        isCheck: false,        
+        isGameOver: false,
+        isFirstMove: true
+    }
+
     mySprites?: ISpritesObj;
     enemySprites?: ISpritesObj;
-    isGameOver: boolean = false;
-    isFirstMove: boolean = true;
 
     constructor(mySprites?: ISpritesObj, enemySprites?: ISpritesObj) {
         this.mySprites = mySprites;
@@ -84,7 +94,7 @@ export class Board implements IBoard {
         return this.cells[y][x];
     }
     swapPlayer() {
-        this.currentPlayer = this.currentPlayer === Colors.WHITE ? Colors.BLACK : Colors.WHITE;
+        this.states.currentPlayer = this.states.currentPlayer === Colors.WHITE ? Colors.BLACK : Colors.WHITE;
     }
     getFigures() {
         this.cells.forEach(row => row.forEach(cell => {
@@ -95,17 +105,18 @@ export class Board implements IBoard {
     }
 
     getCopyBoard() {
-        const newBoard = new Board();       
+        const newBoard = new Board();
         newBoard.cells = this.cells;
-        newBoard.currentPlayer = this.currentPlayer;
-        newBoard.moves = this.moves;
-        newBoard.isCheck = this.isCheck;
+        newBoard.figures = this.figures;
         newBoard.mySprites = this.mySprites;
         newBoard.enemySprites = this.enemySprites;
-        newBoard.figures = this.figures;
-        newBoard.isGameOver = this.isGameOver;
-        newBoard.isFirstMove = this.isFirstMove;
-        newBoard.lostFigures = this.lostFigures;
+        newBoard.moves = this.moves;
+        // newBoard.currentPlayer = this.currentPlayer;
+        // newBoard.isCheck = this.isCheck;
+        // newBoard.isGameOver = this.isGameOver;
+        // newBoard.isFirstMove = this.isFirstMove;
+        // newBoard.lostFigures = this.lostFigures;
+        newBoard.states = this.states;
         return newBoard;
     }
 
@@ -116,43 +127,43 @@ export class Board implements IBoard {
 
     updateEnemyLegalMoves() {
         this.figures.forEach(figure => {
-            if (figure.color !== this.currentPlayer)
-            figure.getLegalMoves(this)
+            if (figure.color !== this.states.currentPlayer)
+                figure.getLegalMoves(this)
         });
 
     }
 
 
     isKingChecked() {
-        this.isCheck = this.cells.some(rows => {
+        this.states.isCheck = this.cells.some(rows => {
             return rows.some(cell => {
                 return cell.figure?.legalMoves.some(move => move.figure?.type === FigureTypes.KING && move.figure.color !== cell.figure?.color)
             })
         })
-        
-        return this.isCheck;
-        
+
+        return this.states.isCheck;
+
 
     }
 
     isCheckMate() {
-        return !this.figures.some(figure => figure.color === this.currentPlayer && figure.legalMoves.length);
+        return !this.figures.some(figure => figure.color === this.states.currentPlayer && figure.legalMoves.length);
 
     }
 
     isStalemate() {
         return !this.figures.some(figure => {
-            return figure.color === this.currentPlayer && figure.legalMoves.length && !this.isCheck
+            return figure.color === this.states.currentPlayer && figure.legalMoves.length && !this.states.isCheck
         })
     }
 
-    isSufficientMaterial(player:Colors) {
+    isSufficientMaterial(player: Colors) {
         const playerMaterial = this.figures.filter(figure => figure.color === player);
 
         if (playerMaterial.every(figure => figure.type === FigureTypes.KING)) return false;
-        if (playerMaterial.length === 2 
+        if (playerMaterial.length === 2
             && playerMaterial.every(figure => figure.type === FigureTypes.KING || figure.type === FigureTypes.BISHOP)) return false;
-        if (playerMaterial.length === 2 
+        if (playerMaterial.length === 2
             && playerMaterial.every(figure => figure.type === FigureTypes.KING || figure.type === FigureTypes.KNIGHT)) return false;
 
         return true;
@@ -164,8 +175,8 @@ export class Board implements IBoard {
     isDraw() {
         if (this.figures.length > 5) return false;
         if (this.isStalemate()) return true
-        if (!this.isSufficientMaterial(this.currentPlayer) 
-        && !this.isSufficientMaterial(this.currentPlayer === Colors.WHITE ? Colors.BLACK : Colors.WHITE)) return true;
+        if (!this.isSufficientMaterial(this.states.currentPlayer)
+            && !this.isSufficientMaterial(this.states.currentPlayer === Colors.WHITE ? Colors.BLACK : Colors.WHITE)) return true;
         return false;
     }
 
@@ -174,7 +185,7 @@ export class Board implements IBoard {
     }
 
     addLostFigure(figure: IFigure) {
-        this.lostFigures.push({
+        this.states.lostFigures.push({
             color: figure.color,
             type: figure.type
         });
@@ -184,7 +195,7 @@ export class Board implements IBoard {
         this.cells = [];
         this.moves = [];
         this.figures = [];
-        this.isCheck = false;
+        this.states.isCheck = false;
     }
 
 
@@ -226,7 +237,7 @@ export class Board implements IBoard {
             currentInd++;
         }
         this.cells.push(row);
-        this.currentPlayer = currentPlayer === Colors.BLACK ? Colors.BLACK : Colors.WHITE;
+        this.states.currentPlayer = currentPlayer === Colors.BLACK ? Colors.BLACK : Colors.WHITE;
 
     }
 
@@ -257,6 +268,33 @@ export class Board implements IBoard {
                 return null;
         }
 
+    }
+
+    convertToFEN() {
+
+        const FEN = [];
+        for (let i = 0; i < this.cells.length; i++) {
+            let blankCells = 0;
+
+            for (let j = 0; j < this.cells[i].length; j++) {
+                let currentCell = this.cells[i][j];
+                if (currentCell.figure) {
+                    if (blankCells !== 0) {
+                        FEN.push(blankCells.toString());
+                        blankCells = 0;
+                    }
+
+                    FEN.push(convertToChar(currentCell.figure));
+                } else if (!currentCell.figure) {
+                    blankCells++;
+                }
+
+            }
+            if (blankCells !== 0) FEN.push(blankCells.toString());
+            FEN.push('/');
+        }
+        const finalFEN = FEN.join('');
+        return finalFEN + ' ' + this.states.currentPlayer
     }
 
 

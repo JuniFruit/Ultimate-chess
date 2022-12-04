@@ -63,7 +63,7 @@ export class Figure {
 
     filterUncheckingMoves(board: IBoard) {
         // if (!board.isCheck) return;
-        if (this.color !== board.currentPlayer) return;
+        if (this.color !== board.states.currentPlayer) return;
         this.legalMoves = [...this.legalMoves.filter(move => board.getCell(this.x, this.y).isUncheckingMove(move, board))]
 
 

@@ -23,5 +23,5 @@ export interface IMove {
 export interface IOClientEvents {
     joinGameRoom: (roomId: string) => void;
     sendMove: ({ }: IMove) => void;
-    results: (payload: Results) => void;
+    gameOver: () => void;
 }

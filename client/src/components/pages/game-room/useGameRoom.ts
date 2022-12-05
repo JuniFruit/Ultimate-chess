@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import ioClient from "../../../api/socketApi";
 import { SPRITES } from "../../../assets/sprites";
-import { Errors } from "../../../constants/constants";
-import { IMove } from "../../../constants/socketIO/ClientEvents.interface";
+import { Errors, MatchDuration } from "../../../constants/constants";
+import { IMove, IMovePayload } from "../../../constants/socketIO/ClientEvents.interface";
 import { IBoardData, IResultPayload, IStartPayload } from "../../../constants/socketIO/ServerEvents.interface";
 import { Board, IBoard } from "../../../model/Board";
 import { Colors } from "../../../model/colors.enum";
@@ -21,6 +21,8 @@ export const useGameRoom = (id?: string) => {
     const [enemyUser, setEnemyUser] = useState<IPlayerInfo>();
     const [clientUser, setClientUser] = useState<IPlayerInfo>()
     const [isFlipped, setIsFlipped] = useState(false);
+    const [whiteTimer, setWhiteTimer] = useState<number>(MatchDuration.FIVE_MIN);
+    const [blackTimer, setBlackTimer] = useState<number>(MatchDuration.FIVE_MIN);
     const [myColor, setMyColor] = useState<Colors>(Colors.WHITE)
     const [error, setError] = useState('');
 
@@ -31,17 +33,19 @@ export const useGameRoom = (id?: string) => {
     }, [id, error, isConnected])
 
     const handleNoOpponent = useCallback(() => {
-        setIsReadyToStart(prev => false)
+        setIsReadyToStart(false)
     }, [id, isReadyToStart, setIsReadyToStart])
 
     const handleReadyToStart = useCallback((payload: IStartPayload) => {
         if (!payload) return; // payload with info about the opponent
 
-        setIsReadyToStart(prev => true);
-        setEnemyUser(prev => payload.user);
-        setClientUser(prev => payload.opponentUser);
-        setMyColor(prev => payload.color === Colors.WHITE ? Colors.BLACK : Colors.WHITE);
-        setIsFlipped(prev => payload.color === Colors.WHITE);
+        setIsReadyToStart( true);
+        setEnemyUser(payload.opponentUser);
+        setBlackTimer(payload.boardData?.states.blackTime!);
+        setWhiteTimer(payload.boardData?.states.whiteTime!);
+        setClientUser(payload.user);
+        setMyColor(payload.color!);
+        setIsFlipped(payload.color === Colors.BLACK);
         drawBoard(payload.boardData!);
     }, [isConnected, setIsReadyToStart, isReadyToStart])
 
@@ -49,19 +53,23 @@ export const useGameRoom = (id?: string) => {
         ioClient.emit("sendMove", move)
     }, [])
 
-    const handleReceiveMove = useCallback((payload: IMove) => {
+    const handleReceiveMove = useCallback((payload: IMovePayload) => {
 
-        board.receiveMove(payload);
+        board.receiveMove(payload.move);
         board.states.isFirstMove = false;
+        
         board.swapPlayer();
         board.updateAllLegalMoves();
+        console.log(payload.time);
+        setWhiteTimer(payload.time.white);
+        setBlackTimer(payload.time.black);
         setBoard(prev => prev.getCopyBoard());
 
     }, [board, setBoard])
 
     const handleGameError = useCallback((payload: string) => {
-        setError(prev => payload);
-        setIsConnected(prev => false);
+        setError(payload);
+        setIsConnected(false);
     }, [error, setError])
 
 
@@ -84,7 +92,8 @@ export const useGameRoom = (id?: string) => {
     }, [board])
 
     const handleTimeout = useCallback(() => {
-        
+        board.states.isGameOver = true;
+        ioClient.emit("timeout")
         setBoard(prev => prev.getCopyBoard());
     }, [board])
 
@@ -152,7 +161,9 @@ export const useGameRoom = (id?: string) => {
             setIsReadyToStart,
             isFlipped,
             myColor,
-            result
+            result,
+            blackTimer,
+            whiteTimer
         },
         data: {
             enemyUser,

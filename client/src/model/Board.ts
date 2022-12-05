@@ -44,6 +44,9 @@ export interface IBoardStates {
     isCheck: boolean;
     isFirstMove: boolean;
     isGameOver: boolean;    
+    whiteTime: number;
+    blackTime: number;
+    lastMoveTime?:number;
 }
 
 
@@ -58,7 +61,10 @@ export class Board implements IBoard {
         lostFigures: [],
         isCheck: false,        
         isGameOver: false,
-        isFirstMove: true
+        isFirstMove: true,
+        whiteTime: 300,
+        blackTime: 300,
+        
     }
 
     mySprites?: ISpritesObj;
@@ -66,7 +72,7 @@ export class Board implements IBoard {
 
     constructor(mySprites?: ISpritesObj, enemySprites?: ISpritesObj) {
         this.mySprites = mySprites;
-        this.enemySprites = enemySprites
+        this.enemySprites = enemySprites;       
     }
 
     showAvailable(selected: ICell) {
@@ -110,12 +116,7 @@ export class Board implements IBoard {
         newBoard.figures = this.figures;
         newBoard.mySprites = this.mySprites;
         newBoard.enemySprites = this.enemySprites;
-        newBoard.moves = this.moves;
-        // newBoard.currentPlayer = this.currentPlayer;
-        // newBoard.isCheck = this.isCheck;
-        // newBoard.isGameOver = this.isGameOver;
-        // newBoard.isFirstMove = this.isFirstMove;
-        // newBoard.lostFigures = this.lostFigures;
+        newBoard.moves = this.moves;       
         newBoard.states = this.states;
         return newBoard;
     }

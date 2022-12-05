@@ -5,8 +5,8 @@ import { IMenuData } from "../home/main-menu/Menu.interface";
 
 export const menuData: IMenuData[] = [
     {
-        title: 'Play Online',
-        link: `/game-room/${randomize()}`
+        title: 'Play 5 min',
+        link: `/game-room/${randomize()}_5min`
     },
     {
         title: 'Back',

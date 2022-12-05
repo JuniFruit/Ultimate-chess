@@ -9,18 +9,17 @@ export const roomListener = (socket: Socket<IClientEvents, IServerEvents>, ioSer
 
     socket.on("joinGameRoom", async (id) => {
         RoomService.join(socket, id)
-
         const sockets = await ioServer.in(id).fetchSockets()
         RoomService.onRoomJoin(sockets, id)
-    })
-    
-    // adapter.on('join-room', async (room) => RoomService.onRoomJoin(await adapter.fetchSockets({ rooms: room }), room))
-    // console.log(adapter.rooms);
+    })    
 }
 
 export const gameListener = (socket: Socket<IClientEvents, IServerEvents>, ioServer: Server<IClientEvents,IServerEvents>) => {
     socket.on("sendMove", (payload) => {
         BoardService.handleMove(socket, payload);
         BoardService.checkResults(ioServer, socket.data.room)
+    })
+    socket.on("timeout", () => {
+        // BoardService.onTimeout(ioServer, socket.data.room, socket.data.color);
     })
 }

@@ -1,6 +1,8 @@
 import { IMove } from '../../../client/src/constants/socketIO/ClientEvents.interface';
 import { Board, IBoard, IBoardStates } from '../../../client/src/model/Board';
+import { Colors } from '../../../client/src/model/colors.enum';
 import { FENs, Results } from '../../../client/src/model/helper.enum';
+import { getInitTime } from '../utils/utils';
 
 
 let ROOM_GAME_BOARDS = new Map();
@@ -16,6 +18,9 @@ export const boardApi = (roomId: string) => {
         const board = new Board();
         board.startNewGame(FENs.INIT);
         board.updateAllLegalMoves();
+        board.states.whiteTime = getInitTime(roomId);
+        board.states.blackTime = getInitTime(roomId);
+
         ROOM_GAME_BOARDS.set(roomId, board);
         return getBoardData(board);
     }
@@ -39,7 +44,9 @@ export const boardApi = (roomId: string) => {
 
     const moveFigure = (move: IMove) => {
         const board: IBoard = ROOM_GAME_BOARDS.get(roomId);
+        updateTime(board)
         board.receiveMove(move);
+        board.states.isFirstMove = false;
         board.swapPlayer();
         ROOM_GAME_BOARDS.set(roomId, board);
     }    
@@ -50,15 +57,41 @@ export const boardApi = (roomId: string) => {
         return {
             boardFEN,
             states: newBoardStates,
-
         };
+    }
+
+    const updateTime = (board: IBoard) => {
+        const now = Date.now();
+        if (!board.states.isFirstMove) {
+            const timeElapsed = Math.floor((now - board.states.lastMoveTime!) / 1000);
+            board.states.currentPlayer === Colors.BLACK ? board.states.blackTime!-= timeElapsed 
+            : board.states.whiteTime!-= timeElapsed; 
+
+        }
+        board.states.lastMoveTime = now; 
+
+        
+    }
+
+    const getTime = () => {
+        const board: IBoard = ROOM_GAME_BOARDS.get(roomId);
+        return {white: board.states.whiteTime, black: board.states.blackTime};
+    }
+
+    const isSufficientMaterial = () => {
+        const board: IBoard = ROOM_GAME_BOARDS.get(roomId);
+        board.updateAllLegalMoves();
+        return board.isSufficientMaterial(board.states.currentPlayer === Colors.BLACK ? Colors.WHITE : Colors.BLACK); //checking enemy
+
     }
 
     return {
         getBoard,
         createBoard,
         moveFigure,
-        getResults
+        getResults,
+        isSufficientMaterial,
+        getTime
     }
 
 }

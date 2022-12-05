@@ -98,9 +98,6 @@ export const useField = ({ board, setBoard, ioMoveHandlers, myColor }: IUseField
         console.log(board.states.currentPlayer, myColor)
         if (board.isKingChecked()) {
             console.log(board.isCheckMate())
-
-        } else if (board.isDraw()) {
-
         } 
 
     }, [board, setBoard])

@@ -95,7 +95,8 @@ export class Cell implements ICell {
     }
 
     isCastlingMove(target: ICell) {
-        if (this.figure?.type === FigureTypes.KING && target.figure?.type === FigureTypes.ROOK) return true;
+        if ((this.figure?.type === FigureTypes.KING && target.figure?.type === FigureTypes.ROOK) 
+        && this.figure.color === target.figure.color) return true;
         return false
     }
 

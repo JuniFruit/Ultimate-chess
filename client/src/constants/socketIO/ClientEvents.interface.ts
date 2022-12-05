@@ -20,8 +20,16 @@ export interface IMove {
     options?: IMoveOptions
 }
 
+export interface IMovePayload {
+    move: IMove,
+    time: {
+        white: number;
+        black: number;
+    }
+}
+
 export interface IOClientEvents {
     joinGameRoom: (roomId: string) => void;
     sendMove: ({ }: IMove) => void;
-    gameOver: () => void;
+    timeout: () => void;
 }

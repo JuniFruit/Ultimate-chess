@@ -10,3 +10,10 @@ export enum Errors {
     CONNECTION_LOST = 'Connection lost. Trying to reestablish connection',
     NO_CONNECTION = 'No connection to the server',
 }
+
+export enum MatchDuration {
+    FIVE_MIN = 300,
+    ONE_MIN = 60,
+    THREE_MIN = 180,
+    TEN_MIN = 600, 
+}

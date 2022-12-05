@@ -6,6 +6,9 @@ import styles from './Timer.module.scss';
 export const Timer: FC<ITimer> = ({ initTime, isStopped, onTimeout }) => {
     const [currentTime, setCurrentTime] = useState(initTime)
 
+    useEffect(() => {
+        setCurrentTime(initTime)
+    }, [initTime])
 
     useEffect(() => {
         if (isStopped) return;
@@ -17,7 +20,7 @@ export const Timer: FC<ITimer> = ({ initTime, isStopped, onTimeout }) => {
         return () => {
             clearInterval(interval);
         }
-    }, [isStopped]);
+    }, [isStopped, initTime]);
 
     useEffect(() => {
         if (currentTime === 0) {

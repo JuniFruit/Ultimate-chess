@@ -15,7 +15,7 @@ export class PacksEntity extends BaseEntity {
     preview!: string;
 
     @Column()
-    name!:string;
+    title!:string;
 
     @Column({name: 'sys_name'})
     sysName!: string;

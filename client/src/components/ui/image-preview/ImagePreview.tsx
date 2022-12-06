@@ -5,9 +5,9 @@ export const ImagePreview:FC<{imageSrc?: string}> = ({imageSrc}) => {
 
     return (
         <div className={styles.wrapper}>
-            <img 
+            {imageSrc && <img 
                 src={imageSrc}
-            />
+            />}
         </div>
     )
 }

@@ -21,13 +21,13 @@
 
     }
     .menu {
-        @apply absolute left-0 w-full p-3 rounded-lg z-50 shadow bg-wooden-800 min-w-max animate-fadeIn duration-150;
+        @apply absolute left-0 w-full p-3 rounded-lg z-50 shadow bg-main-800 min-w-max animate-fadeIn duration-150;
         top: calc(100% + 1.4rem);
         
         >ul {
             @apply flex-col flex gap-4;
             >li {
-                @apply text-black  opacity-75 relative;
+                @apply text-white  opacity-75 relative;
 
                 &:hover::before {
                     @apply w-full

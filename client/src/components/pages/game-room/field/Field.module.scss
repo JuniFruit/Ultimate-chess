@@ -4,7 +4,7 @@
     @apply w-full h-min animate-slideInLeft shadow relative;
     
     .cells {
-        @apply flex flex-wrap border-wooden-900;
+        @apply flex flex-wrap border-main-800;
         width: calc(8 * var(--cellSize));
         height: calc(8 * var(--cellSize));
         .cell {
@@ -21,16 +21,16 @@
             }
         }
         .w {
-            @apply bg-wooden-700;
+            @apply bg-main-200;
         }
         .b {
             @apply bg-complimentary;
         }
         .selected {
-            @apply bg-green-500;
+            @apply bg-secondary;
         }
         .draggedOver {
-            @apply border-green-500 ;
+            @apply border-secondary ;
         }
 
     }

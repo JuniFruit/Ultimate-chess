@@ -2,7 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Rubik+Distressed&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+
+
 
 *,*::after,*::before {
   box-sizing: border-box;
@@ -10,11 +12,11 @@
   padding: 0;
 }
 body {
-  @apply bg-wooden-400;
+  @apply bg-main-800;
   line-height: 1.5rem;
   letter-spacing: .05rem;
   margin: 0;
-  font-family: 'Rubik Distressed', cursive;
+  font-family: 'Open Sans', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   
@@ -23,6 +25,15 @@ body {
 
 :root {
   --cellSize: 4.5rem; 
+  --main-900: #272522;
+  --main-800:#312e2b;
+  --main-700: #413e3c;
+  --main-600: #888786;
+  --main-500: #babab9;
+  --main-200: #ffffff;
+  --primary: #272522;
+  --complimentary: #7fa650;
+  --secondary: #7cacc8; 
 }
 
 a {

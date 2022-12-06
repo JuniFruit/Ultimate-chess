@@ -3,7 +3,7 @@ import { useAuth } from '../../../../hooks/useAuth';
 import { api } from '../../../../store/api/api';
 import { packApi } from '../../../../store/api/pack.api';
 import MenuButton from '../../../ui/menu-button/MenuButton';
-import styles from './PackMenu.module.scss';
+import styles from '../../home/main-menu/Menu.module.scss';
 import { IPackMenu } from './PacksMenu.interface';
 
 export const PackMenu: FC<IPackMenu> = ({ packs, setPreview }) => {
@@ -20,7 +20,7 @@ export const PackMenu: FC<IPackMenu> = ({ packs, setPreview }) => {
     }
 
     return (
-        <section className={styles.wrapper}>
+        <section>
             <div className={styles.menu_box}>
                 {packs.length
                     ?
@@ -30,7 +30,7 @@ export const PackMenu: FC<IPackMenu> = ({ packs, setPreview }) => {
                         onMouseOver={() => setPreview(pack.preview)}
                         onClick={() => handleAdd(pack.id)}
                         >
-                            {`${pack.name} ${pack.id === profile?.packInUse?.id ? ': in use' : ''}`}
+                            {`${pack.title} ${pack.id === profile?.packInUse?.id ? ': in use' : ''}`}
                         </MenuButton>
                     })
                     : null

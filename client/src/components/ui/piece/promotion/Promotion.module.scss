@@ -1,10 +1,10 @@
 
 
 .wrapper {
-    @apply flex flex-col gap-2 rounded-lg bg-wooden-700 shadow w-min h-min overflow-hidden;
+    @apply flex flex-col gap-2 rounded-lg bg-main-700 shadow w-min h-min overflow-hidden;
     border: 1px solid;  
 
     >button {
-        @apply hover:bg-wooden-400
+        @apply hover:bg-main-500
     }
 }

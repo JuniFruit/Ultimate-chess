@@ -1,6 +1,4 @@
-import { ICell } from "../../model/Cell";
 import { FigureTypes } from "../../model/figures/Figures";
-import { Results } from "../../model/helper.enum";
 
 export interface IMoveOptions {
     isPromotion?: boolean;

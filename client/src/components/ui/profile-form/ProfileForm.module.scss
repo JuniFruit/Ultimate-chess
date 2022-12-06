@@ -1,10 +1,10 @@
 .wrapper {
-    @apply flex flex-col items-center mt-5 bg-wooden-900 rounded-2xl py-2 px-3 shadow-md w-full;
+    @apply flex flex-col items-center mt-5 bg-main-900 rounded-2xl py-2 px-3 shadow-md w-full;
 
 
     >h1 {
-        @apply text-base text-black my-5 text-center;
-        font-weight: 500;
+        @apply text-base text-white my-5 text-center;
+        font-weight: 600;
     }
 
     .form_box {

@@ -7,18 +7,18 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: "#966F33",
-        complimentary: "#5179B5",
-        'light-blue': "#32A8E2",
-        wooden: {
-          400: "#E6BF83",
-          500: "#DCB579",
-          600: "#D2AB6F",
-          700: "#C8A165",
-          800: "#BE975B",
-          900: "#B48D51"
+        primary: "var(--primary)",
+        complimentary: "var(--complimentary)",
+        secondary: "var(--secondary)",
+        main: {
+          200: "var(--main-200)",
+          500: "var(--main-500)",
+          600: "var(--main-600)",
+          700: "var(--main-700)",
+          800: "var(--main-800)",
+          900: "var(--main-900)"
+        },
 
-        }
       },
       boxShadow: {
         DEFAULT: "0px 3px 12px rgba(0,0,0,0.63)",

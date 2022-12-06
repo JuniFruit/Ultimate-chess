@@ -1,5 +1,5 @@
 import { IField } from "./Field.interface"
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import { ICell } from "../../../../model/Cell";
 import { FigureTypes } from "../../../../model/figures/Figures";
 import { IMoveOptions } from "../../../../constants/socketIO/ClientEvents.interface";
@@ -99,6 +99,7 @@ export const useField = ({ board, setBoard, ioMoveHandlers, myColor }: IUseField
         if (board.isKingChecked()) {
             console.log(board.isCheckMate())
         } 
+        console.log(board.isDraw(), 'draw');
 
     }, [board, setBoard])
 

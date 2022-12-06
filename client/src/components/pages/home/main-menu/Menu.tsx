@@ -1,24 +1,27 @@
-import { FC } from "react";
-import { useAuth } from "../../../../hooks/useAuth";
-import { MainMenuButton } from "../../../ui/main-menu-button/MainMenuButton";
-import { IMenuData } from "./Menu.interface";
+import MenuButton from "../../../ui/menu-button/MenuButton";
+import { IMenuBox, IMenuData } from "./Menu.interface";
 import styles from './Menu.module.scss';
 
-const Menu: FC<{ items: IMenuData[] }> = ({ items }) => {
 
-    const {user} = useAuth();
+export function MenuBox <T extends IMenuData> ({ items, onHover, onClick }:IMenuBox<T>) {   
 
     return (
-        <nav className={styles.wrapper}>
+        <nav>
             <div className={styles.menu_box}>
-                {items.map(item => {
-                    if (item.link === '/packs' && !user) return null;
-                    if (item.link === '/register' && user) return null;
-                    return <MainMenuButton {...item} key={item.link} />
+                {items.map(item => {                    
+                    return <MenuButton 
+                        onClick={() => onClick(item)}
+                        onMouseOver={() => onHover(item.preview)}
+                        onFocus={() => onHover(item.preview)}
+                        key={item.link}
+                    >
+                        {item.title}
+                    </MenuButton>
+                    
+                
                 })}
             </div>
         </nav>
     )
 }
 
-export default Menu;

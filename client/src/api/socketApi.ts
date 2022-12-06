@@ -15,8 +15,10 @@ const tokenDecoder = () => {
 
 const ioClient: Socket<IOServerEvents, IOClientEvents> = io(URL, {
     auth: {
-        token: tokenDecoder()
+        token: tokenDecoder(),
+        
     },
+    autoConnect: false,
     reconnectionAttempts: 10,
     reconnectionDelay: 2000,
 });

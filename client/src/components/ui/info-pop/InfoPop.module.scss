@@ -1,5 +1,5 @@
 .message_body {
-    @apply rounded-lg block shadow-sm absolute top-5 right-5 overflow-hidden bg-wooden-700 animate-fadeIn duration-150; 
+    @apply rounded-lg block shadow-sm absolute top-5 right-5 overflow-hidden bg-main-700 animate-fadeIn duration-150; 
     z-index: 110;
     min-height: 2rem;
     
@@ -19,7 +19,7 @@
             @apply text-white text-sm break-words max-w-md; 
         }
         .message_close {
-            @apply text-black opacity-60 transition-opacity hover:opacity-100;
+            @apply text-white opacity-60 transition-opacity hover:opacity-100;
             font-size: 1.2rem;
         }
     }

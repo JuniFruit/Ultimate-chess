@@ -1,24 +1,30 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import { Layout } from "../../layout/Layout";
-import Menu from "../home/main-menu/Menu";
 import { randomize } from "../../../utils/general.utils";
+import Menu from "../home/main-menu/MenuWrapper";
+import { IMenuData } from "../home/main-menu/Menu.interface";
+import { useNavigate } from "react-router-dom";
+import { menuData } from "./menuData";
 
 
 const PlayChess: FC = () => {
 
-    const [menuData, setMenuData] = useState([{
-        title: 'Play 5 min',
-        link: `/game-room/${randomize()}_5min`
-    },
-    {
-        title: 'Back',
-        link: '/'
+    const filteredData = menuData.map(item => {
+        if (item.link.includes('/game-room')) item.link = item.link + `${randomize()}`;
+        return item;
+    })
+
+    const navigate = useNavigate()
+
+    const handleClick = (item: IMenuData) => {
+        navigate(item.link);
     }
-    ])
 
     return (
         <Layout title="Play Chess">
-            <Menu items={menuData} />
+            <Menu<IMenuData>
+                onClick={handleClick}
+                items={filteredData} />
 
         </Layout>
     )

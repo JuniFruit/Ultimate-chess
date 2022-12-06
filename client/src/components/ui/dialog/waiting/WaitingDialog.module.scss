@@ -6,17 +6,18 @@
         @apply fixed inset-0 flex items-center justify-center p-4 z-50;
 
         .panel_wrapper {
-            @apply w-full max-w-sm bg-wooden-800 px-5 py-3 rounded-lg shadow animate-fadeIn;
+            @apply w-full max-w-sm bg-main-900 px-5 py-3 rounded-lg shadow animate-fadeIn;
             animation-duration: .2s;
 
             .panel_title {
-                @apply text-center text-opacity-70 my-2;
-                font-weight: 500;
+                @apply text-center text-opacity-90 my-2 text-white;
+                font-weight: 700;
                 font-size: 1.2rem;
             }
 
             .panel_msg {
-                @apply text-sm text-center text-opacity-70 my-5;
+                @apply text-sm text-center text-opacity-80 my-5 text-white;
+                font-weight: 600
             }
 
             >img {

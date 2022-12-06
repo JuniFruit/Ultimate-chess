@@ -11,7 +11,7 @@ export interface IPackPath extends ISpritesObj {
 export interface IPack {
     id: number;
     packPath: IPackPath
-    name: string;
+    title: string;
     sysName: string;
     preview: string;
     owner: IUser[] | []

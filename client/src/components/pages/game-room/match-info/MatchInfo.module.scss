@@ -1,7 +1,37 @@
 
 
 .match_info_wrapper {
-    @apply bg-wooden-800 rounded-2xl mt-5 shadow animate-slideInRight;
+    @apply bg-main-900 rounded-2xl mt-5 shadow overflow-hidden animate-slideInRight;
     width: 40%;
     min-height: calc(var(--cellSize) * 7);
+
+    .match_header {
+        background-color: rgba(0, 0, 0, 0.200);
+
+        .match_buttons {
+            @apply flex;
+            flex: 1 1;         
+            
+          
+            .button {
+                @apply flex flex-col py-2 px-4 gap-2 text-white items-center;    
+                flex-basis: (100% / 4);            
+                >svg {
+                    @apply text-white text-base;
+                }
+            
+                &:hover {
+                    @apply text-opacity-75;
+                    >svg {
+                        @apply text-opacity-75;
+                    }
+                }
+            }
+
+            .button_active {
+                @apply bg-main-900;
+            }
+        }
+        
+    }
 }

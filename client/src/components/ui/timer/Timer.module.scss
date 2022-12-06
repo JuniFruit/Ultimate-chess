@@ -1,14 +1,14 @@
 
 
 .timer_wrapper {
-    @apply inline-flex text-base items-center bg-wooden-700 w-max rounded-2xl px-2 justify-center;
+    @apply inline-flex text-base items-center bg-main-900 w-max rounded-2xl px-2 justify-center;
     width: 10rem;
 
     >span {
-        @apply h-max;
+        @apply h-max text-white;
         width: 4rem;
     }
     >svg {
-        @apply w-10 h-10;
+        @apply w-10 h-10 text-complimentary;
     }
 }

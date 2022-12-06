@@ -2,14 +2,14 @@
     @apply relative block;
 
     >input {
-        @apply rounded-lg py-3 px-2 outline-none appearance-none block text-black shadow-md transition-shadow bg-wooden-800 w-full;
+        @apply rounded-lg py-3 px-2 outline-none appearance-none block text-white shadow-md transition-shadow bg-main-700 w-full;
         
         &:focus {
             @apply shadow outline-none
         }
         
         &::placeholder {
-            @apply text-black opacity-60;
+            @apply text-main-200 opacity-40;
            
         }
     }

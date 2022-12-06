@@ -1,11 +1,12 @@
 
 
 .button_wrapper {
-    @apply animate-slideInLeft;
+    @apply animate-slideInRight w-full;
     
     >div {
-        @apply bg-wooden-600 p-3 w-full rounded-lg transition-all duration-150;
+        @apply bg-complimentary  text-white text-opacity-90 p-3 w-full rounded-lg transition-all duration-150;
         font-size: 1.2rem;
+        font-weight: 600;
 
         &:hover,
         &:focus {

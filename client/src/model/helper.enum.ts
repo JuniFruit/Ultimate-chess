@@ -16,5 +16,6 @@ export enum GameOver {
 }
 
 export enum FENs {
-    INIT = 'rnbqkbnr/pppppppp/8/8/P1N1NP2/8/PP1PP1PP/R1BQKB1R/ w'
+    INIT = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w',
+    KING_VS_ROOK_KNIGHT = '8/8/3k1r2/8/8/3Kn3/8/8 w',
 }

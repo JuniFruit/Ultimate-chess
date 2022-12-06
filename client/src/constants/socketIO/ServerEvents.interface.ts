@@ -1,8 +1,8 @@
 import { IPlayerInfo } from "../../components/ui/player/PlayerInfo.interface";
-import { IBoard, IBoardStates } from "../../model/Board";
+import { IBoardStates } from "../../model/Board";
 import { Colors } from "../../model/colors.enum";
 import { Results } from "../../model/helper.enum";
-import { IMove, IMovePayload } from "./ClientEvents.interface";
+import { IMovePayload } from "./ClientEvents.interface";
 
 export interface IBoardData {
     boardFEN: string;
@@ -23,7 +23,7 @@ export interface IResultPayload {
 }
 
 export interface IOServerEvents {
-    readyToStart: ({}:IStartPayload) => void;
+    updateGame: ({}:IStartPayload) => void;
     noOpponent: () => void;
     move: (payload: IMovePayload) => void;
     gameError: (err:string) => void;

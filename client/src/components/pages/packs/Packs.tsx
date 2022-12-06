@@ -2,7 +2,8 @@ import { PackMenu } from "./packs-data/PacksMenu"
 import { FC, useState } from 'react';
 import { ImagePreview } from "../../ui/image-preview/ImagePreview";
 import { packApi } from "../../../store/api/pack.api";
-import styles from './Packs.module.scss';
+import styles from '../home/main-menu/Menu.module.scss';
+
 import { Layout } from "../../layout/Layout";
 
 const Packs: FC = () => {

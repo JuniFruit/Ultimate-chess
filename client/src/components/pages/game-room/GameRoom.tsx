@@ -12,6 +12,7 @@ import { ErrorModal } from "./modals/ErrorModal";
 import { Timer } from "../../ui/timer/Timer";
 import { GameOverModal } from "./modals/GameOverModal";
 import { Colors } from "../../../model/colors.enum";
+import { Board } from "../../../model/Board";
 
 
 const GameRoom: FC = () => {
@@ -28,7 +29,7 @@ const GameRoom: FC = () => {
                         {data.enemyUser && <>
                             <PlayerInfo key={data.enemyUser?.username} {...data.enemyUser} />
                             <Timer
-                                initTime={status.myColor === Colors.WHITE ? status.blackTimer : status.whiteTimer}
+                                initTime={status.myColor === Colors.WHITE ? field.board.states.blackTime : field.board.states.whiteTime}
                                 isStopped={status.myColor === field.board.states.currentPlayer
                                     || field.board.states.isFirstMove || field.board.states.isGameOver}
                                 onTimeout={move.handleTimeout}
@@ -48,7 +49,7 @@ const GameRoom: FC = () => {
 
                             <PlayerInfo key={data.clientUser?.username} {...data.clientUser} />
                             <Timer
-                                initTime={status.myColor === Colors.WHITE ? status.whiteTimer : status.blackTimer}
+                                initTime={status.myColor === Colors.WHITE ? field.board.states.whiteTime : field.board.states.blackTime}
                                 isStopped={status.myColor !== field.board.states.currentPlayer
                                     || field.board.states.isFirstMove || field.board.states.isGameOver}
                                 onTimeout={move.handleTimeout} />

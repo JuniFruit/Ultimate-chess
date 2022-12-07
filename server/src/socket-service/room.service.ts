@@ -3,9 +3,8 @@ import { GameRules } from '../model/gameRules'
 import { boardApi } from '../model/board';
 import { IClientEvents } from '../constants/socketIO/ClientEvents.interface';
 import { IServerEvents, IStartData } from '../constants/socketIO/ServerEvents.interface';
-import { Errors } from '../../../client/src/constants/constants';
+import { Errors, Requests } from '../../../client/src/constants/constants';
 import { IPlayer, Player } from '../../../client/src/model/Player';
-import { IBoard } from '../../../client/src/model/Board';
 import { IBoardData } from '../../../client/src/constants/socketIO/ServerEvents.interface';
 
 const ROOM_INFO = new Map()
@@ -59,6 +58,10 @@ export const RoomService = {
             opponentUser: socket.data.opponentUser,
             boardData: board
         }
+    },
+
+    onRequest(socket: Socket<IClientEvents, IServerEvents>, payload: Requests) {
+        socket.broadcast.emit("inGameRequest", payload);
     },
 
     clearPlayers(room:string) {

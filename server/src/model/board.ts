@@ -16,7 +16,7 @@ export const boardApi = (roomId: string) => {
 
     const createBoard = () => {
         const board = new Board();
-        board.startNewGame(FENs.KING_VS_ROOK_KNIGHT);
+        board.startNewGame(FENs.INIT);
         board.updateAllLegalMoves();
         board.states.whiteTime = getInitTime(roomId);
         board.states.blackTime = getInitTime(roomId);
@@ -80,7 +80,6 @@ export const boardApi = (roomId: string) => {
         const board: IBoard = ROOM_GAME_BOARDS.get(roomId);
         updateTime(board);
         const timer = player === Colors.BLACK ? 'blackTime' : 'whiteTime';
-        console.log(board.states);
         return board.states[timer] <= 0;
     }
 

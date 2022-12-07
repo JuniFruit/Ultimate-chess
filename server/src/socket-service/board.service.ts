@@ -4,8 +4,9 @@ import { boardApi } from '../model/board';
 import { IClientEvents } from '../constants/socketIO/ClientEvents.interface';
 import { IServerEvents } from '../constants/socketIO/ServerEvents.interface';
 import { Results } from '../../../client/src/model/helper.enum';
-import { Colors } from '../../../client/src/model/colors.enum';
 import { RoomService } from './room.service';
+import { Requests } from '../../../client/src/constants/constants';
+import { Colors } from '../../../client/src/model/colors.enum';
 
 export const BoardService = {
     handleMove(socket: Socket<IClientEvents, IServerEvents>, move: IMove, ioServer: Server<IClientEvents, IServerEvents>) {
@@ -44,10 +45,22 @@ export const BoardService = {
             currentPlayer
         }
         )
+    },    
+    async onConfirmRequest(ioServer: Server<IClientEvents, IServerEvents>, payload: Requests, roomId:string) {
+        
+        if (payload === Requests.DRAW) return ioServer.in(roomId).emit("results", {
+            result: Results.DRAW,
+            currentPlayer: Colors.WHITE
+        });
 
+        if (payload === Requests.REMATCH) {
+            const boardData = boardApi(roomId).createBoard();
+            const sockets = await ioServer.in(roomId).fetchSockets()
+            sockets.forEach(socket => socket.emit("updateGame", RoomService.getUpdateGamePayload(socket, boardData)));
+
+        }
 
     },
-
     
 
     onGameOver(roomId:string) {

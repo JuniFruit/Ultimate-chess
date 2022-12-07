@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from 'react';
-import { IResultPayload } from '../../../../constants/socketIO/ServerEvents.interface';
+import { Requests } from '../../../../constants/constants';
 import { GameOver } from '../../../../model/helper.enum';
 
 export interface IErrorModal {
@@ -9,5 +9,10 @@ export interface IErrorModal {
 
 export interface IGameOverModal {
     resultMsg: GameOver,
-    onRematch?: () => void;
+    onRematch: () => void;
+}
+
+export interface IConfirmModal {   
+    onConfirm: (arg: Requests) => void;
+    request: Requests;
 }

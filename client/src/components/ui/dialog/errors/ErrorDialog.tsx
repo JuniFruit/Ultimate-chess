@@ -1,6 +1,6 @@
 import { FC, useState } from 'react'
 import { Dialog } from '@headlessui/react'
-import styles from '../waiting/WaitingDialog.module.scss';
+import styles from '../Dialog.module.scss';
 import { IDialog } from '../Dialog.interface';
 import { Button } from '../../button/Button';
 import { mockups } from '../../../../assets/mockups/images';

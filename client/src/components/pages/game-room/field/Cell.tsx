@@ -1,6 +1,5 @@
 import { FC, useState, DragEvent } from "react";
 import { Piece } from "../../../ui/piece/Piece";
-import PromotionWindow from "../../../ui/piece/promotion/PromotionWindow";
 import { ICellComponent } from "./Cell.interface";
 
 import styles from './Field.module.scss';
@@ -20,7 +19,6 @@ export const Cell: FC<ICellComponent> = (
     const [isDraggedOver, setIsDraggedOver] = useState(false);
 
     const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
-        // if (!isAvailable) return;
         e.preventDefault();
         setIsDraggedOver(true);
     }

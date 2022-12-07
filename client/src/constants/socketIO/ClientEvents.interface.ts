@@ -1,4 +1,5 @@
 import { FigureTypes } from "../../model/figures/Figures";
+import { Requests } from "../constants";
 
 export interface IMoveOptions {
     isPromotion?: boolean;
@@ -26,8 +27,13 @@ export interface IMovePayload {
     }
 }
 
+
+
 export interface IOClientEvents {
     joinGameRoom: (roomId: string) => void;
     sendMove: ({ }: IMove) => void;
     timeout: () => void;
+    inGameRequest: (payload: Requests) => void;
+    confirmRequest: (payload: Requests) => void;
+    resign: () => void;
 }

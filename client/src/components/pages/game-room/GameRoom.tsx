@@ -12,8 +12,8 @@ import { ErrorModal } from "./modals/ErrorModal";
 import { Timer } from "../../ui/timer/Timer";
 import { GameOverModal } from "./modals/GameOverModal";
 import { Colors } from "../../../model/colors.enum";
-import { Board } from "../../../model/Board";
-
+import { Requests } from "../../../constants/constants";
+import { ConfirmModal } from "./modals/ConfirmModal";
 
 const GameRoom: FC = () => {
 
@@ -64,7 +64,12 @@ const GameRoom: FC = () => {
             </div>
             {!status.isReadyToStart && status.isConnected ? <WaitingModal /> : null}
             {data.error && <ErrorModal errorMsg={data.error} errorHandler={data.setError} />}
-            {status.result && <GameOverModal resultMsg={status.result} />}
+            {status.result && <GameOverModal resultMsg={status.result} onRematch={() => field.handleSendRequest(Requests.REMATCH)} />}
+            {data.request === Requests.REMATCH
+                || data.request === Requests.RESIGN
+                ? <ConfirmModal request={data.request} onConfirm={field.handleRequestConfirm} />
+                : null
+            }
         </Layout>
     )
 }

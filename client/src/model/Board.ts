@@ -33,7 +33,8 @@ export interface IBoard {
     swapPlayer: () => void;
     clearBoard: () => void;
     addLostFigure: (figure: IFigure) => void;
-    addMove: (move: ICell) => void
+    addMove: (move: ICell) => void;
+    popFigure: (figure:IFigure) => void
     convertToFEN: () => string;
 }
 
@@ -153,15 +154,16 @@ export class Board implements IBoard {
     }
 
     isStalemate() {
+        if (this.states.isCheck) return false;
         return !this.figures.some(figure => {
-            return figure.color === this.states.currentPlayer && figure.legalMoves.length && !this.states.isCheck
+            console.log(figure)
+            return figure.color === this.states.currentPlayer && figure.legalMoves.length
         })
     }
 
     isSufficientMaterial(player: Colors) {
         const playerMaterial = this.figures.filter(figure => figure.color === player);
-
-        if (playerMaterial.every(figure => figure.type === FigureTypes.KING)) return false;
+        if (playerMaterial.length === 1 && playerMaterial.every(figure => figure.type === FigureTypes.KING)) return false;
         if (playerMaterial.length === 2
             && playerMaterial.every(figure => figure.type === FigureTypes.KING || figure.type === FigureTypes.BISHOP)) return false;
         if (playerMaterial.length === 2
@@ -186,10 +188,16 @@ export class Board implements IBoard {
     }
 
     addLostFigure(figure: IFigure) {
+        this.popFigure(figure);
         this.states.lostFigures.push({
             color: figure.color,
             type: figure.type
         });
+    }
+
+    popFigure(figure: IFigure) {
+        const ind = this.figures.findIndex(piece => piece === figure);
+        this.figures.splice(ind, 1);
     }
 
     clearBoard() {
@@ -307,7 +315,9 @@ export class Board implements IBoard {
         if (!start || !target) return;
 
         if (options?.isPromotion) {
+            this.popFigure(start.figure!);
             start.figure = this.createFigure(options.figureToPromote!, start.x, start.y);
+            this.figures.push(start.figure!);
         }
 
         start.moveFigure(target, this);

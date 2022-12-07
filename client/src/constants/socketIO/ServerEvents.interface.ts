@@ -2,6 +2,7 @@ import { IPlayerInfo } from "../../components/ui/player/PlayerInfo.interface";
 import { IBoardStates } from "../../model/Board";
 import { Colors } from "../../model/colors.enum";
 import { Results } from "../../model/helper.enum";
+import { Requests } from "../constants";
 import { IMovePayload } from "./ClientEvents.interface";
 
 export interface IBoardData {
@@ -28,4 +29,5 @@ export interface IOServerEvents {
     move: (payload: IMovePayload) => void;
     gameError: (err:string) => void;
     results: (payload: IResultPayload) => void;
+    inGameRequest: (payload: Requests) => void;
 }

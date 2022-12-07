@@ -1,8 +1,7 @@
 import { FC,useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import ErrorDialog from '../../../ui/dialog/errors/ErrorDialog';
 import GameOverDialog from '../../../ui/dialog/game-over/GameOverDialog';
-import { IErrorModal, IGameOverModal } from './Modal.interface';
+import { IGameOverModal } from './Modal.interface';
 
 export const GameOverModal: FC<IGameOverModal> = ({resultMsg, onRematch}) => {
 
@@ -18,7 +17,7 @@ export const GameOverModal: FC<IGameOverModal> = ({resultMsg, onRematch}) => {
     return (
         <>
             <GameOverDialog
-                onDialog={onRematch!}
+                onDialog={onRematch}
                 message={resultMsg}
                 isOpen={dialogOpen}
                 onClose={handleClose} />

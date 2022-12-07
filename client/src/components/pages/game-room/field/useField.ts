@@ -53,12 +53,14 @@ export const useField = ({ board, setBoard, ioMoveHandlers, myColor }: IUseField
 
         if (!lastChosenCell || !selectedCell) return;
         setSelectedCell(prev => {
+            board.popFigure(prev!.figure!);
             prev!.figure = board.createFigure(myColor === Colors.BLACK ? figureType : figureType.toUpperCase(), prev!.x, prev!.y);
+            board.figures.push(prev!.figure!)
             return prev;
         })
-
         handleMove(lastChosenCell, { isPromotion: true, figureToPromote: myColor === Colors.BLACK ? figureType : figureType.toUpperCase() });
         setIsPromotion(prev => false);
+
         setSelectedCell(prev => null);
 
 
@@ -94,14 +96,14 @@ export const useField = ({ board, setBoard, ioMoveHandlers, myColor }: IUseField
     useEffect(() => {
 
         if (!board.cells.length) return;
-
+        console.log(board);
         console.log(board.states.currentPlayer, myColor)
         if (board.isKingChecked()) {
             console.log(board.isCheckMate())
         } 
-        console.log(board.isDraw(), 'draw');
+     
 
-    }, [board, setBoard])
+    }, [board.states.currentPlayer])
 
     return {
         handlers: {

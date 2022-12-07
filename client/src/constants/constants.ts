@@ -17,3 +17,14 @@ export enum MatchDuration {
     THREE_MIN = 180,
     TEN_MIN = 600, 
 }
+
+export enum Requests {
+    DRAW = 'draw',
+    REMATCH = 'rematch',
+    RESIGN = 'resign'
+}
+
+export enum RequestMessages {
+    REMATCH = 'Your opponent requests a rematch. Do you want to play again?',
+    RESIGN = "Are you sure you want to resign?"
+}

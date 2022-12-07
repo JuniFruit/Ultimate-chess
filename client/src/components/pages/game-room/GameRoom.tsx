@@ -59,7 +59,13 @@ const GameRoom: FC = () => {
 
                     </div>
                 </div>
-                <MatchInfo />
+                <MatchInfo 
+                    onRequestDraw={() => field.handleSendRequest(Requests.DRAW)}
+                    onRequestResign={() => field.handleRequestConfirm(Requests.RESIGN)}
+                    onConfirmDraw={() => {}}
+                    request={data.request}
+                    states={field.board.states}
+                />
 
             </div>
             {!status.isReadyToStart && status.isConnected ? <WaitingModal /> : null}

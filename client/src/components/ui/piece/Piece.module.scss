@@ -11,3 +11,7 @@
         @apply bg-transparent w-full h-full;
     }
 }
+
+.piece_tiny {
+    @apply w-5 h-5 rounded-md bg-main-800;    
+}

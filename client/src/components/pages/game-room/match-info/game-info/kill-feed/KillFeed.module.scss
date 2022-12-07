@@ -1,0 +1,25 @@
+
+
+.kill_wrapper {
+    @apply grid p-2;
+    grid-template-columns: repeat(2, 1fr);
+
+    >div {
+     
+        >h3 {
+            @apply text-center text-white;
+            font-weight: 600;
+        }
+
+        .pieces {
+            @apply flex gap-1 flex-wrap;
+
+            >img {
+                @apply animate-hover_effect;
+                animation-direction: alternate;
+            }
+        }
+
+    } 
+    
+}

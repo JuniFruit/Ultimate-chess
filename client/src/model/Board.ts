@@ -3,7 +3,7 @@ import { Cell } from "./Cell";
 import { ICell } from "./Cell"
 import { Colors } from "./colors.enum";
 import { Bishop } from "./figures/Bishop";
-import { FigureTypes, IFigure, ILostFigure, ISpritesObj } from "./figures/Figures";
+import { FigureTypes, IFigure, ILostFigure, IMovedFigure, ISpritesObj } from "./figures/Figures";
 import { King } from "./figures/King";
 import { Knight } from "./figures/Knight";
 import { Pawn } from "./figures/Pawn";
@@ -12,8 +12,7 @@ import { Rook } from "./figures/Rook";
 import { convertToChar, returnColorCell } from "./helpers";
 
 export interface IBoard {
-    cells: ICell[][];
-    moves: ICell[];   
+    cells: ICell[][];   
     figures: IFigure[];
     states: IBoardStates;
     startNewGame: (fen: string) => void;
@@ -39,14 +38,14 @@ export interface IBoard {
 }
 
 export interface IBoardStates {
-    currentPlayer: Colors;
-    // moves: ICell[];
+    currentPlayer: Colors;    
     lostFigures: ILostFigure[];
     isCheck: boolean;
     isFirstMove: boolean;
     isGameOver: boolean;    
     whiteTime: number;
     blackTime: number;
+    moves: IMovedFigure[];
     lastMoveTime?:number;
 }
 
@@ -54,12 +53,12 @@ export interface IBoardStates {
 
 export class Board implements IBoard {
     cells: ICell[][] = []
-    moves: ICell[] = [];
     figures: IFigure[] = [];
 
     states: IBoardStates = {
         currentPlayer: Colors.WHITE,
         lostFigures: [],
+        moves: [],
         isCheck: false,        
         isGameOver: false,
         isFirstMove: true,
@@ -117,7 +116,6 @@ export class Board implements IBoard {
         newBoard.figures = this.figures;
         newBoard.mySprites = this.mySprites;
         newBoard.enemySprites = this.enemySprites;
-        newBoard.moves = this.moves;       
         newBoard.states = this.states;
         return newBoard;
     }
@@ -184,14 +182,23 @@ export class Board implements IBoard {
     }
 
     addMove(move: ICell) {
-        this.moves.push(move);
+
+        this.states.moves.push({
+            type: move.figure?.type!,
+            color: move.figure?.color!,
+            x: move.figure?.x!,
+            y: move.figure?.y!,
+            sprite: move.figure?.sprite
+
+        });
     }
 
     addLostFigure(figure: IFigure) {
         this.popFigure(figure);
         this.states.lostFigures.push({
             color: figure.color,
-            type: figure.type
+            type: figure.type,
+            sprite: figure.sprite
         });
     }
 
@@ -201,8 +208,7 @@ export class Board implements IBoard {
     }
 
     clearBoard() {
-        this.cells = [];
-        this.moves = [];
+        this.cells = [];      
         this.figures = [];
         this.states.isCheck = false;
     }

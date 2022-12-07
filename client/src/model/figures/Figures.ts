@@ -37,7 +37,13 @@ export interface IFigure {
     addLegalMove: (cell: ICell) => boolean;
 }
 
-export interface ILostFigure extends Pick<IFigure, 'type' | 'color' >{}
+export interface ILostFigure extends Pick<IFigure, 'type' | 'color' | 'sprite' >{};
+
+export interface IMovedFigure extends ILostFigure {
+    x: number;
+    y: number;
+    
+}
 
 export type ISpritesObj = typeof SPRITES;
 

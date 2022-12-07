@@ -3,10 +3,18 @@ import { IoGameControllerOutline, IoChatboxEllipsesOutline } from "react-icons/i
 import { GiDiceShield, GiKneeling } from "react-icons/gi";
 import styles from './MatchInfo.module.scss';
 import { Button } from "../../../ui/button/Button";
+import { IMatchInfo } from "./MatchInfo.interfact";
+import { GameInfo } from "./game-info/GameInfo";
 
 type activeWindow = 'game' | 'chat';
 
-const MatchInfo: FC = () => {
+const MatchInfo: FC<IMatchInfo> = ({
+    onConfirmDraw,
+    onRequestDraw,
+    onRequestResign,
+    request,
+    states
+}) => {
     const [activeWindow, setActiveWindow] = useState<activeWindow>('game');
 
     const handleSetWindow = (e: MouseEvent<HTMLButtonElement>) => {
@@ -33,11 +41,13 @@ const MatchInfo: FC = () => {
                         <IoChatboxEllipsesOutline />
                     </Button>
                     <Button
+                        onClick={onRequestDraw}
                         className={styles.button}>
                         <span>Request Draw</span>
                         <GiDiceShield />
                     </Button>
                     <Button
+                        onClick={onRequestResign}
                         className={styles.button}>
                         <span>Resign</span>
                         <GiKneeling />
@@ -45,7 +55,7 @@ const MatchInfo: FC = () => {
                 </div>
             </div>
             <div className={styles.match_info_body}>
-
+                <GameInfo {...{...states}} />
             </div>
 
         </div>

@@ -1,10 +1,10 @@
-import { FC, useState, DragEvent } from "react";
+import { FC, useState, DragEvent, memo } from "react";
 import { Piece } from "../../../ui/piece/Piece";
 import { ICellComponent } from "./Cell.interface";
 
 import styles from './Field.module.scss';
 
-export const Cell: FC<ICellComponent> = (
+export const Cell: FC<ICellComponent> = memo((
     {
         color,
         figure,
@@ -45,4 +45,4 @@ export const Cell: FC<ICellComponent> = (
 
         </div>
     )
-}
+})

@@ -27,13 +27,16 @@ export interface IMovePayload {
     }
 }
 
-
+export interface IMessage {
+    body: string;   
+}
 
 export interface IOClientEvents {
     joinGameRoom: (roomId: string) => void;
-    sendMove: ({ }: IMove) => void;
+    sendMove: (arg: IMove) => void;
     timeout: () => void;
     inGameRequest: (payload: Requests) => void;
     confirmRequest: (payload: Requests) => void;
     resign: () => void;
+    message: (payload: IMessage) => void;
 }

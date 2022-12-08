@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { useParams } from "react-router-dom";
 import { Layout } from "../../layout/Layout";
-import { Field } from "./field/Field";
+import { GameField } from "./field/Field";
 import { useGameRoom } from "./useGameRoom";
 import styles from './GameRoom.module.scss';
 import MatchInfo from "./match-info/MatchInfo";
@@ -37,7 +37,7 @@ const GameRoom: FC = () => {
                         </>
                         }
                     </div>
-                    <Field
+                    <GameField
                         board={field.board}
                         setBoard={field.setBoard}
                         ioMoveHandlers={move}
@@ -61,8 +61,9 @@ const GameRoom: FC = () => {
                 </div>
                 <MatchInfo 
                     onRequestDraw={() => field.handleSendRequest(Requests.DRAW)}
-                    onRequestResign={() => field.handleRequestConfirm(Requests.RESIGN)}
-                    onConfirmDraw={() => {}}
+                    onRequestResign={() => field.handleSendRequest(Requests.RESIGN)}
+                    onConfirmDraw={() => field.handleRequestConfirm(Requests.DRAW)}
+                    onDeclineDraw={() => data.setRequest(null)}
                     request={data.request}
                     states={field.board.states}
                 />

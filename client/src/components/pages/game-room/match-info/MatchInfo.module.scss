@@ -34,6 +34,13 @@
         }
         
     }
+    .chat_wrapper_active {
+        @apply opacity-100 pointer-events-auto h-fit w-full;
+    }
+
+    .chat_wrapper_disabled {
+        @apply opacity-0 pointer-events-none h-0 w-0;
+    }
 
 
     

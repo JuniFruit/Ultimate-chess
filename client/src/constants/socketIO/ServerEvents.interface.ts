@@ -3,7 +3,7 @@ import { IBoardStates } from "../../model/Board";
 import { Colors } from "../../model/colors.enum";
 import { Results } from "../../model/helper.enum";
 import { Requests } from "../constants";
-import { IMovePayload } from "./ClientEvents.interface";
+import { IMessage, IMovePayload } from "./ClientEvents.interface";
 
 export interface IBoardData {
     boardFEN: string;
@@ -23,6 +23,11 @@ export interface IResultPayload {
     currentPlayer: Colors
 }
 
+export interface IMessagePayload extends IMessage {
+    username: string;
+    timestamp: number;
+}
+
 export interface IOServerEvents {
     updateGame: ({}:IStartPayload) => void;
     noOpponent: () => void;
@@ -30,4 +35,5 @@ export interface IOServerEvents {
     gameError: (err:string) => void;
     results: (payload: IResultPayload) => void;
     inGameRequest: (payload: Requests) => void;
+    message: (payload: IMessagePayload) => void;
 }

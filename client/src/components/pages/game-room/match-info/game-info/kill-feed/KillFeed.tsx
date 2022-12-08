@@ -12,9 +12,10 @@ export const KillFeed: FC<IKillFeed> = ({ lostFigures, currentPlayer }) => {
             <div>
                 <h3>Black Losses</h3>
                 <div className={styles.pieces}>
-                    {blackLosses.length ? blackLosses.map(piece => (
+                    {blackLosses.length ? blackLosses.map((piece,ind) => (
                         <PieceInfo
                             {...{ ...piece }}
+                            key={ind}
                         />
                     )) : null
                     }
@@ -25,9 +26,10 @@ export const KillFeed: FC<IKillFeed> = ({ lostFigures, currentPlayer }) => {
             <div>
                 <h3>White Losses</h3>
                 <div className={styles.pieces}>
-                    {whiteLosses.length ? whiteLosses.map(piece => (
+                    {whiteLosses.length ? whiteLosses.map((piece, ind) => (
                         <PieceInfo
                             {...{ ...piece }}
+                            key={ind}
                         />
                     )) : null}
                 </div>

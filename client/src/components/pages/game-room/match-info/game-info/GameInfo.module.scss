@@ -1,6 +1,8 @@
 
 
 .game_info_wrapper {
-    @apply flex flex-col justify-between h-full;
+    @apply flex flex-col;
+    height: var(--game-info-h);
+  
     
 }

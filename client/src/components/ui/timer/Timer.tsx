@@ -11,9 +11,10 @@ export const Timer: FC<ITimer> = ({ initTime, isStopped, onTimeout }) => {
     }, [initTime])
 
     useEffect(() => {
-        if (isStopped) return;
-        if (currentTime <= 0) return;
-        const interval = setInterval(() => {
+        let interval:any;
+        if (isStopped) return clearInterval(interval);
+        if (currentTime <= 0) return clearInterval(interval);
+        interval = setInterval(() => {
             setCurrentTime(prev => prev -= 1);
         }, 1000)
 

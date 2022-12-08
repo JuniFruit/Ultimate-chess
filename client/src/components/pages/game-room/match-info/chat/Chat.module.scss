@@ -1,0 +1,22 @@
+
+
+.chat_box_wrapper {
+    @apply px-1 py-2;
+    height: var(--game-info-h);
+
+    .messages_wrapper {
+        @apply overflow-y-scroll;
+        height: calc(var(--game-info-h) - 1rem);
+        scrollbar-width: 0px;
+
+        &::-webkit-scrollbar {
+            width: 0px;
+        }
+    }
+    .chat_form {
+        @apply flex gap-2;
+        >div {
+            width: 90%;
+        }
+    }
+}

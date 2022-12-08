@@ -1,9 +1,27 @@
 
 
 .move_wrapper {
-    
+    @apply my-2;
+    height: 70%;   
+
     >h3 {
         @apply text-center text-white;
         font-weight: 600;
     }
+
+    >ol {
+        @apply text-white flex items-start flex-col gap-2 px-5 w-full h-full overflow-scroll;
+        scrollbar-width: 0;
+        >li {
+            @apply flex gap-3 bg-main-700 w-full items-center px-1 rounded-md;
+            >span:first-child {
+                @apply opacity-70;
+                font-weight: 200;
+            }
+        }
+        &::-webkit-scrollbar {
+            width: 0px;
+        }
+    }
+
 }

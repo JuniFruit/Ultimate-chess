@@ -1,0 +1,17 @@
+
+
+.handler_wrapper {
+    @apply p-2;
+    >h4 {
+        @apply text-white;
+        font-weight: 300;
+    }
+
+    .buttons {
+        @apply flex gap-2 mt-2;
+
+        >button {
+            @apply bg-transparent hover:text-opacity-70;
+        }
+    }
+}

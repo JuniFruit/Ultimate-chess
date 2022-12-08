@@ -8,7 +8,7 @@ import { useField } from './useField';
 
 
 
-export const Field: FC<IField> = ({ board, setBoard, ioMoveHandlers, isFlipped, myColor }) => {
+export const GameField: FC<IField> = ({ board, setBoard, ioMoveHandlers, isFlipped, myColor }) => {
 
     const { handlers, status } = useField({ board, setBoard, ioMoveHandlers, myColor })
 

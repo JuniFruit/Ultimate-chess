@@ -5,6 +5,7 @@ export interface IMatchInfo {
     onRequestDraw: () => void;
     onRequestResign: () => void;
     onConfirmDraw: () => void;
+    onDeclineDraw: () => void;
     request: Requests | null;
     states: IGameInfo;
 }

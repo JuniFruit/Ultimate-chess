@@ -1,0 +1,27 @@
+
+
+.message_item_wrapper {
+    @apply px-2 py-1 relative rounded-lg my-2 shadow;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.0));   
+
+    >h3 {
+        @apply text-secondary;
+        font-size: .9rem;
+    }
+
+    >p {
+        @apply break-words text-white;
+        font-size: 1rem;
+        font-weight: 300;
+    }
+    .client_name {
+        @apply text-complimentary;
+    }
+
+    >span {
+        @apply text-white;
+        font-size: .75rem;
+        font-weight: 200;
+        font-style: italic;
+    }   
+}

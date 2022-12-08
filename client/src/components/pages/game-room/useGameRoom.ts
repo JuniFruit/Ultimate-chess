@@ -79,20 +79,24 @@ export const useGameRoom = (id?: string) => {
             return payload.currentPlayer === Colors.BLACK ? GameOver.WHITE : GameOver.BLACK;
         });
         setBoard(prev => prev.getCopyBoard())
-    }, [board, setBoard])
+    }, [board])
 
     const handleTimeout = useCallback(() => {
         ioClient.emit("timeout")
     }, [board])
    
     const handleRequestConfirm = useCallback((request: Requests) => {
+        console.log(request)
+        clearStates()
         if (request === Requests.RESIGN) return ioClient.emit("resign");
         ioClient.emit("confirmRequest", request);
 
     }, [request])
 
     const handleSendRequest = useCallback((request: Requests) => {
-        ioClient.emit("inGameRequest", request);
+        if (request === Requests.RESIGN) return setRequest(Requests.RESIGN);
+        ioClient.emit("inGameRequest", request);        
+
     }, [])
 
     useEffect(() => {
@@ -141,8 +145,7 @@ export const useGameRoom = (id?: string) => {
         },
         status: {
             isConnected,
-            isReadyToStart,
-            setIsReadyToStart,
+            isReadyToStart,           
             isFlipped,
             myColor,
             result           

@@ -1,6 +1,6 @@
 
 
-export const Postitions  = [
+export const Positions  = [
     'a',
     'b',
     'c',

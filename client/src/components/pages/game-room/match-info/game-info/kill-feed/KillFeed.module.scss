@@ -1,7 +1,7 @@
 
 
 .kill_wrapper {
-    @apply grid p-2;
+    @apply grid p-2 h-1/3 my-2;
     grid-template-columns: repeat(2, 1fr);
 
     >div {

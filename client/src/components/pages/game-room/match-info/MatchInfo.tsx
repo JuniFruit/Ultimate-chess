@@ -5,6 +5,9 @@ import styles from './MatchInfo.module.scss';
 import { Button } from "../../../ui/button/Button";
 import { IMatchInfo } from "./MatchInfo.interfact";
 import { GameInfo } from "./game-info/GameInfo";
+import Chat from "./chat/Chat";
+import { DrawHandler } from "./footer/draw-handler/DrawHandler";
+import { Requests } from "../../../../constants/constants";
 
 type activeWindow = 'game' | 'chat';
 
@@ -12,6 +15,7 @@ const MatchInfo: FC<IMatchInfo> = ({
     onConfirmDraw,
     onRequestDraw,
     onRequestResign,
+    onDeclineDraw,
     request,
     states
 }) => {
@@ -54,9 +58,19 @@ const MatchInfo: FC<IMatchInfo> = ({
                     </Button>
                 </div>
             </div>
-            <div className={styles.match_info_body}>
-                <GameInfo {...{...states}} />
+
+            {activeWindow === 'game' ? <GameInfo {...{ ...states }} /> : null}
+
+            <div
+                className={`${activeWindow === 'chat' ? styles.chat_wrapper_active : styles.chat_wrapper_disabled}`}
+            >
+                <Chat />
             </div>
+            <div className={styles.match_info_footer}>
+                {request === Requests.DRAW ? <DrawHandler onConfirm={onConfirmDraw} onDecline = {onDeclineDraw} /> : null}
+            </div>
+    
+
 
         </div>
     )

@@ -14,7 +14,7 @@ export const BoardService = {
         boardApi(room).moveFigure(move);
         if (boardApi(room).isTimeout(socket.data.color)) return this.onTimeout(ioServer, socket);
 
-        socket.broadcast.emit("move", {
+        socket.to(room).emit("move", {
             move: move,
             time: boardApi(room).getTime()
         });
@@ -60,6 +60,13 @@ export const BoardService = {
 
         }
 
+    },
+
+    onResign(ioServer: Server<IClientEvents, IServerEvents>, room: string, player:Colors) {
+        ioServer.in(room).emit("results", {
+            result: Results.CHECKMATE,
+            currentPlayer: player
+        })
     },
     
 

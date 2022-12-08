@@ -61,7 +61,7 @@ export const RoomService = {
     },
 
     onRequest(socket: Socket<IClientEvents, IServerEvents>, payload: Requests) {
-        socket.broadcast.emit("inGameRequest", payload);
+        socket.to(socket.data.room).emit("inGameRequest", payload);
     },
 
     clearPlayers(room:string) {

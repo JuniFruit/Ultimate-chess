@@ -4,7 +4,7 @@
     @apply w-full h-min animate-slideInLeft shadow relative;
     
     .cells {
-        @apply flex flex-wrap border-main-800;
+        @apply flex flex-wrap border-main-800 relative;
         width: calc(8 * var(--cellSize));
         height: calc(8 * var(--cellSize));
         .cell {

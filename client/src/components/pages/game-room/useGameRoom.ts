@@ -38,7 +38,7 @@ export const useGameRoom = (id?: string) => {
         setMyColor(payload.color!);
         setIsFlipped(payload.color === Colors.BLACK);
         drawBoard(payload.boardData!);
-    }, [isConnected, setIsReadyToStart, isReadyToStart])
+    }, [isConnected, isReadyToStart])
 
     const handleSendMove = useCallback((move: IMove) => {
         ioClient.emit("sendMove", move)
@@ -51,11 +51,10 @@ export const useGameRoom = (id?: string) => {
         board.swapPlayer();
         board.states.blackTime = payload.time.black;
         board.states.whiteTime = payload.time.white;
-        board.updateAllLegalMoves();
        
         setBoard(prev => prev.getCopyBoard());
 
-    }, [board, setBoard])
+    }, [board])
 
     const clearStates = useCallback(() => {
         setRequest(null);
@@ -86,7 +85,6 @@ export const useGameRoom = (id?: string) => {
     }, [board])
    
     const handleRequestConfirm = useCallback((request: Requests) => {
-        console.log(request)
         clearStates()
         if (request === Requests.RESIGN) return ioClient.emit("resign");
         ioClient.emit("confirmRequest", request);

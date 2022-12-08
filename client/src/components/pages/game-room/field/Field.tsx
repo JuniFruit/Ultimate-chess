@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import { ICell } from "../../../../model/Cell";
+import { Piece } from '../../../ui/piece/Piece';
 import PromotionWindow from '../../../ui/piece/promotion/PromotionWindow';
 import { Cell } from "./Cell";
 import { IField } from "./Field.interface";
@@ -22,17 +23,26 @@ export const GameField: FC<IField> = ({ board, setBoard, ioMoveHandlers, isFlipp
                 {
                     board.cells.map((row, y) => {
                         return row.map((cell: ICell, x) => {
-                            let current = board.cells[direction(y)][direction(x)]
+                            let current: ICell = board.cells[direction(y)][direction(x)]
                             return (
-                                <Cell
-                                    color={current.color}
-                                    figure={current.figure}
-                                    cell={current}
-                                    onSelect={handlers.handleSelect}
-                                    selected={status.selectedCell}
-                                    isAvailable={current.isAvailable}
-                                    key={cell.x + cell.y}
-                                />
+                                <>
+                                    <Cell
+                                        color={current.color}
+                                        figure={current.figure}
+                                        cell={current}
+                                        onSelect={handlers.handleSelect}
+                                        selected={status.selectedCell}
+                                        isAvailable={current.isAvailable}
+                                        key={cell.x + cell.y}
+                                    />
+                                    {current.figure ? <Piece
+                                        sprite={current.figure?.sprite!}
+                                        x={direction(x)}
+                                        y={direction(y)}
+                                        key={current.figure.sprite}
+                                    /> : null
+                                    }
+                                </>
                             )
                         })
                     })

@@ -12,12 +12,7 @@
         }
 
         .pieces {
-            @apply flex gap-1 flex-wrap;
-
-            >img {
-                @apply animate-hover_effect;
-                animation-direction: alternate;
-            }
+            @apply flex gap-1 flex-wrap;            
         }
 
     } 

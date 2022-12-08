@@ -27,20 +27,22 @@ export const Cell: FC<ICellComponent> = memo((
         <div
             className={`${styles.cell} ${styles[color]} ${isSelected && styles.selected} ${isDraggedOver && styles.draggedOver}`}
             onClick={() => { onSelect(cell) }}
-            onDragEnter={handleDragOver}
-            onDragOver={handleDragOver}
-            onDragLeave={() => setIsDraggedOver(false)}
-            onDrop={() => { onSelect(cell); setIsDraggedOver(false) }}
-            onDragStart={(e) => { console.log(e); onSelect(cell) }}
-            onDragEnd={(e) => { onSelect(cell) }}
-            draggable
+            // onDragEnter={handleDragOver}
+            // onDragOver={handleDragOver}
+            // onDragLeave={() => setIsDraggedOver(false)}
+            // onDrop={() => { onSelect(cell); setIsDraggedOver(false) }}
+            // onDragStart={(e) => { onSelect(cell) }}
+            // onDragEnd={(e) => { onSelect(cell) }}
+            // draggable
         >
-            {
+            {/* {
                 figure && <Piece
                     sprite={figure.sprite!}
+                    x={figure.x}
+                    y={figure.y}
                     key={figure.sprite}
                 />
-            }
+            } */}
             {(isAvailable && selected) && <div className={styles.available_dot}></div>}
 
         </div>

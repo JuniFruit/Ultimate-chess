@@ -22,13 +22,13 @@ export class Pawn extends Figure implements IPawn {
         super(x, y, color, sprites);
         this.sprite = color === Colors.BLACK ? sprites?.blackPawn : sprites?.whitePawn;
         this.type = FigureTypes.PAWN;
-        this.isFirstMove = true;
+        this.isFirstMove = this.y === 1 || this.y === 6;    
      
     }
 
     moveFigure(target: ICell): void {
         super.moveFigure(target);
-        this.isFirstMove = this.y === 1 || this.y === 6;        
+             
     }
 
     getLegalMoves(board: IBoard) {

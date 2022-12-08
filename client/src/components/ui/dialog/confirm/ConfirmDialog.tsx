@@ -15,11 +15,12 @@ const ConfirmationDialog: FC<IDialog> = ({ message, onDialog, onClose, isOpen })
             <div className={styles.wrapper}>
                 <Dialog.Panel className={styles.panel_wrapper}>
                     <Dialog.Title className={styles.panel_title}>Confirm the action</Dialog.Title>
-                    <p className={styles.panel_msg}>
+                    <Dialog.Description className={styles.panel_msg}>
                         {message}
-                    </p>
+                    </Dialog.Description>
+
                     <div className={styles.panel_buttons}>
-                        <Button onClick={() => { onClose(); onDialog() }}>Confirm</Button>
+                        <Button onClick={() => { onDialog(); onClose() }}>Confirm</Button>
                         <Button onClick={() => { onClose() }}>Cancel</Button>
 
                     </div>

@@ -1,11 +1,13 @@
 
 
 .wrapper {
-    @apply bg-transparent cursor-grab;
+    @apply bg-transparent cursor-grab transition-transform duration-100 absolute top-0 left-0;
     cursor: -webkit-grab;
     cursor: -moz-grab;
-    width: calc(var(--cellSize) - .5rem);
-    height: calc(var(--cellSize) - .5rem);
+    padding: calc((var(--cellSize) / var(--cellSize)) - .5rem);
+    width: var(--cellSize);
+    height: var(--cellSize);
+    transform: translate(0%, 0%);
 
     >img {
         @apply bg-transparent w-full h-full;

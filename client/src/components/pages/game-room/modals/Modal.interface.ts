@@ -8,11 +8,12 @@ export interface IErrorModal {
 }
 
 export interface IGameOverModal {
-    resultMsg: GameOver,
+    resultMsg: GameOver | null,
     onRematch: () => void;
 }
 
 export interface IConfirmModal {   
     onConfirm: (arg: Requests) => void;
-    request: Requests;
+    request: Requests | null;
+    onClose: () => void;
 }

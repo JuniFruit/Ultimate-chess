@@ -7,6 +7,7 @@ export const ImagePreview:FC<{imageSrc?: string}> = ({imageSrc}) => {
         <div className={styles.wrapper}>
             {imageSrc && <img 
                 src={imageSrc}
+                
             />}
         </div>
     )

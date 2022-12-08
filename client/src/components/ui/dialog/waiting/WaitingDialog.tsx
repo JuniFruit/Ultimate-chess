@@ -16,9 +16,10 @@ const WaitingDialog: FC<IDialog> = ({ message, onDialog, isOpen, onClose }) => {
             <div className={styles.wrapper}>
                 <Dialog.Panel className={styles.panel_wrapper}>
                     <Dialog.Title className={styles.panel_title}>Waiting for an opponent</Dialog.Title>
-                    <p className={styles.panel_msg}>
+                    <Dialog.Description className={styles.panel_msg}>
                         {message}
-                    </p>
+                    </Dialog.Description>
+
                     <img src={mockups.waitingGIF} />
                     <div className={styles.panel_buttons}>
                         <Button onClick={() => { onDialog(); setIsCopied(true) }}>{isCopied ? 'Copied' : 'Copy'}</Button>

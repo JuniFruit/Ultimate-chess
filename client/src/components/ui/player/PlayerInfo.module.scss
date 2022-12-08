@@ -1,20 +1,20 @@
 
 
 .info_container {
-    @apply w-full bg-main-900 rounded-2xl p-2 shadow-md;
+    @apply w-full bg-main-900 rounded-2xl px-2 py-1 shadow-md;
 
     .info_wrapper {
         @apply flex gap-3;
 
         >div:first-child{
-            @apply w-11 h-11;
+            @apply w-10 h-10;
         }
         .stats_wrapper {
             @apply flex flex-col gap-2 text-white;
             font-weight: 600;
 
             >h3 {
-                @apply text-tiny;
+                @apply text-sm;
             }
             .stats {
                 @apply flex gap-3;

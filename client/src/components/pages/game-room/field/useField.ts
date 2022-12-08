@@ -38,8 +38,11 @@ export const useField = ({ board, setBoard, ioMoveHandlers, myColor }: IUseField
                     handleMove(cell);
                     setSelectedCell(prev => null);
                     return;
-                } else if (cell.figure) return setSelectedCell(prev => cell);
-            } else if (selectedCell.figure?.color === cell.figure?.color) return setSelectedCell(prev => cell);
+                }                
+                if (cell.figure) return setSelectedCell(prev => cell);
+            } 
+            if (cell === selectedCell) return setSelectedCell(prev => null); 
+            if (selectedCell.figure?.color === cell.figure?.color) return setSelectedCell(prev => cell);
             return setSelectedCell(prev => null);
         } else {
             if (!cell.figure) return;
@@ -89,15 +92,16 @@ export const useField = ({ board, setBoard, ioMoveHandlers, myColor }: IUseField
 
     useEffect(() => {
         if (!selectedCell) return;
-        if (selectedCell.figure?.color !== myColor) return;
+        if (selectedCell.figure?.color !== myColor || board.states.currentPlayer !== myColor) return;
         showAvailableMoves(selectedCell);
-    }, [selectedCell, setSelectedCell])
+    }, [selectedCell, board.states.currentPlayer])
 
     useEffect(() => {
 
         if (!board.cells.length) return;
         console.log(board);
         console.log(board.states.currentPlayer, myColor)
+        board.updateAllLegalMoves();
         if (board.isKingChecked()) {
             console.log(board.isCheckMate())
         } 

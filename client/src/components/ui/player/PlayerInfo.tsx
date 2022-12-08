@@ -1,9 +1,9 @@
-import { FC } from "react";
+import { FC, memo } from "react";
 import AvatarElement from "../user/avatar/AvatarElement";
 import { IPlayerInfo } from "./PlayerInfo.interface";
 import styles from './PlayerInfo.module.scss';
 
-export const PlayerInfo: FC<IPlayerInfo> = ({username, avatarLink, winsCount, lossesCount, id}) => {
+export const PlayerInfo: FC<IPlayerInfo> = memo(({username, avatarLink, winsCount, lossesCount, id}) => {
     return (
         <div className={styles.info_container}>
             <div className={styles.info_wrapper}>
@@ -11,12 +11,12 @@ export const PlayerInfo: FC<IPlayerInfo> = ({username, avatarLink, winsCount, lo
                 <div className={styles.stats_wrapper}>
                     <h3>{username}</h3>
                     <div className={styles.stats}>
-                        {winsCount && <span>Wins: {winsCount}</span>}
-                        {lossesCount&& <span>Losses: {lossesCount}</span>}
+                        {winsCount ? <span>Wins: {winsCount}</span> : null}
+                        {lossesCount ? <span>Losses: {lossesCount}</span> : null}
                     </div>
                 </div>
             </div>
             
         </div>
     )
-}
+})

@@ -10,7 +10,7 @@
     }
 
     >ol {
-        @apply text-white flex items-start flex-col gap-2 px-5 w-full h-full overflow-scroll;
+        @apply text-white flex items-start flex-col gap-2 px-5 w-full h-full overflow-y-scroll;
         scrollbar-width: 0;
         >li {
             @apply flex gap-3 bg-main-700 w-full items-center px-1 rounded-md;

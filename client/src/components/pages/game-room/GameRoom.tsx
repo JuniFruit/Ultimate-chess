@@ -15,12 +15,13 @@ import { Colors } from "../../../model/colors.enum";
 import { Requests } from "../../../constants/constants";
 import { ConfirmModal } from "./modals/ConfirmModal";
 
+
 const GameRoom: FC = () => {
 
     const { id } = useParams()
     const { field, status, data, move } = useGameRoom(id)
     const { user } = useAuth();
-
+    console.log(field.board.states)
     return (
         <Layout title="Ultimate Chess Game Room">
             <div className={styles.room_wrapper}>
@@ -52,14 +53,16 @@ const GameRoom: FC = () => {
                                 initTime={status.myColor === Colors.WHITE ? field.board.states.whiteTime : field.board.states.blackTime}
                                 isStopped={status.myColor !== field.board.states.currentPlayer
                                     || field.board.states.isFirstMove || field.board.states.isGameOver}
-                                onTimeout={move.handleTimeout} />
+                                onTimeout={move.handleTimeout} 
+
+                                />
                         </>
                         }
 
 
                     </div>
                 </div>
-                <MatchInfo 
+                <MatchInfo
                     onRequestDraw={() => field.handleSendRequest(Requests.DRAW)}
                     onRequestResign={() => field.handleSendRequest(Requests.RESIGN)}
                     onConfirmDraw={() => field.handleRequestConfirm(Requests.DRAW)}
@@ -71,12 +74,17 @@ const GameRoom: FC = () => {
             </div>
             {!status.isReadyToStart && status.isConnected ? <WaitingModal /> : null}
             {data.error && <ErrorModal errorMsg={data.error} errorHandler={data.setError} />}
-            {status.result && <GameOverModal resultMsg={status.result} onRematch={() => field.handleSendRequest(Requests.REMATCH)} />}
-            {data.request === Requests.REMATCH
-                || data.request === Requests.RESIGN
-                ? <ConfirmModal request={data.request} onConfirm={field.handleRequestConfirm} />
-                : null
-            }
+            <GameOverModal
+                resultMsg={status.result}
+                onRematch={() => field.handleSendRequest(Requests.REMATCH)}
+            />
+            <ConfirmModal
+                request={data.request}
+                onConfirm={field.handleRequestConfirm}
+                onClose={() => data.setRequest(null)}
+            />
+
+
         </Layout>
     )
 }

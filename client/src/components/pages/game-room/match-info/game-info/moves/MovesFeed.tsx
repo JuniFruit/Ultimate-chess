@@ -7,7 +7,8 @@ import styles from './MoveFeed.module.scss';
 
 export const MovesFeed: FC<IMoveFeed> = ({ moves }) => {
 
-    const listRef = useRef<HTMLOListElement>(null);    
+    const listRef = useRef<HTMLOListElement>(null);      
+   
 
     return (
         <div className={styles.move_wrapper}>

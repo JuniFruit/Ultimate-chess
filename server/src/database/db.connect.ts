@@ -3,6 +3,7 @@ import { DataSource } from 'typeorm';
 import { UserEntity } from '../user/user.entity';
 import { PacksEntity } from '../packs/packs.entity';
 import { SpriteEntity } from '../packs/sprite.entity';
+import { RolesEntity } from '../roles/role.entity';
 
 
 
@@ -21,3 +22,4 @@ postgresDB.initialize()
 export const userRepository = postgresDB.getRepository(UserEntity);
 export const packRepository = postgresDB.getRepository(PacksEntity);
 export const spriteRepository = postgresDB.getRepository(SpriteEntity);
+export const roleRepository = postgresDB.getRepository(RolesEntity);

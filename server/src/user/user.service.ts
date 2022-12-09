@@ -1,5 +1,5 @@
 import { RegisterDto } from "../auth/auth.dto"
-import { userRepository } from "../database/db.connect"
+import { roleRepository, userRepository } from "../database/db.connect"
 
 export const UserService = {
     async getById(id: number) {
@@ -9,7 +9,8 @@ export const UserService = {
             },
             relations: {
                 packs: true,
-                packInUse: true
+                packInUse: true,
+                roles: true
             }
         })
 
@@ -26,6 +27,38 @@ export const UserService = {
         return await userRepository.save(user);
 
     },
+
+    async addRole(userId: number, roleValue: string) {
+        const user = await this.getById(userId);
+
+        if (!user) throw new Error('Such user doesn\'t exist');
+
+        const role = await roleRepository.findOneBy({ role: roleValue });
+
+        if (!role) throw new Error("Such role doesn\'t exist");
+        const isInList = user.roles.find(userRole => userRole.role === roleValue);
+        if (isInList) throw new Error("User already has this role");
+
+        user.roles.push(role);
+        return await userRepository.save(user);
+
+    },
+
+    async deleteRole(userId:number, roleValue: string) {
+        const user = await this.getById(userId);
+        if (!user) throw new Error('Such user doesn\'t exist');
+
+        const role = await roleRepository.findOne({ 
+            where: {
+                role: roleValue
+            } });
+
+        if (!role) throw new Error("Such role doesn\'t exist");
+
+        user.roles = user.roles.filter(userRole => userRole.id !== role.id);
+        return await userRepository.save(user);
+    },
+
     async increaseLoses(id: number) {
         const user = await this.getById(id);
         user.losesCount++;
@@ -37,10 +70,13 @@ export const UserService = {
             ...dto,
             packInUse: {
                 id: 1
-            }
+            },
+            roles: [{
+                id: 1
+            }]
         }
 
-        const newUser = await userRepository.create(defaults);       
+        const newUser = await userRepository.create(defaults);
 
         return await userRepository.save(newUser);
     }

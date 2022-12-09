@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import { UserEntity } from '../user/user.entity';
 import { PacksEntity } from '../packs/packs.entity';
 import {SpriteEntity} from '../packs/sprite.entity';
+import { RolesEntity } from '../roles/role.entity';
 
 dotenv.config();
 
@@ -17,6 +18,6 @@ export const getConfigTypeOrm = ():DataSourceOptions => {
         database: process.env.DB_NAME,
         synchronize: true,
         logging: false,
-        entities: [UserEntity, PacksEntity, SpriteEntity]
+        entities: [UserEntity, PacksEntity, SpriteEntity, RolesEntity]
     }
 }

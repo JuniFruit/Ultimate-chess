@@ -14,8 +14,8 @@
         >div {
             @apply mt-4;
         }
-        >div:last-child {
-            @apply flex justify-center mt-7;
+        .buttons {
+            @apply flex justify-center items-center gap-2 mt-7 mb-2;
         }
 
         @screen md {

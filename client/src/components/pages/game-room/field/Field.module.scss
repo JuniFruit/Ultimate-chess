@@ -9,11 +9,10 @@
         height: calc(8 * var(--cellSize));
         .cell {
             @apply flex items-center justify-center relative;
-            border: 1px solid transparent;
-           
+            border: 5px solid transparent;
             width: var(--cellSize);
             height: var(--cellSize);
-    
+         
             .available_dot {
                 @apply absolute rounded-full bg-stone-700 opacity-60 h-5 w-5 top-1/2 left-1/2 animate-fadeIn;
                 animation-duration: .15s;

@@ -1,11 +1,11 @@
 import { FC, useEffect } from "react"
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import { useActions } from "../../../hooks/useActions";
-import { useAuth } from "../../../hooks/useAuth";
-import { Layout } from "../../layout/Layout"
-import RegisterForm from "../../ui/profile-form/ProfileForm";
-import { IRegisterDto } from "../../../types/auth.interface";
+import { Link, useNavigate } from "react-router-dom";
+import { useActions } from "../../../../hooks/useActions";
+import { useAuth } from "../../../../hooks/useAuth";
+import { Layout } from "../../../layout/Layout"
+import RegisterForm from "../../../ui/profile-form/ProfileForm";
+import { IRegisterDto } from "../../../../types/auth.interface";
 import styles from './Register.module.scss';
 
 const RegisterPage: FC = () => {
@@ -47,6 +47,7 @@ const RegisterPage: FC = () => {
                     }}
                     title={"Please fill out fields to register an account"}
                     buttonTitle="Create account"
+                    buttons={[<Link className={styles.link} to={'/login'}>Log In</Link>]}
                 />
             </section>
 

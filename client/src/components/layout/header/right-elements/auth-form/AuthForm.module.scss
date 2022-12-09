@@ -1,19 +1,26 @@
 .wrapper {
     @apply relative inline-flex;
 
-    .form {
-        @apply flex items-center flex-col gap-6 bg-main-900 shadow-block animate-scaleIn p-2 absolute rounded-lg right-2 z-20 w-60;
-        
+    .menu {
+        @apply absolute -left-10 w-full py-2 px-3 rounded-md  shadow bg-main-800 min-w-max animate-fadeIn duration-100;
         top: calc(100% + 1.4rem);
+        z-index: 60;
+        >ul {
+            @apply flex-col flex gap-4;
+            >li {
+                @apply text-white  opacity-75 relative;
 
+                &:hover {
+                    @apply opacity-100;
+                }
+                >a {
+                    @apply flex items-center gap-2 justify-center;
 
-        .register {
-            @apply text-gray-300 opacity-40 block text-center w-full mt-1 transition-opacity duration-150;
-            &:hover {
-                @apply opacity-60
+                    >svg {
+                        @apply text-base;
+                    }
+                }
             }
-           
         }
-
     }
 }

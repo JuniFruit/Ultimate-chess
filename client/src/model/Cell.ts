@@ -10,7 +10,6 @@ export interface ICell {
     color: Colors;
     prevFigure: IFigure | null;
     figure: IFigure | null;
-    isAvailable: boolean;
     isEmpty: () => boolean;
     isEnemy: (figure: IFigure | null) => boolean;
     isSafeCell: (target: ICell, board: IBoard) => boolean;
@@ -30,7 +29,6 @@ export class Cell implements ICell {
     prevFigure: IFigure | null = null;
     color: Colors;
     figure: IFigure | null;
-    isAvailable: boolean;
 
 
     constructor({ x, y, color, figure }: ICellInit) {
@@ -38,7 +36,6 @@ export class Cell implements ICell {
         this.x = x;
         this.y = y;
         this.figure = figure
-        this.isAvailable = false;
     }
 
     isEmpty(): boolean {
@@ -141,8 +138,5 @@ export class Cell implements ICell {
         target.prevFigure = target.figure;
         target.figure = this.figure;
         this.figure = null;
-        this.isAvailable = false;
-
-
     }
 }

@@ -1,6 +1,7 @@
 import { FormEventHandler } from "react";
 import { Control, FieldErrors, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { IRegisterDto } from "../../../types/auth.interface";
+import { IButton } from "../button/Button.interface";
 
 
 export interface IProfileForm {
@@ -25,4 +26,5 @@ export interface IProfileForm {
         description?: string;
         username?: string;
     }
+    buttons?: IButton[] | HTMLLinkElement[]
 }

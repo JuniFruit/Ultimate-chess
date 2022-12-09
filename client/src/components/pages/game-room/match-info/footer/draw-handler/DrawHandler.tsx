@@ -8,7 +8,7 @@ export const DrawHandler: FC<IDrawHandler> = ({onConfirm, onDecline}) => {
 
     return (
         <div className={styles.handler_wrapper}>
-            <h4>Your opponent is requesting a draw. Accept?</h4>
+            <h4>Your opponent is offering a draw. Accept?</h4>
             <div className={styles.buttons}>
                 <Button onClick={onConfirm}>
                     <IoCheckmarkOutline />

@@ -16,7 +16,6 @@ export interface IBoard {
     figures: IFigure[];
     states: IBoardStates;
     startNewGame: (fen: string) => void;
-    showAvailable: (selected: ICell) => void;
     receiveMove: (move: IMove) => void;
     getCell: (x: number, y: number) => ICell;
     getCopyBoard: () => IBoard;
@@ -74,22 +73,6 @@ export class Board implements IBoard {
         this.mySprites = mySprites;
         this.enemySprites = enemySprites;       
     }
-
-    showAvailable(selected: ICell) {
-        if (!selected.figure) return;
-
-        for (let i = 0; i < 8; i++) {
-            for (let j = 0; j < 8; j++) {
-                if (this.cells[i][j].figure?.type !== FigureTypes.KING) {
-                    this.cells[i][j].isAvailable = selected.figure.legalMoves.some(cell => cell.x === j && cell.y === i);
-
-                } else {
-                    this.cells[i][j].isAvailable = false;
-                }
-            }
-        }
-    }
-
 
     startNewGame(fen: string) {
         this.initCells(fen);

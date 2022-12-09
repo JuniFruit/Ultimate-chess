@@ -3,8 +3,15 @@
 .wrapper {
     @apply flex flex-col gap-2 rounded-lg bg-main-700 shadow w-min h-min overflow-hidden;
     border: 1px solid;  
+    z-index: 52;
 
     >button {
-        @apply hover:bg-main-500
+        @apply w-max h-max hover:bg-main-500;
+
+        >img {
+            @apply bg-transparent;
+            width: calc(var(--cellSize) - .5rem);
+            height: calc(var(--cellSize) - .5rem);
+        }
     }
 }

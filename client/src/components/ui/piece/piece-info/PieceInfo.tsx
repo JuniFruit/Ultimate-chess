@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { IPieceInfo } from './PieceInfo.interface';
 import styles from '../Piece.module.scss';
-export const PieceInfo: FC<IPieceInfo> = ({ type, color, sprite }) => {
+export const PieceInfo: FC<IPieceInfo> = ({sprite }) => {
 
 
     return (

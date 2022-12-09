@@ -28,7 +28,7 @@ export class Pawn extends Figure implements IPawn {
 
     moveFigure(target: ICell): void {
         super.moveFigure(target);
-             
+        this.isFirstMove = this.y === 1 || this.y === 6;  
     }
 
     getLegalMoves(board: IBoard) {

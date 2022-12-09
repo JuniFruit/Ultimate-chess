@@ -1,17 +1,22 @@
 
 
 .wrapper {
-    @apply bg-transparent cursor-grab transition-transform duration-100 absolute top-0 left-0;
+    @apply bg-transparent cursor-grab transition-transform duration-100 absolute  top-0 left-0;
     cursor: -webkit-grab;
     cursor: -moz-grab;
     padding: calc((var(--cellSize) / var(--cellSize)) - .5rem);
     width: var(--cellSize);
     height: var(--cellSize);
     transform: translate(0%, 0%);
+    z-index: 50;
 
     >img {
         @apply bg-transparent w-full h-full;
     }
+}
+
+.draggedOver {
+    @apply bg-red-600;
 }
 
 .piece_tiny {

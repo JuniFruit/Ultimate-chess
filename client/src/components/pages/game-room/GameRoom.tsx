@@ -21,7 +21,6 @@ const GameRoom: FC = () => {
     const { id } = useParams()
     const { field, status, data, move } = useGameRoom(id)
     const { user } = useAuth();
-    console.log(field.board.states)
     return (
         <Layout title="Ultimate Chess Game Room">
             <div className={styles.room_wrapper}>

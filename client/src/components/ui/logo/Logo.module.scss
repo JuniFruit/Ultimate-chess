@@ -1,0 +1,8 @@
+.logo {
+    @apply font-semibold text-base;
+    color: white;
+
+    >:first-child {
+        @apply text-complimentary;
+    }
+}

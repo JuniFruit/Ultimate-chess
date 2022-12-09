@@ -25,7 +25,7 @@ export const MovesFeed: FC<IMoveFeed> = ({ moves }) => {
                             <li key={ind}>
                                 <span>{ind + 1}.</span>
                                 <PieceInfo {...{ ...move }} key={move.x + move.y} />
-                                <span>{`${Positions[move.x]}${move.y}`}</span>
+                                <span>{`${Positions[move.x]}${move.y + 1}`}</span>
                             </li>
 
                         ))

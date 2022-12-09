@@ -1,5 +1,5 @@
 import { IField } from "./Field.interface"
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { ICell } from "../../../../model/Cell";
 import { FigureTypes } from "../../../../model/figures/Figures";
 import { IMoveOptions } from "../../../../constants/socketIO/ClientEvents.interface";
@@ -15,14 +15,9 @@ export const useField = ({ board, setBoard, ioMoveHandlers, myColor }: IUseField
 
     const [selectedCell, setSelectedCell] = useState<ICell | null>(null);
     const [isPromotion, setIsPromotion] = useState(false);
-    const [lastChosenCell, setLastChosenCell] = useState<ICell | null>(null);
+    const [lastChosenCell, setLastChosenCell] = useState<ICell | null>(null);    
 
-    const showAvailableMoves = (cell: ICell) => {
-        board.showAvailable(cell);
-        setBoard(prev => prev.getCopyBoard());
-    }
-
-    const handleSelect = (cell: ICell) => {
+    const handleSelect = useCallback((cell: ICell) => {
         if (isPromotion || board.states.isGameOver) return;
 
         if (selectedCell) {
@@ -38,10 +33,9 @@ export const useField = ({ board, setBoard, ioMoveHandlers, myColor }: IUseField
                     handleMove(cell);
                     setSelectedCell(prev => null);
                     return;
-                }                
+                }
                 if (cell.figure) return setSelectedCell(prev => cell);
-            } 
-            if (cell === selectedCell) return setSelectedCell(prev => null); 
+            }
             if (selectedCell.figure?.color === cell.figure?.color) return setSelectedCell(prev => cell);
             return setSelectedCell(prev => null);
         } else {
@@ -50,9 +44,9 @@ export const useField = ({ board, setBoard, ioMoveHandlers, myColor }: IUseField
 
         }
 
-    }
+    }, [selectedCell, lastChosenCell, isPromotion])
 
-    const handlePromotion = (figureType: FigureTypes) => {
+    const handlePromotion = useCallback((figureType: FigureTypes) => {
 
         if (!lastChosenCell || !selectedCell) return;
         setSelectedCell(prev => {
@@ -67,9 +61,9 @@ export const useField = ({ board, setBoard, ioMoveHandlers, myColor }: IUseField
         setSelectedCell(prev => null);
 
 
-    }
+    }, [lastChosenCell, selectedCell, board])
 
-    const handleMove = (cell: ICell, options?: IMoveOptions) => {
+    const handleMove = useCallback((cell: ICell, options?: IMoveOptions) => {
         if (!cell || !selectedCell) return;
 
         selectedCell!.moveFigure(cell, board);
@@ -88,13 +82,7 @@ export const useField = ({ board, setBoard, ioMoveHandlers, myColor }: IUseField
         board.addMove(cell);
 
         setBoard(prev => prev.getCopyBoard())
-    }
-
-    useEffect(() => {
-        if (!selectedCell) return;
-        if (selectedCell.figure?.color !== myColor || board.states.currentPlayer !== myColor) return;
-        showAvailableMoves(selectedCell);
-    }, [selectedCell, board.states.currentPlayer])
+    }, [selectedCell, lastChosenCell, isPromotion, board])
 
     useEffect(() => {
 
@@ -104,8 +92,8 @@ export const useField = ({ board, setBoard, ioMoveHandlers, myColor }: IUseField
         board.updateAllLegalMoves();
         if (board.isKingChecked()) {
             console.log(board.isCheckMate())
-        } 
-     
+        }
+
 
     }, [board.states.currentPlayer])
 
@@ -113,7 +101,6 @@ export const useField = ({ board, setBoard, ioMoveHandlers, myColor }: IUseField
         handlers: {
             handleMove,
             handleSelect,
-            showAvailableMoves,
             handlePromotion
         },
         status: {

@@ -1,13 +1,10 @@
-import { FC, useState } from "react";
-import { Controller } from "react-hook-form";
+import { FC } from "react";
 import { Button } from "../button/Button";
 import Field from "../field/Field";
-import AvatarElement from "../user/avatar/AvatarElement";
 import { IProfileForm } from "./ProfileForm.interface";
 import styles from './ProfileForm.module.scss';
 
-const ProfileForm: FC<IProfileForm> = ({ form, title, fieldsToExclude, buttonTitle, defaultValues }) => {
-    const [avatarPath, setAvatarPath] = useState('');
+const ProfileForm: FC<IProfileForm> = ({ form, title, fieldsToExclude, buttonTitle, buttons }) => {
 
     return (
         <div className={styles.wrapper}>
@@ -18,9 +15,9 @@ const ProfileForm: FC<IProfileForm> = ({ form, title, fieldsToExclude, buttonTit
                     <Field
                         {...form.register('username', {
                             required: 'Please enter your username',
-                            
+
                         })}
-                        placeholder='Email'
+                        placeholder='Username'
                         error={form.errors.username}
                     />
                 </div>}
@@ -39,18 +36,21 @@ const ProfileForm: FC<IProfileForm> = ({ form, title, fieldsToExclude, buttonTit
                         error={form.errors.password}
                     />
                 </div>}
-                
+
                 {!fieldsToExclude?.avatar && <div>
-                    <Field 
-                        {...form.register('avatarLink') }
+                    <Field
+                        {...form.register('avatarLink')}
                         placeholder="URL for your avatar"
-                    />                  
+                    />
 
                 </div>}
-                <div>
-                    <Button title="Submit the form">
+                <div className={styles.buttons}>
+                    <Button title="Submit the form" type="submit">
                         {buttonTitle || 'Submit'}
                     </Button>
+                    <>
+                        {buttons?.length ? buttons.map(item => item) : null}
+                    </>
                 </div>
 
             </form>

@@ -47,7 +47,7 @@ const MatchInfo: FC<IMatchInfo> = ({
                     <Button
                         onClick={onRequestDraw}
                         className={styles.button}>
-                        <span>Request Draw</span>
+                        <span>Draw</span>
                         <GiDiceShield />
                     </Button>
                     <Button

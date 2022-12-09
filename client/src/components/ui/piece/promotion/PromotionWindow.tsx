@@ -1,14 +1,13 @@
-
-import { FC, MouseEventHandler, MouseEvent } from 'react';
+import { FC, MouseEvent } from 'react';
 import styles from './Promotion.module.scss';
-import { Piece } from '../Piece';
 import { SPRITES } from '../../../../assets/sprites';
 import { IPromotionWindow } from './Promotion.interface';
 import { FigureTypes } from '../../../../model/figures/Figures';
+import { PieceInfo } from '../piece-info/PieceInfo';
 
 const PromotionWindow: FC<IPromotionWindow> = ({ handlePromotion }) => {
 
-    function handleClick (e:MouseEvent<HTMLButtonElement>) {
+    function handleClick(e: MouseEvent<HTMLButtonElement>) {
         const value = e.currentTarget.value as FigureTypes;
         handlePromotion(value);
     }
@@ -16,16 +15,16 @@ const PromotionWindow: FC<IPromotionWindow> = ({ handlePromotion }) => {
     return (
         <div className={styles.wrapper}>
             <button value={FigureTypes.BISHOP} onClick={handleClick}>
-                <Piece sprite={SPRITES.blackBishop} />
+                <PieceInfo sprite={SPRITES.whiteBishop} />
             </button>
             <button value={FigureTypes.KNIGHT} onClick={handleClick}>
-                <Piece sprite={SPRITES.blackKnight} />
+                <PieceInfo sprite={SPRITES.whiteKnight} />
             </button>
             <button value={FigureTypes.QUEEN} onClick={handleClick}>
-                <Piece sprite={SPRITES.blackQueen} />
+                <PieceInfo sprite={SPRITES.whiteQueen} />
             </button>
             <button value={FigureTypes.ROOK} onClick={handleClick}>
-                <Piece sprite={SPRITES.blackRook} />
+                <PieceInfo sprite={SPRITES.whiteRook} />
             </button>
 
         </div>

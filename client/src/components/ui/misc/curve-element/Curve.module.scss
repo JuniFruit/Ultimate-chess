@@ -1,0 +1,15 @@
+
+
+.curve_wrapper {
+    @apply relative w-min h-min;   
+
+    .main_el {
+        @apply h-16 w-4 bg-complimentary;
+        border-radius: 1.2rem 0 0 1.2rem;
+        -webkit-box-shadow: 0 3px 7px rgb(0 0 0 /0.2) inset, 0 -4px 7px rgb(0 0 0 /0.2) inset, 4px 0 4px rgb(0 0 0 /0.2) inset;
+        -moz-box-shadow: 0 3px 7px rgb(0 0 0 /0.2) inset, 0 -4px 7px rgb(0 0 0 /0.2) inset, 4px 0 4px rgb(0 0 0 /0.2) inset;
+        box-shadow: 0 3px 7px rgb(0 0 0 /0.2) inset, 0 -4px 7px rgb(0 0 0 /0.2) inset, 4px 0 4px rgb(0 0 0 /0.5) inset;
+    }
+
+   
+}

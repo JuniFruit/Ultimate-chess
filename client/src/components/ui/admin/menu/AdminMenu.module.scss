@@ -1,0 +1,15 @@
+
+
+.menu_wrapper {
+    @apply bg-main-700 p-2 flex flex-col gap-4;
+    border-radius: 1.2rem 0 0 1.2rem;
+
+    >a {
+        @apply p-2 bg-main-700 text-white text-tiny rounded-lg opacity-80 hover:opacity-100;
+    }
+
+    .link_active {
+        @apply bg-complimentary opacity-100;
+    }
+
+}

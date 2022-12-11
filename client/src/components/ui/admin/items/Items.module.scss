@@ -1,0 +1,18 @@
+
+.pack_wrapper {
+    @apply rounded-lg p-2 flex items-center justify-between gap-3 bg-transparent;
+    -webkit-box-shadow: 0 3px 7px rgba(255, 255, 255, 0.2) inset, 0 -4px 7px rgba(255, 255, 255, 0.2) inset;
+    -moz-box-shadow: 0 3px 7px rgba(255, 255, 255, 0.2) inset, 0 -4px 7px rgba(255, 255, 255, 0.2) inset;
+    box-shadow: 0 3px 7px rgba(255, 255, 255, 0.2) inset, 0 -4px 7px rgba(255, 255, 255, 0.2) inset;
+
+    >div:first-child {
+        @apply w-7 h-7;
+    }
+
+    span,
+    h3 {
+        @apply text-main-200 opacity-80;
+        font-size: .85rem;
+        font-weight: 300;
+    }
+}

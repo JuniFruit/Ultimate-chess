@@ -1,0 +1,10 @@
+
+
+.data_wrapper {
+    @apply flex flex-wrap gap-7;
+
+    >div {
+        @apply mb-2.5;
+        width: 12.25rem;
+    }
+}

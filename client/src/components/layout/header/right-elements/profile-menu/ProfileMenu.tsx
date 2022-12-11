@@ -43,6 +43,9 @@ const ProfileMenu: FC = () => {
                         <li>
                             <button onClick={logout}>Logout</button>
                         </li>
+                        <li>
+                            <Link to={`/admin/home`}>Admin Panel</Link>
+                        </li>
                     </ul>
                 </div>
                 :

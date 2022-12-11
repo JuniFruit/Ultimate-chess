@@ -1,0 +1,40 @@
+
+.admin_container {
+    @apply flex justify-center w-full mt-10 mb-5;
+
+    .main_wrapper {
+        @apply rounded-3xl bg-main-700 shadow pb-2 pr-2 relative;
+        min-height: 40rem;
+        width: 75%;
+
+        .admin_wrapper {
+            @apply rounded-3xl bg-main-900 h-full w-full shadow;         
+
+                .admin_header {
+                    @apply flex justify-between items-center p-6;
+                    
+                    >h2 {
+                        @apply text-main-200 text-tiny;
+                        font-weight: 600;
+                    }
+                }
+        
+                .line {
+                    @apply w-full bg-main-700 opacity-60;
+                    height: .05rem;
+                }
+                .admin_body {
+                    @apply p-6;
+                }
+        }
+
+        >nav {
+            @apply absolute top-1/2 shadow;
+            right: calc(100%);
+            transform: translateY(-50%);
+            -webkit-box-shadow: 0 3px 7px rgb(0 0 0 /0.2) , 0 -4px 7px rgb(0 0 0 /0.2) , -4px 0 4px rgb(0 0 0 /0.2) inset;
+            -moz-box-shadow: 0 3px 7px rgb(0 0 0 /0.2) , 0 -4px 7px rgb(0 0 0 /0.2) , -4px 0 4px rgb(0 0 0 /0.2) inset;
+            box-shadow: 0 3px 7px rgb(0 0 0 /0.2) , 0 -4px 7px rgb(0 0 0 /0.2) , -4px 0 4px rgb(0 0 0 /0.5) inset;
+        }
+    }
+}

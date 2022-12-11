@@ -1,0 +1,26 @@
+
+.box_wrapper {
+    @apply p-4 shadow rounded-xl relative; 
+
+    .box_header {
+        @apply text-main-200 text-tiny;
+    }
+
+    >h3 {
+        @apply text-main-200 opacity-75 mb-3 mt-1;
+        font-weight: 300;
+        font-size: .8rem;
+    }
+
+    >span {
+        @apply text-complimentary opacity-90 text-tiny;
+        font-weight: 700;
+    }
+
+    .misc_curve {
+        @apply absolute right-0;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    
+}

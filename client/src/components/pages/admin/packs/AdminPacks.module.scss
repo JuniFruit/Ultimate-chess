@@ -1,0 +1,11 @@
+
+
+.packs_wrapper {
+
+    .buttons {
+        @apply flex items-center justify-center gap-2 mb-5;
+        >button {
+            @apply bg-transparent text-opacity-60 hover:text-opacity-100;
+        }
+    }
+}

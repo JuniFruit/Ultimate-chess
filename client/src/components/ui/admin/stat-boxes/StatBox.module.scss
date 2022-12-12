@@ -1,6 +1,6 @@
 
 .box_wrapper {
-    @apply p-4 shadow rounded-xl relative; 
+    @apply p-4 shadow rounded-xl animate-slideInTop relative; 
 
     .box_header {
         @apply text-main-200 text-tiny;

@@ -1,0 +1,9 @@
+
+
+.wrapper {
+    >div:first-child {
+        > img {
+            object-fit: scale-down; 
+        }
+    }
+}

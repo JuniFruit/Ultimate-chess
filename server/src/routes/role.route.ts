@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.use(authGuard, adminGuard)
 
-router.post('/create',  roleValidation, async (req, res) => {
+router.post('/create', roleValidation, async (req, res) => {
     try {
         const role = await RoleService.createRole(req.body.dto);
         res.send(role);
@@ -18,7 +18,7 @@ router.post('/create',  roleValidation, async (req, res) => {
     }
 })
 
-router.get('/get/:value',  async (req, res) => {
+router.get('/get/:value', async (req, res) => {
     try {
         const role = await RoleService.getRoleByName(req.params.value);
         res.send(role);
@@ -28,7 +28,8 @@ router.get('/get/:value',  async (req, res) => {
     }
 })
 
-router.delete('/delete',  async (req, res) => {
+
+router.delete('/delete', async (req, res) => {
     try {
         const role = await RoleService.deleteRole(req.body.role);
         res.status(200).send('Role was deleted');

@@ -1,6 +1,7 @@
 .message_body {
-    @apply rounded-lg block shadow-sm absolute top-5 right-5 overflow-hidden bg-main-700 animate-fadeIn duration-150; 
+    @apply rounded-lg block shadow-sm fixed bottom-5 left-1/2 overflow-hidden bg-main-700 animate-fadeIn duration-150; 
     z-index: 110;
+    transform: translateX(-50%);
     min-height: 2rem;
     
 
@@ -12,15 +13,16 @@
         }
 
         .icon {
-            @apply text-base flex justify-center align-middle;
+            @apply text-sm flex justify-center align-middle;
         }
 
         .message {
-            @apply text-white text-sm break-words max-w-md; 
+            @apply text-white break-words max-w-md;
+            font-size: .85rem; 
         }
         .message_close {
             @apply text-white opacity-60 transition-opacity hover:opacity-100;
-            font-size: 1.2rem;
+            font-size: 1rem;
         }
     }
 }
@@ -43,7 +45,7 @@
 
     .line {
         @apply absolute top-0 left-0 bg-gray-300 h-full animate-progressCountDown w-full;
-        animation-duration: 3s;
+        animation-duration: 2s;
         animation-timing-function: cubic-bezier(0, 0, 0, 0);
         
     }

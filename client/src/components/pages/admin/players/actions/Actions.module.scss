@@ -1,0 +1,31 @@
+
+
+.wrapper {
+    @apply relative;
+
+    >button {
+        @apply bg-main-700 p-2;
+        font-size: .85rem;
+    }
+
+    .menu {
+        @apply absolute left-0 w-full py-2 px-3 rounded-md  shadow bg-main-800 min-w-max animate-fadeIn duration-75;
+        top: calc(100% + .5rem);
+        z-index: 65;
+        >ul {
+            @apply flex flex-col gap-2;
+            >li {
+                @apply text-white  opacity-75 relative;
+
+                &:hover {
+                    @apply opacity-100;
+                }
+                >button {
+                    @apply bg-transparent p-2;
+                    font-size: .85rem;
+                   
+                }
+            }
+        }
+    }
+}

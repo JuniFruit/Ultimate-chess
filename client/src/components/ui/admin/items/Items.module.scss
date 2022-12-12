@@ -1,6 +1,6 @@
 
 .pack_wrapper {
-    @apply rounded-lg p-2 flex items-center justify-between gap-3 bg-transparent;
+    @apply rounded-lg p-2 flex items-center justify-between cursor-pointer gap-3 bg-transparent transition-all duration-100;
     -webkit-box-shadow: 0 3px 7px rgba(255, 255, 255, 0.2) inset, 0 -4px 7px rgba(255, 255, 255, 0.2) inset;
     -moz-box-shadow: 0 3px 7px rgba(255, 255, 255, 0.2) inset, 0 -4px 7px rgba(255, 255, 255, 0.2) inset;
     box-shadow: 0 3px 7px rgba(255, 255, 255, 0.2) inset, 0 -4px 7px rgba(255, 255, 255, 0.2) inset;
@@ -15,4 +15,23 @@
         font-size: .85rem;
         font-weight: 300;
     }
+
+    &:hover,
+    &:focus {
+        @apply bg-main-800;
+    }
 }
+
+
+.user_roles {
+    @apply flex flex-col gap-1;
+    
+    >span {
+        @apply text-cyan-500;
+    }
+}
+
+.user_actions {
+    @apply flex items-center gap-1;
+}
+

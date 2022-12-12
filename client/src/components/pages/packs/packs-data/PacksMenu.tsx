@@ -29,6 +29,7 @@ export const PackMenu: FC<IPackMenu> = ({ packs, setPreview }) => {
                         onFocus={() => setPreview(pack.preview)}
                         onMouseOver={() => setPreview(pack.preview)}
                         onClick={() => handleAdd(pack.id)}
+                        key={pack.id}
                         >
                             {`${pack.title} ${pack.id === profile?.packInUse?.id ? ': in use' : ''}`}
                         </MenuButton>

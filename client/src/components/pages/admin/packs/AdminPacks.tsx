@@ -1,14 +1,15 @@
 import { FC, useState } from "react";
-import { NavLink } from "react-router-dom";
 import { AdminPanel } from "../../../ui/admin/main/AdminPanel";
 import { Button } from "../../../ui/button/Button";
+import { useAdminAuth } from "../../../../hooks/useAdminAuth";
 import { PackAddForm } from "./add-pack/PackAdd";
 import styles from './AdminPacks.module.scss';
 import { PackList } from "./list/PackList";
 
 const AdminPacks: FC = () => {
-
+    useAdminAuth();
     const [activeWindow, setActiveWindow] = useState<"list" | "add">('list');
+
 
     return (
         <AdminPanel title="Packs">
@@ -19,6 +20,7 @@ const AdminPacks: FC = () => {
                 </div>
                 {activeWindow === 'list' ? <PackList /> : null}
                 {activeWindow === 'add' ? <PackAddForm /> : null}
+            
             </div>
         </AdminPanel>
     )

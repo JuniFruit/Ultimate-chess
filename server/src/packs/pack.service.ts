@@ -32,6 +32,7 @@ export const PackService = {
                 packPath: true
             }
         });
+        if (!pack) throw new Error('Such pack doesn\'t exist');
         return pack;
     },
 
@@ -62,5 +63,9 @@ export const PackService = {
 
         await packRepository.save(pack);
         return await userRepository.save(user);
+    },
+    async updatePack(data: IPackInfo, id:number) {
+        const pack = this.getPackById(id);
+        return await packRepository.save({...pack, ...data})
     }
 }

@@ -7,7 +7,7 @@ import { SpriteEntity } from "./sprite.entity";
 @Entity({name: 'Packs'})
 export class PacksEntity extends BaseEntity {
 
-    @OneToOne(() => SpriteEntity, sprite => sprite.id, {onDelete: 'CASCADE'})
+    @OneToOne(() => SpriteEntity, sprite => sprite.id)
     @JoinColumn()
     packPath!: SpriteEntity;
 

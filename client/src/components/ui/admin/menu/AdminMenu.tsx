@@ -12,7 +12,7 @@ const AdminMenu: FC = () => {
         <nav className={styles.menu_wrapper}>
             {
                 menuItems.map(item => (
-                    <NavLink to={item.link}
+                    <NavLink to={item.link} key={item.link}
                     className={({ isActive }) => isActive ? styles.link_active : ''}
                     >
                         <span>{<item.icon />}</span>

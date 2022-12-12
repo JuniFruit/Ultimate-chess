@@ -39,4 +39,5 @@ export interface IOClientEvents {
     confirmRequest: (payload: Requests) => void;
     resign: () => void;
     message: (payload: IMessage) => void;
+    ping: (cb: () => void) => void;
 }

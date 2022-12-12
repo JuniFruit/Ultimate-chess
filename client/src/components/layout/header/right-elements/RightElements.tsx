@@ -1,7 +1,6 @@
 import { FC } from "react";
 import { useActions } from "../../../../hooks/useActions";
 import { useAuth } from "../../../../hooks/useAuth";
-import { useTypedSelector } from "../../../../hooks/useTypedSelector";
 import { AuthForm } from "./auth-form/AuthForm";
 import ProfileMenu from "./profile-menu/ProfileMenu";
 import styles from './RightElements.module.scss';

@@ -1,4 +1,5 @@
 import { IPack } from "./pack.interface"
+import { IRole } from "./role.interface";
 
 
 export interface IUser {
@@ -9,4 +10,5 @@ export interface IUser {
     packInUse: IPack,
     winsCount: number
     losesCount: number
+    roles: IRole[]
 }

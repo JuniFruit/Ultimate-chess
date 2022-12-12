@@ -9,6 +9,7 @@ import Login from '../components/pages/auth/login/Login';
 import AdminHome from '../components/pages/admin/home/AdminHome';
 import AdminPacks from '../components/pages/admin/packs/AdminPacks';
 import AdminPlayers from '../components/pages/admin/players/AdminPlayers';
+import PackEdit from '../components/pages/admin/packs/edit-pack/PackEdit';
 
 const App: FC = () => {
 
@@ -27,6 +28,7 @@ const App: FC = () => {
           <Route path='home' element={<AdminHome />} />
           <Route path='packs' element={<AdminPacks />} />
           <Route path='players' element={<AdminPlayers />} />
+          <Route path='packs/edit/:id' element={<PackEdit />} />
         </Route>
       </Routes>
     </>

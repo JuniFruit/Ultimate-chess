@@ -1,0 +1,14 @@
+
+
+.buttons {
+    @apply flex gap-3 justify-center items-center mb-4;
+
+    >a {
+        @apply text-main-200 opacity-80 hover:opacity-100;
+        font-weight: 600;
+    }
+
+    >button {
+        @apply bg-red-700;
+    }
+}

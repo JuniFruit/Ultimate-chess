@@ -13,7 +13,7 @@ export const StatBox: FC<IStatBox> = ({ title, stats, svgIcon }) => {
                 {svgIcon}
             </div>
             <h3>{title}</h3>
-            <span>{formatToKilo(stats)}</span>
+            <span>{typeof stats === 'string' ? stats : formatToKilo(stats)}</span>
             <div className={styles.misc_curve}>
                 <Curve />
             </div>

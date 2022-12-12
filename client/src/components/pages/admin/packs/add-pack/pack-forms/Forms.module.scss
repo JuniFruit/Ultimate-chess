@@ -1,0 +1,20 @@
+
+
+.packs_forms_wrapper {
+    >h3 {
+        @apply text-main-200 text-sm text-center my-2;
+        font-weight: 300;
+        word-wrap: break-word;
+    }
+}
+
+.form_wrapper {
+    @apply flex flex-col gap-3;
+}
+
+.buttons {
+    @apply flex items-center justify-center my-4;
+    >button {
+        @apply bg-transparent text-sm;
+    }
+}

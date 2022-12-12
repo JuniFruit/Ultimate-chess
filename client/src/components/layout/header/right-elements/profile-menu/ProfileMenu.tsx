@@ -20,6 +20,7 @@ const ProfileMenu: FC = () => {
     const { ref, isShow, setIsShow } = useClickOutside(false);
     const { isMobile } = useIsMobile();
 
+    const isAdmin = data?.roles.some(item => item.role === "ADMIN" || item.role === "CREATOR" );
 
     return (
         <div ref={ref} className={styles.wrapper}>
@@ -44,7 +45,7 @@ const ProfileMenu: FC = () => {
                             <button onClick={logout}>Logout</button>
                         </li>
                         <li>
-                            <Link to={`/admin/home`}>Admin Panel</Link>
+                            {isAdmin ? <Link to={`/admin/home`}>Admin Panel</Link> : null}
                         </li>
                     </ul>
                 </div>

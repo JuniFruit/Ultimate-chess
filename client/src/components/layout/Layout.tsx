@@ -9,12 +9,12 @@ export const Layout: FC<PropsWithChildren<{ title: string }>> = ({ title, childr
     setTabTitle(title);
     return (
         <main>
-            <InfoPop />
-            <section>
+            <section className="relative">
                 <Header />
                 <div className={styles.wrapper}>
                     {children}
                 </div>
+                <InfoPop />
             </section>
 
         </main>

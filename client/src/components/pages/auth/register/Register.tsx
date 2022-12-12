@@ -47,7 +47,7 @@ const RegisterPage: FC = () => {
                     }}
                     title={"Please fill out fields to register an account"}
                     buttonTitle="Create account"
-                    buttons={[<Link className={styles.link} to={'/login'}>Log In</Link>]}
+                    buttons={[<Link key={'/login'} className={styles.link} to={'/login'}>Log In</Link>]}
                 />
             </section>
 

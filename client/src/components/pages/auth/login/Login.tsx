@@ -46,7 +46,7 @@ const Login: FC = () => {
                     }}
                     title={"Please enter your username and password to log in"}
                     buttonTitle="Log in"
-                    buttons={[<Link className={styles.link} to={'/registration'}>Sign Up</Link>]}
+                    buttons={[<Link key={'/register'} className={styles.link} to={'/registration'}>Sign Up</Link>]}
                 />                
             </section>
 

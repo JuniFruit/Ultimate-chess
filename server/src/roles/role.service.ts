@@ -1,5 +1,7 @@
 import { CreateRoleDto } from "./role.dto";
 import {roleRepository} from '../database/db.connect';
+import { FindOptionsWhereProperty } from "typeorm";
+import { RolesEntity } from "./role.entity";
 
 export const RoleService = {
 
@@ -13,9 +15,23 @@ export const RoleService = {
         await roleRepository.delete({role: roleValue});
     },
 
-    async getRoleByName(value:string) {
-        const role = await roleRepository.findOneBy({
-            role: value
+    async getRole(value?:string) {
+        let options: FindOptionsWhereProperty<RolesEntity> = {};
+
+        if (value) {
+            options = {
+                role: value
+            }
+        }
+
+        const role = await roleRepository.find({
+            where: {
+                ...options
+            },
+            relations: {
+                owner: true,
+                
+            }
         })
 
         return role

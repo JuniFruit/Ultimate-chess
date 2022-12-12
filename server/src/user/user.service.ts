@@ -1,3 +1,4 @@
+import { Like } from "typeorm"
 import { RegisterDto } from "../auth/auth.dto"
 import { roleRepository, userRepository } from "../database/db.connect"
 
@@ -71,6 +72,9 @@ export const UserService = {
             packInUse: {
                 id: 1
             },
+            packs: [{
+                id: 1
+            }],
             roles: [{
                 id: 1
             }]
@@ -79,5 +83,36 @@ export const UserService = {
         const newUser = await userRepository.create(defaults);
 
         return await userRepository.save(newUser);
+    },
+    async getAll() {
+        const users = await userRepository.find({
+            relations: {
+                packInUse: true,
+                packs: true,
+                roles: true,
+            },
+            order: {
+                createdAt: "DESC"
+            }
+        })
+
+        return users
+    },
+    async getBySearchTerm(term:string = '') {
+        const users = await userRepository.find({
+            where: {
+                username: Like(term)
+            },
+            relations: {
+                packInUse: true,
+                packs: true,
+                roles: true,
+            },
+            order: {
+                createdAt: "DESC"
+            }
+        })
+
+        return users;
     }
 }

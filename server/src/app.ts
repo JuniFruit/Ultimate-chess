@@ -4,7 +4,7 @@ import cors from 'cors';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { getWSconfig } from './config/socketIo.config';
-import { chatListener, gameListener, roomListener } from './listeners/listeners';
+import { chatListener, gameListener, roomListener, serverListener } from './listeners/listeners';
 import authRouter from './routes/auth.route';
 import userRouter from './routes/user.route';
 import packRouter from './routes/packs.route';
@@ -41,6 +41,7 @@ ioServer.on('connection', (socket) => {
     roomListener(socket, ioServer);
     gameListener(socket, ioServer);
     chatListener(socket, ioServer);
+    serverListener(socket, ioServer);
     
     socket.on('disconnect', (payload) => console.log(payload));
     

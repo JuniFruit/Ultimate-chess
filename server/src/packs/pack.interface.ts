@@ -1,7 +1,7 @@
 import {ISpritesObj} from '../../../client/src/model/figures/Figures'
 
 export interface IPackInfo {
-    name: string;
+    title: string;
     packPath: {
         id: number
     }

@@ -9,6 +9,17 @@ const router = express.Router();
 
 router.use(authGuard, adminGuard)
 
+router.get('/all', async (req, res) => {
+    try {
+        const role = await RoleService.getRole(req.query.value?.toString());
+        res.send(role);
+    } catch (error: any) {
+        res.status(500).send({ message: error.message });
+
+    }
+})
+
+
 router.post('/create', roleValidation, async (req, res) => {
     try {
         const role = await RoleService.createRole(req.body.dto);
@@ -18,15 +29,6 @@ router.post('/create', roleValidation, async (req, res) => {
     }
 })
 
-router.get('/get/:value', async (req, res) => {
-    try {
-        const role = await RoleService.getRoleByName(req.params.value);
-        res.send(role);
-    } catch (error: any) {
-        res.status(500).send({ message: error.message });
-
-    }
-})
 
 
 router.delete('/delete', async (req, res) => {

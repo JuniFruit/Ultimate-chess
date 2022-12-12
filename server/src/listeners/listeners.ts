@@ -50,3 +50,15 @@ export const chatListener = (socket: Socket<IClientEvents, IServerEvents>, ioSer
 
     }
 }
+
+
+export const serverListener = (socket: Socket<IClientEvents, IServerEvents>, ioServer: Server<IClientEvents, IServerEvents>) => {
+    try {
+        socket.on("ping", (cb) => {
+            cb();
+            
+        })
+    } catch (error) {
+        
+    }
+}

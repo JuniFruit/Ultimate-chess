@@ -2,6 +2,7 @@ import express from 'express';
 import { UserService } from '../user/user.service';
 import { authGuard } from '../auth/auth.guard';
 import { adminGuard } from '../guards/role.guard';
+import { isSameUser } from '../middleware/user/role.middleware';
 const router = express.Router();
 
 
@@ -14,7 +15,9 @@ router.get('/by-id/:id', async (req, res) => {
     }
 })
 
-router.get('/profile', authGuard, async (req, res) => {
+router.use(authGuard)
+
+router.get('/profile', async (req, res) => {
     try {
         const user = await UserService.getById(Number(req.body.currentUser))
         res.send(user);
@@ -24,7 +27,27 @@ router.get('/profile', authGuard, async (req, res) => {
     }
 })
 
-router.put('/increase-wins', authGuard, async (req, res) => {
+router.get('/all', adminGuard, async (req, res) => {
+    try {
+        const users = await UserService.getAll()
+        res.send(users);
+
+    } catch (error: any) {
+        res.status(500).send({ message: error.message });
+    }
+})
+
+router.get('/by-term', async (req, res) => {
+    try {
+        const user = await UserService.getBySearchTerm(req.query.term?.toString())
+        res.send(user);
+
+    } catch (error: any) {
+        res.status(500).send({ message: error.message });
+    }
+})
+
+router.put('/increase-wins', async (req, res) => {
     try {
         const user = await UserService.increaseWins(Number(req.body.currentUser));
         res.send(user);
@@ -34,7 +57,7 @@ router.put('/increase-wins', authGuard, async (req, res) => {
     }
 })
 
-router.put('/increase-losses', authGuard, async (req, res) => {
+router.put('/increase-losses', async (req, res) => {
     try {
         const user = await UserService.increaseLoses(Number(req.body.currentUser));
         res.send(user);
@@ -44,7 +67,9 @@ router.put('/increase-losses', authGuard, async (req, res) => {
     }
 })
 
-router.put('/add-role', authGuard, adminGuard, async (req, res) => {
+router.use(adminGuard, isSameUser)
+
+router.put('/add-role', async (req, res) => {
     try {
         const user = await UserService.addRole(Number(req.body.userId), req.body.roleValue);
         res.send(user);
@@ -54,7 +79,7 @@ router.put('/add-role', authGuard, adminGuard, async (req, res) => {
     }
 })
 
-router.put('/delete-role', authGuard, adminGuard, async (req, res) => {
+router.put('/delete-role', async (req, res) => {
     try {
         const user = await UserService.deleteRole(Number(req.body.userId), req.body.roleValue);
         res.send(user);

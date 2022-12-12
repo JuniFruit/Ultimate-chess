@@ -15,9 +15,9 @@ router.get('/all', async (req, res) => {
     }
 })
 
-router.get('/by-id', async (req, res) => {
+router.get('/by-id/:id', async (req, res) => {
     try {
-        const pack = await PackService.getPackById(Number(req.body.id));
+        const pack = await PackService.getPackById(Number(req.params.id));
         res.send(pack);
     } catch (error: any) {
         res.status(500).send({ message: error.message })
@@ -41,6 +41,14 @@ router.post('/sprite/create', adminGuard, adminGuard, async (req, res) => {
     }
 })
 
+router.post('/add', authGuard, adminGuard, async (req, res) => {
+    try {
+        const user = await PackService.setInUse(Number(req.body.currentUser), Number(req.body.id))
+        res.send(user);
+    } catch (error: any) {
+        res.status(500).send({ message: error.message })
+    }
+})
 router.put('/update/:id', authGuard, adminGuard, async (req, res) => {
     try {
         const pack = await PackService.updatePack(req.body.dto, Number(req.params.id));
@@ -60,13 +68,5 @@ router.delete('/delete', authGuard, adminGuard, async (req, res) => {
     }
 })
 
-router.post('/add', authGuard, adminGuard, async (req, res) => {
-    try {
-        const user = await PackService.setInUse(Number(req.body.currentUser), Number(req.body.id))
-        res.send(user);
-    } catch (error: any) {
-        res.status(500).send({ message: error.message })
-    }
-})
 
 export default router;

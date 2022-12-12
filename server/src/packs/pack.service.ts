@@ -65,7 +65,12 @@ export const PackService = {
         return await userRepository.save(user);
     },
     async updatePack(data: IPackInfo, id:number) {
-        const pack = this.getPackById(id);
-        return await packRepository.save({...pack, ...data})
+        const pack = await this.getPackById(id);
+
+        if (!pack) throw new Error('Such resource doesn\'t exist')
+        
+        return await packRepository.save({...pack, ...data, packPath: {
+            id: Number(data.packPath.id)
+        }})
     }
 }

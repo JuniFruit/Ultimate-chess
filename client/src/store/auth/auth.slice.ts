@@ -2,6 +2,7 @@ import { IUserFields } from "../../types/auth.interface"
 import { createSlice } from '@reduxjs/toolkit';
 import {login, register, logout} from './auth.actions';
 import { loginSpan } from "../../constants/constants";
+import storage from "redux-persist/lib/storage";
 
 
 interface IAuthInitial extends IUserFields {
@@ -50,13 +51,6 @@ export const authSlice = createSlice({
                 state.isLoading = false;
                 state.user = null;
                 
-            })
-            .addCase(logout.fulfilled, (state) => {
-                state.isLoading = false;
-                state.user = null;
-                state.expirationDate = null;
-                window.localStorage.removeItem('tokenExp')
-                window.localStorage.removeItem('persist:root');
-            })
+            })           
     }
 })

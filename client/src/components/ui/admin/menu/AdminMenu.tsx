@@ -14,6 +14,7 @@ const AdminMenu: FC = () => {
                 menuItems.map(item => (
                     <NavLink to={item.link} key={item.link}
                     className={({ isActive }) => isActive ? styles.link_active : ''}
+                    title={item.title}
                     >
                         <span>{<item.icon />}</span>
                     </NavLink>

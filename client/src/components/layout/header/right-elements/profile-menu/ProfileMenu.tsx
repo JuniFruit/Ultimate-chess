@@ -42,10 +42,10 @@ const ProfileMenu: FC = () => {
                             <Link to={`/channel/${user?.id}`}>My Profile</Link>
                         </li>
                         <li>
-                            <button onClick={logout}>Logout</button>
+                            {isAdmin ? <Link to={`/admin/home`}>Admin Panel</Link> : null}
                         </li>
                         <li>
-                            {isAdmin ? <Link to={`/admin/home`}>Admin Panel</Link> : null}
+                            <button onClick={() => logout(null)}>Logout</button>
                         </li>
                     </ul>
                 </div>

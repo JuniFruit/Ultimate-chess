@@ -9,6 +9,6 @@ export interface IUser {
     packs: IPack[],
     packInUse: IPack,
     winsCount: number
-    losesCount: number
+    lossesCount: number
     roles: IRole[]
 }

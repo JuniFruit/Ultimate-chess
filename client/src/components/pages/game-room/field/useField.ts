@@ -95,7 +95,7 @@ export const useField = ({ board, setBoard, ioMoveHandlers, myColor }: IUseField
         }
 
 
-    }, [board.states.currentPlayer])
+    }, [board])
 
     return {
         handlers: {

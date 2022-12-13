@@ -7,7 +7,6 @@ import styles from './GameRoom.module.scss';
 import MatchInfo from "./match-info/MatchInfo";
 import { WaitingModal } from "./modals/WaitingModal";
 import { PlayerInfo } from "../../ui/player/PlayerInfo";
-import { useAuth } from "../../../hooks/useAuth";
 import { ErrorModal } from "./modals/ErrorModal";
 import { Timer } from "../../ui/timer/Timer";
 import { GameOverModal } from "./modals/GameOverModal";
@@ -20,7 +19,7 @@ const GameRoom: FC = () => {
 
     const { id } = useParams()
     const { field, status, data, move } = useGameRoom(id)
-    const { user } = useAuth();
+
     return (
         <Layout title="Ultimate Chess Game Room">
             <div className={styles.room_wrapper}>
@@ -31,7 +30,7 @@ const GameRoom: FC = () => {
                             <Timer
                                 initTime={status.myColor === Colors.WHITE ? field.board.states.blackTime : field.board.states.whiteTime}
                                 isStopped={status.myColor === field.board.states.currentPlayer
-                                    || field.board.states.isFirstMove || field.board.states.isGameOver}
+                                    || field.board.states.isFirstMove || !!status.result}
                                 onTimeout={move.handleTimeout}
                             />
                         </>
@@ -51,7 +50,7 @@ const GameRoom: FC = () => {
                             <Timer
                                 initTime={status.myColor === Colors.WHITE ? field.board.states.whiteTime : field.board.states.blackTime}
                                 isStopped={status.myColor !== field.board.states.currentPlayer
-                                    || field.board.states.isFirstMove || field.board.states.isGameOver}
+                                    || field.board.states.isFirstMove || !!status.result}
                                 onTimeout={move.handleTimeout} 
 
                                 />
@@ -68,6 +67,8 @@ const GameRoom: FC = () => {
                     onDeclineDraw={() => data.setRequest(null)}
                     request={data.request}
                     states={field.board.states}
+                    disconnectedUser={data.disconnectedUser}
+                    onDisconnectTimeout={data.handleDisconnectTimeout}                 
                 />
 
             </div>

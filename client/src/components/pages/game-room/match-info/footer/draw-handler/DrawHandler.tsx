@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { Button } from '../../../../../ui/button/Button';
 import { IDrawHandler } from './DrawHandler.interface';
-import styles from './Draw.module.scss';
+import styles from '../Handle.module.scss';
 import { IoCheckmarkOutline, IoCloseOutline } from 'react-icons/io5';
 
 export const DrawHandler: FC<IDrawHandler> = ({onConfirm, onDecline}) => {

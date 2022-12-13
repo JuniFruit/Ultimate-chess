@@ -8,6 +8,7 @@ import { GameInfo } from "./game-info/GameInfo";
 import Chat from "./chat/Chat";
 import { DrawHandler } from "./footer/draw-handler/DrawHandler";
 import { Requests } from "../../../../constants/constants";
+import { DisconnectUser } from "./footer/disconnect-user/DisconnectUser";
 
 type activeWindow = 'game' | 'chat';
 
@@ -17,7 +18,9 @@ const MatchInfo: FC<IMatchInfo> = ({
     onRequestResign,
     onDeclineDraw,
     request,
-    states
+    states,
+    disconnectedUser,
+    onDisconnectTimeout
 }) => {
     const [activeWindow, setActiveWindow] = useState<activeWindow>('game');
 
@@ -67,9 +70,10 @@ const MatchInfo: FC<IMatchInfo> = ({
                 <Chat />
             </div>
             <div className={styles.match_info_footer}>
-                {request === Requests.DRAW ? <DrawHandler onConfirm={onConfirmDraw} onDecline = {onDeclineDraw} /> : null}
+                {request === Requests.DRAW ? <DrawHandler onConfirm={onConfirmDraw} onDecline={onDeclineDraw} /> : null}
+                {disconnectedUser ? <DisconnectUser {...{ disconnectedUser, onDisconnectTimeout }} /> : null}
             </div>
-    
+
 
 
         </div>

@@ -14,4 +14,15 @@
             @apply bg-transparent hover:text-opacity-70;
         }
     }
+
+    .timer {
+        >div {
+            >span {
+                @apply text-sm;
+            }
+            >svg {
+                @apply hidden;
+            }
+        }
+    }
 }

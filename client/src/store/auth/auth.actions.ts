@@ -1,6 +1,6 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
+import { createAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { AuthService } from "../../services/auth.service";
-import { IAuthDto, IRegisterDto, IUserFields } from "../../types/auth.interface";
+import { IAuthDto, IRegisterDto } from "../../types/auth.interface";
 import messageActions from "../message/message.slice";
 
 const {addMsg} = messageActions;
@@ -28,7 +28,4 @@ export const register = createAsyncThunk<any, IRegisterDto>('auth/register', asy
 })
 
 
-export const logout = createAsyncThunk<any, any>('auth/logout', async({}, thunkAPI) => {
-    
-    return {};
-})
+export const logout = createAction<null, string>('auth/logout');

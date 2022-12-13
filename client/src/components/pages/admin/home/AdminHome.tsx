@@ -1,18 +1,17 @@
 import { FC } from "react";
-import { IoAccessibility, IoWifiSharp } from "react-icons/io5";
+import { IoAccessibility, IoGameController, IoWifiSharp } from "react-icons/io5";
 import { AdminPanel } from "../../../ui/admin/main/AdminPanel";
 import { StatBox } from "../../../ui/admin/stat-boxes/StatBox";
 import { useAdminAuth } from "../../../../hooks/useAdminAuth";
-import styles from './AdminHome.module.scss';
 import { useAdminHome } from "./useAdminHome";
+import styles from './AdminHome.module.scss';
 
 
 const AdminHome: FC = () => {
     useAdminAuth();
 
-    const {ping, error} = useAdminHome();
-
-    return (
+    const {ping, error, players, rooms} = useAdminHome();
+    return (    
         <AdminPanel title="Home">
             <div className={styles.data_wrapper}>
                 <StatBox
@@ -24,7 +23,12 @@ const AdminHome: FC = () => {
                 <StatBox
                     title="Players"
                     svgIcon={<IoAccessibility />}
-                    stats={599999}
+                    stats={players}
+                />
+                <StatBox
+                    title="Rooms"
+                    svgIcon={<IoGameController />}
+                    stats={rooms}
                 />
                 
             </div>

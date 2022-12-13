@@ -1,3 +1,4 @@
+import { Colors } from "../../model/colors.enum";
 import { FigureTypes } from "../../model/figures/Figures";
 import { Requests } from "../constants";
 
@@ -31,6 +32,12 @@ export interface IMessage {
     body: string;   
 }
 
+export interface IDisconnectedUser {
+    username: string;
+    color: Colors;
+    id: number;
+}
+
 export interface IOClientEvents {
     joinGameRoom: (roomId: string) => void;
     sendMove: (arg: IMove) => void;
@@ -40,4 +47,6 @@ export interface IOClientEvents {
     resign: () => void;
     message: (payload: IMessage) => void;
     ping: (cb: () => void) => void;
+    disconnectTimeout: (user: IDisconnectedUser) => void;
+    currentGames: () => void;
 }

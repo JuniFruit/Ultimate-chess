@@ -1,4 +1,5 @@
 import { Requests } from "../../../../constants/constants";
+import { IDisconnectedUser } from "../../../../constants/socketIO/ClientEvents.interface";
 import { IGameInfo } from "./game-info/GameInfo.interface";
 
 export interface IMatchInfo {
@@ -8,4 +9,6 @@ export interface IMatchInfo {
     onDeclineDraw: () => void;
     request: Requests | null;
     states: IGameInfo;
+    disconnectedUser: IDisconnectedUser | null;
+    onDisconnectTimeout: () => void;
 }

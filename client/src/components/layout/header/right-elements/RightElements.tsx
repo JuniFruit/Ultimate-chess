@@ -11,7 +11,7 @@ export const RightElements: FC = () => {
     const {user, expirationDate} = useAuth();
     const {logout} = useActions()
 
-    if (Number(expirationDate) < Date.now()) logout({});
+    if (Number(expirationDate) < Date.now()) logout(null);
 
     return (
         <div className={styles.elements}>

@@ -16,7 +16,7 @@ export const useSocketConnect = () => {
     const handleSocketError = useCallback((payload: string) => {
         setError(payload);
         setIsConnected(false);
-    }, [error, setError])
+    }, [error])
     
     
     useEffect(() => {
@@ -34,12 +34,11 @@ export const useSocketConnect = () => {
             ioClient.off('connect_error')
         }
 
-    }, [isConnected, error]);
+    }, [error]);
 
     useEffect(() => {
         return () => {
             ioClient.disconnect();
-
         }
     }, [])
 

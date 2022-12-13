@@ -1,9 +1,9 @@
 
 .box_wrapper {
-    @apply p-4 shadow rounded-xl animate-slideInTop relative; 
+    @apply p-4 shadow rounded-xl animate-scaleIn relative; 
 
     .box_header {
-        @apply text-main-200 text-tiny;
+        @apply text-main-200 text-tiny opacity-80;
     }
 
     >h3 {

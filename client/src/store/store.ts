@@ -5,7 +5,7 @@ import { FLUSH, PAUSE, PERSIST, persistReducer, PURGE, REGISTER, REHYDRATE, pers
 import storage from "redux-persist/lib/storage";
 import { api } from "./api/api";
 import { rtkQueryErrorLogger } from "./middleware/errorHandler.middleware";
-import { rootReducers } from "./root-reducers";
+import rootReducers from "./root-reducers";
 
 const persistConfig = {
     key: 'root',

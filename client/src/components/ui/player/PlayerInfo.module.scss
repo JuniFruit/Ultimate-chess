@@ -10,16 +10,17 @@
             @apply w-10 h-10;
         }
         .stats_wrapper {
-            @apply flex flex-col gap-2 text-white;
-            font-weight: 600;
+            @apply flex flex-col gap-0 text-white;
 
             >h3 {
                 @apply text-sm;
+                font-weight: 600;
             }
             .stats {
-                @apply flex gap-3;
+                @apply flex gap-2;
                 >span {
-                    @apply text-sm
+                    font-size: .85rem;
+                    font-weight: 300;
                 }
             }
         }

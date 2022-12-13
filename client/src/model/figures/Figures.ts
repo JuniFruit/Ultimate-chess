@@ -1,4 +1,4 @@
-import { SPRITES } from "../../assets/sprites";
+import { SPRITES } from "../../assets/Packs/Default/sprites";
 import { IBoard } from "../Board";
 import { ICell } from "../Cell";
 import { Colors } from "../colors.enum";

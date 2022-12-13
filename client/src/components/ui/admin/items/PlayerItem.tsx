@@ -1,6 +1,5 @@
 import { FC,PropsWithChildren } from "react";
 import { IUser } from "../../../../types/user.interface";
-import { IButton } from "../../button/Button.interface";
 import { ImagePreview } from "../../image-preview/ImagePreview";
 import styles from './Items.module.scss';
 
@@ -30,7 +29,7 @@ export const PlayerItem: FC<PropsWithChildren<IPlayerItem>> = ({ user, children 
 
             </div>
             <div className={styles.user_stats}>
-                <h3>Losses: {user.losesCount}</h3>
+                <h3>Losses: {user.lossesCount}</h3>
                 <h3>Wins: {user.winsCount}</h3>
             </div>
             <div className={styles.user_actions}>

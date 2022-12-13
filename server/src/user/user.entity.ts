@@ -31,6 +31,6 @@ export class UserEntity extends BaseEntity {
     winsCount!: number
 
     @Column({ default: 0, name: 'losses_count' })
-    losesCount!: number
+    lossesCount!: number
 
 }

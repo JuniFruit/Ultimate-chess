@@ -32,7 +32,6 @@ const ioServer = new Server<IClientEvents,IServerEvents>(httpServer, getWSconfig
 
 ioServer.use(userHandler)
 
-// const mainAdapter = ioServer.of('/').adapter;
 
 
 ioServer.on('connection', (socket) => {
@@ -42,8 +41,6 @@ ioServer.on('connection', (socket) => {
     gameListener(socket, ioServer);
     chatListener(socket, ioServer);
     serverListener(socket, ioServer);
-    
-    socket.on('disconnect', (payload) => console.log(payload));
     
 })
 

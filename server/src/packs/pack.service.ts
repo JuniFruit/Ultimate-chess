@@ -5,10 +5,10 @@ import { UserService } from "../user/user.service";
 export const PackService = {
 
     async create(data: IPackInfo) {
-        const spritePack = await spriteRepository.findOneBy({id: data.packPath.id});
+        const spritePack = await spriteRepository.findOneBy({ id: data.packPath.id });
 
         if (!spritePack) throw new Error('Such sprite pack ID doesn\'t exist');
-        
+
         const newPack = await packRepository.create(data);
         return await packRepository.save(newPack);
     },
@@ -46,6 +46,24 @@ export const PackService = {
         return packs;
     },
     async createSpritePack(data: ISpritePack) {
+        const lol = {
+            blackBishop: '',
+            whiteBishop: '',
+            blackKing: '',
+            whiteKing: '',
+            blackPawn: '',
+            whitePawn: '',
+            blackQueen: '',
+            whiteQueen: '',
+            blackRook: '',
+            whiteRook: '',
+            whiteKnight: '',
+            blackKnight: ''
+        };        
+       
+
+
+
         const newSpritePack = await spriteRepository.create(data);
         await spriteRepository.save(newSpritePack);
         return newSpritePack.id;
@@ -59,18 +77,20 @@ export const PackService = {
 
         user.packInUse = pack;
         user.packs.push(pack);
-        pack.owner.push(user);
+        // pack.owner.push(user);
 
-        await packRepository.save(pack);
+        // await packRepository.save(pack);
         return await userRepository.save(user);
     },
-    async updatePack(data: IPackInfo, id:number) {
+    async updatePack(data: IPackInfo, id: number) {
         const pack = await this.getPackById(id);
 
         if (!pack) throw new Error('Such resource doesn\'t exist')
-        
-        return await packRepository.save({...pack, ...data, packPath: {
-            id: Number(data.packPath.id)
-        }})
+
+        return await packRepository.save({
+            ...pack, ...data, packPath: {
+                id: Number(data.packPath.id)
+            }
+        })
     }
 }

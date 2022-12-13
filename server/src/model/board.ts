@@ -2,10 +2,11 @@ import { IMove } from '../../../client/src/constants/socketIO/ClientEvents.inter
 import { Board, IBoard, IBoardStates } from '../../../client/src/model/Board';
 import { Colors } from '../../../client/src/model/colors.enum';
 import { FENs, Results } from '../../../client/src/model/helper.enum';
+import { IPlayer } from '../../../client/src/model/Player';
 import { getInitTime } from '../utils/utils';
 
 
-let ROOM_GAME_BOARDS = new Map();
+const ROOM_GAME_BOARDS = new Map();
 
 export const boardApi = (roomId: string) => {
 
@@ -28,16 +29,15 @@ export const boardApi = (roomId: string) => {
     const getResults = () => {
         const board: IBoard = ROOM_GAME_BOARDS.get(roomId);
         
-        if (!board) return null;
         board.updateAllLegalMoves();
         if (board.isDraw()) return {
             result: Results.DRAW,
-            currentPlayer: board.states.currentPlayer
+            loser: board.states.currentPlayer
         }
         if (board.isKingChecked()) {
             if (board.isCheckMate()) return {
                 result: Results.CHECKMATE,
-                currentPlayer: board.states.currentPlayer
+                loser: board.states.currentPlayer
             }
         }
     }
@@ -52,6 +52,7 @@ export const boardApi = (roomId: string) => {
     }    
 
     const getBoardData = (board:IBoard) => {
+        updateTime(board);
         const boardFEN = board.convertToFEN();
         const newBoardStates: IBoardStates = {...board.states}
         return {
@@ -93,6 +94,8 @@ export const boardApi = (roomId: string) => {
     const clearBoard = () =>{
         ROOM_GAME_BOARDS.delete(roomId);
     }
+
+   
 
     return {
         getBoard,

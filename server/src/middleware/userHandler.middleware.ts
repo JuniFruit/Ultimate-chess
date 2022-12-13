@@ -2,10 +2,22 @@ import { Socket } from "socket.io";
 import { UserService } from "../user/user.service";
 import jwt from 'jsonwebtoken';
 import { IPlayerInfo } from "../../../client/src/components/ui/player/PlayerInfo.interface";
+import { IUser } from "../../../client/src/types/user.interface";
 
 
 export const userHandler = async(socket: Socket, next:any) => {
     try {
+        const auth = socket.handshake.auth;
+
+        if (auth.guestName) {
+            (socket.data.user as IPlayerInfo | IUser) = {            
+                username: auth.guestName,  
+                id: 0,        
+                winsCount: 0,
+                lossesCount: 0  
+            }
+            return next();
+        }
 
         let userId: number = 0;
         jwt.verify(
@@ -20,13 +32,7 @@ export const userHandler = async(socket: Socket, next:any) => {
         next();
 
     } catch (error) {
-        (socket.data.user as IPlayerInfo) = {            
-            username: `Guest_${Math.floor(Math.random() * 10000)}`,  
-            id: 0,        
-            winsCount: 0,
-            lossesCount: 0  
-        }
-        next()
+       console.log(error);
     }
    
 } 

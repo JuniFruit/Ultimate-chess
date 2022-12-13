@@ -1,13 +1,11 @@
-import { RemoteSocket, Socket } from 'socket.io';
-import { GameRules } from '../model/gameRules'
-import { boardApi } from '../model/board';
+import { Server, Socket } from 'socket.io';
 import { IClientEvents } from '../constants/socketIO/ClientEvents.interface';
 import { IServerEvents, IStartData } from '../constants/socketIO/ServerEvents.interface';
 import { Errors, Requests } from '../../../client/src/constants/constants';
-import { IPlayer, Player } from '../../../client/src/model/Player';
-import { IBoardData } from '../../../client/src/constants/socketIO/ServerEvents.interface';
+import { roomApi } from '../model/room';
+import { BoardService } from './board.service';
+import { boardApi } from '../model/board';
 
-const ROOM_INFO = new Map()
 
 export const RoomService = {
 
@@ -16,47 +14,40 @@ export const RoomService = {
         socket.join(roomId);
     },
 
-    // TODO send board instead creating every time, checking game state
-    async onRoomJoin(sockets: RemoteSocket<IServerEvents, IStartData>[], roomId: string) {
+    async onRoomJoin(ioServer: Server<IClientEvents, IServerEvents>, roomId: string) {
 
-        const currentBoard = boardApi(roomId).getBoard();
-        if (sockets.length === 2 && currentBoard.states.isFirstMove) {
-            
+        const sockets = await ioServer.in(roomId).fetchSockets()
+        const roomInfo = roomApi(roomId).getRoomInfo();
+
+        if (sockets.length === 2 && !roomInfo.isGameStarted) {
+
             if (sockets[0].data.user?.username === sockets[1].data.user?.username) return sockets[0].emit('gameError', Errors.SAME_PLAYER)
-            
-            this.setSocketsData(sockets);
-            sockets.forEach(socket => socket.emit('updateGame', this.getUpdateGamePayload(socket, currentBoard)));
+
+            BoardService.onGlobalUpdate(sockets);
+            roomApi(roomId).updateRoomInfo({ isGameStarted: true, result: null });
         };
-        if (sockets.length === 2 && !currentBoard.states.isFirstMove) {
-            const players: IPlayer[] = ROOM_INFO.get(sockets[1].data.room);
-            const myInfo = players.find(player => player.username === sockets[1].data.user?.username);
-            if (myInfo) sockets[1].emit("updateGame", this.getUpdateGamePayload(sockets[1], currentBoard));
+        if (sockets.length === 2 && roomInfo.isGameStarted) {
+            
+            await this.onRoomRejoin(ioServer, roomId);
+            return;
         }
+
     },
 
-    setSocketsData(sockets: RemoteSocket<IServerEvents, IStartData>[]) {
-        const players: IPlayer[] = []
-
-        const colors = GameRules.assignColors()
-        sockets[0].data.color = colors[0];
-        sockets[0].data.opponentUser = sockets[1].data.user;
-        sockets[1].data.color = colors[1];
-        sockets[1].data.opponentUser = sockets[0].data.user;
-
-        sockets.forEach(socket => {
-            socket.data.score = 0
-            players.push(new Player(socket.data.user?.username!, socket.data.color!, socket.data.score));
-        });
-        ROOM_INFO.set(sockets[0].data.room, players);
-    },
-
-    getUpdateGamePayload(socket: RemoteSocket<IServerEvents, IStartData> | Socket<IClientEvents, IServerEvents>, board: IBoardData) {
-        return {
-            color: socket.data.color,
-            score: socket.data.score,
-            user: socket.data.user,
-            opponentUser: socket.data.opponentUser,
-            boardData: board
+    async onRoomRejoin(ioServer: Server<IClientEvents, IServerEvents>, roomId: string) {
+        const sockets = await ioServer.in(roomId).fetchSockets()
+        const players = roomApi(roomId).getRoomInfo().players;
+        const roomResult = roomApi(roomId).getRoomInfo().result;
+        if (!players) return;
+        
+        const myInfo = players.find(player => player.username === sockets[1].data.user?.username);
+        if (myInfo) {
+            sockets[1].data.color = myInfo.color;
+            sockets[1].data.opponentUser = myInfo.opponent;
+            sockets[1].emit("updateGame", BoardService.getUpdateGamePayload(sockets[1], roomId));
+            
+            ioServer.in(roomId).emit("reconnect");
+            if (roomResult) return sockets[1].emit("results", roomResult);
         }
     },
 
@@ -64,9 +55,26 @@ export const RoomService = {
         socket.to(socket.data.room).emit("inGameRequest", payload);
     },
 
-    clearPlayers(room:string) {
-        ROOM_INFO.set(room, []);
+    async onRoomLeave(socket: Socket<IClientEvents, IServerEvents, any, IStartData>, ioServer: Server<IClientEvents, IServerEvents>) {
+        const roomId = socket.data.room;
+        if (!roomId) return;
+        if (roomId.includes('_obs')) return;
+        const sockets = await ioServer.in(roomId).fetchSockets();
+
+        if (sockets.length === 0) {
+            this.clearGameRoom(roomId);
+            ioServer.in(roomId).emit("noPlayers");
+        }
+
+        ioServer.in(roomId).emit("noOpponent", {
+            username: socket.data.user?.username!,
+            color: socket.data.color!,
+            id: socket.data.user?.id!
+        });
+    },
+
+    clearGameRoom(roomId: string) {
+        boardApi(roomId).clearBoard();
+        roomApi(roomId).clearRoom();
     }
-
-
 }

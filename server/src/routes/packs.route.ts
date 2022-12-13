@@ -27,15 +27,16 @@ router.get('/by-id/:id', async (req, res) => {
 router.post('/create', authGuard, adminGuard, async (req, res) => {
     try {
         const newPack = await PackService.create(req.body);
+        res.status(200);
     } catch (error: any) {
         res.status(500).send({ message: error.message })
     }
 })
 
-router.post('/sprite/create', adminGuard, adminGuard, async (req, res) => {
+router.post('/sprite/create', authGuard, adminGuard, async (req, res) => {
     try {
         const result = await PackService.createSpritePack(req.body);
-        res.status(200).send(result);
+        res.send(result);
     } catch (error: any) {
         res.status(500).send({ message: error.message })
     }

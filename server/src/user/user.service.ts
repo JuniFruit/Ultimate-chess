@@ -10,7 +10,9 @@ export const UserService = {
             },
             relations: {
                 packs: true,
-                packInUse: true,
+                packInUse: {
+                    packPath: true
+                },
                 roles: true
             }
         })
@@ -62,7 +64,7 @@ export const UserService = {
 
     async increaseLoses(id: number) {
         const user = await this.getById(id);
-        user.losesCount++;
+        user.lossesCount++;
         return await userRepository.save(user);
     },
     async create(dto: RegisterDto) {

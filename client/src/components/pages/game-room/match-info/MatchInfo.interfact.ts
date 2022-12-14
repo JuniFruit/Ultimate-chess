@@ -9,6 +9,7 @@ export interface IMatchInfo {
     onDeclineDraw: () => void;
     request: Requests | null;
     states: IGameInfo;
+    isObserver: boolean;
     disconnectedUser: IDisconnectedUser | null;
     onDisconnectTimeout: () => void;
 }

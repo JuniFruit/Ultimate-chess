@@ -2,8 +2,8 @@ import { FC, MouseEvent } from 'react';
 import styles from './Promotion.module.scss';
 import { SPRITES } from '../../../../assets/Packs/Default/sprites';
 import { IPromotionWindow } from './Promotion.interface';
-import { FigureTypes } from '../../../../model/figures/Figures';
 import { PieceInfo } from '../piece-info/PieceInfo';
+import { FigureTypes } from '../../../../model/figures/figures.interface';
 
 const PromotionWindow: FC<IPromotionWindow> = ({ handlePromotion }) => {
 

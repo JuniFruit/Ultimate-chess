@@ -26,8 +26,8 @@ module.exports = {
       },
       keyframes: {
         fadeIn: {
-          from: {opacity: 0},
-          to: {opactiy: 1}
+          from: { opacity: 0 },
+          to: { opactiy: 1 }
         },
         scaleIn: {
           '0%': {
@@ -72,14 +72,14 @@ module.exports = {
           }
         },
         slideInLeft: {
-            '0%': {
-              transform: 'translateX(-100%)',
-              opacity: '0'
-            },
-            '100%': {
-              transform: 'translateX(0%)',
-              opacity: '1'
-            }
+          '0%': {
+            transform: 'translateX(-100%)',
+            opacity: '0'
+          },
+          '100%': {
+            transform: 'translateX(0%)',
+            opacity: '1'
+          }
         },
         slideInTop: {
           '0%': {
@@ -111,6 +111,16 @@ module.exports = {
             opacity: '1'
           }
         },
+        scaleDown: {
+          "0%": {
+            transform: 'scale(2.5)',
+            opacity: '0.4'
+          },
+          "100%": {
+            transform: 'scale(1)',
+            opacity: '1'
+          }
+        }
 
 
       },
@@ -137,17 +147,18 @@ module.exports = {
         slideInBottom: 'slideInBottom .35s ease',
         slideInLeft: 'slideInLeft .35s ease',
         slideInRight: 'slideInRight .35s ease',
-        slideInTop: 'slideInTop .35s ease'
+        slideInTop: 'slideInTop .35s ease',
+        scaleDown: 'scaleDown .15s ease' 
 
       }
     },
   },
   plugins: [
-    plugin(({addComponents}) => {
+    plugin(({ addComponents }) => {
       addComponents({
         '.shadow-block': {
           display: 'block',
-          boxShadow: 
+          boxShadow:
             '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
           animation: 'scaleIn .35s ease-in-out',
           backgroundColor: '#272532'

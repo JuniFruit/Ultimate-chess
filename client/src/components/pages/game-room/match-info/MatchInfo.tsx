@@ -20,6 +20,7 @@ const MatchInfo: FC<IMatchInfo> = ({
     request,
     states,
     disconnectedUser,
+    isObserver,
     onDisconnectTimeout
 }) => {
     const [activeWindow, setActiveWindow] = useState<activeWindow>('game');
@@ -47,18 +48,26 @@ const MatchInfo: FC<IMatchInfo> = ({
                         <span>Chat</span>
                         <IoChatboxEllipsesOutline />
                     </Button>
-                    <Button
-                        onClick={onRequestDraw}
-                        className={styles.button}>
-                        <span>Draw</span>
-                        <GiDiceShield />
-                    </Button>
-                    <Button
-                        onClick={onRequestResign}
-                        className={styles.button}>
-                        <span>Resign</span>
-                        <GiKneeling />
-                    </Button>
+                    {!isObserver
+                        ?
+                        <>
+                            <Button
+                                onClick={onRequestDraw}
+
+                                className={styles.button}>
+                                <span>Draw</span>
+                                <GiDiceShield />
+                            </Button>
+                            <Button
+                                onClick={onRequestResign}
+
+                                className={styles.button}>
+                                <span>Resign</span>
+                                <GiKneeling />
+                            </Button>
+                        </>
+                        : null
+                    }
                 </div>
             </div>
 

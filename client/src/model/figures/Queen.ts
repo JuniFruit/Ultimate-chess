@@ -1,6 +1,7 @@
 import { IBoard } from "../Board";
 import { Colors } from "../colors.enum";
-import { Figure, FigureTypes, ISpritesObj } from "./Figures";
+import { Figure } from "./Figures";
+import { FigureTypes, IFigure, ISpritesObj } from "./figures.interface";
 
 
 export class Queen extends Figure {

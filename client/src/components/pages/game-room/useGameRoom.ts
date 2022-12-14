@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
 import ioClient from "../../../api/socketApi";
-import { SPRITES } from "../../../assets/Packs/Default/sprites";
 import { Requests } from "../../../constants/constants";
 import { IDisconnectedUser, IMove, IMovePayload } from "../../../constants/socketIO/ClientEvents.interface";
-import { IBoardData, IResultPayload, IStartPayload } from "../../../constants/socketIO/ServerEvents.interface";
+import { IBoardData, IGameData, IResultPayload } from "../../../constants/socketIO/ServerEvents.interface";
 import { useSocketConnect } from "../../../hooks/useSocketConnect";
 import { Board, IBoard } from "../../../model/Board";
 import { Colors } from "../../../model/colors.enum";
+import { ISpritesObj } from "../../../model/figures/figures.interface";
 import { GameOver, Results } from "../../../model/helper.enum";
-import { IUser } from "../../../types/user.interface";
+import { assignSpritePack } from "../../../utils/game.utils";
 import { IPlayerInfo } from "../../ui/player/PlayerInfo.interface";
 
 
@@ -18,13 +18,13 @@ export const useGameRoom = (id?: string) => {
     const [board, setBoard] = useState<IBoard>(new Board())
     const [isReadyToStart, setIsReadyToStart] = useState(false);
     const [result, setResult] = useState<GameOver | null>(null);
-    const [enemyUser, setEnemyUser] = useState<IUser>();
-    const [clientUser, setClientUser] = useState<IUser>()
+    const [enemyUser, setEnemyUser] = useState<IPlayerInfo>();
+    const [clientUser, setClientUser] = useState<IPlayerInfo>()
     const [isFlipped, setIsFlipped] = useState(false);
     const [myColor, setMyColor] = useState<Colors>(Colors.WHITE)
     const [request, setRequest] = useState<Requests | null>(null);
     const [disconnectedUser, setDisconnectedUser] = useState<IDisconnectedUser | null>(null);
-
+    const [isObserver, setIsObserver] = useState(false);
     const { isConnected, error, setError } = useSocketConnect();
 
 
@@ -38,27 +38,33 @@ export const useGameRoom = (id?: string) => {
     }, [])
 
     const handleDisconnectTimeout = useCallback(() => {
-        if (!disconnectedUser || result) return;
+        if (!disconnectedUser || result || isObserver) return;
         if (board.states.isFirstMove) return setIsReadyToStart(false);
         ioClient.emit("disconnectTimeout", disconnectedUser);
         setDisconnectedUser(null);
 
     }, [disconnectedUser, result, board])
 
-    const handleUpdateGame = useCallback((payload: IStartPayload) => {
+    const handleUpdateGame = useCallback((payload: IGameData) => {
         if (!payload) return; // payload with info about the client and the board
         clearStates();
         setIsReadyToStart(true);
-        setEnemyUser(prev => payload.opponentUser);
-        setClientUser(prev => payload.user);
-        setMyColor(prev => payload.color!);
-        setIsFlipped(prev => payload.color === Colors.BLACK);
-        drawBoard(payload.boardData!, payload.user,payload.opponentUser);
+        setEnemyUser(prev => payload.playerTwo!);
+        setClientUser(prev => payload.playerOne);
+        setMyColor(prev => payload.myColor!);
+        setIsFlipped(prev => payload.myColor === Colors.BLACK);
+        setIsObserver(prev => payload.isObserver ? payload.isObserver : false);
+
+        drawBoard(payload.boardData!,
+            assignSpritePack(payload.myColor!, payload.playerOne!, payload.playerTwo!),
+            assignSpritePack(payload.myColor === Colors.BLACK ? Colors.WHITE : Colors.BLACK, payload.playerOne!, payload.playerTwo!));
     }, [])
 
     const handleSendMove = useCallback((move: IMove) => {
+        if (isObserver) return;
+
         ioClient.emit("sendMove", move)
-    }, [])
+    }, [isObserver])
 
     const handleReceiveMove = useCallback((payload: IMovePayload) => {
 
@@ -77,13 +83,14 @@ export const useGameRoom = (id?: string) => {
         setResult(null);
     }, [])
 
-    const drawBoard = useCallback((boardData: IBoardData, user?: IUser, opponent?:IUser) => {
-        console.log(user);
-        console.log(opponent)
-        const newBoard = new Board(user?.packInUse ? user.packInUse.packPath : SPRITES,
-            opponent?.packInUse ? opponent.packInUse.packPath : SPRITES);
+    const drawBoard = useCallback((boardData: IBoardData, whiteTeamSprites?: ISpritesObj, blackTeamSprites?: ISpritesObj) => {
+
+        const newBoard = new Board(whiteTeamSprites, blackTeamSprites);
         newBoard.startNewGame(boardData.boardFEN);
-        newBoard.states = boardData.states;
+        newBoard.states = {
+            ...newBoard.states,
+            ...boardData.states
+        }
         newBoard.updateAllLegalMoves();
         setBoard(prev => newBoard);
 
@@ -99,21 +106,26 @@ export const useGameRoom = (id?: string) => {
     }, [board])
 
     const handleTimeout = useCallback(() => {
+        if (isObserver) return;
         ioClient.emit("timeout")
     }, [board])
 
     const handleRequestConfirm = useCallback((request: Requests) => {
+        if (isObserver) return;
+
         clearStates()
         if (request === Requests.RESIGN) return ioClient.emit("resign");
         ioClient.emit("confirmRequest", request);
 
-    }, [request])
+    }, [request, isObserver])
 
     const handleSendRequest = useCallback((request: Requests) => {
+        if (isObserver) return;
+
         if (request === Requests.RESIGN) return setRequest(Requests.RESIGN);
         ioClient.emit("inGameRequest", request);
 
-    }, [])
+    }, [isObserver])
 
     useEffect(() => {
         if (!isConnected || !id) return;
@@ -124,27 +136,27 @@ export const useGameRoom = (id?: string) => {
     useEffect(() => {
         ioClient.on("noOpponent", handleNoOpponent);
         ioClient.on('gameError', (err) => setError(err))
-        ioClient.on("updateGame", handleUpdateGame);
-        ioClient.on("results", handleResults);
         ioClient.on("inGameRequest", (request) => setRequest(request));
         ioClient.on("reconnect", handleReconnect)
 
         return () => {
             ioClient.off("noOpponent", handleNoOpponent);
-            ioClient.off('updateGame', handleUpdateGame);
             ioClient.off("gameError", (err) => setError(err));
-            ioClient.off("results", handleResults)
             ioClient.off("inGameRequest", (request) => setRequest(request));
             ioClient.off("reconnect")
+
         }
 
-    }, [])
+    }, [request, result, disconnectedUser, error])
 
     useEffect(() => {
         ioClient.on("move", handleReceiveMove);
-
+        ioClient.on("updateGame", handleUpdateGame);
+        ioClient.on("results", handleResults);
         return () => {
             ioClient.off("move", handleReceiveMove);
+            ioClient.off('updateGame', handleUpdateGame);
+            ioClient.on("results", handleResults);
         }
     }, [board])
 
@@ -161,7 +173,8 @@ export const useGameRoom = (id?: string) => {
             isReadyToStart,
             isFlipped,
             myColor,
-            result
+            result,
+            isObserver
         },
         data: {
             enemyUser,

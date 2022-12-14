@@ -15,7 +15,7 @@ export const PackMenu: FC<IPackMenu> = ({ packs, setPreview }) => {
     const [addPack] = packApi.useAddPackToProfileMutation();
 
     const handleAdd = (packId:number) => {
-        if (packId === profile?.packInUse.id) return;
+        if (packId === profile?.packInUse?.id) return;
         addPack(packId)
     }
 

@@ -1,7 +1,7 @@
-import { ISpritesObj } from "../../../../../../model/figures/Figures";
 import { IPack } from "../../../../../../types/pack.interface";
 import { FormEventHandler } from "react";
 import { Control, FieldErrors, UseFormRegister, UseFormSetValue } from "react-hook-form";
+import { ISpritesObj } from "../../../../../../model/figures/figures.interface";
 
 export interface ISpriteForm extends ISpritesObj {} 
 

@@ -3,7 +3,7 @@ import { Cell } from "./Cell";
 import { ICell } from "./Cell"
 import { Colors } from "./colors.enum";
 import { Bishop } from "./figures/Bishop";
-import { FigureTypes, IFigure, ILostFigure, IMovedFigure, ISpritesObj } from "./figures/Figures";
+import { FigureTypes, IFigure, ILostFigure, IMovedFigure, ISpritesObj } from "./figures/figures.interface";
 import { King } from "./figures/King";
 import { Knight } from "./figures/Knight";
 import { Pawn } from "./figures/Pawn";
@@ -12,7 +12,7 @@ import { Rook } from "./figures/Rook";
 import { convertToChar, returnColorCell } from "./helpers";
 
 export interface IBoard {
-    cells: ICell[][];   
+    cells: ICell[][];
     figures: IFigure[];
     states: IBoardStates;
     startNewGame: (fen: string) => void;
@@ -30,22 +30,24 @@ export interface IBoard {
     createFigure: (char: string, x: number, y: number) => IFigure | null;
     swapPlayer: () => void;
     clearBoard: () => void;
-    addLostFigure: (figure: IFigure) => void;
-    addMove: (move: ICell) => void;
-    popFigure: (figure:IFigure) => void
+    addLostFigure: (figure: ILostFigure) => void;
+    addMove: (movedFigure: IMovedFigure) => void;
+    popFigure: (figure: IFigure) => void
     convertToFEN: () => string;
 }
 
 export interface IBoardStates {
-    currentPlayer: Colors;    
+    currentPlayer: Colors;
     lostFigures: ILostFigure[];
     isCheck: boolean;
     isFirstMove: boolean;
-    isGameOver: boolean;    
+    isGameOver: boolean;
     whiteTime: number;
     blackTime: number;
     moves: IMovedFigure[];
-    lastMoveTime?:number;
+    lastMoveTime?: number;
+    whiteTeamSprites?: ISpritesObj;
+    blackTeamSprites?: ISpritesObj
 }
 
 
@@ -58,20 +60,17 @@ export class Board implements IBoard {
         currentPlayer: Colors.WHITE,
         lostFigures: [],
         moves: [],
-        isCheck: false,        
+        isCheck: false,
         isGameOver: false,
         isFirstMove: true,
         whiteTime: 300,
-        blackTime: 300,
-        
-    }
+        blackTime: 300,         
 
-    mySprites?: ISpritesObj;
-    enemySprites?: ISpritesObj;
+    }   
 
-    constructor(mySprites?: ISpritesObj, enemySprites?: ISpritesObj) {
-        this.mySprites = mySprites;
-        this.enemySprites = enemySprites;       
+    constructor(whiteTeamSprites?: ISpritesObj, blackTeamSprites?: ISpritesObj) {
+        this.states.whiteTeamSprites = whiteTeamSprites;
+        this.states.blackTeamSprites = blackTeamSprites;
     }
 
     startNewGame(fen: string) {
@@ -96,10 +95,10 @@ export class Board implements IBoard {
     getCopyBoard() {
         const newBoard = new Board();
         newBoard.cells = this.cells;
-        newBoard.figures = this.figures;
-        newBoard.mySprites = this.mySprites;
-        newBoard.enemySprites = this.enemySprites;
+        newBoard.figures = this.figures;      
         newBoard.states = this.states;
+        newBoard.states.blackTeamSprites = this.states.blackTeamSprites;
+        newBoard.states.whiteTeamSprites = this.states.whiteTeamSprites;
         return newBoard;
     }
 
@@ -125,8 +124,6 @@ export class Board implements IBoard {
         })
 
         return this.states.isCheck;
-
-
     }
 
     isCheckMate() {
@@ -164,24 +161,27 @@ export class Board implements IBoard {
         return false;
     }
 
-    addMove(move: ICell) {
+    addMove(movedFigure: IMovedFigure) {
 
         this.states.moves.push({
-            type: move.figure?.type!,
-            color: move.figure?.color!,
-            x: move.figure?.x!,
-            y: move.figure?.y!,
-            sprite: move.figure?.sprite
+            type: movedFigure.type,
+            color: movedFigure.color,
+            x: movedFigure.x,
+            y: movedFigure.y,
+            sprite: movedFigure.sprite,
+            isCastling: movedFigure.isCastling,
+            figureTaken: movedFigure.figureTaken
 
         });
     }
 
-    addLostFigure(figure: IFigure) {
-        this.popFigure(figure);
+    addLostFigure(figure: ILostFigure) {
+        // this.popFigure(figure);
         this.states.lostFigures.push({
             color: figure.color,
             type: figure.type,
-            sprite: figure.sprite
+            sprite: figure.sprite,
+            takenBy: figure.takenBy
         });
     }
 
@@ -191,7 +191,7 @@ export class Board implements IBoard {
     }
 
     clearBoard() {
-        this.cells = [];      
+        this.cells = [];
         this.figures = [];
         this.states.isCheck = false;
     }
@@ -242,26 +242,32 @@ export class Board implements IBoard {
     createFigure(char: string, x: number, y: number) {
 
         const type = char.toLowerCase()
-        const isEnemy = char === char.toLowerCase();
+        const isBlack = char === char.toLowerCase();
 
         switch (type) {
             case FigureTypes.BISHOP:
-                return new Bishop(x, y, isEnemy ? Colors.BLACK : Colors.WHITE, isEnemy ? this.enemySprites : this.mySprites)
+                return new Bishop(x, y, 
+                    isBlack ? Colors.BLACK : Colors.WHITE, isBlack ? this.states.blackTeamSprites : this.states.whiteTeamSprites)
 
             case FigureTypes.KING:
-                return new King(x, y, isEnemy ? Colors.BLACK : Colors.WHITE, isEnemy ? this.enemySprites : this.mySprites,);
+                return new King(x, y, 
+                    isBlack ? Colors.BLACK : Colors.WHITE, isBlack ? this.states.blackTeamSprites : this.states.whiteTeamSprites);
 
             case FigureTypes.PAWN:
-                return new Pawn(x, y, isEnemy ? Colors.BLACK : Colors.WHITE, isEnemy ? this.enemySprites : this.mySprites);
+                return new Pawn(x, y, 
+                    isBlack ? Colors.BLACK : Colors.WHITE, isBlack ? this.states.blackTeamSprites : this.states.whiteTeamSprites);
 
             case FigureTypes.KNIGHT:
-                return new Knight(x, y, isEnemy ? Colors.BLACK : Colors.WHITE, isEnemy ? this.enemySprites : this.mySprites);
+                return new Knight(x, y, 
+                    isBlack ? Colors.BLACK : Colors.WHITE, isBlack ? this.states.blackTeamSprites : this.states.whiteTeamSprites);
 
             case FigureTypes.QUEEN:
-                return new Queen(x, y, isEnemy ? Colors.BLACK : Colors.WHITE, isEnemy ? this.enemySprites : this.mySprites);
+                return new Queen(x, y, 
+                    isBlack ? Colors.BLACK : Colors.WHITE, isBlack ? this.states.blackTeamSprites : this.states.whiteTeamSprites);
 
             case FigureTypes.ROOK:
-                return new Rook(x, y, isEnemy ? Colors.BLACK : Colors.WHITE, isEnemy ? this.enemySprites : this.mySprites);
+                return new Rook(x, y, 
+                    isBlack ? Colors.BLACK : Colors.WHITE, isBlack ? this.states.blackTeamSprites : this.states.whiteTeamSprites);
             default:
                 return null;
         }
@@ -303,14 +309,11 @@ export class Board implements IBoard {
 
         if (!start || !target) return;
 
-        if (options?.isPromotion) {
-            this.popFigure(start.figure!);
-            start.figure = this.createFigure(options.figureToPromote!, start.x, start.y);
-            this.figures.push(start.figure!);
-        }
+        start.moveFigure(target, this);    
 
-        start.moveFigure(target, this);
-        this.addMove(target);
+        if (options?.isPromotion) {          
+            target.handlePromotion(options.figureToPromote!, this)
+        }
     }
 
 }

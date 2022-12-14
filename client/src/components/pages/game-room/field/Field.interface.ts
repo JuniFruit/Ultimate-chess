@@ -11,5 +11,6 @@ export interface IField {
         handleSendMove: (payload: IMove) => void
     }
     isFlipped: boolean;
+    isObserver: boolean;
     myColor: Colors
 }

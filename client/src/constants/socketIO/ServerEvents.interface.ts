@@ -12,12 +12,17 @@ export interface IBoardData {
     states: IBoardStates;
 }
 
-export interface IStartPayload {
-    color?: Colors,
-    score?: number,
-    user?: IUser,
-    opponentUser?: IUser,
-    boardData?: IBoardData
+export interface IGameData {
+    playerOne: IPlayerInfo,
+    playerTwo: IPlayerInfo,
+    myColor: Colors,
+    boardData: IBoardData,
+    isObserver: boolean
+}
+
+export interface ISocketData {
+    user: IPlayerInfo, 
+
 }
 
 export interface IResultPayload {
@@ -36,7 +41,7 @@ export interface IMessagePayload extends IMessage {
 }
 
 export interface IOServerEvents {
-    updateGame: ({}:IStartPayload) => void;
+    updateGame: ({}:IGameData) => void;
     noOpponent: (user: IDisconnectedUser) => void;
     move: (payload: IMovePayload) => void;
     gameError: (err:string) => void;

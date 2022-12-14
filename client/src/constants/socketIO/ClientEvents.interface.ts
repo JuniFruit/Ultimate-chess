@@ -1,10 +1,10 @@
 import { Colors } from "../../model/colors.enum";
-import { FigureTypes } from "../../model/figures/Figures";
+import { FigureTypes } from "../../model/figures/figures.interface";
 import { Requests } from "../constants";
 
 export interface IMoveOptions {
     isPromotion?: boolean;
-    figureToPromote?: string | FigureTypes
+    figureToPromote?: FigureTypes
 
 }
 
@@ -33,9 +33,7 @@ export interface IMessage {
 }
 
 export interface IDisconnectedUser {
-    username: string;
-    color: Colors;
-    id: number;
+    username: string;   
 }
 
 export interface IOClientEvents {

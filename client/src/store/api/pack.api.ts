@@ -33,7 +33,7 @@ export const packApi = api.injectEndpoints({
             }),
             invalidatesTags: (result, err, id) => [{ type: 'Profile' }]
         }),
-        createSpritePack: builder.mutation<number, ISpriteForm>({
+        createSpritePack: builder.mutation<{id: number}, ISpriteForm>({
             query: (data) => ({
                 url: `/${PACK}/sprite/create`,
                 method: "POST",

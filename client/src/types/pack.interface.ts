@@ -1,4 +1,4 @@
-import { ISpritesObj } from "../model/figures/Figures";
+import { ISpritesObj } from "../model/figures/figures.interface";
 import { IUser } from "./user.interface";
 
 

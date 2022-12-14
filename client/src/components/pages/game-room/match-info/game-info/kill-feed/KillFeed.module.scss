@@ -7,12 +7,17 @@
     >div {
      
         >h3 {
-            @apply text-center text-white;
+            @apply text-center text-main-200;
             font-weight: 600;
         }
 
         .pieces {
-            @apply flex gap-1 flex-wrap;            
+            @apply flex gap-1 flex-wrap mt-4;  
+            
+            >img {
+                @apply animate-scaleDown;
+                animation-duration: .35s;
+            }
         }
 
     } 

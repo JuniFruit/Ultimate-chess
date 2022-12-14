@@ -1,8 +1,8 @@
 import { IBoard } from "../Board";
 import { ICell } from "../Cell";
 import { Colors } from "../colors.enum";
-import { Direction } from "../helper.enum";
-import { Figure, FigureTypes, IFigure, ISpritesObj } from "./Figures";
+import { Figure } from "./Figures";
+import { FigureTypes, IFigure, ISpritesObj } from "./figures.interface";
 
 export interface IRook extends IFigure {
     isFirstMove?:boolean;

@@ -1,5 +1,5 @@
 import { Colors } from "./colors.enum";
-import { IFigure } from "./figures/Figures";
+import { IFigure } from "./figures/figures.interface";
 
 export const flipFEN = (FEN:string):string => {    
     

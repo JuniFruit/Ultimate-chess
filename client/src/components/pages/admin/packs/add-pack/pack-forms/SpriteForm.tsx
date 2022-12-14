@@ -19,7 +19,7 @@ const SpriteForm: FC<{ onSuccess: (id: number) => void; }> = ({ onSuccess }) => 
 
 
     const onSubmit: SubmitHandler<ISpriteForm> = (data) => {
-        createSpritePack(data).unwrap().then(res => onSuccess(res));
+        createSpritePack(data).unwrap().then(res => onSuccess(res.id));
     }
 
     return (

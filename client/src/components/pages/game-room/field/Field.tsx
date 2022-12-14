@@ -7,16 +7,16 @@ import { useField } from './useField';
 
 
 
-export const GameField: FC<IField> = ({ board, setBoard, ioMoveHandlers, isFlipped, myColor }) => {
+export const GameField: FC<IField> = (props) => {
 
-    const { handlers, status } = useField({ board, setBoard, ioMoveHandlers, myColor })   
+    const { handlers, status } = useField({...props})   
 
     return (
         <div className={styles.field}>
             <div className={styles.cells}>
                 <CellsWrapper 
-                    cells={board.cells}
-                    isFlipped={isFlipped}
+                    cells={props.board.cells}
+                    isFlipped={props.isFlipped}
                     onSelect={handlers.handleSelect}
                     selected={status.selectedCell}
                 />

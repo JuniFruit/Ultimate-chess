@@ -18,11 +18,11 @@ export const PlayerItem: FC<PropsWithChildren<IPlayerItem>> = ({ user, children 
             <ImagePreview imageSrc={user.avatarLink} />
             <span>ID: {user.id}</span>
             <span>{user.username}</span>
-            <span>Pack in use {user.packInUse.title}</span>
-            <span>Packs {user.packs.length}</span>
+            <span>Pack in use {user.packInUse?.title}</span>
+            <span>Packs {user.packs?.length}</span>
             <div className={styles.user_roles}>
                 {
-                    user.roles.map(item => (
+                    user.roles?.map(item => (
                         <span key={`${item.role} ${user.id}`}>{item.role}</span>
                     ))
                 }

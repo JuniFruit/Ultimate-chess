@@ -42,6 +42,7 @@ const GameRoom: FC = () => {
                         ioMoveHandlers={move}
                         isFlipped={status.isFlipped}
                         myColor={status.myColor}
+                        isObserver={status.isObserver}
                     />
                     <div className={styles.player_bar}>
                         {data.clientUser && <>
@@ -67,6 +68,7 @@ const GameRoom: FC = () => {
                     onDeclineDraw={() => data.setRequest(null)}
                     request={data.request}
                     states={field.board.states}
+                    isObserver={status.isObserver}
                     disconnectedUser={data.disconnectedUser}
                     onDisconnectTimeout={data.handleDisconnectTimeout}                 
                 />

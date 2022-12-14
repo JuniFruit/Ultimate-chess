@@ -2,8 +2,8 @@ import { IBoard } from "../Board";
 import { ICell } from "../Cell";
 import { Colors } from "../colors.enum";
 import { Direction } from "../helper.enum";
-import { isInBounds } from "../helpers";
-import { Figure, FigureTypes, IFigure, ISpritesObj } from "./Figures";
+import { Figure } from "./Figures";
+import { FigureTypes, IFigure, ISpritesObj } from "./figures.interface";
 
 
 export interface IPawn extends IFigure {

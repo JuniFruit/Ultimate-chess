@@ -1,4 +1,4 @@
-import { FigureTypes } from "../../../../model/figures/Figures";
+import { FigureTypes } from "../../../../model/figures/figures.interface";
 
 
 export interface IPromotionWindow {

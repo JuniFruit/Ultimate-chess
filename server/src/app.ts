@@ -37,10 +37,10 @@ ioServer.use(userHandler)
 ioServer.on('connection', (socket) => {
     console.log(`New connection ${socket.id}`);
     
-    roomListener(socket, ioServer);
-    gameListener(socket, ioServer);
-    chatListener(socket, ioServer);
     serverListener(socket, ioServer);
+    roomListener(socket, ioServer);
+    chatListener(socket);
+    gameListener(socket, ioServer);
     
 })
 

@@ -1,53 +1,57 @@
-import { Server, Socket } from 'socket.io';
+import { RemoteSocket, Server, Socket } from 'socket.io';
 import { IClientEvents } from '../constants/socketIO/ClientEvents.interface';
-import { IServerEvents, IStartData } from '../constants/socketIO/ServerEvents.interface';
+import { IServerEvents, ISocketDataServer } from '../constants/socketIO/ServerEvents.interface';
 import { Errors, Requests } from '../../../client/src/constants/constants';
 import { roomApi } from '../model/room';
 import { BoardService } from './board.service';
 import { boardApi } from '../model/board';
+import { IGameRoomShortData, ISocketData } from '../../../client/src/constants/socketIO/ServerEvents.interface';
+import { IPlayer, Player } from '../../../client/src/model/Player';
+import { GameRules } from '../model/gameRules';
 
 
 export const RoomService = {
 
     async join(socket: Socket<IClientEvents, IServerEvents>, roomId: string) {
         socket.data.room = roomId
+        socket.data.gameData = {};
         socket.join(roomId);
     },
 
-    async onRoomJoin(ioServer: Server<IClientEvents, IServerEvents>, roomId: string) {
+    async onRoomJoin(ioServer: Server<IClientEvents, IServerEvents>, roomId: string, socket: Socket<IClientEvents, IServerEvents>) {
 
         const sockets = await ioServer.in(roomId).fetchSockets()
         const roomInfo = roomApi(roomId).getRoomInfo();
 
         if (sockets.length === 2 && !roomInfo.isGameStarted) {
 
-            if (sockets[0].data.user?.username === sockets[1].data.user?.username) return sockets[0].emit('gameError', Errors.SAME_PLAYER)
-
+            if (sockets[0].data.user?.username === sockets[1].data.user?.username) {
+                ioServer.to([roomId, `${roomId}_obs`]).emit('gameError', Errors.SAME_PLAYER);
+                ioServer.in(roomId).disconnectSockets();
+                return;
+            }
+            this.addPlayersToRoom(sockets, roomId);
             BoardService.onGlobalUpdate(sockets);
             roomApi(roomId).updateRoomInfo({ isGameStarted: true, result: null });
+            return;
         };
         if (sockets.length === 2 && roomInfo.isGameStarted) {
-            
-            await this.onRoomRejoin(ioServer, roomId);
-            return;
-        }
+
+            return await this.onRoomRejoin(socket, roomId);
+        };
+        if (sockets.length > 2) return this.onJoinObserver(sockets[2], roomId);
 
     },
 
-    async onRoomRejoin(ioServer: Server<IClientEvents, IServerEvents>, roomId: string) {
-        const sockets = await ioServer.in(roomId).fetchSockets()
-        const players = roomApi(roomId).getRoomInfo().players;
+    async onRoomRejoin(socket: Socket<IClientEvents, IServerEvents>, roomId: string) {
+
         const roomResult = roomApi(roomId).getRoomInfo().result;
-        if (!players) return;
-        
-        const myInfo = players.find(player => player.username === sockets[1].data.user?.username);
+
+        const myInfo = roomApi(roomId).getPlayer(socket.data.user.username);
         if (myInfo) {
-            sockets[1].data.color = myInfo.color;
-            sockets[1].data.opponentUser = myInfo.opponent;
-            sockets[1].emit("updateGame", BoardService.getUpdateGamePayload(sockets[1], roomId));
-            
-            ioServer.in(roomId).emit("reconnect");
-            if (roomResult) return sockets[1].emit("results", roomResult);
+            socket.emit("updateGame", BoardService.getUpdateGamePayload(socket, roomId));
+            socket.to([roomId, `${roomId}_obs`]).emit("reconnect");
+            if (roomResult) return socket.emit("results", roomResult);
         }
     },
 
@@ -55,7 +59,7 @@ export const RoomService = {
         socket.to(socket.data.room).emit("inGameRequest", payload);
     },
 
-    async onRoomLeave(socket: Socket<IClientEvents, IServerEvents, any, IStartData>, ioServer: Server<IClientEvents, IServerEvents>) {
+    async onRoomLeave(socket: Socket<IClientEvents, IServerEvents, any, ISocketDataServer>, ioServer: Server<IClientEvents, IServerEvents>) {
         const roomId = socket.data.room;
         if (!roomId) return;
         if (roomId.includes('_obs')) return;
@@ -63,14 +67,48 @@ export const RoomService = {
 
         if (sockets.length === 0) {
             this.clearGameRoom(roomId);
-            ioServer.in(roomId).emit("noPlayers");
+            ioServer.to([roomId, `${roomId}_obs`]).emit("noPlayers");
+            return;
         }
 
-        ioServer.in(roomId).emit("noOpponent", {
-            username: socket.data.user?.username!,
-            color: socket.data.color!,
-            id: socket.data.user?.id!
+        ioServer.to([roomId, `${roomId}_obs`]).emit("noOpponent", {
+            username: socket.data.user?.username!
+
         });
+    },
+
+    onJoinObserver(socket: Socket<IClientEvents, IServerEvents> | RemoteSocket<IServerEvents, ISocketDataServer>, roomId: string) {
+        const players = roomApi(roomId).getRoomInfo().players;
+        if (!players) return;
+
+        socket.data.room = `${roomId}_obs`;
+        socket.leave(roomId);
+        socket.join(`${roomId}_obs`);
+        socket.emit("updateGame", BoardService.getUpdateGamePayload(socket, roomId, true));
+    },
+
+    getCurrentGames(rooms: Map<string, Set<string>>) {
+
+        const games: IGameRoomShortData[] = [];
+
+        for (let [room, players] of rooms) {
+            if (room.includes('_1min') || room.includes('_10min') || room.includes('_3min')) {
+                const players = roomApi(room).getRoomInfo().players;
+                if (!players) continue;
+                games.push({ room, players });
+            }
+        }
+
+        return games;
+    },
+
+    addPlayersToRoom(sockets: Socket<IClientEvents, IServerEvents>[] | RemoteSocket<IServerEvents, ISocketData>[], roomId: string) {
+        const colors = GameRules.assignColors();
+        const players: IPlayer[] = []
+        sockets.forEach((socket, ind) => {
+            players.push(new Player(socket.data.user.username, colors[ind], socket.data.user));
+        })
+        roomApi(roomId).updateRoomInfo({ players });
     },
 
     clearGameRoom(roomId: string) {

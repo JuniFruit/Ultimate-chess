@@ -5,16 +5,19 @@ import { RoomService } from "../socket-service/room.service";
 import { BoardService } from '../socket-service/board.service';
 import { ChatService } from '../socket-service/chat.service';
 import { Errors, Requests } from "../../../client/src/constants/constants";
-import { getCurrentGames } from "../utils/utils";
+import { observerGuard } from '../guards/observer.guard';
 
 
 export const roomListener = (socket: Socket<IClientEvents, IServerEvents>, ioServer: Server<IClientEvents, IServerEvents>) => {
     try {
         socket.on("joinGameRoom", async (id) => {
             RoomService.join(socket, id)
-            RoomService.onRoomJoin(ioServer, id)
+            RoomService.onRoomJoin(ioServer, id, socket)
         })
-        socket.on("inGameRequest", (payload: Requests) => RoomService.onRequest(socket, payload))
+        socket.on("inGameRequest", (payload: Requests) => {
+            if (observerGuard(socket)) return;
+            RoomService.onRequest(socket, payload)
+        })
 
 
     } catch (error) {
@@ -25,14 +28,27 @@ export const roomListener = (socket: Socket<IClientEvents, IServerEvents>, ioSer
 export const gameListener = (socket: Socket<IClientEvents, IServerEvents>, ioServer: Server<IClientEvents, IServerEvents>) => {
     try {
         socket.on("sendMove", (payload) => {
+            if (observerGuard(socket)) return;
             BoardService.handleMove(socket, payload, ioServer);
             BoardService.checkResults(ioServer, socket.data.room)
 
         })
-        socket.on("timeout", () => BoardService.onTimeout(ioServer, socket))
-        socket.on("confirmRequest", (payload: Requests) => BoardService.onConfirmRequest(ioServer, payload, socket.data.room));
-        socket.on("resign", () => BoardService.onResign(ioServer, socket.data.room, socket.data.color));
-        socket.on("disconnectTimeout", (user) => BoardService.onResign(ioServer, socket.data.room, user.color));
+        socket.on("timeout", () => {
+            if (observerGuard(socket)) return;
+            BoardService.onTimeout(ioServer, socket)
+        })
+        socket.on("confirmRequest", (payload: Requests) => {
+            if (observerGuard(socket)) return;
+            BoardService.onConfirmRequest(ioServer, payload, socket.data.room)
+        });
+        socket.on("resign", () => {
+            if (observerGuard(socket)) return;
+            BoardService.onResign(ioServer, socket.data.room, socket.data.user.username)
+        });
+        socket.on("disconnectTimeout", (user) => {
+            if (observerGuard(socket)) return;
+            BoardService.onResign(ioServer, socket.data.room, user.username)
+        });
 
     } catch (error: any) {
         socket.emit('gameError', Errors.INTERNAL)
@@ -40,7 +56,7 @@ export const gameListener = (socket: Socket<IClientEvents, IServerEvents>, ioSer
 }
 
 
-export const chatListener = (socket: Socket<IClientEvents, IServerEvents>, ioServer: Server<IClientEvents, IServerEvents>) => {
+export const chatListener = (socket: Socket<IClientEvents, IServerEvents>) => {
     try {
         socket.on("message", (payload) => ChatService.onMessage(socket, payload))
 
@@ -57,11 +73,11 @@ export const serverListener = (socket: Socket<IClientEvents, IServerEvents>, ioS
         })
 
         socket.on("currentGames", () => {
-            socket.emit("currentGames", getCurrentGames(ioServer.of('/').adapter.rooms))
+            socket.emit("currentGames", RoomService.getCurrentGames(ioServer.of('/').adapter.rooms))
         })
 
-        socket.on('disconnect', () => RoomService.onRoomLeave(socket, ioServer));
-
+        socket.on('disconnect', (reason) => { console.log(reason);RoomService.onRoomLeave(socket, ioServer)});
+        // socket.onAny(() => console.log(ioServer.of('/').adapter.rooms))
 
     } catch (error) {
         console.log(error);

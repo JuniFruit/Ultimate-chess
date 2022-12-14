@@ -1,4 +1,5 @@
 import { IResultPayload } from '../../../client/src/constants/socketIO/ServerEvents.interface';
+import { Colors } from '../../../client/src/model/colors.enum';
 import { IPlayer } from '../../../client/src/model/Player';
 
 
@@ -24,10 +25,10 @@ export const roomApi = (roomId: string) => {
     }
 
     const createRoom = () => {
-        const room = {
+        const room: IRoomInfo = {
             players: [],
             isGameStarted: false,
-            result: null
+            result: null,    
         }
 
         ROOMS.set(roomId, room);
@@ -38,10 +39,16 @@ export const roomApi = (roomId: string) => {
         ROOMS.delete(roomId);
     }
 
+    const getPlayer = (username: string) => {
+        const players = getRoomInfo().players;
+        return players?.find(player => player.username === username);
+    }
+
     return {
         getRoomInfo,
         updateRoomInfo,
         createRoom,
+        getPlayer,
         clearRoom
     }
 }

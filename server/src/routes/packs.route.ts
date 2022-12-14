@@ -24,25 +24,7 @@ router.get('/by-id/:id', async (req, res) => {
     }
 })
 
-router.post('/create', authGuard, adminGuard, async (req, res) => {
-    try {
-        const newPack = await PackService.create(req.body);
-        res.status(200);
-    } catch (error: any) {
-        res.status(500).send({ message: error.message })
-    }
-})
-
-router.post('/sprite/create', authGuard, adminGuard, async (req, res) => {
-    try {
-        const result = await PackService.createSpritePack(req.body);
-        res.send(result);
-    } catch (error: any) {
-        res.status(500).send({ message: error.message })
-    }
-})
-
-router.post('/add', authGuard, adminGuard, async (req, res) => {
+router.post('/add', authGuard, async (req, res) => {
     try {
         const user = await PackService.setInUse(Number(req.body.currentUser), Number(req.body.id))
         res.send(user);
@@ -50,7 +32,30 @@ router.post('/add', authGuard, adminGuard, async (req, res) => {
         res.status(500).send({ message: error.message })
     }
 })
-router.put('/update/:id', authGuard, adminGuard, async (req, res) => {
+
+router.use(authGuard, adminGuard);
+
+router.post('/create', async (req, res) => {
+    try {
+        const newPack = await PackService.create(req.body);
+        res.status(200).send();
+    } catch (error: any) {
+        res.status(500).send({ message: error.message })
+    }
+})
+
+router.post('/sprite/create', async (req, res) => {
+    try {
+        const result = await PackService.createSpritePack(req.body);
+        console.log(result);
+        res.send({id: result});
+    } catch (error: any) {
+        res.status(500).send({ message: error.message })
+    }
+})
+
+
+router.put('/update/:id', async (req, res) => {
     try {
         const pack = await PackService.updatePack(req.body.dto, Number(req.params.id));
         res.send(pack);
@@ -60,7 +65,7 @@ router.put('/update/:id', authGuard, adminGuard, async (req, res) => {
     }
 })
 
-router.delete('/delete', authGuard, adminGuard, async (req, res) => {
+router.delete('/delete', async (req, res) => {
     try {
         await PackService.delete(Number(req.body.id));
         res.status(200).send();

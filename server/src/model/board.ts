@@ -2,7 +2,6 @@ import { IMove } from '../../../client/src/constants/socketIO/ClientEvents.inter
 import { Board, IBoard, IBoardStates } from '../../../client/src/model/Board';
 import { Colors } from '../../../client/src/model/colors.enum';
 import { FENs, Results } from '../../../client/src/model/helper.enum';
-import { IPlayer } from '../../../client/src/model/Player';
 import { getInitTime } from '../utils/utils';
 
 

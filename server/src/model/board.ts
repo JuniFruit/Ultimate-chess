@@ -27,7 +27,7 @@ export const boardApi = (roomId: string) => {
 
     const getResults = () => {
         const board: IBoard = ROOM_GAME_BOARDS.get(roomId);
-        
+
         board.updateAllLegalMoves();
         if (board.isDraw()) return {
             result: Results.DRAW,
@@ -48,12 +48,12 @@ export const boardApi = (roomId: string) => {
         board.states.isFirstMove = false;
         board.swapPlayer();
         ROOM_GAME_BOARDS.set(roomId, board);
-    }    
+    }
 
-    const getBoardData = (board:IBoard) => {
+    const getBoardData = (board: IBoard) => {
         updateTime(board);
         const boardFEN = board.convertToFEN();
-        const newBoardStates: IBoardStates = {...board.states}
+        const newBoardStates: IBoardStates = { ...board.states }
         return {
             boardFEN,
             states: newBoardStates,
@@ -63,17 +63,18 @@ export const boardApi = (roomId: string) => {
     const updateTime = (board: IBoard) => {
         const now = Date.now();
         if (!board.states.isFirstMove) {
+
             const timeElapsed = Math.floor((now - board.states.lastMoveTime!) / 1000);
-            board.states.currentPlayer === Colors.BLACK ? board.states.blackTime!-= timeElapsed 
-            : board.states.whiteTime!-= timeElapsed; 
+            board.states.currentPlayer === Colors.BLACK ? board.states.blackTime! -= timeElapsed
+                : board.states.whiteTime! -= timeElapsed;
 
         }
-        board.states.lastMoveTime = now;         
+        board.states.lastMoveTime = now;
     }
 
     const getTime = () => {
         const board: IBoard = ROOM_GAME_BOARDS.get(roomId);
-        return {white: board.states.whiteTime, black: board.states.blackTime};
+        return { white: board.states.whiteTime, black: board.states.blackTime };
     }
 
     const isTimeout = (player: Colors) => {
@@ -90,11 +91,11 @@ export const boardApi = (roomId: string) => {
 
     }
 
-    const clearBoard = () =>{
+    const clearBoard = () => {
         ROOM_GAME_BOARDS.delete(roomId);
     }
 
-   
+
 
     return {
         getBoard,

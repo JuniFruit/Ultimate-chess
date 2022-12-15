@@ -52,7 +52,9 @@ export const RoomService = {
             socket.emit("updateGame", BoardService.getUpdateGamePayload(socket, roomId));
             socket.to([roomId, `${roomId}_obs`]).emit("reconnect");
             if (roomResult) return socket.emit("results", roomResult);
+            return;
         }
+        return this.onJoinObserver(socket, roomId);
     },
 
     onRequest(socket: Socket<IClientEvents, IServerEvents>, payload: Requests) {

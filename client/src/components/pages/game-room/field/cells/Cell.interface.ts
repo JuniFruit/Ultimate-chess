@@ -10,12 +10,13 @@ export interface ICellComponent {
     onSelect: (cell: ICell) => void;
     selected: ICell | null;
     cell: ICell;
-
+    isPremoved: boolean;  
+    refCallback: () => any;  
 }
 
 
 export interface ICellWrapper extends Pick<ICellComponent, "onSelect" | "selected" > {
     cells: ICell[][];
     isFlipped: boolean;
-
+    premoves: ICell[];
 }

@@ -1,11 +1,11 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import { Colors } from '../../../../../../model/colors.enum';
 import { getDefaultSprite } from '../../../../../../utils/game.utils';
 import { PieceInfo } from '../../../../../ui/piece/piece-info/PieceInfo';
 import { IKillFeed } from './KillFeed.interface';
 import styles from './KillFeed.module.scss';
 
-export const KillFeed: FC<IKillFeed> = ({ lostFigures }) => {
+export const KillFeed: FC<IKillFeed> = memo(({ lostFigures }) => {
     const whiteLosses = lostFigures.filter(figure => figure.color === Colors.WHITE);
     const blackLosses = lostFigures.filter(figure => figure.color === Colors.BLACK);
     return (
@@ -38,4 +38,4 @@ export const KillFeed: FC<IKillFeed> = ({ lostFigures }) => {
             </div>
         </div>
     )
-}
+})

@@ -1,6 +1,5 @@
-import { IDisconnectedUser } from "../../../../../../constants/socketIO/ClientEvents.interface";
+import { IBoardStates } from "../../../../../../model/Board";
 
-export interface IDisconnectUserComponent {
-    disconnectedUser: IDisconnectedUser;
-    onDisconnectTimeout: () => void;
+export interface IDisconnectUserComponent extends Pick<IBoardStates, "isFirstMove" | "isGameOver"> {
+    isObserver: boolean;
 }

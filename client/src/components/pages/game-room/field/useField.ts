@@ -3,17 +3,24 @@ import { useEffect, useState, useCallback } from 'react';
 import { ICell } from "../../../../model/Cell";
 import { IMoveOptions } from "../../../../constants/socketIO/ClientEvents.interface";
 import { FigureTypes } from "../../../../model/figures/figures.interface";
+import { useIOField } from "./useIOField";
 
 
-interface IUseField extends Pick<IField, 'board' | 'setBoard' | 'ioMoveHandlers' | 'myColor' | 'isObserver'> {}
+export interface IUseField extends Pick<IField, 'board' | 'setBoard' | 'myColor' | 'isObserver'> { }
 
-export const useField = ({ board, setBoard, ioMoveHandlers, myColor, isObserver }: IUseField) => {
+export const useField = ({ board, setBoard, myColor, isObserver }: IUseField) => {
 
     const [selectedCell, setSelectedCell] = useState<ICell | null>(null);
     const [isPromotion, setIsPromotion] = useState(false);
     const [lastTargetCell, setLastTargetCell] = useState<ICell | null>(null);
+    const [premoves, setPremoves] = useState<ICell[]>([]);
+    const maxPremoves = 5;
+    const { handleSendMove } = useIOField({ board, setBoard, isObserver });
+
     const handleSelect = useCallback((cell: ICell) => {
-        if (isPromotion || board.states.isGameOver || isObserver) return;
+        if (isPromotion || board.states.isGameOver) return;
+
+        if (isObserver) return setSelectedCell(prev => cell);
 
         if (selectedCell) {
             if (selectedCell !== cell
@@ -29,17 +36,41 @@ export const useField = ({ board, setBoard, ioMoveHandlers, myColor, isObserver 
                     setSelectedCell(prev => null);
                     return;
                 }
+                setPremoves(prev => []);
                 if (cell.figure) return setSelectedCell(prev => cell);
+
+            } else if (selectedCell !== cell && board.states.currentPlayer !== myColor) {
+                if (premoves.length >= maxPremoves) return;
+                return setPremoves(prev => [...prev, cell]);
             }
-            if (selectedCell.figure?.color === cell.figure?.color) return setSelectedCell(prev => cell);
+            setPremoves(prev => []);
+            // if (selectedCell.figure?.color === cell.figure?.color) return setSelectedCell(prev => cell);
             return setSelectedCell(prev => null);
         } else {
             if (!cell.figure) return;
+
+            if (cell.figure?.color !== myColor) {
+                setSelectedCell(prev => cell);
+                return setPremoves(prev => []);
+            }
+
             setSelectedCell(prev => cell);
 
         }
 
-    }, [selectedCell, lastTargetCell, isPromotion])
+    }, [selectedCell, lastTargetCell, isPromotion, board, isObserver, premoves])
+
+    const handlePremoves = useCallback(() => {
+        const premovesCopy = [...premoves];
+        const current = premovesCopy.shift();
+        if (!current) return;
+        handleSelect(current);
+        setSelectedCell(prev => current)
+        setPremoves(prev => {
+            prev.unshift()
+            return prev;
+        })
+    }, [selectedCell, premoves, lastTargetCell])
 
     const handlePromotion = useCallback((figureType: FigureTypes) => {
 
@@ -66,7 +97,7 @@ export const useField = ({ board, setBoard, ioMoveHandlers, myColor, isObserver 
         if (isPromotion) cell.handlePromotion(options?.figureToPromote!, board);
         board.swapPlayer();
 
-        ioMoveHandlers.handleSendMove({
+        handleSendMove({
             targetCell: {
                 x: cell.x,
                 y: cell.y
@@ -83,8 +114,8 @@ export const useField = ({ board, setBoard, ioMoveHandlers, myColor, isObserver 
     useEffect(() => {
 
         if (!board.cells.length) return;
-        console.log(board);
-        console.log(board.states.currentPlayer, myColor)
+        // console.log(board);
+        // console.log(board.states.currentPlayer, myColor)
         board.updateAllLegalMoves();
         if (board.isKingChecked()) {
             console.log(board.isCheckMate())
@@ -95,13 +126,13 @@ export const useField = ({ board, setBoard, ioMoveHandlers, myColor, isObserver 
 
     return {
         handlers: {
-            handleMove,
             handleSelect,
             handlePromotion
         },
         status: {
             selectedCell,
-            isPromotion
+            isPromotion,
+            premoves
         }
     }
 

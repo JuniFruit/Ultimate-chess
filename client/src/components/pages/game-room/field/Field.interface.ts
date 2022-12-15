@@ -6,11 +6,7 @@ import { Colors } from '../../../../model/colors.enum';
 
 export interface IField {
     board: IBoard;
-    setBoard: Dispatch<SetStateAction<IBoard>>
-    ioMoveHandlers: {
-        handleSendMove: (payload: IMove) => void
-    }
-    isFlipped: boolean;
+    setBoard: Dispatch<SetStateAction<IBoard>>   
     isObserver: boolean;
     myColor: Colors
 }

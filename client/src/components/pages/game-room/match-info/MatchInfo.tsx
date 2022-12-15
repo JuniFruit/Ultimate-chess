@@ -18,10 +18,9 @@ const MatchInfo: FC<IMatchInfo> = ({
     onRequestResign,
     onDeclineDraw,
     request,
-    states,
-    disconnectedUser,
+    states,   
     isObserver,
-    onDisconnectTimeout
+ 
 }) => {
     const [activeWindow, setActiveWindow] = useState<activeWindow>('game');
 
@@ -80,7 +79,7 @@ const MatchInfo: FC<IMatchInfo> = ({
             </div>
             <div className={styles.match_info_footer}>
                 {request === Requests.DRAW ? <DrawHandler onConfirm={onConfirmDraw} onDecline={onDeclineDraw} /> : null}
-                {disconnectedUser ? <DisconnectUser {...{ disconnectedUser, onDisconnectTimeout }} /> : null}
+             <DisconnectUser {...{ ...states, isObserver}} /> 
             </div>
 
 

@@ -1,6 +1,6 @@
 import { Requests } from "../../../../constants/constants";
-import { IDisconnectedUser } from "../../../../constants/socketIO/ClientEvents.interface";
-import { IGameInfo } from "./game-info/GameInfo.interface";
+import { IBoardStates } from "../../../../model/Board";
+
 
 export interface IMatchInfo {
     onRequestDraw: () => void;
@@ -8,8 +8,6 @@ export interface IMatchInfo {
     onConfirmDraw: () => void;
     onDeclineDraw: () => void;
     request: Requests | null;
-    states: IGameInfo;
-    isObserver: boolean;
-    disconnectedUser: IDisconnectedUser | null;
-    onDisconnectTimeout: () => void;
+    states: IBoardStates;
+    isObserver: boolean;  
 }

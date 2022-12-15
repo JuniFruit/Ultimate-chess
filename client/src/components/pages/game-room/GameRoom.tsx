@@ -8,55 +8,54 @@ import MatchInfo from "./match-info/MatchInfo";
 import { WaitingModal } from "./modals/WaitingModal";
 import { PlayerInfo } from "../../ui/player/PlayerInfo";
 import { ErrorModal } from "./modals/ErrorModal";
-import { Timer } from "../../ui/timer/Timer";
 import { GameOverModal } from "./modals/GameOverModal";
 import { Colors } from "../../../model/colors.enum";
 import { Requests } from "../../../constants/constants";
 import { ConfirmModal } from "./modals/ConfirmModal";
+import { TimerHandler } from "./utils/TimerHandler/TimerHandler";
 
 
 const GameRoom: FC = () => {
 
     const { id } = useParams()
-    const { field, status, data, move } = useGameRoom(id)
+    const { field, status, data } = useGameRoom(id)
 
     return (
         <Layout title="Ultimate Chess Game Room">
             <div className={styles.room_wrapper}>
                 <div className={styles.board_wrapper}>
                     <div className={styles.player_bar}>
-                        {data.enemyUser && <>
-                            <PlayerInfo key={data.enemyUser?.username} {...data.enemyUser} />
-                            <Timer
-                                initTime={status.myColor === Colors.WHITE ? field.board.states.blackTime : field.board.states.whiteTime}
-                                isStopped={status.myColor === field.board.states.currentPlayer
-                                    || field.board.states.isFirstMove || !!status.result}
-                                onTimeout={move.handleTimeout}
+                        {data.enemyUser && <PlayerInfo key={data.enemyUser?.username} {...data.enemyUser} />}
+                        {
+                            status.isReadyToStart && <TimerHandler
+                                states={field.board.states}
+                                initTime={status.myColor === Colors.WHITE ? field.board.states.whiteTime : field.board.states.blackTime}
+                                {...{ ...status }}
+                                isStopped={status.myColor === field.board.states.currentPlayer}
+                                key={'opponent'}
                             />
-                        </>
                         }
                     </div>
                     <GameField
                         board={field.board}
                         setBoard={field.setBoard}
-                        ioMoveHandlers={move}
-                        isFlipped={status.isFlipped}
                         myColor={status.myColor}
                         isObserver={status.isObserver}
                     />
                     <div className={styles.player_bar}>
-                        {data.clientUser && <>
-
-                            <PlayerInfo key={data.clientUser?.username} {...data.clientUser} />
-                            <Timer
+                        {data.clientUser && <PlayerInfo key={data.clientUser?.username} {...data.clientUser} />}
+                        {
+                            status.isReadyToStart && <TimerHandler
+                                states={field.board.states}
                                 initTime={status.myColor === Colors.WHITE ? field.board.states.whiteTime : field.board.states.blackTime}
-                                isStopped={status.myColor !== field.board.states.currentPlayer
-                                    || field.board.states.isFirstMove || !!status.result}
-                                onTimeout={move.handleTimeout} 
+                                {...{ ...status }}
+                                isStopped={status.myColor !== field.board.states.currentPlayer}
+                                key={'client'}
 
-                                />
-                        </>
+                            />
                         }
+
+
 
 
                     </div>
@@ -69,8 +68,6 @@ const GameRoom: FC = () => {
                     request={data.request}
                     states={field.board.states}
                     isObserver={status.isObserver}
-                    disconnectedUser={data.disconnectedUser}
-                    onDisconnectTimeout={data.handleDisconnectTimeout}                 
                 />
 
             </div>

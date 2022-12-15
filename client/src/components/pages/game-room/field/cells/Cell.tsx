@@ -1,4 +1,4 @@
-import { FC, useState, DragEvent, memo, useRef, forwardRef, ForwardedRef } from "react";
+import { FC, useState, DragEvent, memo, useRef, useCallback } from "react";
 import { Piece } from "../../../../ui/piece/Piece";
 import { ICellComponent } from "./Cell.interface";
 
@@ -14,7 +14,6 @@ export const Cell: FC<ICellComponent> = memo((
         cell,
         selected,
         isPremoved,
-        refCallback
     }
 ) => {
 
@@ -23,12 +22,23 @@ export const Cell: FC<ICellComponent> = memo((
     const [isDraggedOver, setIsDraggedOver] = useState(false);
 
     const pieceRef = useRef<HTMLDivElement>(null);
-    
 
-    const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
+
+    const handleDragOver = useCallback((e: DragEvent<HTMLDivElement>) => {
         e.preventDefault();
         setIsDraggedOver(true);
-    }
+    }, [isDraggedOver])
+
+    const checkIsAvailable = useCallback(() => {
+        if ((selected && selected.figure?.legalMoves.includes(cell)) && !isDraggedOver) {
+            cell.isAvailable = true;
+            return true;
+        }
+        cell.isAvailable = false;
+        return false
+
+    }, [selected, isDraggedOver, cell.isAvailable])
+    
 
     return (
         <>
@@ -41,10 +51,10 @@ export const Cell: FC<ICellComponent> = memo((
                 onDragOver={handleDragOver}
                 onDragLeave={() => setIsDraggedOver(false)}
                 onDrop={(e) => { onSelect(cell); setIsDraggedOver(false) }}
-            // onDragEnd={(e) => { onSelect(cell) }}
+                onDragEnd={(e) => { onSelect(cell) }}
             >
 
-                {(selected && selected.figure?.legalMoves.includes(cell)) && <div className={styles.available_dot}></div>}
+                {checkIsAvailable() && <div className={styles.available_dot}></div>}
 
             </div>
             {
@@ -55,18 +65,12 @@ export const Cell: FC<ICellComponent> = memo((
                     y={posY}
                     key={`${figure.sprite} ${figure.x + figure.y}`}
                     isDraggedOver={isDraggedOver}
-                    onClick={() => onSelect(cell)}
+                    onClick={() => onSelect(cell)}                  
                     onDragStart={(e) => { console.log(); onSelect(cell) }}
-                    onMouseMove={(e) => {
-                        
-                        const bounds = refCallback();
-                        
-                        
-                    }}
                     onDragEnter={handleDragOver}
                     onDragOver={handleDragOver}
                     onDragLeave={() => setIsDraggedOver(false)}
-                    // onDragEnd={(e) => { onSelect(cell) }}
+                    onDragEnd={(e) => { onSelect(cell) }}
                     onDrop={(e) => { onSelect(cell); setIsDraggedOver(false) }}
                     ref={pieceRef}
                     draggable

@@ -40,36 +40,28 @@ export const useField = ({ board, setBoard, myColor, isObserver }: IUseField) =>
                 if (cell.figure) return setSelectedCell(prev => cell);
 
             } else if (selectedCell !== cell && board.states.currentPlayer !== myColor) {
-                if (premoves.length >= maxPremoves) return;
+                if (premoves.length >= maxPremoves) return;             
                 return setPremoves(prev => [...prev, cell]);
             }
-            setPremoves(prev => []);
-            // if (selectedCell.figure?.color === cell.figure?.color) return setSelectedCell(prev => cell);
+            setPremoves(prev => []);     
             return setSelectedCell(prev => null);
         } else {
+
             if (!cell.figure) return;
-
-            if (cell.figure?.color !== myColor) {
-                setSelectedCell(prev => cell);
-                return setPremoves(prev => []);
-            }
-
             setSelectedCell(prev => cell);
 
         }
 
     }, [selectedCell, lastTargetCell, isPromotion, board, isObserver, premoves])
-
+    
     const handlePremoves = useCallback(() => {
         const premovesCopy = [...premoves];
         const current = premovesCopy.shift();
         if (!current) return;
         handleSelect(current);
         setSelectedCell(prev => current)
-        setPremoves(prev => {
-            prev.unshift()
-            return prev;
-        })
+        setPremoves(prev => [...premovesCopy]);
+        
     }, [selectedCell, premoves, lastTargetCell])
 
     const handlePromotion = useCallback((figureType: FigureTypes) => {
@@ -109,14 +101,16 @@ export const useField = ({ board, setBoard, myColor, isObserver }: IUseField) =>
         });
 
         setBoard(prev => prev.getCopyBoard())
+        
     }, [selectedCell, lastTargetCell, isPromotion, board])
 
     useEffect(() => {
 
         if (!board.cells.length) return;
+        board.updateAllLegalMoves();
         // console.log(board);
         // console.log(board.states.currentPlayer, myColor)
-        board.updateAllLegalMoves();
+        if (board.states.currentPlayer === myColor) handlePremoves();
         if (board.isKingChecked()) {
             console.log(board.isCheckMate())
         }

@@ -11,6 +11,7 @@ export interface ICell {
     color: Colors;
     prevFigure: IFigure | null;
     figure: IFigure | null;
+    isAvailable: boolean
     isEmpty: () => boolean;
     isEnemy: (figure: IFigure | null) => boolean;
     isSafeCell: (target: ICell, board: IBoard) => boolean;
@@ -32,6 +33,7 @@ export class Cell implements ICell {
     prevFigure: IFigure | null = null;
     color: Colors;
     figure: IFigure | null;
+    isAvailable = false;
 
 
     constructor({ x, y, color, figure }: ICellInit) {

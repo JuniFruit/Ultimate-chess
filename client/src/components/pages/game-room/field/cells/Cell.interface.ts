@@ -11,7 +11,6 @@ export interface ICellComponent {
     selected: ICell | null;
     cell: ICell;
     isPremoved: boolean;  
-    refCallback: () => any;  
 }
 
 

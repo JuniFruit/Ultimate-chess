@@ -9,78 +9,126 @@ import { observerGuard } from '../guards/observer.guard';
 
 
 export const roomListener = (socket: Socket<IClientEvents, IServerEvents>, ioServer: Server<IClientEvents, IServerEvents>) => {
-    try {
-        socket.on("joinGameRoom", async (id) => {
+
+    socket.on("joinGameRoom", async (id) => {
+        try {
+            if (id.includes('_obs')) return socket.emit('gameError', Errors.INVALID_ROOM);
             RoomService.join(socket, id)
             RoomService.onRoomJoin(ioServer, id, socket)
-        })
-        socket.on("inGameRequest", (payload: Requests) => {
+
+        } catch (error) {
+            socket.emit('error', Errors.INTERNAL)
+        }
+    })
+    socket.on("inGameRequest", (payload: Requests) => {
+        try {
             if (observerGuard(socket)) return;
             RoomService.onRequest(socket, payload)
-        })
+        } catch (error) {
+            socket.emit('error', Errors.INTERNAL)
+        }
+    })
 
 
-    } catch (error) {
-        socket.emit('gameError', Errors.INTERNAL)
-    }
+
 }
 
 export const gameListener = (socket: Socket<IClientEvents, IServerEvents>, ioServer: Server<IClientEvents, IServerEvents>) => {
-    try {
-        socket.on("sendMove", (payload) => {
+
+    socket.on("sendMove", (payload) => {
+        try {
             if (observerGuard(socket)) return;
             BoardService.handleMove(socket, payload, ioServer);
             BoardService.checkResults(ioServer, socket.data.room)
 
-        })
-        socket.on("timeout", () => {
+        } catch (error) {
+            socket.emit('error', Errors.INTERNAL)
+        }
+
+    })
+    socket.on("timeout", () => {
+        try {
             if (observerGuard(socket)) return;
             BoardService.onTimeout(ioServer, socket)
-        })
-        socket.on("confirmRequest", (payload: Requests) => {
+
+        } catch (error) {
+            socket.emit('error', Errors.INTERNAL)
+        }
+    })
+    socket.on("confirmRequest", (payload: Requests) => {
+        try {
             if (observerGuard(socket)) return;
             BoardService.onConfirmRequest(ioServer, payload, socket.data.room)
-        });
-        socket.on("resign", () => {
+
+        } catch (error) {
+            socket.emit('error', Errors.INTERNAL)
+        }
+    });
+    socket.on("resign", () => {
+        try {
             if (observerGuard(socket)) return;
             BoardService.onResign(ioServer, socket.data.room, socket.data.user.username)
-        });
-        socket.on("disconnectTimeout", (user) => {
+        } catch (error) {
+            socket.emit('error', Errors.INTERNAL)
+        }
+    });
+    socket.on("disconnectTimeout", (user) => {
+        try {
             if (observerGuard(socket)) return;
             BoardService.onResign(ioServer, socket.data.room, user.username)
-        });
 
-    } catch (error: any) {
-        socket.emit('gameError', Errors.INTERNAL)
-    }
+        } catch (error) {
+            socket.emit('error', Errors.INTERNAL)
+        }
+    });
+
+
 }
 
 
 export const chatListener = (socket: Socket<IClientEvents, IServerEvents>) => {
-    try {
-        socket.on("message", (payload) => ChatService.onMessage(socket, payload))
 
-    } catch (error) {
-        console.log(error);
-    }
+    socket.on("message", (payload) => {
+        try {
+
+            ChatService.onMessage(socket, payload)
+        } catch (error) {
+            socket.emit('error', Errors.INTERNAL)
+        }
+    })
 }
 
 
+
+
 export const serverListener = (socket: Socket<IClientEvents, IServerEvents>, ioServer: Server<IClientEvents, IServerEvents>) => {
-    try {
-        socket.on("ping", (cb) => {
+
+    socket.on("ping", (cb) => {
+        try {
             cb();
-        })
+        } catch (error) {
+            socket.emit('error', Errors.INTERNAL)
+        }
+    })
 
-        socket.on("currentGames", () => {
+    socket.on("currentGames", () => {
+        try {
             socket.emit("currentGames", RoomService.getCurrentGames(ioServer.of('/').adapter.rooms))
-        })
 
-        socket.on('disconnect', (reason) => { console.log(reason);RoomService.onRoomLeave(socket, ioServer)});
-        // socket.onAny(() => console.log(ioServer.of('/').adapter.rooms))
+        } catch (error) {
+            socket.emit('error', Errors.INTERNAL)
+        }
+    })
 
-    } catch (error) {
-        console.log(error);
+    socket.on('disconnect', (reason) => {
+        try {
+            console.log(reason);
+            RoomService.onRoomLeave(socket, ioServer)
+        } catch (error) {
+            socket.emit('error', Errors.INTERNAL)
+        }
+    });
+    // socket.onAny(() => console.log(ioServer.of('/').adapter.rooms))
 
-    }
+
 }

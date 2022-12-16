@@ -3,7 +3,7 @@ import { IMove } from '../../../client/src/constants/socketIO/ClientEvents.inter
 import { boardApi } from '../model/board';
 import { IClientEvents } from '../constants/socketIO/ClientEvents.interface';
 import { IServerEvents, ISocketDataServer } from '../constants/socketIO/ServerEvents.interface';
-import { Results } from '../../../client/src/model/helper.enum';
+import { GameOverReasons, Results } from '../../../client/src/model/helper.enum';
 import { Requests } from '../../../client/src/constants/constants';
 import { Colors } from '../../../client/src/model/colors.enum';
 import { IGameData, IResultPayload } from '../../../client/src/constants/socketIO/ServerEvents.interface';
@@ -16,20 +16,15 @@ export const BoardService = {
         boardApi(roomId).moveFigure(move);
         if (boardApi(roomId).isTimeout(socket.data.color)) return this.onTimeout(ioServer, socket);
 
-        const movePayload = {
-            move,
-            time: boardApi(roomId).getTime(),
-        }
-
-        socket.to([roomId, `${roomId}_obs`]).emit("move", movePayload);
+        socket.to([roomId, `${roomId}_obs`]).emit("move", move);
+        socket.to([roomId, `${roomId}_obs`]).emit("updateTimer", boardApi(roomId).getTime());
     },
 
     checkResults(ioServer: Server<IClientEvents, IServerEvents>, roomId: string) {
         const results = boardApi(roomId).getResults();
 
         if (results) {
-            ioServer.in(roomId).emit('results', { ...results })
-            ioServer.in(`${roomId}_obs`).emit('results', { ...results })
+            ioServer.to([roomId, `${roomId}_obs`]).emit('results', { ...results })
             this.recordResults(ioServer, results, roomId);
         }
     },
@@ -43,14 +38,15 @@ export const BoardService = {
         if (!loser) return;
 
         if (!boardApi(roomId).isTimeout(loser)) {
-            socket.emit("updateGame", this.getUpdateGamePayload(socket, roomId));
+            socket.to([roomId, `${roomId}_obs`]).emit("updateTimer", boardApi(roomId).getTime());
             return;
         }
         const isDraw = !boardApi(roomId).isSufficientMaterial(); //if enemy has insufficient material game is draw on timeout, else current p. loses
 
         const results = {
             result: Results.CHECKMATE,
-            loser
+            loser,
+            reason: GameOverReasons.TIMEOUT
         }
 
         if (isDraw) return ioServer.to([roomId, `${roomId}_obs`]).emit('results', { ...results, result: Results.DRAW });
@@ -59,7 +55,7 @@ export const BoardService = {
         this.recordResults(ioServer, results, roomId);
     },
     async onConfirmRequest(ioServer: Server<IClientEvents, IServerEvents>, payload: Requests, roomId: string) {
-      
+
         if (payload === Requests.DRAW) {
             const results = {
                 result: Results.DRAW,
@@ -70,23 +66,23 @@ export const BoardService = {
         }
 
         if (payload === Requests.REMATCH) {
-            const sockets = await ioServer.in(roomId).fetchSockets();
-            
+            const sockets = await ioServer.in([roomId, `${roomId}_obs`]).fetchSockets();
             sockets.forEach(socket => socket.emit("updateGame", this.getUpdateGamePayload(socket, roomId)));
-            roomApi(roomId).updateRoomInfo({ result: null });
 
+            roomApi(roomId).updateRoomInfo({ result: null });
         }
 
     },
 
-    onResign(ioServer: Server<IClientEvents, IServerEvents>, roomId: string, username:string) {
-    
+    onResign(ioServer: Server<IClientEvents, IServerEvents>, roomId: string, username: string) {
+
         const loser = roomApi(roomId).getPlayer(username)?.color;
         if (!loser) return;
 
         const results = {
             result: Results.CHECKMATE,
-            loser
+            loser,
+            reason: GameOverReasons.RESIGN
         }
 
         ioServer.to([roomId, `${roomId}_obs`]).emit("results", results);
@@ -129,13 +125,19 @@ export const BoardService = {
     },
 
     getUpdateGamePayload(socket: RemoteSocket<IServerEvents, ISocketDataServer> | Socket<IClientEvents, IServerEvents>,
-        roomId: string, isObserver: boolean = false): IGameData {
+        roomId: string): IGameData {
 
         const board = boardApi(roomId).getBoard();
         const players = roomApi(roomId).getRoomInfo().players;
+        const isObserver = socket.data.room.includes('_obs');
 
-        const playerOne = players?.find(player => player.username === socket.data.user.username);
-        const playerTwo = players?.find(player => player.username !== playerOne?.username);
+        let playerOne = players![0];
+        let playerTwo = players![1]
+
+        if (!isObserver) {
+            playerOne = players?.find(player => player.username === socket.data.user.username)!;
+            playerTwo = players?.find(player => player.username !== playerOne?.username)!;
+        }
 
         return {
             playerOne: playerOne?.user!,

@@ -34,8 +34,7 @@ ioServer.use(userHandler)
 
 
 
-ioServer.on('connection', (socket) => {
-    console.log(`New connection ${socket.id}`);
+ioServer.on('connection', (socket) => {  
     
     serverListener(socket, ioServer);
     roomListener(socket, ioServer);

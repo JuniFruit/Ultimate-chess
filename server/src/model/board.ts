@@ -1,7 +1,7 @@
 import { IMove } from '../../../client/src/constants/socketIO/ClientEvents.interface';
 import { Board, IBoard, IBoardStates } from '../../../client/src/model/Board';
 import { Colors } from '../../../client/src/model/colors.enum';
-import { FENs, Results } from '../../../client/src/model/helper.enum';
+import { FENs, GameOverReasons, Results } from '../../../client/src/model/helper.enum';
 import { getInitTime } from '../utils/utils';
 
 
@@ -36,7 +36,8 @@ export const boardApi = (roomId: string) => {
         if (board.isKingChecked()) {
             if (board.isCheckMate()) return {
                 result: Results.CHECKMATE,
-                loser: board.states.currentPlayer
+                loser: board.states.currentPlayer,
+                reason: GameOverReasons.CHECKMATE
             }
         }
     }

@@ -39,7 +39,7 @@ export const RoomService = {
 
             return await this.onRoomRejoin(socket, roomId);
         };
-        if (sockets.length > 2) return this.onJoinObserver(sockets[2], roomId);
+        if (sockets.length > 2) return this.onJoinObserver(socket, roomId);
 
     },
 
@@ -67,9 +67,10 @@ export const RoomService = {
         if (roomId.includes('_obs')) return;
         const sockets = await ioServer.in(roomId).fetchSockets();
 
-        if (sockets.length === 0) {
+        if (sockets.length === 0 || roomApi(roomId).getRoomInfo().result) {
             this.clearGameRoom(roomId);
-            ioServer.to([roomId, `${roomId}_obs`]).emit("noPlayers");
+            ioServer.to([roomId, `${roomId}_obs`]).emit("gameError", Errors.NO_PLAYERS);
+            ioServer.in([roomId, `${roomId}_obs`]).disconnectSockets();
             return;
         }
 
@@ -86,7 +87,7 @@ export const RoomService = {
         socket.data.room = `${roomId}_obs`;
         socket.leave(roomId);
         socket.join(`${roomId}_obs`);
-        socket.emit("updateGame", BoardService.getUpdateGamePayload(socket, roomId, true));
+        socket.emit("updateGame", BoardService.getUpdateGamePayload(socket, roomId));
     },
 
     getCurrentGames(rooms: Map<string, Set<string>>) {

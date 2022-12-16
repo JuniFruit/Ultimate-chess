@@ -62,7 +62,7 @@ export const useField = ({ board, setBoard, myColor, isObserver }: IUseField) =>
         setSelectedCell(prev => current)
         setPremoves(prev => [...premovesCopy]);
         
-    }, [selectedCell, premoves, lastTargetCell])
+    }, [selectedCell, premoves, lastTargetCell, isPromotion])
 
     const handlePromotion = useCallback((figureType: FigureTypes) => {
 
@@ -77,15 +77,16 @@ export const useField = ({ board, setBoard, myColor, isObserver }: IUseField) =>
         setSelectedCell(prev => null);
         setLastTargetCell(prev => null);
 
-    }, [lastTargetCell, selectedCell, board])
+    }, [lastTargetCell, selectedCell])
 
     const handleMove = useCallback((cell: ICell, options?: IMoveOptions) => {
         if (!cell || !selectedCell || isObserver) return;
 
+        board.incrementMoveCount();
+
         selectedCell!.moveFigure(cell, board);
 
         board.states.isFirstMove = false;
-
         if (isPromotion) cell.handlePromotion(options?.figureToPromote!, board);
         board.swapPlayer();
 
@@ -108,7 +109,7 @@ export const useField = ({ board, setBoard, myColor, isObserver }: IUseField) =>
 
         if (!board.cells.length) return;
         board.updateAllLegalMoves();
-        // console.log(board);
+        console.log(board);
         // console.log(board.states.currentPlayer, myColor)
         if (board.states.currentPlayer === myColor) handlePremoves();
         if (board.isKingChecked()) {

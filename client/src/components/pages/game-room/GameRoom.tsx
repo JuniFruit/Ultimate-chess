@@ -29,8 +29,8 @@ const GameRoom: FC = () => {
                         {
                             status.isReadyToStart && <TimerHandler
                                 states={field.board.states}
-                                initTime={status.myColor === Colors.WHITE ? field.board.states.whiteTime : field.board.states.blackTime}
-                                {...{ ...status }}
+                                initTime={status.myColor === Colors.WHITE ? field.board.states.blackTime : field.board.states.whiteTime}
+                                {...{ ...status, ...field }}
                                 isStopped={status.myColor === field.board.states.currentPlayer}
                                 key={'opponent'}
                             />
@@ -48,7 +48,7 @@ const GameRoom: FC = () => {
                             status.isReadyToStart && <TimerHandler
                                 states={field.board.states}
                                 initTime={status.myColor === Colors.WHITE ? field.board.states.whiteTime : field.board.states.blackTime}
-                                {...{ ...status }}
+                                {...{ ...status, ...field }}
                                 isStopped={status.myColor !== field.board.states.currentPlayer}
                                 key={'client'}
 
@@ -71,10 +71,9 @@ const GameRoom: FC = () => {
                 />
 
             </div>
-            {!status.isReadyToStart && status.isConnected ? <WaitingModal /> : null}
-            {data.error && <ErrorModal errorMsg={data.error} errorHandler={data.setError} />}
+            <ErrorModal />
             <GameOverModal
-                resultMsg={status.result}
+                {...{ ...status }}
                 onRematch={() => field.handleSendRequest(Requests.REMATCH)}
             />
             <ConfirmModal
@@ -82,6 +81,7 @@ const GameRoom: FC = () => {
                 onConfirm={field.handleRequestConfirm}
                 onClose={() => data.setRequest(null)}
             />
+            {!status.isReadyToStart && status.isConnected ? <WaitingModal /> : null}
 
 
         </Layout>

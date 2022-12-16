@@ -10,14 +10,19 @@
             animation-duration: .2s;
 
             .panel_title {
-                @apply text-center text-opacity-90 my-2 text-white;
+                @apply text-center text-opacity-90 my-2 text-main-200;
                 font-weight: 700;
                 font-size: 1.2rem;
             }
 
             .panel_msg {
-                @apply text-sm text-center text-opacity-80 my-5 text-white;
-                font-weight: 600
+                @apply text-sm text-center text-opacity-80 my-5 text-main-200 flex flex-col gap-2;
+                font-weight: 600;
+
+                >span {
+                    font-size: .85rem;
+                    font-weight: 300;
+                }
             }
 
             >img {

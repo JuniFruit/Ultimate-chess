@@ -1,11 +1,10 @@
 import { IPlayerInfo } from "../../components/ui/player/PlayerInfo.interface";
 import { IBoardStates } from "../../model/Board";
 import { Colors } from "../../model/colors.enum";
-import { Results } from "../../model/helper.enum";
+import { GameOverReasons, Results } from "../../model/helper.enum";
 import { IPlayer } from "../../model/Player";
-import { IUser } from "../../types/user.interface";
-import { Requests } from "../constants";
-import { IDisconnectedUser, IMessage, IMovePayload } from "./ClientEvents.interface";
+import { Errors, Requests } from "../constants";
+import { IDisconnectedUser, IMessage, IMove } from "./ClientEvents.interface";
 
 export interface IBoardData {
     boardFEN: string;
@@ -21,13 +20,14 @@ export interface IGameData {
 }
 
 export interface ISocketData {
-    user: IPlayerInfo, 
+    user: IPlayerInfo,
 
 }
 
 export interface IResultPayload {
-    result: Results,
-    loser: Colors
+    result: Results;
+    loser: Colors;
+    reason?: GameOverReasons;
 }
 
 export interface IGameRoomShortData {
@@ -40,15 +40,22 @@ export interface IMessagePayload extends IMessage {
     timestamp: number;
 }
 
+export interface ITimerPayload {
+    white: number;
+    black: number;
+}
+
 export interface IOServerEvents {
-    updateGame: ({}:IGameData) => void;
+    updateGame: ({ }: IGameData) => void;
     noOpponent: (user: IDisconnectedUser) => void;
-    move: (payload: IMovePayload) => void;
-    gameError: (err:string) => void;
+    move: (move: IMove) => void;
+    error: (err: Errors) => void;
+    gameError: (err: Errors) => void;
     results: (payload: IResultPayload) => void;
     inGameRequest: (payload: Requests) => void;
     message: (payload: IMessagePayload) => void;
     currentGames: (games: IGameRoomShortData[]) => void;
     reconnect: () => void;
     noPlayers: () => void;
+    updateTimer: (payload:ITimerPayload ) => void;
 }

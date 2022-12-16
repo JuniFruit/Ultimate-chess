@@ -19,14 +19,14 @@ export interface ILegalMoveArg {
     numCell: number;
 }
 
-export interface IFigure {
-    color: Colors;
-    type: FigureTypes;
+export interface IFigureBase {
+    sprites?: ISpritesObj;
     x: number;
-    y: number;
-    sprite?: string;
+    y: number;  
+    movesCount: number;    
+    color: Colors;
     legalMoves: ICell[];
-    moveFigure: (target: ICell, isFake?: boolean) => void;
+    moveFigure: (target: ICell, board: IBoard, isFake?: boolean) => void;
     getLegalMoves: (board: IBoard) => void;
     clearMoves: () => void;
     filterUncheckingMoves: (board: IBoard) => void
@@ -34,6 +34,11 @@ export interface IFigure {
     getLegalMovesHorizontal: (arg: ILegalMoveArg) => void;
     getLegalMovesDiagonal: (arg: ILegalMoveArg) => void;
     addLegalMove: (cell: ICell) => boolean;
+}
+
+export interface IFigure extends IFigureBase {    
+    type: FigureTypes;    
+    sprite?: string;    
 }
 
 

@@ -17,7 +17,8 @@ const PlayChess: FC = () => {
     const navigate = useNavigate()
 
     const handleClick = (item: IMenuData) => {
-        navigate(item.link);
+        if (item.title === 'Back') return navigate(item.link);
+        window.location.href = item.link;
     }
 
     return (

@@ -1,17 +1,31 @@
-import { FC,useState } from 'react'
+import { FC,useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
+import ioClient from '../../../../api/socketApi';
+import { Errors } from '../../../../constants/constants';
 import ErrorDialog from '../../../ui/dialog/errors/ErrorDialog';
 import { IErrorModal } from './Modal.interface';
 
-export const ErrorModal: FC<IErrorModal> = ({errorHandler, errorMsg}) => {
+export const ErrorModal: FC = () => {
 
-    const [dialogOpen, setDialogOpen] = useState(true);
+    const [errorMsg, setErrorMsg] = useState<Errors | null>()
+
+    const handleOnError = (error: Errors) => {
+       
+        setErrorMsg(prev => error);
+    }
+
+    useEffect(() => {
+        ioClient.on("gameError", handleOnError);
+
+        return () => {
+            ioClient.off("gameError");
+        }
+    }, [errorMsg])
 
     const navigate = useNavigate();   
 
     const handleClose = () => {
-        errorHandler('');
-        setDialogOpen(false);
+        setErrorMsg(prev => null)      
         navigate('/');
     }
 
@@ -19,8 +33,8 @@ export const ErrorModal: FC<IErrorModal> = ({errorHandler, errorMsg}) => {
         <>
             <ErrorDialog
                 onDialog={handleClose}
-                message={errorMsg}
-                isOpen={dialogOpen}
+                message={errorMsg!}
+                isOpen={errorMsg ? true : false}
                 onClose={() => {}} />
         </>
     )

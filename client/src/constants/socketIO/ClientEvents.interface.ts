@@ -20,13 +20,7 @@ export interface IMove {
     options?: IMoveOptions
 }
 
-export interface IMovePayload {
-    move: IMove,
-    time: {
-        white: number;
-        black: number;
-    }
-}
+
 
 export interface IMessage {
     body: string;   

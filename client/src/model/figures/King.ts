@@ -1,19 +1,23 @@
 import { IBoard } from "../Board";
 import { ICell } from "../Cell";
 import { Colors } from "../colors.enum";
+import { Direction } from "../helper.enum";
 import { isInBounds } from "../helpers";
 import { Figure } from "./Figures";
 import { FigureTypes, IFigure, ISpritesObj } from "./figures.interface";
+import { IRook } from "./Rook";
 
 
 export interface IKing extends IFigure {
     isCastlingAvailable:boolean;
+    canPerformCastle: (target: ICell, board: IBoard) => boolean;
+    performCastle: (target: ICell, board: IBoard) => void;
 }
 
 export class King extends Figure implements IKing {
-    readonly sprite?: string;
-    readonly type: FigureTypes;
-    isCastlingAvailable:boolean;
+    readonly sprite?;
+    readonly type;
+    isCastlingAvailable;
 
     constructor(x: number, y: number, color: Colors, sprites?: ISpritesObj, isCastlingAvailable:boolean = true) {
         super(x, y, color, sprites);
@@ -58,12 +62,43 @@ export class King extends Figure implements IKing {
         return target.figure?.type === FigureTypes.KING && target.figure.color !== this.color;
     }
 
-    moveFigure(target: ICell, isFake:boolean = false): void {
-        super.moveFigure(target);
+    moveFigure(target: ICell, board: IBoard, isFake?: boolean) {
+        super.moveFigure(target, board, isFake);
 
         if (isFake) return;
 
         this.isCastlingAvailable = false;
+    }
+
+    canPerformCastle(target: ICell, board: IBoard) {
+        // check if none of the pieces moved and they are on the same row
+        if (!this.isCastlingAvailable || target.figure?.type !== FigureTypes.ROOK) return false;
+        if (this.color !== target.figure.color) return false;
+        if (board.states.isCheck) return false;
+        if (this.y !== target.y) return false;
+        if (!(target.figure as IRook).isFirstMove) return false;
+
+        // check if no pieces between
+
+        const myCell = board.getCell(this.x, this.y);
+        const dir = target.x < this.x ? -1 : 1;
+
+        for (let i = 1; i < 2; i++) {
+            if (!board.getCell(this.x + i * dir, this.y).isEmpty() 
+            || myCell.isUnderAttack(board.getCell(this.x + i * dir, this.y), board)) return false;
+        }      
+
+        return true;
+    }
+
+    performCastle(target: ICell, board: IBoard) {
+        const myCell = board.getCell(this.x, this.y);
+
+        const dir = target.x < this.x ? Direction.NEG : Direction.POS;
+        const moveToCell = board.getCell(this.x + 2 * dir, this.y);
+        
+        myCell.moveFigure(moveToCell, board, false, true);
+
     }
 
     

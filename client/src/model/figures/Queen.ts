@@ -1,12 +1,12 @@
 import { IBoard } from "../Board";
 import { Colors } from "../colors.enum";
 import { Figure } from "./Figures";
-import { FigureTypes, IFigure, ISpritesObj } from "./figures.interface";
+import { FigureTypes, ISpritesObj } from "./figures.interface";
 
 
 export class Queen extends Figure {
-    readonly sprite?: string;
-    readonly type: FigureTypes;
+    readonly sprite?;
+    readonly type;
 
 
     constructor(x: number, y: number, color: Colors, sprites?: ISpritesObj) {

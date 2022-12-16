@@ -20,3 +20,10 @@ export enum FENs {
     KING_VS_ROOK_KNIGHT = '8/8/3k1r2/8/8/3Kn3/8/8 w',
     KING_KNIGHT_VS_KING_KNIGHT_PAWN = '8/3k2n1/8/3p4/3K1N2/8/8/8 w'
 }
+
+
+export enum GameOverReasons {
+    TIMEOUT = 'timeout',
+    CHECKMATE = 'checkmate',
+    RESIGN = 'resign'
+}

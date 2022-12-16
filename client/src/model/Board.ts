@@ -34,6 +34,7 @@ export interface IBoard {
     addMove: (movedFigure: IMovedFigure) => void;
     popFigure: (figure: IFigure) => void
     convertToFEN: () => string;
+    incrementMoveCount: () => void;
 }
 
 export interface IBoardStates {
@@ -46,6 +47,7 @@ export interface IBoardStates {
     blackTime: number;
     moves: IMovedFigure[];
     lastMoveTime?: number;
+    globalMovesCount: number;
     whiteTeamSprites?: ISpritesObj;
     blackTeamSprites?: ISpritesObj
 }
@@ -63,6 +65,7 @@ export class Board implements IBoard {
         isCheck: false,
         isGameOver: false,
         isFirstMove: true,
+        globalMovesCount: 0,
         whiteTime: 300,
         blackTime: 300,         
 
@@ -308,12 +311,17 @@ export class Board implements IBoard {
         const target = this.getCell(targetCell.x, targetCell.y);
 
         if (!start || !target) return;
+        this.incrementMoveCount(); // it's important to update move count before moving figure 
 
         start.moveFigure(target, this);    
 
         if (options?.isPromotion) {          
             target.handlePromotion(options.figureToPromote!, this)
         }
+    }
+
+    incrementMoveCount()  {
+        this.states.globalMovesCount ++;
     }
 
 }

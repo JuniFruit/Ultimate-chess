@@ -10,24 +10,23 @@ import { GameOver, Results } from "../../../model/helper.enum";
 import { assignSpritePack } from "../../../utils/game.utils";
 import { IPlayerInfo } from "../../ui/player/PlayerInfo.interface";
 
-
-
 export const useGameRoom = (id?: string) => {
 
     const [board, setBoard] = useState<IBoard>(new Board())
     const [isReadyToStart, setIsReadyToStart] = useState(false);
-    const [result, setResult] = useState<GameOver | null>(null);
+    const [result, setResult] = useState<IResultPayload | null>(null);
     const [enemyUser, setEnemyUser] = useState<IPlayerInfo>();
     const [clientUser, setClientUser] = useState<IPlayerInfo>()   
     const [myColor, setMyColor] = useState<Colors>(Colors.WHITE)
     const [request, setRequest] = useState<Requests | null>(null);
     const [isObserver, setIsObserver] = useState(false);
-    const { isConnected, error, setError } = useSocketConnect();
+    const { isConnected } = useSocketConnect();
 
 
     const handleUpdateGame = useCallback((payload: IGameData) => {
         if (!payload) return; // payload with info about the client and the board
         clearStates();
+        console.log(payload);
         setIsReadyToStart(true);
         setEnemyUser(prev => payload.playerTwo!);
         setClientUser(prev => payload.playerOne);
@@ -60,10 +59,8 @@ export const useGameRoom = (id?: string) => {
 
     const handleResults = useCallback((payload: IResultPayload) => {
         board.states.isGameOver = true;
-        setResult(prev => {
-            if (payload.result === Results.DRAW) return GameOver.DRAW;
-            return payload.loser === Colors.BLACK ? GameOver.WHITE : GameOver.BLACK;
-        });
+        setIsReadyToStart(true);
+        setResult(prev => payload);
         setBoard(prev => prev.getCopyBoard())
     }, [board])
  
@@ -91,21 +88,19 @@ export const useGameRoom = (id?: string) => {
 
     }, [isConnected, id])
 
-    useEffect(() => {      
-        ioClient.on('gameError', (err) => setError(err))
+    useEffect(() => {       
         ioClient.on("updateGame", handleUpdateGame);
         ioClient.on("inGameRequest", (request) => setRequest(request));      
         ioClient.on("results", handleResults);
 
-        return () => {          
-            ioClient.off("gameError");
+        return () => {      
             ioClient.off("inGameRequest");         
             ioClient.off('updateGame');        
             ioClient.off("results");
 
         }
 
-    }, [request, result, error, board, isObserver])   
+    }, [request, result, board, isObserver])   
 
 
     return {
@@ -125,10 +120,8 @@ export const useGameRoom = (id?: string) => {
         },
         data: {
             enemyUser,
-            clientUser,
-            error,
-            setError,
-            request,
+            clientUser,                    
+            request,        
             setRequest,    
         }
         

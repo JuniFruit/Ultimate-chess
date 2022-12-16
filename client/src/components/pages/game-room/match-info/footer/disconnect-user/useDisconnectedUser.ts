@@ -11,19 +11,19 @@ export const useDisconnectedUser = ({isFirstMove, isGameOver ,isObserver}:IDisco
     const navigate = useNavigate()
 
     const handleNoOpponent = useCallback((user: IDisconnectedUser) => {
-        if (isGameOver || isObserver) return;
-        setDisconnectedUser(user);
-    }, [isGameOver, isObserver])
+        if (isGameOver) return;
+        setDisconnectedUser(prev => user);
+    }, [isGameOver])
 
     const handleReconnect = useCallback(() => {
-        setDisconnectedUser(null);
+        setDisconnectedUser(prev => null);
     }, [])
 
     const handleDisconnectTimeout = useCallback(() => {
-        if (!disconnectedUser || isGameOver || isObserver) return;
+        if (!disconnectedUser || isGameOver || isObserver) return setDisconnectedUser(prev => null);
         if (isFirstMove) return navigate('/');
         ioClient.emit("disconnectTimeout", disconnectedUser);
-        setDisconnectedUser(null);
+        setDisconnectedUser(prev => null);
 
     }, [disconnectedUser, isGameOver, isObserver])
 

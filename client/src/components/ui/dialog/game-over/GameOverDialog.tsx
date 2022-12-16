@@ -5,10 +5,24 @@ import { IDialog } from '../Dialog.interface';
 import { Button } from '../../button/Button';
 import { mockups } from '../../../../assets/mockups/images';
 import { useActions } from '../../../../hooks/useActions';
+import { GameOverReasons } from '../../../../model/helper.enum';
+import { iconsGeneral } from '../../../../assets/icons/general/iconsGeneral';
 
-const GameOverDialog: FC<IDialog> = ({ message, onDialog, isOpen, onClose }) => {
+interface IGameOverDialog extends IDialog {
+    isObserver: boolean;
+    reason?: GameOverReasons;
+}
 
-    const {addMsg} = useActions()
+const GameOverDialog: FC<IGameOverDialog> = ({ message, onDialog, isOpen, onClose, isObserver, reason }) => {
+
+    const { addMsg } = useActions()
+
+    const handleOnClick = () => {
+        if (isObserver) return;
+        onDialog();
+        addMsg({ message: 'Request sent', status: 200 })
+    }
+
     return (
         <Dialog
             open={isOpen}
@@ -20,12 +34,13 @@ const GameOverDialog: FC<IDialog> = ({ message, onDialog, isOpen, onClose }) => 
                     <Dialog.Title className={styles.panel_title}>Match results</Dialog.Title>
                     <Dialog.Description className={styles.panel_msg}>
                         {message}
-
+                        {reason && <span>{`By ${reason}`}</span>}
                     </Dialog.Description>
-                    <img src={mockups.waitingGIF} />
-                    
+
+                    <img src={iconsGeneral.gameOver} />
+
                     <div className={styles.panel_buttons}>
-                        <Button onClick={() => { onDialog(); addMsg({message: 'Request sent',status:200}) }}>Rematch</Button>
+                        <Button onClick={handleOnClick} disabled={isObserver}>{`${isObserver ? 'Waiting for players' : 'Rematch'}`}</Button>
                         <Button onClick={onClose}>Main menu</Button>
                     </div>
 

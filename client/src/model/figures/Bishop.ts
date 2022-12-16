@@ -7,8 +7,8 @@ import { FigureTypes, IFigure, ISpritesObj } from "./figures.interface";
 //TODO add dynamic moving capacity
 
 export class Bishop extends Figure {
-    readonly sprite?: string;
-    readonly type: FigureTypes
+    readonly sprite;
+    readonly type;
   
     
     constructor(x:number,y:number,color: Colors, sprites?: ISpritesObj) {

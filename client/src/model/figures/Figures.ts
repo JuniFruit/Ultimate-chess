@@ -3,16 +3,18 @@ import { ICell } from "../Cell";
 import { Colors } from "../colors.enum";
 import { Direction } from "../helper.enum";
 import { isInBounds } from "../helpers";
-import { IFigure, ILegalMoveArg, ISpritesObj } from "./figures.interface";
+import { FigureTypes, IFigure, IFigureBase, ILegalMoveArg, ISpritesObj } from "./figures.interface";
 
 
 
-export class Figure {
-    readonly color: Colors;
-    sprites?: ISpritesObj;
-    x: number;
-    y: number;
+export class Figure implements IFigureBase {
+    readonly color;   
+    sprites;
+    x;
+    y;
     legalMoves: ICell[] = [];
+    movesCount = 0;
+    cellsAdvanced = 0;
 
     constructor(x: number, y: number, color: Colors, sprites?: ISpritesObj) {
         this.color = color;
@@ -21,10 +23,12 @@ export class Figure {
         this.sprites = sprites;
     }
 
-    moveFigure(target: ICell) {
-        // if (target.figure?.type === FigureTypes.KING) return;
+    moveFigure(target: ICell, board: IBoard, isFake?: boolean) {
         this.x = target.x;
         this.y = target.y;
+
+        if (isFake) return;
+        this.movesCount ++;
     }
 
     filterUncheckingMoves(board: IBoard) {
@@ -112,5 +116,8 @@ export class Figure {
     clearMoves() {
         this.legalMoves = [];
     }
+    getLegalMoves (board: IBoard) {
+
+    } 
 
 }

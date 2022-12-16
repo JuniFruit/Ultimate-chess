@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from 'react';
 import { Requests } from '../../../../constants/constants';
-import { GameOver } from '../../../../model/helper.enum';
+import { IResultPayload } from '../../../../constants/socketIO/ServerEvents.interface';
 
 export interface IErrorModal {
     errorMsg: string,
@@ -8,7 +8,8 @@ export interface IErrorModal {
 }
 
 export interface IGameOverModal {
-    resultMsg: GameOver | null,
+    result: IResultPayload | null,
+    isObserver: boolean;
     onRematch: () => void;
 }
 

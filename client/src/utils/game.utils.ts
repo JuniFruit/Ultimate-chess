@@ -6,8 +6,8 @@ import { FigureTypes } from "../model/figures/figures.interface";
 
 export const assignSpritePack = (userColor: Colors, user: IPlayerInfo, opponent: IPlayerInfo) => {
 
-    if (userColor === Colors.BLACK) return opponent.packInUse ? opponent.packInUse : SPRITES;
-    return user.packInUse ? user.packInUse : SPRITES;
+    if (userColor === Colors.BLACK) return opponent?.packInUse ? opponent?.packInUse : SPRITES;
+    return user?.packInUse ? user?.packInUse : SPRITES;
 }
 
 export const getDefaultSprite = (figure: {type: FigureTypes, color: Colors}) => {

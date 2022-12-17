@@ -55,17 +55,18 @@ export class Pawn extends Figure implements IPawn {
 
         super.getLegalMovesVertical({ board, direction, numCell: numCells });
         super.getLegalMovesDiagonal({ board, direction, numCell: 1 });
-        this.addEnPassantMove(board);
-        // super.filterUncheckingMoves(board);
+        // this.addEnPassantMove(board);
+        super.filterUncheckingMoves(board);
 
     }
 
-    addLegalMove(cell: ICell): boolean {
+    addLegalMove(cell: ICell): boolean {    
+
         if (cell.isEmpty() && this.x === cell.x) {
-            this.legalMoves.push(cell)
+            this.legalMoves.push(super.convertToLegalMove(cell))
             return false;
         } else if (cell.isEnemy(this) && this.x !== cell.x) {
-            this.legalMoves.push(cell);
+            this.legalMoves.push(super.convertToLegalMove(cell));
             return true;
         }
         return true;
@@ -73,12 +74,11 @@ export class Pawn extends Figure implements IPawn {
 
     canEnPassant(target: ICell, board: IBoard) {
         if (!this.isEnPassant) return false;
-        if (!target.isEmpty()) return false;       
+        if (!target.isEmpty()) return false;
 
         const dirX = target.x < this.x ? Direction.NEG : Direction.POS;
 
         const pawnToCapture = board.getCell(this.x + dirX, this.y).figure;
-        console.log({state: board.states.globalMovesCount});
         if (pawnToCapture?.type !== FigureTypes.PAWN) return false;
         if (pawnToCapture.color === this.color) return false;
         if ((pawnToCapture as IPawn).cellsAdvanced !== 2 ||
@@ -92,12 +92,12 @@ export class Pawn extends Figure implements IPawn {
 
         const dirY = this.color === Colors.BLACK ? Direction.POS : Direction.NEG;
         if (isInBounds(this.x + 1, this.y + dirY)) {
-            const targetRight = board.getCell(this.x + 1, this.y + dirY);
-            if (this.canEnPassant(targetRight, board)) this.legalMoves.push(targetRight);
+            const targetRight = board.getCell(this.x + 1, this.y + dirY);          
+            if (this.canEnPassant(targetRight, board)) this.legalMoves.push(super.convertToLegalMove(targetRight));
         }
         if (isInBounds(this.x - 1, this.y + dirY)) {
             const targetLeft = board.getCell(this.x - 1, this.y + dirY);
-            if (this.canEnPassant(targetLeft, board)) this.legalMoves.push(targetLeft);
+            if (this.canEnPassant(targetLeft, board)) this.legalMoves.push(super.convertToLegalMove(targetLeft));
         }
     }
 

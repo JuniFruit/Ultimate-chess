@@ -3,20 +3,22 @@ import { ICell } from "../Cell";
 import { Colors } from "../colors.enum";
 import { Direction } from "../helper.enum";
 import { isInBounds } from "../helpers";
-import { FigureTypes, IFigure, IFigureBase, IFigureInfo, ILegalMoveArg, ISpritesObj } from "./figures.interface";
+import { Positions } from "../positions";
+import { FigureTypes, IFigure, IFigureBase, IFigureInfo, ILegalMove, ILegalMoveArg, ISpritesObj } from "./figures.interface";
 
 
 
 export class Figure implements IFigureBase {
-    readonly color;   
+    readonly color;
     sprites;
     x;
     y;
     prevX;
     prevY;
+    pos;
     lastTake: IFigureInfo | null;
     takes: IFigureInfo[] = [];
-    legalMoves: ICell[] = [];
+    legalMoves: ILegalMove[] = [];
     movesCount = 0;
     cellsAdvanced = 0;
 
@@ -28,29 +30,33 @@ export class Figure implements IFigureBase {
         this.prevY = y;
         this.lastTake = null;
         this.sprites = sprites;
+        this.pos = `${Positions[x]}${7 - y + 1}`;
+    }
+
+    onTake(figure: IFigure) {
+        this.lastTake = { ...figure };
+        this.takes.push({ ...figure });
     }
 
     moveFigure(target: ICell, board: IBoard, isFake?: boolean) {
         this.prevX = this.x;
         this.prevY = this.y;
-        
+
         this.x = target.x;
         this.y = target.y;
+        this.pos = `${Positions[target.x]}${7 - target.y + 1}`;
 
-        if (target.figure) {
-            this.lastTake = {...target.figure};
-            this.takes.push({...target.figure});
-        }
-
+        if (target.figure) this.onTake(target.figure);
 
         if (isFake) return;
-        this.movesCount ++;
+        this.movesCount++;
     }
 
     filterUncheckingMoves(board: IBoard) {
         // if (!board.isCheck) return;
         if (this.color !== board.states.currentPlayer) return;
-        this.legalMoves = [...this.legalMoves.filter(move => board.getCell(this.x, this.y).isUncheckingMove(move, board))]
+        this.legalMoves = [...this.legalMoves
+            .filter(move => board.getCell(this.x, this.y).isUncheckingMove(board.getCell(move.x, move.y), board))]
 
 
     }
@@ -119,11 +125,11 @@ export class Figure implements IFigureBase {
     addLegalMove(cell: ICell) {
 
         if (cell.isEmpty()) {
-            this.legalMoves.push(cell);
+            this.legalMoves.push(this.convertToLegalMove(cell));
             return false;
 
         } else if (!cell.isEmpty() && cell.isEnemy(this as unknown as IFigure)) {
-            this.legalMoves.push(cell);
+            this.legalMoves.push(this.convertToLegalMove(cell));
             return true;
         }
         return true;
@@ -132,8 +138,18 @@ export class Figure implements IFigureBase {
     clearMoves() {
         this.legalMoves = [];
     }
-    getLegalMoves (board: IBoard) {
+    getLegalMoves(board: IBoard) {
 
-    } 
+    }
+
+    convertToLegalMove(cell: ICell) {
+        const figure = cell.figure ? { ...cell.figure } : null;
+        const prevFigure = cell.prevFigure ? { ...cell.prevFigure } : null;
+        return {
+            ...cell,
+            figure,
+            prevFigure
+        }
+    }
 
 }

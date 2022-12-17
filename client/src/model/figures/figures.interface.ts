@@ -25,11 +25,12 @@ export interface IFigureBase {
     y: number;  
     prevX: number;
     prevY: number;
+    pos: string;
     lastTake: IFigureInfo | null;
     takes: IFigureInfo[];
     movesCount: number;    
     color: Colors;
-    legalMoves: ICell[];
+    legalMoves: ILegalMove[];
     moveFigure: (target: ICell, board: IBoard, isFake?: boolean) => void;
     getLegalMoves: (board: IBoard) => void;
     clearMoves: () => void;
@@ -38,6 +39,7 @@ export interface IFigureBase {
     getLegalMovesHorizontal: (arg: ILegalMoveArg) => void;
     getLegalMovesDiagonal: (arg: ILegalMoveArg) => void;
     addLegalMove: (cell: ICell) => boolean;
+    convertToLegalMove: (cell: ICell) => ILegalMove;
 }
 
 export interface IFigure extends IFigureBase {    
@@ -46,12 +48,16 @@ export interface IFigure extends IFigureBase {
 }
 
 
-export interface IFigureInfo extends Pick<IFigure, "color" | "type" | "x" | "y" | "sprite"> {}
+export interface IFigureInfo extends Pick<IFigure, "color" | "type" | "x" | "y" | "sprite" | "pos"> {}
 
 export interface ILostFigure extends Pick<IFigureInfo, 'type' | 'color' | 'sprite' > {
     takenBy: IFigureInfo;
 };
 
+export interface ILegalMove extends Pick<ICell, "x" | "y" | "pos"> {
+    figure: IFigureInfo | null;
+    prevFigure: IFigureInfo | null;
+}
 export interface IMovedFigure extends IFigureInfo {   
     isCastling?: boolean;
     figureTaken?: IFigureInfo;

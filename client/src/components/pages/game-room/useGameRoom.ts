@@ -6,7 +6,7 @@ import { useSocketConnect } from "../../../hooks/useSocketConnect";
 import { Board, IBoard } from "../../../model/Board";
 import { Colors } from "../../../model/colors.enum";
 import { ISpritesObj } from "../../../model/figures/figures.interface";
-import { GameOver, Results } from "../../../model/helper.enum";
+import { FENs, GameOver, Results } from "../../../model/helper.enum";
 import { assignSpritePack } from "../../../utils/game.utils";
 import { IPlayerInfo } from "../../ui/player/PlayerInfo.interface";
 
@@ -47,10 +47,10 @@ export const useGameRoom = (id?: string) => {
     const drawBoard = useCallback((boardData: IBoardData, whiteTeamSprites?: ISpritesObj, blackTeamSprites?: ISpritesObj) => {
 
         const newBoard = new Board(whiteTeamSprites, blackTeamSprites);
-        newBoard.startNewGame(boardData.boardFEN);
+        newBoard.startNewGame(boardData.FEN);
         newBoard.states = {
             ...newBoard.states,
-            ...boardData.states
+            ...boardData.board.states
         }
         newBoard.updateAllLegalMoves();
         setBoard(prev => newBoard);

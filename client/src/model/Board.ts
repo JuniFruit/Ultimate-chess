@@ -137,7 +137,6 @@ export class Board implements IBoard {
     isStalemate() {
         if (this.states.isCheck) return false;
         return !this.figures.some(figure => {
-            console.log(figure)
             return figure.color === this.states.currentPlayer && figure.legalMoves.length
         })
     }
@@ -166,16 +165,16 @@ export class Board implements IBoard {
 
     addMove(movedFigure: IMovedFigure) {
 
-        this.states.moves.push({
-            type: movedFigure.type,
-            color: movedFigure.color,
-            x: movedFigure.x,
-            y: movedFigure.y,
-            sprite: movedFigure.sprite,
-            isCastling: movedFigure.isCastling,
-            figureTaken: movedFigure.figureTaken
+        // this.states.moves.push({
+        //     type: movedFigure.type,
+        //     color: movedFigure.color,
+        //     x: movedFigure.x,
+        //     y: movedFigure.y,
+        //     sprite: movedFigure.sprite,
+        //     isCastling: movedFigure.isCastling,
+        //     figureTaken: movedFigure.figureTaken
 
-        });
+        // });
     }
 
     addLostFigure(figure: ILostFigure) {

@@ -30,7 +30,7 @@ export const Cell: FC<ICellComponent> = memo((
     }, [isDraggedOver])
 
     const checkIsAvailable = useCallback(() => {
-        if ((selected && selected.figure?.legalMoves.includes(cell)) && !isDraggedOver) {
+        if ((selected && selected.figure?.legalMoves.some(move => move.pos === cell.pos)) && !isDraggedOver) {
             cell.isAvailable = true;
             return true;
         }

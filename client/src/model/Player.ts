@@ -1,5 +1,4 @@
 import { IPlayerInfo } from "../components/ui/player/PlayerInfo.interface";
-import { IUser } from "../types/user.interface";
 import { Colors } from "./colors.enum";
 
 

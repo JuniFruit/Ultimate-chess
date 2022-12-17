@@ -3,10 +3,12 @@ import { Colors } from "./colors.enum";
 import { FigureTypes, IFigure } from "./figures/figures.interface";
 import { IKing } from "./figures/King";
 import { IRook } from "./figures/Rook";
+import { Positions } from "./positions";
 
 export interface ICell {
     readonly x: number;
     readonly y: number;
+    readonly pos: string;
     color: Colors;
     prevFigure: IFigure | null;
     figure: IFigure | null;
@@ -33,6 +35,7 @@ export class Cell implements ICell {
     prevFigure: IFigure | null = null;
     color: Colors;
     figure: IFigure | null;
+    pos: string;
     isAvailable = false;
 
 
@@ -41,6 +44,7 @@ export class Cell implements ICell {
         this.x = x;
         this.y = y;
         this.figure = figure
+        this.pos = `${Positions[x]}${7 - y + 1}`
     }
 
     isEmpty(): boolean {
@@ -122,7 +126,7 @@ export class Cell implements ICell {
         (target.figure as IRook).performCastle(board);
     }
 
-
+    // TODO Add Pop figure logic
     moveFigure(target: ICell, board: IBoard, isFake: boolean = false, isCastling: boolean = false) {
         if (this.isCastlingMove(target)) return this.performCastle(target, board);
         if (!isFake) this.handleAddMove(target, board, isCastling);
@@ -150,6 +154,10 @@ export class Cell implements ICell {
         board.popFigure(this.figure);
         this.figure = board.createFigure(type, this.x, this.y);
         board.figures.push(this.figure!);
+
+    }
+
+    undo() {
 
     }
 }

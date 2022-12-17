@@ -1,5 +1,5 @@
 import { IPlayerInfo } from "../../components/ui/player/PlayerInfo.interface";
-import { IBoardStates } from "../../model/Board";
+import { IBoard, IBoardStates } from "../../model/Board";
 import { Colors } from "../../model/colors.enum";
 import { GameOverReasons, Results } from "../../model/helper.enum";
 import { IPlayer } from "../../model/Player";
@@ -7,8 +7,8 @@ import { Errors, Requests } from "../constants";
 import { IDisconnectedUser, IMessage, IMove } from "./ClientEvents.interface";
 
 export interface IBoardData {
-    boardFEN: string;
-    states: IBoardStates;
+    board: IBoard;
+    FEN: string;
 }
 
 export interface IGameData {
@@ -46,7 +46,7 @@ export interface ITimerPayload {
 }
 
 export interface IOServerEvents {
-    updateGame: ({ }: IGameData) => void;
+    updateGame: (payload: IGameData) => void;
     noOpponent: (user: IDisconnectedUser) => void;
     move: (move: IMove) => void;
     error: (err: Errors) => void;

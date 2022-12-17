@@ -4,7 +4,7 @@ import { Colors } from "../colors.enum";
 import { Direction } from "../helper.enum";
 import { isInBounds } from "../helpers";
 import { Figure } from "./Figures";
-import { FigureTypes, IFigure, ISpritesObj } from "./figures.interface";
+import { FigureTypes, IFigure, ILegalMove, ISpritesObj } from "./figures.interface";
 import { IRook } from "./Rook";
 
 
@@ -31,12 +31,12 @@ export class King extends Figure implements IKing {
         super.getLegalMovesHorizontal({ board, numCell: 1 });
         super.getLegalMovesVertical({ board, numCell: 1 });
         super.getLegalMovesDiagonal({ board, numCell: 1 });
-        this.legalMoves = this.legalMoves.filter(cell => !this.isEnemyKingNear(cell, board));
+        this.legalMoves = this.legalMoves.filter(move => !this.isEnemyKingNear(move, board));
         super.filterUncheckingMoves(board);
 
     }
 
-    isEnemyKingNear(target: ICell, board: IBoard) {
+    isEnemyKingNear(target: ILegalMove, board: IBoard) {
 
         if (this.isEnemyKing(board.getCell(target.x + 1, target.y))) return true;
         if (this.isEnemyKing(board.getCell(target.x - 1, target.y))) return true;

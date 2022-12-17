@@ -15,11 +15,11 @@ export class Knight extends Figure {
         super(x, y, color, sprites);
         this.sprite = color === Colors.BLACK ? sprites?.blackKnight : sprites?.whiteKnight;
         this.type = FigureTypes.KNIGHT;
-    }    
+    }
 
     getLegalMoves(board: IBoard) {
         super.clearMoves()
-        
+
         this.checkMoves(board, 1, 2, Direction.POS, Direction.POS)
         this.checkMoves(board, 2, 1, Direction.POS, Direction.POS)
         this.checkMoves(board, 1, 2, Direction.NEG, Direction.NEG)
@@ -35,7 +35,7 @@ export class Knight extends Figure {
     checkMoves(board: IBoard, rangeX: number, rangeY: number, dirX: Direction, dirY: Direction) {
 
         if (isInBounds(this.x - rangeX * dirX, this.y - rangeY * dirY)) {
-            let current = board.getCell(this.x - rangeX * dirX, this.y - rangeY * dirY);
+            let current = board.getCell(this.x - rangeX * dirX, this.y - rangeY * dirY);      
             super.addLegalMove(current);
         }
 

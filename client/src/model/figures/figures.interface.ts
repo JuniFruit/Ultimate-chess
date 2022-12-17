@@ -23,6 +23,10 @@ export interface IFigureBase {
     sprites?: ISpritesObj;
     x: number;
     y: number;  
+    prevX: number;
+    prevY: number;
+    lastTake: IFigureInfo | null;
+    takes: IFigureInfo[];
     movesCount: number;    
     color: Colors;
     legalMoves: ICell[];

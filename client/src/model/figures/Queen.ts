@@ -5,7 +5,7 @@ import { FigureTypes, ISpritesObj } from "./figures.interface";
 
 
 export class Queen extends Figure {
-    readonly sprite?;
+    readonly sprite;
     readonly type;
 
 

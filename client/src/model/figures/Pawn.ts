@@ -19,7 +19,7 @@ export interface IPawn extends IFigure {
 
 
 export class Pawn extends Figure implements IPawn {
-    readonly sprite?;
+    readonly sprite;
     readonly type;
     isFirstMove;
     cellsAdvanced = 0;
@@ -78,11 +78,12 @@ export class Pawn extends Figure implements IPawn {
         const dirX = target.x < this.x ? Direction.NEG : Direction.POS;
 
         const pawnToCapture = board.getCell(this.x + dirX, this.y).figure;
+        console.log({state: board.states.globalMovesCount});
         if (pawnToCapture?.type !== FigureTypes.PAWN) return false;
         if (pawnToCapture.color === this.color) return false;
-        if (((pawnToCapture as IPawn).cellsAdvanced !== 2) &&
-            (pawnToCapture.movesCount !== 1) &&
-            ((pawnToCapture as IPawn).lastMove !== board.states.globalMovesCount)) return false;
+        if ((pawnToCapture as IPawn).cellsAdvanced !== 2 ||
+            pawnToCapture.movesCount !== 1 ||
+            (pawnToCapture as IPawn).lastMove !== board.states.globalMovesCount) return false;
 
         return true;
     }

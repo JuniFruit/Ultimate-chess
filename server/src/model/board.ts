@@ -5,28 +5,28 @@ import { FENs, GameOverReasons, Results } from '../../../client/src/model/helper
 import { getInitTime } from '../utils/utils';
 
 
-const ROOM_GAME_BOARDS = new Map();
+const ROOM_GAME_BOARDS = new Map<string,IBoard>();
 
 export const boardApi = (roomId: string) => {
 
     const getBoard = () => {
-        if (ROOM_GAME_BOARDS.has(roomId)) return getBoardData(ROOM_GAME_BOARDS.get(roomId));
+        if (ROOM_GAME_BOARDS.has(roomId)) return ROOM_GAME_BOARDS.get(roomId);
         return createBoard();
     }
 
     const createBoard = () => {
-        const board = new Board();
+        const board: IBoard = new Board();
         board.startNewGame(FENs.INIT);
         board.updateAllLegalMoves();
         board.states.whiteTime = getInitTime(roomId);
         board.states.blackTime = getInitTime(roomId);
 
         ROOM_GAME_BOARDS.set(roomId, board);
-        return getBoardData(board);
+        return board
     }
 
     const getResults = () => {
-        const board: IBoard = ROOM_GAME_BOARDS.get(roomId);
+        const board = getBoard()!;
 
         board.updateAllLegalMoves();
         if (board.isDraw()) return {
@@ -43,7 +43,7 @@ export const boardApi = (roomId: string) => {
     }
 
     const moveFigure = (move: IMove) => {
-        const board: IBoard = ROOM_GAME_BOARDS.get(roomId);
+        const board = getBoard()!;
         updateTime(board)
         board.receiveMove(move);
         board.states.isFirstMove = false;
@@ -51,13 +51,13 @@ export const boardApi = (roomId: string) => {
         ROOM_GAME_BOARDS.set(roomId, board);
     }
 
-    const getBoardData = (board: IBoard) => {
+    const getBoardData = () => {
+        const board = getBoard()!;
         updateTime(board);
         const boardFEN = board.convertToFEN();
-        const newBoardStates: IBoardStates = { ...board.states }
         return {
-            boardFEN,
-            states: newBoardStates,
+            FEN: boardFEN,
+            board
         };
     }
 
@@ -74,19 +74,19 @@ export const boardApi = (roomId: string) => {
     }
 
     const getTime = () => {
-        const board: IBoard = ROOM_GAME_BOARDS.get(roomId);
+        const board = getBoard()!;
         return { white: board.states.whiteTime, black: board.states.blackTime };
     }
 
     const isTimeout = (player: Colors) => {
-        const board: IBoard = ROOM_GAME_BOARDS.get(roomId);
+        const board = getBoard()!;
         updateTime(board);
         const timer = player === Colors.BLACK ? 'blackTime' : 'whiteTime';
         return board.states[timer] <= 0;
     }
 
     const isSufficientMaterial = () => {
-        const board: IBoard = ROOM_GAME_BOARDS.get(roomId);
+        const board = getBoard()!;
         board.updateAllLegalMoves();
         return board.isSufficientMaterial(board.states.currentPlayer === Colors.BLACK ? Colors.WHITE : Colors.BLACK); //checking enemy
 
@@ -103,6 +103,7 @@ export const boardApi = (roomId: string) => {
         createBoard,
         moveFigure,
         getResults,
+        getBoardData,
         isSufficientMaterial,
         getTime,
         isTimeout,

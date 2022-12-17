@@ -127,7 +127,7 @@ export const BoardService = {
     getUpdateGamePayload(socket: RemoteSocket<IServerEvents, ISocketDataServer> | Socket<IClientEvents, IServerEvents>,
         roomId: string): IGameData {
 
-        const board = boardApi(roomId).getBoard();
+        const boardData = boardApi(roomId).getBoardData();
         const players = roomApi(roomId).getRoomInfo().players;
         const isObserver = socket.data.room.includes('_obs');
 
@@ -143,7 +143,7 @@ export const BoardService = {
             playerOne: playerOne?.user!,
             playerTwo: playerTwo?.user!,
             myColor: playerOne?.color!,
-            boardData: board,
+            boardData,
             isObserver
         }
 

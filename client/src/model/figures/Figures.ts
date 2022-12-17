@@ -3,7 +3,7 @@ import { ICell } from "../Cell";
 import { Colors } from "../colors.enum";
 import { Direction } from "../helper.enum";
 import { isInBounds } from "../helpers";
-import { FigureTypes, IFigure, IFigureBase, ILegalMoveArg, ISpritesObj } from "./figures.interface";
+import { FigureTypes, IFigure, IFigureBase, IFigureInfo, ILegalMoveArg, ISpritesObj } from "./figures.interface";
 
 
 
@@ -12,6 +12,10 @@ export class Figure implements IFigureBase {
     sprites;
     x;
     y;
+    prevX;
+    prevY;
+    lastTake: IFigureInfo | null;
+    takes: IFigureInfo[] = [];
     legalMoves: ICell[] = [];
     movesCount = 0;
     cellsAdvanced = 0;
@@ -20,12 +24,24 @@ export class Figure implements IFigureBase {
         this.color = color;
         this.x = x;
         this.y = y;
+        this.prevX = x;
+        this.prevY = y;
+        this.lastTake = null;
         this.sprites = sprites;
     }
 
     moveFigure(target: ICell, board: IBoard, isFake?: boolean) {
+        this.prevX = this.x;
+        this.prevY = this.y;
+        
         this.x = target.x;
         this.y = target.y;
+
+        if (target.figure) {
+            this.lastTake = {...target.figure};
+            this.takes.push({...target.figure});
+        }
+
 
         if (isFake) return;
         this.movesCount ++;

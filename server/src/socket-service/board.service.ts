@@ -105,11 +105,14 @@ export const BoardService = {
 
         users.forEach(async (user) => {
             try {
-                if (!user.user?.id || user.user?.id === 0) return;
+                
+                const isAuthed = user.user?.id && user.user?.id !== 0
                 if (user.color === results.loser) {
-                    return await UserService.increaseLoses(user.user.id)
+                    isAuthed && await UserService.increaseLoses(user.user.id);
+                    user.user.lossesCount++;
                 } else {
-                    return await UserService.increaseWins(user.user.id);
+                    isAuthed && await UserService.increaseWins(user.user.id);
+                    user.user.winsCount++;
                 };
 
             } catch (error) {

@@ -3,7 +3,6 @@ import { Dialog } from '@headlessui/react'
 import styles from '../Dialog.module.scss';
 import { IDialog } from '../Dialog.interface';
 import { Button } from '../../button/Button';
-import { mockups } from '../../../../assets/mockups/images';
 import { useActions } from '../../../../hooks/useActions';
 import { GameOverReasons } from '../../../../model/helper.enum';
 import { iconsGeneral } from '../../../../assets/icons/general/iconsGeneral';
@@ -37,7 +36,10 @@ const GameOverDialog: FC<IGameOverDialog> = ({ message, onDialog, isOpen, onClos
                         {reason && <span>{`By ${reason}`}</span>}
                     </Dialog.Description>
 
-                    <img src={iconsGeneral.gameOver} />
+                    <img
+                        src={`${reason === GameOverReasons.TIMEOUT ? iconsGeneral.timer : iconsGeneral.gameOverKing}`}
+                        alt="game-over icon"
+                    />
 
                     <div className={styles.panel_buttons}>
                         <Button onClick={handleOnClick} disabled={isObserver}>{`${isObserver ? 'Waiting for players' : 'Rematch'}`}</Button>

@@ -16,6 +16,7 @@ export const KillFeed: FC<IKillFeed> = memo(({ lostFigures }) => {
                     {blackLosses.length ? blackLosses.map((piece, ind) => (
                         <PieceInfo
                             sprite={getDefaultSprite(piece)}
+                            title={'piece'}
                             key={ind}
                         />
                     )) : null
@@ -30,6 +31,7 @@ export const KillFeed: FC<IKillFeed> = memo(({ lostFigures }) => {
                     {whiteLosses.length ? whiteLosses.map((piece, ind) => (
                         <PieceInfo
                             sprite={getDefaultSprite(piece)}
+                            title={'piece'}
                             key={ind}
                         />
                     )) : null}

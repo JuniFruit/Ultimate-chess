@@ -1,30 +1,40 @@
+import { IMoveOptions } from "../constants/socketIO/ClientEvents.interface";
 import { IBoard } from "./Board";
 import { Colors } from "./colors.enum";
-import { FigureTypes, IFigure } from "./figures/figures.interface";
+import { FigureTypes, IFigure, IMovedFigure } from "./figures/figures.interface";
 import { IKing } from "./figures/King";
 import { IRook } from "./figures/Rook";
+import { getFigureInfo } from "./helpers";
 import { Positions } from "./positions";
 
 export interface ICell {
     readonly x: number;
     readonly y: number;
     readonly pos: string;
-    color: Colors;
+    readonly color: Colors;
     prevFigure: IFigure | null;
     figure: IFigure | null;
     isAvailable: boolean
     isEmpty: () => boolean;
     isEnemy: (figure: IFigure | null) => boolean;
-    isSafeCell: (target: ICell, board: IBoard) => boolean;
-    moveFigure: (target: ICell, board: IBoard, isFake?: boolean, isCastling?: boolean) => void;
-    isUnderAttack: (target: ICell, board: IBoard) => boolean;
+    promote: (figureToPromote: FigureTypes, board: IBoard) => void;
+    moveFigure: (target: ICell, board: IBoard, options: IMoveOptions) => void;
+    isUnderAttack: (board: IBoard) => boolean;
     canMoveFigure: (target: ICell, board: IBoard) => boolean;
-    isCastlingMove: (target: ICell, board: IBoard) => boolean;
     isUncheckingMove: (target: ICell, board: IBoard) => boolean;
-    handleAddMove: (target: ICell, board: IBoard, isCastling: boolean) => void;
-    handlePromotion: (figureToPromote: FigureTypes, board: IBoard) => void;
-    isEnPassant: (target: ICell) => boolean;
     isTargetDiagonal: (target: ICell) => boolean;
+    isPromotionMove: (target: ICell) => boolean;
+    isCastlingMove: (target: ICell) => boolean;
+    getCellInfo: () => ICellInfo;
+
+    undo: () => void;
+}
+
+export interface ICellInfo extends Pick<ICell, "pos" | "x" | 'y'>{};
+
+export interface IPremove {
+    figureType: FigureTypes;
+    to: ICell;
 }
 
 interface ICellInit extends Pick<ICell, 'x' | 'y' | 'color' | 'figure'> { };
@@ -32,10 +42,10 @@ interface ICellInit extends Pick<ICell, 'x' | 'y' | 'color' | 'figure'> { };
 export class Cell implements ICell {
     readonly x: number;
     readonly y: number;
+    readonly pos: string;
     prevFigure: IFigure | null = null;
     color: Colors;
     figure: IFigure | null;
-    pos: string;
     isAvailable = false;
 
 
@@ -47,37 +57,37 @@ export class Cell implements ICell {
         this.pos = `${Positions[x]}${7 - y + 1}`
     }
 
-    isEmpty(): boolean {
+    public isEmpty(): boolean {
         return this.figure === null;
     }
 
-    isSafeCell(target: ICell, board: IBoard): boolean {
+    private _validateMove(target: ICell, board: IBoard): boolean {
 
         let isValidMove = false;
-        this.moveFigure(target, board, true);
+        this.moveFigure(target, board, { isFake: true });
         board.updateEnemyLegalMoves();
         board.isKingChecked();
         if (!board.states.isCheck) {
             isValidMove = true;
         }
-        target.moveFigure(this, board, true);
-        target.figure = target.prevFigure;
+        board.undo();
         return isValidMove
     }
 
-    isUnderAttack(target: ICell, board: IBoard) {
+    public isUnderAttack(board: IBoard) {
+        console.log({isAttack: this});
         return board.figures.some(figure => {
-            return figure.legalMoves.some(move => move === target && figure.color !== board.states.currentPlayer);
+            return figure.legalMoves.some(move => move.pos === this.pos && figure.color !== board.states.currentPlayer);
         })
     }
 
-    isEnemy(figure: IFigure | null): boolean {
+    public isEnemy(figure: IFigure | null): boolean {
         if (!figure) return false;
         if (!this.figure) return false;
         return this.figure.color !== figure.color;
     }
 
-    canMoveFigure(target: ICell, board: IBoard) {
+    public canMoveFigure(target: ICell, board: IBoard) {
 
         if (target.figure?.type === FigureTypes.KING) return false;
         if (this.figure?.color !== board.states.currentPlayer) return false;
@@ -87,77 +97,129 @@ export class Cell implements ICell {
         return !!move;
     }
 
-    isEnPassant(target: ICell) {
-        const absX = Math.abs(target.x - this.x);
-        const absY = Math.abs(target.y - this.y);
-        const isDiagonal = absX === absY;
-        if ((this.figure?.type !== FigureTypes.PAWN && !isDiagonal) && !target.isEmpty()) return false;
-        return true;
-
-    }
-
-    isTargetDiagonal(target: ICell) {
+    
+    public isTargetDiagonal(target: ICell) {
         const absX = Math.abs(target.x - this.x);
         const absY = Math.abs(target.y - this.y);
         return absX === absY;
     }
-
-    isUncheckingMove(target: ICell, board: IBoard) {
-        // run a fake move to check if a king is checked after the move then undo
-        const copyBoard = board.getCopyBoard();
-        copyBoard.states.isCheck = false;
-
-        if (this.canMoveFigure(target, copyBoard)) {
-            return this.isSafeCell(target, copyBoard);
+    
+    public isUncheckingMove(target: ICell, board: IBoard) {
+        // run a fake move to check if a king is checked after the move then undo        
+        
+        if (this.canMoveFigure(target, board)) {
+            return this._validateMove(target, board);
         } else {
             return false
         }
-
+        
+    }
+    
+    private _isEnPassantMove(target: ICell) {
+        if (this.figure?.type !== FigureTypes.PAWN || !target.isEmpty() || !this.isTargetDiagonal(target)) return false;      
+        return true;
     }
 
-    isCastlingMove(target: ICell) {
+
+    public isCastlingMove(target: ICell) {
         if ((this.figure?.type === FigureTypes.KING && target.figure?.type === FigureTypes.ROOK)
             && this.figure.color === target.figure.color) return true;
         return false
     }
 
-    performCastle(target: ICell, board: IBoard) {
+    private _performEnPassant(target: ICell, board: IBoard, options: IMoveOptions) {
+        this._makeMove(target, board, {isEnPassant: true, ...options}); 
+
+        const cellToCapture = board.getCell(target.x, this.y);
+        cellToCapture.prevFigure = cellToCapture.figure;
+        cellToCapture.figure = null;
+    }
+
+    private _performCastle(target: ICell, board: IBoard) {
         (this.figure as IKing).performCastle(target, board);
         (target.figure as IRook).performCastle(board);
     }
 
-    // TODO Add Pop figure logic
-    moveFigure(target: ICell, board: IBoard, isFake: boolean = false, isCastling: boolean = false) {
-        if (this.isCastlingMove(target)) return this.performCastle(target, board);
-        if (!isFake) this.handleAddMove(target, board, isCastling);
+    private _makeMove(target: ICell, board: IBoard, options: IMoveOptions) {
 
-        this.figure!.moveFigure(target, board, isFake);
+        this._handleAddMove(target, board, options);
+
+        this.figure!.moveFigure(target, board, options.isFake);
         target.prevFigure = target.figure;
         target.figure = this.figure;
+        this.prevFigure = this.figure;
         this.figure = null;
     }
 
-    handleAddMove(target: ICell, board: IBoard, isCastling: boolean) {
-        if (target.figure) {
-            board.addMove({ ...this.figure!, x: target.x, y: target.y, figureTaken: { ...target.figure } });
-            board.addLostFigure({ ...target.figure, takenBy: { ...this.figure! } });
-            board.popFigure(target.figure);
-            return;
-        }
-        board.addMove({ ...this.figure!, x: target.x, y: target.y, isCastling: isCastling })
+
+    public moveFigure(target: ICell, board: IBoard, options: IMoveOptions) {
+        if (this.isCastlingMove(target)) return this._performCastle(target, board);
+        if (this._isEnPassantMove(target)) return this._performEnPassant(target,board, options);
+        this._makeMove(target, board, options);
+        if (!options.isFake && options.isPromotion) target.promote(options.figureToPromote!, board);
     }
 
-    handlePromotion(figureToPromote: FigureTypes, board: IBoard) {
+    private _handleAddMove(target: ICell, board: IBoard, options: IMoveOptions) {
+
+        let moveToAdd: IMovedFigure = {
+            from: {
+                x: this.x,
+                y: this.y,
+                pos: this.pos
+            },
+            to: { 
+                x: target.x,
+                y: target.y,
+                pos: target.pos
+             },
+            options,
+            figureMove: getFigureInfo(this.figure!)
+        }
+
+        if (options.isEnPassant) {
+            const pawnToCapture = getFigureInfo(board.getCell(target.x, this.y).figure!);
+            
+            !options.isFake &&  board.addLostFigure({ ...pawnToCapture!, takenBy: getFigureInfo(this.figure!) })           
+
+            moveToAdd = {
+                ...moveToAdd,
+                figureTaken: {...pawnToCapture!}
+            }
+        }
+        if (target.figure && !options.isFake) {
+            board.addMove({ ...moveToAdd, figureTaken: getFigureInfo(target.figure) });
+            board.addLostFigure({ ...target.figure, takenBy: getFigureInfo(this.figure!) });          
+            return;
+        }
+        board.addMove(moveToAdd);
+    }
+
+    public undo() {
+        if (this.figure) this.figure.undo();
+
+        this.figure = this.prevFigure;
+        this.prevFigure = null;
+    }
+
+    public isPromotionMove(target: ICell) {
+        return this.figure?.type === FigureTypes.PAWN && (target.y === 0 || target.y === 7);
+
+    }
+
+    public promote(figureToPromote: FigureTypes, board: IBoard) {
         if (!this.figure) return;
 
         const type = this.figure.color === Colors.WHITE ? figureToPromote.toUpperCase() : figureToPromote;
         board.popFigure(this.figure);
         this.figure = board.createFigure(type, this.x, this.y);
         board.figures.push(this.figure!);
-
     }
 
-    undo() {
-
+    public getCellInfo(): ICellInfo {
+        return {
+            x: this.x,
+            y: this.y,
+            pos: this.pos
+        }
     }
 }

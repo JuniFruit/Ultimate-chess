@@ -23,7 +23,7 @@ export class Rook extends Figure implements IRook {
         this.isFirstMove = isFirstMove;
     }
 
-    getLegalMoves(board: IBoard) {
+    public getLegalMoves(board: IBoard) {
         super.clearMoves()
         super.getLegalMovesHorizontal({ board, numCell: 8 });
         super.getLegalMovesVertical({ board, numCell: 8 });
@@ -32,7 +32,7 @@ export class Rook extends Figure implements IRook {
 
     }
 
-    moveFigure(target: ICell, board: IBoard, isFake: boolean = false): void {
+    public moveFigure(target: ICell, board: IBoard, isFake: boolean = false): void {
         super.moveFigure(target, board, isFake);
 
         if (isFake) return;
@@ -40,7 +40,7 @@ export class Rook extends Figure implements IRook {
         this.isFirstMove = false;
     }
 
-    performCastle(board: IBoard) {
+    public performCastle(board: IBoard) {
         
         const myCell = board.getCell(this.x, this.y);
 
@@ -49,7 +49,7 @@ export class Rook extends Figure implements IRook {
         if (this.x === 7) moveValue = -2;
         const moveToCell = board.getCell(this.x + moveValue, this.y);
 
-        myCell.moveFigure(moveToCell, board, false, true);
+        myCell.moveFigure(moveToCell, board, {isCastling: true, isFake: false});
 
     }
 }

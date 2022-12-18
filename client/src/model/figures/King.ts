@@ -26,43 +26,43 @@ export class King extends Figure implements IKing {
         this.isCastlingAvailable = isCastlingAvailable;
     }
 
-    getLegalMoves(board: IBoard) {
+    public getLegalMoves(board: IBoard) {
         super.clearMoves()
         super.getLegalMovesHorizontal({ board, numCell: 1 });
         super.getLegalMovesVertical({ board, numCell: 1 });
         super.getLegalMovesDiagonal({ board, numCell: 1 });
-        this.legalMoves = this.legalMoves.filter(move => !this.isEnemyKingNear(move, board));
+        this.legalMoves = this.legalMoves.filter(move => !this._isEnemyKingNear(move, board));
         super.filterUncheckingMoves(board);
 
     }
 
-    isEnemyKingNear(target: ILegalMove, board: IBoard) {
+    private _isEnemyKingNear(target: ILegalMove, board: IBoard) {
 
-        if (this.isEnemyKing(board.getCell(target.x + 1, target.y))) return true;
-        if (this.isEnemyKing(board.getCell(target.x - 1, target.y))) return true;
+        if (this._isEnemyKing(board.getCell(target.x + 1, target.y))) return true;
+        if (this._isEnemyKing(board.getCell(target.x - 1, target.y))) return true;
         if (isInBounds(target.x, target.y + 1)) {
-            if (this.isEnemyKing(board.getCell(target.x + 1, target.y + 1))) return true;
-            if (this.isEnemyKing(board.getCell(target.x, target.y + 1))) return true;
-            if (this.isEnemyKing(board.getCell(target.x - 1, target.y + 1))) return true;
+            if (this._isEnemyKing(board.getCell(target.x + 1, target.y + 1))) return true;
+            if (this._isEnemyKing(board.getCell(target.x, target.y + 1))) return true;
+            if (this._isEnemyKing(board.getCell(target.x - 1, target.y + 1))) return true;
         }
         if (isInBounds(target.x, target.y - 1)) {
-            if (this.isEnemyKing(board.getCell(target.x, target.y - 1))) return true;
-            if (this.isEnemyKing(board.getCell(target.x - 1, target.y - 1))) return true;
-            if (this.isEnemyKing(board.getCell(target.x + 1, target.y - 1))) return true;
+            if (this._isEnemyKing(board.getCell(target.x, target.y - 1))) return true;
+            if (this._isEnemyKing(board.getCell(target.x - 1, target.y - 1))) return true;
+            if (this._isEnemyKing(board.getCell(target.x + 1, target.y - 1))) return true;
 
         }
         return false;
 
     }
 
-    isEnemyKing(target: ICell): boolean {
+    private _isEnemyKing(target: ICell): boolean {
 
         if (!target) return false;
 
         return target.figure?.type === FigureTypes.KING && target.figure.color !== this.color;
     }
 
-    moveFigure(target: ICell, board: IBoard, isFake?: boolean) {
+    public moveFigure(target: ICell, board: IBoard, isFake?: boolean) {
         super.moveFigure(target, board, isFake);
 
         if (isFake) return;
@@ -70,7 +70,7 @@ export class King extends Figure implements IKing {
         this.isCastlingAvailable = false;
     }
 
-    canPerformCastle(target: ICell, board: IBoard) {
+    public canPerformCastle(target: ICell, board: IBoard) {
         // check if none of the pieces moved and they are on the same row
         if (!this.isCastlingAvailable || target.figure?.type !== FigureTypes.ROOK) return false;
         if (this.color !== target.figure.color) return false;
@@ -79,25 +79,23 @@ export class King extends Figure implements IKing {
         if (!(target.figure as IRook).isFirstMove) return false;
 
         // check if no pieces between
+        const dir = target.x < this.x ? Direction.NEG : Direction.POS;
 
-        const myCell = board.getCell(this.x, this.y);
-        const dir = target.x < this.x ? -1 : 1;
-
-        for (let i = 1; i < 2; i++) {
+        for (let i = 1; i < 3; i++) {
             if (!board.getCell(this.x + i * dir, this.y).isEmpty() 
-            || myCell.isUnderAttack(board.getCell(this.x + i * dir, this.y), board)) return false;
+            || board.getCell(this.x + i * dir, this.y).isUnderAttack(board)) return false;
         }      
 
         return true;
     }
 
-    performCastle(target: ICell, board: IBoard) {
+    public performCastle(target: ICell, board: IBoard) {
         const myCell = board.getCell(this.x, this.y);
 
         const dir = target.x < this.x ? Direction.NEG : Direction.POS;
         const moveToCell = board.getCell(this.x + 2 * dir, this.y);
         
-        myCell.moveFigure(moveToCell, board, false, true);
+        myCell.moveFigure(moveToCell, board, {isCastling: true, isFake: false});
 
     }
 

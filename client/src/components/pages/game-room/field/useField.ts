@@ -1,6 +1,6 @@
 import { IField } from "./Field.interface"
 import { useEffect, useState, useCallback } from 'react';
-import { ICell } from "../../../../model/Cell";
+import { ICell, IPremove } from "../../../../model/Cell";
 import { IMoveOptions } from "../../../../constants/socketIO/ClientEvents.interface";
 import { FigureTypes } from "../../../../model/figures/figures.interface";
 import { useIOField } from "./useIOField";
@@ -13,8 +13,9 @@ export const useField = ({ board, setBoard, myColor, isObserver }: IUseField) =>
     const [selectedCell, setSelectedCell] = useState<ICell | null>(null);
     const [isPromotion, setIsPromotion] = useState(false);
     const [lastTargetCell, setLastTargetCell] = useState<ICell | null>(null);
-    const [premoves, setPremoves] = useState<ICell[]>([]);
+    const [premoves, setPremoves] = useState<IPremove[]>([]);
     const maxPremoves = 5;
+
     const { handleSendMove } = useIOField({ board, setBoard, isObserver });
 
     const handleSelect = useCallback((cell: ICell) => {
@@ -23,52 +24,51 @@ export const useField = ({ board, setBoard, myColor, isObserver }: IUseField) =>
         if (isObserver) return setSelectedCell(prev => cell);
 
         if (selectedCell) {
-            if (selectedCell !== cell
-                && board.states.currentPlayer === myColor) {
-
-                if (selectedCell.canMoveFigure(cell, board)) {
-                    if (selectedCell.figure?.type === FigureTypes.PAWN && (cell.y === 0 || cell.y === 7)) {
-                        setLastTargetCell(prev => cell);
-                        setIsPromotion(prev => true);
-                        return
-                    }
-                    handleMove(cell);
-                    setSelectedCell(prev => null);
+            if (!selectedCell.figure || selectedCell === cell) return clearSelectedCells();         
+            if (selectedCell !== cell && board.states.currentPlayer === myColor) {
+                if (!selectedCell.isCastlingMove(cell) && cell.figure?.color === myColor) {
+                    setPremoves(prev => [])
+                    setSelectedCell(prev => cell);
                     return;
                 }
-                setPremoves(prev => []);
-                if (cell.figure) return setSelectedCell(prev => cell);
-
-            } else if (selectedCell !== cell && board.states.currentPlayer !== myColor) {
-                if (premoves.length >= maxPremoves) return;             
-                return setPremoves(prev => [...prev, cell]);
+                handleMove(selectedCell, cell);
+                return;
             }
-            setPremoves(prev => []);     
-            return setSelectedCell(prev => null);
-        } else {
+            if (selectedCell !== cell && board.states.currentPlayer !== myColor) {
+                if (premoves.length >= maxPremoves) return clearSelectedCells();
+                return addPremove(cell);
+            }
 
+        } else {
             if (!cell.figure) return;
             setSelectedCell(prev => cell);
-
         }
 
     }, [selectedCell, lastTargetCell, isPromotion, board, isObserver, premoves])
-    
+
+    const addPremove = useCallback((cell: ICell) => {
+        setPremoves(prev => [...prev, {
+            figureType: selectedCell?.figure?.type!,
+            to: cell
+        }])
+    }, [premoves, selectedCell, lastTargetCell])
+
     const handlePremoves = useCallback(() => {
         const premovesCopy = [...premoves];
         const current = premovesCopy.shift();
-        if (!current) return;
-        handleSelect(current);
-        setSelectedCell(prev => current)
+        if (!current || !selectedCell) return;
+        if (current.figureType !== selectedCell.figure?.type) return clearSelectedCells();
+
+        handleMove(selectedCell, current.to);
         setPremoves(prev => [...premovesCopy]);
-        
-    }, [selectedCell, premoves, lastTargetCell, isPromotion])
+
+    }, [selectedCell, premoves, isPromotion, board])
 
     const handlePromotion = useCallback((figureType: FigureTypes) => {
 
         if (!lastTargetCell || !selectedCell || isObserver) return;
 
-        handleMove(lastTargetCell, {
+        handleMove(selectedCell, lastTargetCell, {
             isPromotion: true,
             figureToPromote: figureType
         });
@@ -79,30 +79,33 @@ export const useField = ({ board, setBoard, myColor, isObserver }: IUseField) =>
 
     }, [lastTargetCell, selectedCell])
 
-    const handleMove = useCallback((cell: ICell, options?: IMoveOptions) => {
-        if (!cell || !selectedCell || isObserver) return;
+    const clearSelectedCells = useCallback(() => {
+        setPremoves(prev => []);
+        setSelectedCell(prev => null)
+    }, [])
+
+    const handleMove = useCallback((from: ICell, to: ICell, options?: IMoveOptions) => {
+        if (!from || !to || isObserver) return;
+
+        if (!from.canMoveFigure(to, board)) {
+            return clearSelectedCells();
+        }
+
+        if (from.isPromotionMove(to) && !isPromotion) {
+            setLastTargetCell(prev => to);
+            setIsPromotion(prev => true);
+            return
+        }
 
         board.incrementMoveCount();
-
-        selectedCell!.moveFigure(cell, board);
-
+        board.moveFigure(from, to, { isFake: false, ...options });
         board.states.isFirstMove = false;
-        if (isPromotion) cell.handlePromotion(options?.figureToPromote!, board);
         board.swapPlayer();
-
-        handleSendMove({
-            targetCell: {
-                x: cell.x,
-                y: cell.y
-            }, currentCell: {
-                x: selectedCell.x,
-                y: selectedCell.y
-            },
-            options
-        });
+        handleSendMove({ from: { ...from.getCellInfo() }, to: { ...to.getCellInfo() }, options })
+        setSelectedCell(to);
 
         setBoard(prev => prev.getCopyBoard())
-        
+
     }, [selectedCell, lastTargetCell, isPromotion, board])
 
     useEffect(() => {

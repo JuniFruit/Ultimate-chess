@@ -13,7 +13,7 @@ export interface IPawn extends IFigure {
     lastMove: number; // on which global move count the move was made
     isEnPassant: boolean
     canEnPassant: (target: ICell, board: IBoard) => boolean;
-    addEnPassantMove: (board: IBoard) => void;
+    
 }
 
 
@@ -35,7 +35,7 @@ export class Pawn extends Figure implements IPawn {
         this.isEnPassant = isEnPassant;
     }
 
-    moveFigure(target: ICell, board: IBoard, isFake?: boolean): void {
+    public moveFigure(target: ICell, board: IBoard, isFake?: boolean): void {
 
         const prevY = this.y;
         super.moveFigure(target, board, isFake);
@@ -47,7 +47,7 @@ export class Pawn extends Figure implements IPawn {
         this.isEnPassant = this.cellsAdvanced === 3;
     }
 
-    getLegalMoves(board: IBoard) {
+    public getLegalMoves(board: IBoard) {
         super.clearMoves()
 
         const direction = this.color === Colors.BLACK ? Direction.POS : Direction.NEG;
@@ -55,12 +55,12 @@ export class Pawn extends Figure implements IPawn {
 
         super.getLegalMovesVertical({ board, direction, numCell: numCells });
         super.getLegalMovesDiagonal({ board, direction, numCell: 1 });
-        // this.addEnPassantMove(board);
+        this._addEnPassantMove(board);
         super.filterUncheckingMoves(board);
 
     }
 
-    addLegalMove(cell: ICell): boolean {    
+    public addLegalMove(cell: ICell): boolean {    
 
         if (cell.isEmpty() && this.x === cell.x) {
             this.legalMoves.push(super.convertToLegalMove(cell))
@@ -72,7 +72,7 @@ export class Pawn extends Figure implements IPawn {
         return true;
     }
 
-    canEnPassant(target: ICell, board: IBoard) {
+    public canEnPassant(target: ICell, board: IBoard) {
         if (!this.isEnPassant) return false;
         if (!target.isEmpty()) return false;
 
@@ -88,7 +88,7 @@ export class Pawn extends Figure implements IPawn {
         return true;
     }
 
-    addEnPassantMove(board: IBoard) {
+    private _addEnPassantMove(board: IBoard) {
 
         const dirY = this.color === Colors.BLACK ? Direction.POS : Direction.NEG;
         if (isInBounds(this.x + 1, this.y + dirY)) {

@@ -2,15 +2,15 @@ import { IBoard } from "../Board";
 import { ICell } from "../Cell";
 import { Colors } from "../colors.enum";
 import { Direction } from "../helper.enum";
-import { isInBounds } from "../helpers";
+import { getFigureInfo, isInBounds } from "../helpers";
 import { Positions } from "../positions";
-import { FigureTypes, IFigure, IFigureBase, IFigureInfo, ILegalMove, ILegalMoveArg, ISpritesObj } from "./figures.interface";
+import { IFigure, IFigureBase, IFigureInfo, ILegalMove, ILegalMoveArg, ISpritesObj } from "./figures.interface";
 
 
 
 export class Figure implements IFigureBase {
     readonly color;
-    sprites;
+    readonly sprites;
     x;
     y;
     prevX;
@@ -33,12 +33,12 @@ export class Figure implements IFigureBase {
         this.pos = `${Positions[x]}${7 - y + 1}`;
     }
 
-    onTake(figure: IFigure) {
+    private onTake(figure: IFigure) {
         this.lastTake = { ...figure };
         this.takes.push({ ...figure });
     }
 
-    moveFigure(target: ICell, board: IBoard, isFake?: boolean) {
+    public moveFigure(target: ICell, board: IBoard, isFake?: boolean) {
         this.prevX = this.x;
         this.prevY = this.y;
 
@@ -46,13 +46,13 @@ export class Figure implements IFigureBase {
         this.y = target.y;
         this.pos = `${Positions[target.x]}${7 - target.y + 1}`;
 
-        if (target.figure) this.onTake(target.figure);
 
         if (isFake) return;
+        if (target.figure) this.onTake(target.figure);
         this.movesCount++;
     }
 
-    filterUncheckingMoves(board: IBoard) {
+    public filterUncheckingMoves(board: IBoard) {
         // if (!board.isCheck) return;
         if (this.color !== board.states.currentPlayer) return;
         this.legalMoves = [...this.legalMoves
@@ -67,7 +67,7 @@ export class Figure implements IFigureBase {
         if direction is not specified, working in both directions 
      */
 
-    getLegalMovesVertical({ board, direction, numCell }: ILegalMoveArg) {
+    public getLegalMovesVertical({ board, direction, numCell }: ILegalMoveArg) {
 
         const dir = direction ? direction : Direction.POS;
         let i = 1;
@@ -81,7 +81,7 @@ export class Figure implements IFigureBase {
 
         if (!direction) this.getLegalMovesVertical({ board, direction: Direction.NEG, numCell });
     }
-    getLegalMovesHorizontal({ board, direction, numCell }: ILegalMoveArg) {
+    public getLegalMovesHorizontal({ board, direction, numCell }: ILegalMoveArg) {
 
         const dir = direction ? direction : Direction.POS;
         let i = 1;
@@ -96,7 +96,7 @@ export class Figure implements IFigureBase {
         if (!direction) this.getLegalMovesHorizontal({ board, direction: Direction.NEG, numCell });
     }
 
-    getLegalMovesDiagonal({ board, direction, numCell }: ILegalMoveArg) {
+    public getLegalMovesDiagonal({ board, direction, numCell }: ILegalMoveArg) {
 
         const dir = direction ? direction : Direction.POS;
 
@@ -122,7 +122,7 @@ export class Figure implements IFigureBase {
     }
 
 
-    addLegalMove(cell: ICell) {
+    public addLegalMove(cell: ICell) {
 
         if (cell.isEmpty()) {
             this.legalMoves.push(this.convertToLegalMove(cell));
@@ -135,21 +135,33 @@ export class Figure implements IFigureBase {
         return true;
     }
 
-    clearMoves() {
+    public clearMoves() {
         this.legalMoves = [];
     }
-    getLegalMoves(board: IBoard) {
+
+    public getLegalMoves(board: IBoard) {
 
     }
 
-    convertToLegalMove(cell: ICell) {
-        const figure = cell.figure ? { ...cell.figure } : null;
-        const prevFigure = cell.prevFigure ? { ...cell.prevFigure } : null;
+    public convertToLegalMove(cell: ICell) {
+        const figure = cell.figure ? getFigureInfo(cell.figure) : null;
+        const prevFigure = cell.prevFigure ? getFigureInfo(cell.prevFigure) : null;
+
         return {
-            ...cell,
+            pos: cell.pos,
+            x: cell.x,
+            y: cell.y,
             figure,
             prevFigure
         }
+    }
+
+    public undo() {
+        this.x = this.prevX;
+        this.y = this.prevY;
+        this.pos = `${Positions[this.prevX]}${7 - this.prevY + 1}`;
+
+
     }
 
 }

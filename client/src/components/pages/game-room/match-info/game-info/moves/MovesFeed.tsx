@@ -21,7 +21,7 @@ export const MovesFeed: FC<IMoveFeed> = ({ moves }) => {
                         moves.map((piece, ind) => (
 
                             <li key={ind}>
-                                <MoveFeedItem {...{piece, listCount: ind + 1}} key={piece.x + piece.y}/>
+                                <MoveFeedItem {...{piece, listCount: ind + 1}} key={piece.to.x + piece.to.y}/>
                             </li>
 
                         ))

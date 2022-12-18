@@ -17,22 +17,22 @@ export class Knight extends Figure {
         this.type = FigureTypes.KNIGHT;
     }
 
-    getLegalMoves(board: IBoard) {
+    public getLegalMoves(board: IBoard) {
         super.clearMoves()
 
-        this.checkMoves(board, 1, 2, Direction.POS, Direction.POS)
-        this.checkMoves(board, 2, 1, Direction.POS, Direction.POS)
-        this.checkMoves(board, 1, 2, Direction.NEG, Direction.NEG)
-        this.checkMoves(board, 2, 1, Direction.NEG, Direction.NEG)
-        this.checkMoves(board, 1, 2, Direction.NEG, Direction.POS)
-        this.checkMoves(board, 1, 2, Direction.POS, Direction.NEG)
-        this.checkMoves(board, 2, 1, Direction.NEG, Direction.POS)
-        this.checkMoves(board, 2, 1, Direction.POS, Direction.NEG)
+        this._checkMoves(board, 1, 2, Direction.POS, Direction.POS)
+        this._checkMoves(board, 2, 1, Direction.POS, Direction.POS)
+        this._checkMoves(board, 1, 2, Direction.NEG, Direction.NEG)
+        this._checkMoves(board, 2, 1, Direction.NEG, Direction.NEG)
+        this._checkMoves(board, 1, 2, Direction.NEG, Direction.POS)
+        this._checkMoves(board, 1, 2, Direction.POS, Direction.NEG)
+        this._checkMoves(board, 2, 1, Direction.NEG, Direction.POS)
+        this._checkMoves(board, 2, 1, Direction.POS, Direction.NEG)
         super.filterUncheckingMoves(board);
 
     }
 
-    checkMoves(board: IBoard, rangeX: number, rangeY: number, dirX: Direction, dirY: Direction) {
+    private _checkMoves(board: IBoard, rangeX: number, rangeY: number, dirX: Direction, dirY: Direction) {
 
         if (isInBounds(this.x - rangeX * dirX, this.y - rangeY * dirY)) {
             let current = board.getCell(this.x - rangeX * dirX, this.y - rangeY * dirY);      

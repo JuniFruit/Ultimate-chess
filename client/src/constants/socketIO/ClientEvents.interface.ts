@@ -1,22 +1,19 @@
-import { Colors } from "../../model/colors.enum";
+import { ICellInfo } from "../../model/Cell";
 import { FigureTypes } from "../../model/figures/figures.interface";
 import { Requests } from "../constants";
 
 export interface IMoveOptions {
+    isFake?: boolean;
     isPromotion?: boolean;
     figureToPromote?: FigureTypes
+    isCastling?: boolean;
+    isEnPassant?:boolean;
 
 }
 
 export interface IMove {
-    currentCell: {
-        x: number,
-        y: number
-    },
-    targetCell: {
-        x: number,
-        y: number
-    },
+    from: ICellInfo;
+    to: ICellInfo;
     options?: IMoveOptions
 }
 

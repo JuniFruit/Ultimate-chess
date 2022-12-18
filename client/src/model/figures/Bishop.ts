@@ -4,7 +4,6 @@ import { Figure } from "./Figures";
 import { FigureTypes, IFigure, ISpritesObj } from "./figures.interface";
 
 
-//TODO add dynamic moving capacity
 
 export class Bishop extends Figure {
     readonly sprite;
@@ -18,7 +17,7 @@ export class Bishop extends Figure {
         this.type = FigureTypes.BISHOP;
     }    
 
-    getLegalMoves(board:IBoard) {
+    public getLegalMoves(board:IBoard) {
         super.clearMoves();
         super.getLegalMovesDiagonal({board, numCell: 8});
         super.filterUncheckingMoves(board);

@@ -51,7 +51,7 @@ export const Cell: FC<ICellComponent> = memo((
                 onDragOver={handleDragOver}
                 onDragLeave={() => setIsDraggedOver(false)}
                 onDrop={(e) => { onSelect(cell); setIsDraggedOver(false) }}
-                onDragEnd={(e) => { onSelect(cell) }}
+                // onDragEnd={(e) => { onSelect(cell) }}
             >
 
                 {checkIsAvailable() && <div className={styles.available_dot}></div>}
@@ -66,11 +66,11 @@ export const Cell: FC<ICellComponent> = memo((
                     key={`${figure.sprite} ${figure.x + figure.y}`}
                     isDraggedOver={isDraggedOver}
                     onClick={() => onSelect(cell)}                  
-                    onDragStart={(e) => { console.log(); onSelect(cell) }}
+                    onDragStart={(e) => { if (!isSelected) {onSelect(cell)}; }}
                     onDragEnter={handleDragOver}
                     onDragOver={handleDragOver}
                     onDragLeave={() => setIsDraggedOver(false)}
-                    onDragEnd={(e) => { onSelect(cell) }}
+                    // onDragEnd={(e) => { onSelect(cell) }}
                     onDrop={(e) => { onSelect(cell); setIsDraggedOver(false) }}
                     ref={pieceRef}
                     draggable

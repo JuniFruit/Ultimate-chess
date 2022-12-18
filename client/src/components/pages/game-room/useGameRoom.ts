@@ -6,7 +6,6 @@ import { useSocketConnect } from "../../../hooks/useSocketConnect";
 import { Board, IBoard } from "../../../model/Board";
 import { Colors } from "../../../model/colors.enum";
 import { ISpritesObj } from "../../../model/figures/figures.interface";
-import { FENs, GameOver, Results } from "../../../model/helper.enum";
 import { assignSpritePack } from "../../../utils/game.utils";
 import { IPlayerInfo } from "../../ui/player/PlayerInfo.interface";
 

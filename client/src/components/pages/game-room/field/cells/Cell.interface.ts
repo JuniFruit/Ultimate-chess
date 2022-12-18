@@ -1,6 +1,6 @@
-import { ICell } from "../../../../../model/Cell";
+import { ICell, IPremove } from "../../../../../model/Cell";
 import { Colors } from "../../../../../model/colors.enum";
-import { IFigure } from "../../../../../model/figures/figures.interface";
+import { IFigure, IMovedFigure } from "../../../../../model/figures/figures.interface";
 
 export interface ICellComponent {
     color: Colors;
@@ -17,5 +17,5 @@ export interface ICellComponent {
 export interface ICellWrapper extends Pick<ICellComponent, "onSelect" | "selected" > {
     cells: ICell[][];
     isFlipped: boolean;
-    premoves: ICell[];
+    premoves: IPremove[];
 }

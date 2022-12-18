@@ -27,7 +27,7 @@ export const CellsWrapper: FC<ICellWrapper> = ({ cells, onSelect, isFlipped, sel
                                 onSelect={onSelect}
                                 selected={selected}
                                 key={cell.x + cell.y}
-                                isPremoved={premoves.some(move => move === current)}                            
+                                isPremoved={premoves.some(move => move.to.x === current.x && move.to.y === current.y)}                            
                             />
 
                         )

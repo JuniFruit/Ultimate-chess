@@ -1,9 +1,9 @@
-import { IMove } from "../constants/socketIO/ClientEvents.interface";
-import { Cell } from "./Cell";
+import { IMove, IMoveOptions } from "../constants/socketIO/ClientEvents.interface";
+import { Cell, ICellInfo } from "./Cell";
 import { ICell } from "./Cell"
 import { Colors } from "./colors.enum";
 import { Bishop } from "./figures/Bishop";
-import { FigureTypes, IFigure, ILostFigure, IMovedFigure, ISpritesObj } from "./figures/figures.interface";
+import { FigureTypes, IFigure, IFigureInfo, ILostFigure, IMovedFigure, ISpritesObj } from "./figures/figures.interface";
 import { King } from "./figures/King";
 import { Knight } from "./figures/Knight";
 import { Pawn } from "./figures/Pawn";
@@ -19,9 +19,7 @@ export interface IBoard {
     receiveMove: (move: IMove) => void;
     getCell: (x: number, y: number) => ICell;
     getCopyBoard: () => IBoard;
-    getFigures: () => void;
     isKingChecked: () => boolean;
-    isStalemate: () => boolean;
     isSufficientMaterial: (player: Colors) => boolean;
     isDraw: () => boolean;
     isCheckMate: () => boolean;
@@ -34,7 +32,9 @@ export interface IBoard {
     addMove: (movedFigure: IMovedFigure) => void;
     popFigure: (figure: IFigure) => void
     convertToFEN: () => string;
+    undo: () => void;
     incrementMoveCount: () => void;
+    moveFigure: (from: ICell, to: ICell, options: IMoveOptions) => void;
 }
 
 export interface IBoardStates {
@@ -67,27 +67,27 @@ export class Board implements IBoard {
         isFirstMove: true,
         globalMovesCount: 0,
         whiteTime: 300,
-        blackTime: 300,         
+        blackTime: 300,
 
-    }   
+    }
 
     constructor(whiteTeamSprites?: ISpritesObj, blackTeamSprites?: ISpritesObj) {
         this.states.whiteTeamSprites = whiteTeamSprites;
         this.states.blackTeamSprites = blackTeamSprites;
     }
 
-    startNewGame(fen: string) {
-        this.initCells(fen);
-        this.getFigures();
+    public startNewGame(fen: string) {
+        this._initCells(fen);
+        this._getFigures();
     }
 
-    getCell(x: number, y: number) {
+    public getCell(x: number, y: number) {
         return this.cells[y][x];
     }
-    swapPlayer() {
+    public swapPlayer() {
         this.states.currentPlayer = this.states.currentPlayer === Colors.WHITE ? Colors.BLACK : Colors.WHITE;
     }
-    getFigures() {
+    private _getFigures() {
         this.cells.forEach(row => row.forEach(cell => {
             if (cell.figure) {
                 this.figures.push(cell.figure);
@@ -95,22 +95,22 @@ export class Board implements IBoard {
         }))
     }
 
-    getCopyBoard() {
+    public getCopyBoard() {
         const newBoard = new Board();
         newBoard.cells = this.cells;
-        newBoard.figures = this.figures;      
+        newBoard.figures = this.figures;
         newBoard.states = this.states;
         newBoard.states.blackTeamSprites = this.states.blackTeamSprites;
         newBoard.states.whiteTeamSprites = this.states.whiteTeamSprites;
         return newBoard;
     }
 
-    updateAllLegalMoves() {
+    public updateAllLegalMoves() {
         this.figures.forEach(figure => figure.getLegalMoves(this));
 
     }
 
-    updateEnemyLegalMoves() {
+    public updateEnemyLegalMoves() {
         this.figures.forEach(figure => {
             if (figure.color !== this.states.currentPlayer)
                 figure.getLegalMoves(this)
@@ -119,7 +119,7 @@ export class Board implements IBoard {
     }
 
 
-    isKingChecked() {
+    public isKingChecked() {
         this.states.isCheck = this.cells.some(rows => {
             return rows.some(cell => {
                 return cell.figure?.legalMoves.some(move => move.figure?.type === FigureTypes.KING && move.figure.color !== cell.figure?.color)
@@ -129,19 +129,19 @@ export class Board implements IBoard {
         return this.states.isCheck;
     }
 
-    isCheckMate() {
+    public isCheckMate() {
         return !this.figures.some(figure => figure.color === this.states.currentPlayer && figure.legalMoves.length);
 
     }
 
-    isStalemate() {
+    private _isStalemate() {
         if (this.states.isCheck) return false;
         return !this.figures.some(figure => {
             return figure.color === this.states.currentPlayer && figure.legalMoves.length
         })
     }
 
-    isSufficientMaterial(player: Colors) {
+    public isSufficientMaterial(player: Colors) {
         const playerMaterial = this.figures.filter(figure => figure.color === player);
         if (playerMaterial.length === 1 && playerMaterial.every(figure => figure.type === FigureTypes.KING)) return false;
         if (playerMaterial.length === 2
@@ -155,51 +155,37 @@ export class Board implements IBoard {
 
 
 
-    isDraw() {
+    public isDraw() {
         if (this.figures.length > 5) return false;
-        if (this.isStalemate()) return true
+        if (this._isStalemate()) return true
         if (!this.isSufficientMaterial(this.states.currentPlayer)
             && !this.isSufficientMaterial(this.states.currentPlayer === Colors.WHITE ? Colors.BLACK : Colors.WHITE)) return true;
         return false;
     }
 
-    addMove(movedFigure: IMovedFigure) {
+    public addMove(movedFigure: IMovedFigure) {
 
-        // this.states.moves.push({
-        //     type: movedFigure.type,
-        //     color: movedFigure.color,
-        //     x: movedFigure.x,
-        //     y: movedFigure.y,
-        //     sprite: movedFigure.sprite,
-        //     isCastling: movedFigure.isCastling,
-        //     figureTaken: movedFigure.figureTaken
-
-        // });
+        this.states.moves.push(movedFigure);
     }
 
-    addLostFigure(figure: ILostFigure) {
-        // this.popFigure(figure);
-        this.states.lostFigures.push({
-            color: figure.color,
-            type: figure.type,
-            sprite: figure.sprite,
-            takenBy: figure.takenBy
-        });
+    public addLostFigure(figure: ILostFigure) {
+        this.popFigure(figure);
+        this.states.lostFigures.push(figure);
     }
 
-    popFigure(figure: IFigure) {
-        const ind = this.figures.findIndex(piece => piece === figure);
+    public popFigure(figure: IFigure | IFigureInfo) {
+        const ind = this.figures.findIndex(piece => piece.pos === figure.pos);
         this.figures.splice(ind, 1);
     }
 
-    clearBoard() {
+    public clearBoard() {
         this.cells = [];
         this.figures = [];
         this.states.isCheck = false;
     }
 
 
-    initCells(fen: string) {
+    private _initCells(fen: string) {
 
         const splited = fen.split(' ');
         const [positions, currentPlayer, castleRules, enPassant] = splited;
@@ -241,34 +227,34 @@ export class Board implements IBoard {
 
     }
 
-    createFigure(char: string, x: number, y: number) {
+    public createFigure(char: string, x: number, y: number) {
 
         const type = char.toLowerCase()
         const isBlack = char === char.toLowerCase();
 
         switch (type) {
             case FigureTypes.BISHOP:
-                return new Bishop(x, y, 
+                return new Bishop(x, y,
                     isBlack ? Colors.BLACK : Colors.WHITE, isBlack ? this.states.blackTeamSprites : this.states.whiteTeamSprites)
 
             case FigureTypes.KING:
-                return new King(x, y, 
+                return new King(x, y,
                     isBlack ? Colors.BLACK : Colors.WHITE, isBlack ? this.states.blackTeamSprites : this.states.whiteTeamSprites);
 
             case FigureTypes.PAWN:
-                return new Pawn(x, y, 
+                return new Pawn(x, y,
                     isBlack ? Colors.BLACK : Colors.WHITE, isBlack ? this.states.blackTeamSprites : this.states.whiteTeamSprites);
 
             case FigureTypes.KNIGHT:
-                return new Knight(x, y, 
+                return new Knight(x, y,
                     isBlack ? Colors.BLACK : Colors.WHITE, isBlack ? this.states.blackTeamSprites : this.states.whiteTeamSprites);
 
             case FigureTypes.QUEEN:
-                return new Queen(x, y, 
+                return new Queen(x, y,
                     isBlack ? Colors.BLACK : Colors.WHITE, isBlack ? this.states.blackTeamSprites : this.states.whiteTeamSprites);
 
             case FigureTypes.ROOK:
-                return new Rook(x, y, 
+                return new Rook(x, y,
                     isBlack ? Colors.BLACK : Colors.WHITE, isBlack ? this.states.blackTeamSprites : this.states.whiteTeamSprites);
             default:
                 return null;
@@ -276,7 +262,13 @@ export class Board implements IBoard {
 
     }
 
-    convertToFEN() {
+    public moveFigure (from: ICell, to: ICell, options: IMoveOptions) {
+        // const start = this.getCell(from.x, from.y);
+        // const target = this.getCell(to.x, to.y);
+        from.moveFigure(to, this, options);
+    } 
+
+    public convertToFEN() {
 
         const FEN = [];
         for (let i = 0; i < this.cells.length; i++) {
@@ -305,22 +297,33 @@ export class Board implements IBoard {
 
 
 
-    receiveMove({ currentCell, targetCell, options }: IMove) {
-        const start = this.getCell(currentCell.x, currentCell.y);
-        const target = this.getCell(targetCell.x, targetCell.y);
-
+    public receiveMove({ from, to, options }: IMove) {
+        const start = this.getCell(from.x, from.y);
+        const target = this.getCell(to.x, to.y);
+       
         if (!start || !target) return;
         this.incrementMoveCount(); // it's important to update move count before moving figure 
 
-        start.moveFigure(target, this);    
+        start.moveFigure(target, this, { isFake: false, ...options });
 
-        if (options?.isPromotion) {          
-            target.handlePromotion(options.figureToPromote!, this)
+    }
+
+    public undo() {
+        const lastMove = this.states.moves.pop();
+        if (!lastMove) return;
+        const currentCell = this.getCell(lastMove.to.x, lastMove.to.y);
+        const initialCell = this.getCell(lastMove.from.x, lastMove.from.y);
+        currentCell.undo();
+        initialCell.undo();
+
+        if (lastMove.options.isEnPassant) {       
+            const takenCell = this.getCell(lastMove.figureTaken?.x!, lastMove.figureTaken?.y!);       
+            takenCell.undo();
         }
     }
 
-    incrementMoveCount()  {
-        this.states.globalMovesCount ++;
+    public incrementMoveCount() {
+        this.states.globalMovesCount++;
     }
 
 }

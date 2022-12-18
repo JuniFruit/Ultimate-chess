@@ -13,6 +13,7 @@ import { Colors } from "../../../model/colors.enum";
 import { Requests } from "../../../constants/constants";
 import { ConfirmModal } from "./modals/ConfirmModal";
 import { TimerHandler } from "./utils/TimerHandler/TimerHandler";
+import { Announcer } from "./announcer/Announcer";
 
 
 const GameRoom: FC = () => {
@@ -69,7 +70,10 @@ const GameRoom: FC = () => {
                     states={field.board.states}
                     isObserver={status.isObserver}
                 />
-
+                <Announcer 
+                    {...{players: {client: {...data.clientUser!},opponent: {...data.enemyUser!}}, 
+                    states: {...field.board.states}, myColor: status.myColor}}
+                />
             </div>
             <ErrorModal />
             <GameOverModal

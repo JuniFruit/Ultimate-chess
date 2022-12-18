@@ -4,6 +4,10 @@ import gameOver from './gameOver1.png';
 import gameOverKing from './winner-king.png';
 import chessLogo from './chess-logo.png';
 import handMove from './hand-moving-pawn.png';
+import promotion from './promotion.png';
+import timer from './timer.png';
+import book from './book.png';
+import enPassant from './enPassant.png';
 
 
 export const iconsGeneral = {
@@ -12,5 +16,9 @@ export const iconsGeneral = {
     gameOver,
     gameOverKing,
     chessLogo,
-    handMove
+    handMove,
+    promotion,
+    timer,
+    book,
+    enPassant
 }

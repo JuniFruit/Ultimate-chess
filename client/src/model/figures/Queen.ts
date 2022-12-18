@@ -15,7 +15,7 @@ export class Queen extends Figure {
         this.type = FigureTypes.QUEEN;
     }
 
-    getLegalMoves(board: IBoard) {
+    public getLegalMoves(board: IBoard) {
         super.clearMoves()
 
         super.getLegalMovesDiagonal({ board, numCell: 8 });

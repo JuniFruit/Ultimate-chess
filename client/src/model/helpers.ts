@@ -1,5 +1,5 @@
 import { Colors } from "./colors.enum";
-import { IFigure } from "./figures/figures.interface";
+import { IFigure, IFigureInfo } from "./figures/figures.interface";
 
 export const flipFEN = (FEN:string):string => {    
     
@@ -50,3 +50,14 @@ export const flipFEN = (FEN:string):string => {
       figure.color === Colors.BLACK ? char = char.toLowerCase() : char = char.toUpperCase();
       return char;
   }
+
+  export const getFigureInfo = (figure: IFigure): IFigureInfo => {
+    return {
+        x: figure.x,
+        y: figure.y,
+        sprite: figure.sprite,
+        pos: figure.pos,
+        color: figure.color,
+        type: figure.type
+    }
+}

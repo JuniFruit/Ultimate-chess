@@ -10,7 +10,7 @@ export const assignSpritePack = (userColor: Colors, user: IPlayerInfo, opponent:
     return user?.packInUse ? user?.packInUse : SPRITES;
 }
 
-export const getDefaultSprite = (figure: {type: FigureTypes, color: Colors}) => {
+export const getDefaultSprite = (figure: { type: FigureTypes, color: Colors }) => {
     const type = figure.color === Colors.BLACK ? figure.type : figure.type.toUpperCase();
 
     switch (type) {
@@ -41,3 +41,5 @@ export const getDefaultSprite = (figure: {type: FigureTypes, color: Colors}) => 
     }
 
 }
+
+

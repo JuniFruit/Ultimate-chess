@@ -22,7 +22,7 @@ export const RoomService = {
 
         const sockets = await ioServer.in(roomId).fetchSockets()
         const roomInfo = roomApi(roomId).getRoomInfo();
-
+        
         if (sockets.length === 2 && !roomInfo.isGameStarted) {
 
             if (sockets[0].data.user?.username === sockets[1].data.user?.username) {
@@ -95,7 +95,8 @@ export const RoomService = {
         const games: IGameRoomShortData[] = [];
 
         for (let [room, players] of rooms) {
-            if (room.includes('_1min') || room.includes('_10min') || room.includes('_3min')) {
+            if (room.includes('_obs')) continue;
+            if (room.includes('_1min') || room.includes('_10min') || room.includes('_3min') || room.includes('_5min')) {
                 const players = roomApi(room).getRoomInfo().players;
                 if (!players) continue;
                 games.push({ room, players });

@@ -113,6 +113,7 @@ export const serverListener = (socket: Socket<IClientEvents, IServerEvents>, ioS
 
     socket.on("currentGames", () => {
         try {
+            
             socket.emit("currentGames", RoomService.getCurrentGames(ioServer.of('/').adapter.rooms))
 
         } catch (error) {

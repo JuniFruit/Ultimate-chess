@@ -303,7 +303,6 @@ export class Board implements IBoard {
        
         if (!start || !target) return;
         this.incrementMoveCount(); // it's important to update move count before moving figure 
-
         start.moveFigure(target, this, { isFake: false, ...options });
 
     }

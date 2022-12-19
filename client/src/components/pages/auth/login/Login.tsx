@@ -7,7 +7,6 @@ import RegisterForm from '../../../ui/profile-form/ProfileForm'
 import styles from '../register/Register.module.scss';
 import { useAuth } from "../../../../hooks/useAuth";
 import { Link, useNavigate } from "react-router-dom";
-import { Button } from "../../../ui/button/Button";
 
 const Login: FC = () => {
 

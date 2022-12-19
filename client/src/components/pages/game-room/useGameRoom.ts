@@ -25,7 +25,6 @@ export const useGameRoom = (id?: string) => {
     const handleUpdateGame = useCallback((payload: IGameData) => {
         if (!payload) return; // payload with info about the client and the board
         clearStates();
-        console.log(payload);
         setIsReadyToStart(true);
         setEnemyUser(prev => payload.playerTwo!);
         setClientUser(prev => payload.playerOne);
@@ -82,6 +81,7 @@ export const useGameRoom = (id?: string) => {
     }, [isObserver])
 
     useEffect(() => {
+        
         if (!isConnected || !id) return;
         ioClient.emit("joinGameRoom", id!)
 

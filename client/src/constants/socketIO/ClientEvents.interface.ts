@@ -8,6 +8,7 @@ export interface IMoveOptions {
     figureToPromote?: FigureTypes
     isCastling?: boolean;
     isEnPassant?:boolean;
+    isTake?:boolean;
 
 }
 

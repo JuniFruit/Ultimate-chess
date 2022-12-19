@@ -6,7 +6,7 @@ import { FigureTypes, IFigure, ISpritesObj } from "./figures.interface";
 
 export interface IRook extends IFigure {
     isFirstMove?: boolean;
-    performCastle: (board: IBoard) => void;
+    getCastleTarget: (board: IBoard) => ICell;
 }
 
 
@@ -40,16 +40,14 @@ export class Rook extends Figure implements IRook {
         this.isFirstMove = false;
     }
 
-    public performCastle(board: IBoard) {
-        
-        const myCell = board.getCell(this.x, this.y);
+    public getCastleTarget(board: IBoard) {
 
         let moveValue = 0;
         if (this.x === 0) moveValue = 3;
         if (this.x === 7) moveValue = -2;
         const moveToCell = board.getCell(this.x + moveValue, this.y);
 
-        myCell.moveFigure(moveToCell, board, {isCastling: true, isFake: false});
+        return moveToCell
 
     }
 }

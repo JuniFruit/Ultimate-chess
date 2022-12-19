@@ -18,10 +18,14 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"    
+    "jsx": "react-jsx"
   },
   "include": [
-    "**/*.ts","**/*.tsx"
-, "src/setupProxy.js", "**/*.test.ts" ],
-  "exclude": ["node_modules"]
+    "**/*.ts",
+    "**/*.tsx",   
+    "src/setupProxy.js",
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

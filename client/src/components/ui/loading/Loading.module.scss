@@ -1,0 +1,12 @@
+
+
+.spinner_wrapper {
+    @apply absolute top-1/2 left-1/2;
+    transform: translate(-50%, -50%);
+
+    .spinner {
+        @apply w-20 h-20 rounded-full bg-transparent animate-spin;
+        border: .5rem solid var(--main-700);
+        border-top-color: var(--complimentary); 
+    }
+}

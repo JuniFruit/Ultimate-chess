@@ -24,7 +24,7 @@ export const useField = ({ board, setBoard, myColor, isObserver }: IUseField) =>
         if (isObserver) return setSelectedCell(prev => cell);
 
         if (selectedCell) {
-            if (!selectedCell.figure || selectedCell === cell) return clearSelectedCells();         
+            if (!selectedCell.figure || selectedCell === cell) return clearSelectedCells();
             if (selectedCell !== cell && board.states.currentPlayer === myColor) {
                 if (!selectedCell.isCastlingMove(cell) && cell.figure?.color === myColor) {
                     setPremoves(prev => [])
@@ -97,11 +97,18 @@ export const useField = ({ board, setBoard, myColor, isObserver }: IUseField) =>
             return
         }
 
+        const moveOptions = {
+            ...options,
+            isTake: to.figure !== null,
+            isCastling: from.isCastlingMove(to),         
+        }
+
         board.incrementMoveCount();
-        board.moveFigure(from, to, { isFake: false, ...options });
+        board.moveFigure(from, to, moveOptions);
+
         board.states.isFirstMove = false;
         board.swapPlayer();
-        handleSendMove({ from: { ...from.getCellInfo() }, to: { ...to.getCellInfo() }, options })
+        handleSendMove({ from: { ...from.getCellInfo() }, to: { ...to.getCellInfo() }, options: {...moveOptions}})
         setSelectedCell(to);
 
         setBoard(prev => prev.getCopyBoard())

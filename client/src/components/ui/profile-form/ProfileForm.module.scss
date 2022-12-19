@@ -1,33 +1,21 @@
-.wrapper {
-    @apply flex flex-col items-center mt-5 bg-main-900 rounded-2xl py-2 px-3 shadow-md w-full;
 
 
-    >h1 {
-        @apply text-base text-white my-5 text-center;
-        font-weight: 600;
+.form_box {
+    @apply rounded-lg;
+    width: 100%;
+
+    >div {
+         @apply mt-4;
     }
-
-    .form_box {
-        @apply rounded-lg;
-        width: 100%;
-
-        >div {
-            @apply mt-4;
-        }
-        .buttons {
-            @apply flex justify-center items-center gap-2 mt-7 mb-2;
-        }
-
-        @screen md {
-            width: 70%;
-        }
+    .buttons {
+        @apply flex justify-center items-center gap-2 mt-7 mb-2;
     }
 
     @screen md {
-        @apply px-8
+         width: 70%;
     }
-    
 }
+
 
 .avatar_field {
     @apply flex  flex-col gap-2 items-center;

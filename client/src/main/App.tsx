@@ -10,6 +10,7 @@ import AdminHome from '../components/pages/admin/home/AdminHome';
 import AdminPacks from '../components/pages/admin/packs/AdminPacks';
 import AdminPlayers from '../components/pages/admin/players/AdminPlayers';
 import PackEdit from '../components/pages/admin/packs/edit-pack/PackEdit';
+import WatchPage from '../components/pages/watch/WatchPage';
 
 const App: FC = () => {
 
@@ -30,6 +31,7 @@ const App: FC = () => {
           <Route path='players' element={<AdminPlayers />} />
           <Route path='packs/edit/:id' element={<PackEdit />} />
         </Route>
+        <Route path='/watch' element={<WatchPage />} />
       </Routes>
     </>
   )

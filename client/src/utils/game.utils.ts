@@ -1,7 +1,7 @@
 import { SPRITES } from "../assets/Packs/Default/sprites";
 import { IPlayerInfo } from "../components/ui/player/PlayerInfo.interface";
 import { Colors } from "../model/colors.enum";
-import { FigureTypes } from "../model/figures/figures.interface";
+import { FigureTypes, ILostFigure } from "../model/figures/figures.interface";
 
 
 export const assignSpritePack = (userColor: Colors, user: IPlayerInfo, opponent: IPlayerInfo) => {
@@ -43,3 +43,9 @@ export const getDefaultSprite = (figure: { type: FigureTypes, color: Colors }) =
 }
 
 
+export const getFilteredLostFigures = (lostFigures: ILostFigure[]) => {
+    const whiteMaterial = lostFigures.filter(figure => figure.color === Colors.WHITE);
+    const blackMaterial = lostFigures.filter(figure => figure.color === Colors.BLACK);
+
+    return [whiteMaterial, blackMaterial]
+}

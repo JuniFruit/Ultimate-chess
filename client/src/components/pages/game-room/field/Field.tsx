@@ -1,4 +1,4 @@
-import { FC, useRef } from 'react';
+import { FC } from 'react';
 import { Colors } from '../../../../model/colors.enum';
 import PromotionWindow from '../../../ui/piece/promotion/PromotionWindow';
 import { CellsWrapper } from './cells/CellsWrapper';

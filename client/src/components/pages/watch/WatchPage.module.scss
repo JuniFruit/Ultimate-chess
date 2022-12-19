@@ -1,0 +1,54 @@
+
+.page_wrapper {
+   @apply w-full h-full;
+
+    >div:first-child {
+        @apply rounded-3xl;           
+    }
+
+    .rooms_wrapper {
+      @apply flex flex-col gap-3 w-full relative overflow-y-scroll;
+      min-height: 20rem;
+        max-height: 40rem;
+      
+      scrollbar-width: 0;
+
+        .room_item_wrapper {
+            @apply rounded-lg p-2 flex items-center cursor-pointer gap-3 bg-transparent transition-all duration-100;
+            -webkit-box-shadow: 0 3px 7px rgba(255, 255, 255, 0.2) inset, 0 -4px 7px rgba(255, 255, 255, 0.2) inset;
+            -moz-box-shadow: 0 3px 7px rgba(255, 255, 255, 0.2) inset, 0 -4px 7px rgba(255, 255, 255, 0.2) inset;
+            box-shadow: 0 3px 7px rgba(255, 255, 255, 0.2) inset, 0 -4px 7px rgba(255, 255, 255, 0.2) inset;
+
+            >div:first-child {
+                @apply w-7 h-7;
+            }
+
+            .room_players {
+                @apply flex gap-3 items-center mx-auto;
+
+                >h3 {
+                    @apply text-main-200 opacity-80;
+                    font-size: 1rem;
+                    font-weight: 400;
+                }
+
+                span {
+                    @apply text-main-200;
+                    font-weight: 600;
+                }
+            }
+            &:hover,
+            &:focus {
+                @apply bg-main-800;
+            }
+        }
+        
+        .not_found {
+            @apply text-main-200 text-base text-center opacity-70 mt-10;
+        }
+
+        &::-webkit-scrollbar {
+            width: 0px;
+        }
+    }
+}

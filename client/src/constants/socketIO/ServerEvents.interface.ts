@@ -32,7 +32,7 @@ export interface IResultPayload {
 
 export interface IGameRoomShortData {
     room: string;
-    players: IPlayer[];
+    players: IPlayer[]; 
 }
 
 export interface IMessagePayload extends IMessage {

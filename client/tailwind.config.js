@@ -120,6 +120,14 @@ module.exports = {
             transform: 'scale(1)',
             opacity: '1'
           }
+        },
+        spin: {
+          "0%": {
+            transform: 'rotate(0deg)'
+          },
+          "100%": {
+            transform: 'rotate(360deg)'
+          }
         }
 
 
@@ -148,7 +156,8 @@ module.exports = {
         slideInLeft: 'slideInLeft .35s ease',
         slideInRight: 'slideInRight .35s ease',
         slideInTop: 'slideInTop .35s ease',
-        scaleDown: 'scaleDown .15s ease' 
+        scaleDown: 'scaleDown .15s ease',
+        spin: 'spin  .5s cubic-bezier(0, 0, 0, 0) infinite'
 
       }
     },

@@ -27,3 +27,9 @@ export enum GameOverReasons {
     CHECKMATE = 'checkmate',
     RESIGN = 'resign'
 }
+
+export enum KillThreshold {
+    SPREE = 3,
+    DOMINATING = 6,
+    UNSTOPPABLE = 9,
+}

@@ -1,0 +1,15 @@
+.wrapper {
+    @apply flex flex-col items-center mt-5 bg-main-900 mx-auto rounded-2xl py-2 px-3 shadow w-8/12 animate-scaleIn duration-75;
+    min-height: 20rem;
+    
+
+    >h1 {
+        @apply text-base text-main-200 my-5 text-center;
+        font-weight: 600;
+    }   
+
+    @screen md {
+        @apply px-8
+    }
+    
+}

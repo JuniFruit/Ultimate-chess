@@ -2,9 +2,9 @@
 
 export enum Announces {
     // ...username goes first
-    FIRST_BLOOD = "drew first blood",
+    FIRST_BLOOD = "took first piece",
     SPREE = "got killing spree",
-    MEGA_KILL = "got mega kill",
+    UNSTOPPABLE = "is unstoppable",
     DOMINATING = 'is dominating',
     PROMOTION = 'promoted their pawn',
     

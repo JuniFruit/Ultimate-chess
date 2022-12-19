@@ -30,7 +30,7 @@ export interface ICell {
     undo: () => void;
 }
 
-export interface ICellInfo extends Pick<ICell, "pos" | "x" | 'y'>{};
+export interface ICellInfo extends Pick<ICell, "pos" | "x" | 'y'> { };
 
 export interface IPremove {
     figureType: FigureTypes;
@@ -75,7 +75,7 @@ export class Cell implements ICell {
     }
 
     public isUnderAttack(board: IBoard) {
-        console.log({isAttack: this});
+        console.log({ isAttack: this });
         return board.figures.some(figure => {
             return figure.legalMoves.some(move => move.pos === this.pos && figure.color !== board.states.currentPlayer);
         })
@@ -97,26 +97,26 @@ export class Cell implements ICell {
         return !!move;
     }
 
-    
+
     public isTargetDiagonal(target: ICell) {
         const absX = Math.abs(target.x - this.x);
         const absY = Math.abs(target.y - this.y);
         return absX === absY;
     }
-    
+
     public isUncheckingMove(target: ICell, board: IBoard) {
         // run a fake move to check if a king is checked after the move then undo        
-        
+
         if (this.canMoveFigure(target, board)) {
             return this._validateMove(target, board);
         } else {
             return false
         }
-        
+
     }
-    
+
     private _isEnPassantMove(target: ICell) {
-        if (this.figure?.type !== FigureTypes.PAWN || !target.isEmpty() || !this.isTargetDiagonal(target)) return false;      
+        if (this.figure?.type !== FigureTypes.PAWN || !target.isEmpty() || !this.isTargetDiagonal(target)) return false;
         return true;
     }
 
@@ -128,16 +128,16 @@ export class Cell implements ICell {
     }
 
     private _performEnPassant(target: ICell, board: IBoard, options: IMoveOptions) {
-        this._makeMove(target, board, {isEnPassant: true, ...options}); 
+        this._makeMove(target, board, { isEnPassant: true, ...options });
 
         const cellToCapture = board.getCell(target.x, this.y);
         cellToCapture.prevFigure = cellToCapture.figure;
         cellToCapture.figure = null;
     }
 
-    private _performCastle(target: ICell, board: IBoard) {
-        (this.figure as IKing).performCastle(target, board);
-        (target.figure as IRook).performCastle(board);
+    private _performCastle(target: ICell, board: IBoard, options: IMoveOptions) {
+        this._makeMove((this.figure as IKing).getCastleTarget(target, board), board, options);
+        target.moveFigure((target.figure as IRook).getCastleTarget(board), board, options);
     }
 
     private _makeMove(target: ICell, board: IBoard, options: IMoveOptions) {
@@ -153,8 +153,8 @@ export class Cell implements ICell {
 
 
     public moveFigure(target: ICell, board: IBoard, options: IMoveOptions) {
-        if (this.isCastlingMove(target)) return this._performCastle(target, board);
-        if (this._isEnPassantMove(target)) return this._performEnPassant(target,board, options);
+        if (this.isCastlingMove(target)) return this._performCastle(target, board, options);
+        if (this._isEnPassantMove(target)) return this._performEnPassant(target, board, options);
         this._makeMove(target, board, options);
         if (!options.isFake && options.isPromotion) target.promote(options.figureToPromote!, board);
     }
@@ -167,28 +167,28 @@ export class Cell implements ICell {
                 y: this.y,
                 pos: this.pos
             },
-            to: { 
+            to: {
                 x: target.x,
                 y: target.y,
                 pos: target.pos
-             },
+            },
             options,
             figureMove: getFigureInfo(this.figure!)
         }
 
         if (options.isEnPassant) {
             const pawnToCapture = getFigureInfo(board.getCell(target.x, this.y).figure!);
-            
-            !options.isFake &&  board.addLostFigure({ ...pawnToCapture!, takenBy: getFigureInfo(this.figure!) })           
+
+            !options.isFake && board.addLostFigure({ ...pawnToCapture!, takenBy: getFigureInfo(this.figure!) })
 
             moveToAdd = {
                 ...moveToAdd,
-                figureTaken: {...pawnToCapture!}
+                figureTaken: { ...pawnToCapture! }
             }
         }
         if (target.figure && !options.isFake) {
             board.addMove({ ...moveToAdd, figureTaken: getFigureInfo(target.figure) });
-            board.addLostFigure({ ...target.figure, takenBy: getFigureInfo(this.figure!) });          
+            board.addLostFigure({ ...target.figure, takenBy: getFigureInfo(this.figure!) });
             return;
         }
         board.addMove(moveToAdd);

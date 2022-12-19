@@ -6,7 +6,7 @@ import { useActions } from "./useActions";
 
 export const useSocketConnect = () => {
 
-    const [isConnected, setIsConnected] = useState(ioClient.connected);
+    const [isConnected, setIsConnected] = useState(false);
     const [error, setError] = useState('');
 
     const {addMsg} = useActions()

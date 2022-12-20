@@ -67,7 +67,7 @@ export const RoomService = {
         if (roomId.includes('_obs')) return;
         const sockets = await ioServer.in(roomId).fetchSockets();
 
-        if (sockets.length === 0 || roomApi(roomId).getRoomInfo().result) {
+        if (sockets.length === 0 || roomApi(roomId).getRoomInfo().result) { //if game is over, clear the room on disconnect
             this.clearGameRoom(roomId);
             ioServer.to([roomId, `${roomId}_obs`]).emit("gameError", Errors.NO_PLAYERS);
             ioServer.in([roomId, `${roomId}_obs`]).disconnectSockets();
@@ -98,7 +98,7 @@ export const RoomService = {
             if (room.includes('_obs')) continue;
             if (room.includes('_1min') || room.includes('_10min') || room.includes('_3min') || room.includes('_5min')) {
                 const players = roomApi(room).getRoomInfo().players;
-                if (!players) continue;
+                if (!players || players.length < 2) continue;
                 games.push({ room, players });
             }
         }

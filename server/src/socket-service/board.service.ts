@@ -17,7 +17,7 @@ export const BoardService = {
         if (boardApi(roomId).isTimeout(socket.data.color)) return this.onTimeout(ioServer, socket);
 
         socket.to([roomId, `${roomId}_obs`]).emit("move", move);
-        socket.to([roomId, `${roomId}_obs`]).emit("updateTimer", boardApi(roomId).getTime());
+        ioServer.to([roomId, `${roomId}_obs`]).emit("updateTimer", boardApi(roomId).getTime());
     },
 
     checkResults(ioServer: Server<IClientEvents, IServerEvents>, roomId: string) {
@@ -36,18 +36,27 @@ export const BoardService = {
         const loser = roomApi(roomId).getPlayer(socket.data.user.username)?.color;
 
         if (!loser) return;
-
+        
+        
         if (!boardApi(roomId).isTimeout(loser)) {
-            socket.to([roomId, `${roomId}_obs`]).emit("updateTimer", boardApi(roomId).getTime());
+            
+            if (ioServer.of('/').adapter.rooms.get(roomId)?.size! < 2) {
+                const players = roomApi(roomId).getRoomInfo().players;
+                const opponent = players?.find(player => player.username !== loser);
+                return this.onResign(ioServer, roomId, opponent?.username!);
+            }
+            
+            ioServer.to([roomId, `${roomId}_obs`]).emit("updateTimer", boardApi(roomId).getTime());
             return;
         }
-        const isDraw = !boardApi(roomId).isSufficientMaterial(); //if enemy has insufficient material game is draw on timeout, else current p. loses
-
+        
         const results = {
             result: Results.CHECKMATE,
             loser,
             reason: GameOverReasons.TIMEOUT
         }
+        const isDraw = !boardApi(roomId).isSufficientMaterial(); //if enemy has insufficient material game is draw on timeout, else current p. loses
+        
 
         if (isDraw) return ioServer.to([roomId, `${roomId}_obs`]).emit('results', { ...results, result: Results.DRAW });
 
@@ -56,7 +65,9 @@ export const BoardService = {
     },
     async onConfirmRequest(ioServer: Server<IClientEvents, IServerEvents>, payload: Requests, roomId: string) {
 
+        
         if (payload === Requests.DRAW) {
+            if (roomApi(roomId).getRoomInfo().result) return;
             const results = {
                 result: Results.DRAW,
                 loser: Colors.BLACK
@@ -76,6 +87,7 @@ export const BoardService = {
 
     onResign(ioServer: Server<IClientEvents, IServerEvents>, roomId: string, username: string) {
 
+        if (roomApi(roomId).getRoomInfo().result) return;
         const loser = roomApi(roomId).getPlayer(username)?.color;
         if (!loser) return;
 

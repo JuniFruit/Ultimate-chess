@@ -1,6 +1,6 @@
 import { Like } from "typeorm"
 import { RegisterDto } from "../auth/auth.dto"
-import { roleRepository, userRepository } from "../database/db.connect"
+import { packRepository, roleRepository, userRepository } from "../database/db.connect"
 
 export const UserService = {
     async getById(id: number) {
@@ -67,23 +67,17 @@ export const UserService = {
         user.lossesCount++;
         return await userRepository.save(user);
     },
-    async create(dto: RegisterDto) {
+    async create(dto: RegisterDto) {       
 
         const defaults = {
-            ...dto,
-            packInUse: {
-                id: 1
-            },
-            packs: [{
-                id: 1
-            }],
+            ...dto,      
             roles: [{
                 id: 1
             }]
         }
 
         const newUser = await userRepository.create(defaults);
-
+     
         return await userRepository.save(newUser);
     },
     async getAll() {

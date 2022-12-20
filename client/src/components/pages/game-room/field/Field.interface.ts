@@ -1,5 +1,4 @@
 import {Dispatch, SetStateAction} from 'react'
-import { IMove } from "../../../../constants/socketIO/ClientEvents.interface";
 import { IBoard } from "../../../../model/Board";
 import { Colors } from '../../../../model/colors.enum';
 

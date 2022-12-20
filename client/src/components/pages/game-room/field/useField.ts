@@ -102,7 +102,6 @@ export const useField = ({ board, setBoard, myColor, isObserver }: IUseField) =>
             isTake: to.figure !== null,
             isCastling: from.isCastlingMove(to),         
         }
-
         board.incrementMoveCount();
         board.moveFigure(from, to, moveOptions);
 
@@ -119,13 +118,8 @@ export const useField = ({ board, setBoard, myColor, isObserver }: IUseField) =>
 
         if (!board.cells.length) return;
         board.updateAllLegalMoves();
-        console.log(board);
-        // console.log(board.states.currentPlayer, myColor)
+        console.log(board);        
         if (board.states.currentPlayer === myColor) handlePremoves();
-        if (board.isKingChecked()) {
-            console.log(board.isCheckMate())
-        }
-
 
     }, [board])
 

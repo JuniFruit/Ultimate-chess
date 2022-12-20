@@ -1,5 +1,4 @@
 import { FC } from "react";
-import { useNavigate } from "react-router-dom";
 import { IPack } from "../../../../types/pack.interface";
 import { formatToKilo } from "../../../../utils/format.utils";
 import { ImagePreview } from "../../image-preview/ImagePreview";
@@ -7,16 +6,16 @@ import styles from './Items.module.scss';
 
 interface IPackItem extends Pick<IPack, "id" | "sysName" | "title" | "preview"> {
     ownerCount: number;
+    onClick: () => void;
 }
 
-export const PackItem: FC<IPackItem> = ({ id, sysName, title, preview, ownerCount }) => {
+export const PackItem: FC<IPackItem> = ({ id, sysName, title, preview, ownerCount, onClick }) => {
 
-    const navigate = useNavigate()
 
     return (
         <div
-            className={styles.pack_wrapper}
-            onClick={() => navigate(`/admin/packs/edit/${id}`)}
+            className={styles.item_container}
+            onClick={onClick}
         >
             <ImagePreview imageSrc={preview} />
             <span>ID: {id}</span>

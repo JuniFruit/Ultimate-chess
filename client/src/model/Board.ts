@@ -43,6 +43,9 @@ export interface IBoardStates {
     isCheck: boolean;
     isFirstMove: boolean;
     isGameOver: boolean;
+    whiteKillCount: number;
+    blackKillCount: number;
+    lostFiguresCount: number;
     whiteTime: number;
     blackTime: number;
     moves: IMovedFigure[];
@@ -66,6 +69,9 @@ export class Board implements IBoard {
         isGameOver: false,
         isFirstMove: true,
         globalMovesCount: 0,
+        whiteKillCount: 0,
+        blackKillCount: 0,
+        lostFiguresCount: 0,
         whiteTime: 300,
         blackTime: 300,
 
@@ -170,6 +176,8 @@ export class Board implements IBoard {
 
     public addLostFigure(figure: ILostFigure) {
         this.popFigure(figure);
+        figure.color === Colors.WHITE ? this.states.blackKillCount++ : this.states.whiteKillCount++;
+        this.states.lostFiguresCount++;
         this.states.lostFigures.push(figure);
     }
 

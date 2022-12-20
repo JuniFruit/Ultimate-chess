@@ -9,14 +9,20 @@ import { AddRole } from "./actions/AddRole";
 import { DeleteRole } from "./actions/DeleteRole";
 import styles from './AdminPlayer.module.scss';
 import Search from "./search-bar/Search";
+import { useNavigate } from "react-router-dom";
 
 const AdminPlayers: FC = () => {
     useAdminAuth();
 
     const [dataToRender, setDataToRender] = useState<IUser[]>([]);
 
+    const navigate = useNavigate()
     const { data: users } = api.useGetAllQuery(null);
     const { handleSearch, data: searchResults, searchTerm } = useSearch()
+
+    const handleClick = (id:number) => {
+        navigate(`/user/${id}`)
+    }
 
     useEffect(() => {
 
@@ -40,6 +46,7 @@ const AdminPlayers: FC = () => {
                         dataToRender.map(user => (
                             <PlayerItem
                                 user={{ ...user }}
+                                onClick={() => handleClick(user.id)}
                                 key={user.id}>
                                     <AddRole userId={user.id} />
                                     <DeleteRole userId={user.id} roles={user.roles} />

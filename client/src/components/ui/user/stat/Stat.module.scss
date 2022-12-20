@@ -1,0 +1,14 @@
+
+
+.stat_wrapper {
+    @apply flex flex-col text-main-200 gap-1 justify-center text-center;
+
+    >h3 {
+        font-weight: 700;
+
+    }
+    >span {
+        @apply opacity-70 text-sm;
+        font-weight: 400;
+    }
+}

@@ -39,7 +39,7 @@ const ProfileMenu: FC = () => {
                 <div className={styles.menu}>
                     <ul>
                         <li>
-                            <Link to={`/channel/${user?.id}`}>My Profile</Link>
+                            <Link to={`/user/${user?.id}`}>My Profile</Link>
                         </li>
                         <li>
                             {isAdmin ? <Link to={`/admin/home`}>Admin Panel</Link> : null}

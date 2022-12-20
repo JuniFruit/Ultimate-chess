@@ -3,12 +3,8 @@
 
 .announcer_wrapper {
     @apply absolute left-1/2 top-1/4 text-amber-200 text-4xl w-max h-min p-2 rounded-lg select-none;
-    font-weight: 900;
-    /* color: #37ba25; */
+    font-weight: 900; 
     z-index: 76;
-    /* background:  transparent; */
-    /* backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px); */
     transform: translate(-50%, -50%);
 
     >h2 {

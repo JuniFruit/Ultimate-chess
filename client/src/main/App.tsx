@@ -11,6 +11,7 @@ import AdminPacks from '../components/pages/admin/packs/AdminPacks';
 import AdminPlayers from '../components/pages/admin/players/AdminPlayers';
 import PackEdit from '../components/pages/admin/packs/edit-pack/PackEdit';
 import WatchPage from '../components/pages/watch/WatchPage';
+import ProfilePage from '../components/pages/profile/ProfilePage';
 
 const App: FC = () => {
 
@@ -32,6 +33,7 @@ const App: FC = () => {
           <Route path='packs/edit/:id' element={<PackEdit />} />
         </Route>
         <Route path='/watch' element={<WatchPage />} />
+        <Route path='/user/:id' element={<ProfilePage />} />
       </Routes>
     </>
   )

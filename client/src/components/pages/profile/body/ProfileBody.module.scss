@@ -1,0 +1,28 @@
+
+
+.body_wrapper {
+    @apply mt-10 flex flex-wrap items-center gap-5 justify-center h-full w-full;
+
+    .item {
+        @apply text-main-200;
+
+        >h2 {
+            @apply text-tiny mb-6 text-center;
+            font-weight: 700;
+        }
+    }
+
+    .item_img {
+        @apply transition-all cursor-pointer;
+        >div {
+            @apply w-44 h-44;
+            >img {
+                object-fit: scale-down;
+            }
+        }
+
+        &:hover {
+            @apply opacity-70;           
+        }
+    }
+}

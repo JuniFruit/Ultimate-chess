@@ -31,3 +31,10 @@ export enum RequestMessages {
     REMATCH = 'Your opponent requests a rematch. Do you want to play again?',
     RESIGN = "Are you sure you want to resign?"
 }
+
+
+export enum ROLES {
+    USER = 'Chess player',
+    ADMIN = 'Administrator',
+    CREATOR = 'Creator'
+}

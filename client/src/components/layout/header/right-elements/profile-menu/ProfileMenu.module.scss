@@ -9,13 +9,12 @@
         }
 
         >span {
-            @apply text-sm;
+            @apply text-sm text-main-200 opacity-80;
             font-weight: 500;
-            color: #e2c9e2aa;
         }
 
         .icon {
-            @apply text-gray-500;
+            @apply text-main-500;
             font-size: 1.2rem;
         }
 

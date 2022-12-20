@@ -14,7 +14,7 @@ const Home: FC = () => {
     const navigate = useNavigate();
 
     const filteredData = menuData.filter(item => {
-        if ((item.link === '/registration' && user) || (item.link === '/packs' && !user)) return false
+        if ((item.link === '/registration' && user)) return false
         return true;
     })
     const handleClick = (item: IMenuData) => {

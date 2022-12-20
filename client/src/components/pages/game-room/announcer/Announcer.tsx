@@ -1,20 +1,23 @@
-import { FC, useState, useEffect, useCallback, useContext } from 'react'
+import { FC, useState, useEffect, useCallback, useContext, useRef } from 'react'
 import { AudioCtx } from '../../../../audio-engine/audio.provider';
 import { AudioContextType } from '../../../../audio-engine/audio.types';
+import { IBoardStates } from '../../../../model/Board';
 import { Colors } from '../../../../model/colors.enum';
 import { KillThreshold } from '../../../../model/helper.enum';
-import { getFilteredLostFigures } from '../../../../utils/game.utils';
 import { Announces } from './Announcer.enum';
 import { IAnnouncer } from './Announcer.interface'
 import styles from './Announcer.module.scss';
 
 export const Announcer: FC<IAnnouncer> = ({ players, states, myColor }) => {
-    const [isActive, setIsActive] = useState(true);
+    const [isActive, setIsActive] = useState(false);
+
+    const prevStates = useRef<{ last: IBoardStates | null }>({ last: null });
 
     const { playSound } = useContext(AudioCtx) as AudioContextType;
 
     const getFisrtBlood = useCallback(() => {
-        if (states.lostFigures.length !== 1) return null;
+        if (!prevStates.current.last) return null;
+        if (states.lostFiguresCount !== 1 || prevStates.current.last.lostFiguresCount === states.lostFiguresCount) return null;
         const figure = states.lostFigures[0];
         playSound('firstblood');
         return (
@@ -24,39 +27,46 @@ export const Announcer: FC<IAnnouncer> = ({ players, states, myColor }) => {
                 </h2>
             </>
         )
-    }, [states.lostFigures.length])
+    }, [states.lostFiguresCount])
+
+
 
     const getAnnounceInfo = useCallback((team: Colors) => {
         return myColor === team ? players.client?.username : players.opponent?.username;
     }, [players, myColor])
 
     const getKillingAnnounce = useCallback(() => {
-        const [whiteLosses, blackLosses] = getFilteredLostFigures(states.lostFigures);
-        const whiteKillCount = blackLosses.length;
-        const blackKillCount = whiteLosses.length;
+        
+        const { whiteKillCount, blackKillCount } = states;
+        if (!prevStates.current.last) return null;
+        const { whiteKillCount: prevWhite, blackKillCount: prevBlack } = prevStates.current.last
 
         let username;
         let announce;
 
         if (whiteKillCount === KillThreshold.SPREE || blackKillCount === KillThreshold.SPREE) {
             announce = Announces.SPREE;
-            username = whiteKillCount === KillThreshold.SPREE ? getAnnounceInfo(Colors.WHITE) : getAnnounceInfo(Colors.BLACK);
+            username = whiteKillCount === KillThreshold.SPREE && whiteKillCount !== prevWhite ? getAnnounceInfo(Colors.WHITE)
+                : blackKillCount === KillThreshold.SPREE && blackKillCount !== prevBlack && getAnnounceInfo(Colors.BLACK);
             playSound('spree');
         }
 
-        if (whiteKillCount === KillThreshold.DOMINATING || blackKillCount === KillThreshold.DOMINATING) {
+        if (whiteKillCount === KillThreshold.DOMINATING || blackKillCount === KillThreshold.DOMINATING)  {
             announce = Announces.DOMINATING;
-            username = whiteKillCount === KillThreshold.SPREE ? getAnnounceInfo(Colors.WHITE) : getAnnounceInfo(Colors.BLACK);
+            username = whiteKillCount === KillThreshold.DOMINATING && whiteKillCount !== prevWhite ? getAnnounceInfo(Colors.WHITE)
+                : blackKillCount === KillThreshold.DOMINATING && blackKillCount !== prevBlack && getAnnounceInfo(Colors.BLACK);
             playSound('dominating');
-        }  
+        }
 
-        
-        if (whiteKillCount === KillThreshold.UNSTOPPABLE || blackKillCount === KillThreshold.UNSTOPPABLE) {
+
+        if (whiteKillCount === KillThreshold.UNSTOPPABLE || blackKillCount === KillThreshold.UNSTOPPABLE)  {
             announce = Announces.UNSTOPPABLE;
-            username = whiteKillCount === KillThreshold.SPREE ? getAnnounceInfo(Colors.WHITE) : getAnnounceInfo(Colors.BLACK);
+            username = whiteKillCount === KillThreshold.UNSTOPPABLE && whiteKillCount !== prevWhite ? getAnnounceInfo(Colors.WHITE)
+                : blackKillCount === KillThreshold.UNSTOPPABLE && blackKillCount !== prevBlack && getAnnounceInfo(Colors.BLACK);
             playSound('unstoppable');
-        }         
-        
+        }
+
+
 
         return (
             <>
@@ -67,21 +77,40 @@ export const Announcer: FC<IAnnouncer> = ({ players, states, myColor }) => {
             </>
         )
 
-    }, [states.lostFigures.length])
+    }, [states.lostFiguresCount])
 
+
+    const getPromotionAnnounce = useCallback(() => {
+        const lastMove = states.moves[states.moves.length - 1];
+        if (!lastMove || !lastMove?.options.isPromotion) return null;
+        const team = lastMove.figureMove.color === Colors.WHITE ? 'White' : 'Black';
+        return (
+            <>
+                {team && <h2>
+                    <span>{team}</span> {Announces.PROMOTION}
+                </h2>
+                }
+            </>
+        )
+    }, [states.globalMovesCount])
 
     useEffect(() => {
+
+        if (states.isGameOver) return;
+        if (states.globalMovesCount === 0) prevStates.current.last = null!;
+
         setIsActive(prev => true);
 
         const timeout = setTimeout(() => {
             setIsActive(false)
-        }, 3000);
+            prevStates.current.last = { ...states }
+        }, 2000);
 
         return () => {
             clearTimeout(timeout);
         }
 
-    }, [states.lostFigures.length, states.moves, states.isGameOver, myColor]);
+    }, [states.globalMovesCount, states.isGameOver, myColor]);
 
     if (!isActive) return null;
 
@@ -89,11 +118,8 @@ export const Announcer: FC<IAnnouncer> = ({ players, states, myColor }) => {
         <div className={styles.announcer_wrapper}>
             {getFisrtBlood()}
             {getKillingAnnounce()}
+            {getPromotionAnnounce()}
         </div>
     )
 }
 
-
-const areStatesEqual = (prev: IAnnouncer, next: IAnnouncer) => {
-
-}

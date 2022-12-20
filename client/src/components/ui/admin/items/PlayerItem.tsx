@@ -1,19 +1,22 @@
-import { FC,PropsWithChildren } from "react";
+import { FC, PropsWithChildren } from "react";
 import { IUser } from "../../../../types/user.interface";
 import { ImagePreview } from "../../image-preview/ImagePreview";
 import styles from './Items.module.scss';
 
 
 interface IPlayerItem {
-    user: IUser;   
+    user: IUser;
+    onClick: () => void;
 }
 
 
-export const PlayerItem: FC<PropsWithChildren<IPlayerItem>> = ({ user, children }) => {
+export const PlayerItem: FC<PropsWithChildren<IPlayerItem>> = ({ user, children, onClick }) => {
+
 
     return (
         <div
-            className={styles.pack_wrapper}            
+            className={styles.item_container}
+            // onClick={onClick}
         >
             <ImagePreview imageSrc={user.avatarLink} />
             <span>ID: {user.id}</span>
@@ -26,16 +29,18 @@ export const PlayerItem: FC<PropsWithChildren<IPlayerItem>> = ({ user, children 
                         <span key={`${item.role} ${user.id}`}>{item.role}</span>
                     ))
                 }
-
             </div>
+
+
             <div className={styles.user_stats}>
                 <h3>Losses: {user.lossesCount}</h3>
                 <h3>Wins: {user.winsCount}</h3>
             </div>
+
             <div className={styles.user_actions}>
                 {children}
             </div>
 
-        </div>
+        </div >
     )
 }

@@ -1,0 +1,28 @@
+
+
+.pie {
+    @apply place-content-center m-1 text-lg inline-grid text-main-200 relative;
+    /* --percent: 0; */
+    --width: 176px;
+    --borderThickness: .8rem;
+    aspect-ratio: 1;  
+    width: var(--width);  
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.7);
+    
+    .before{
+        @apply absolute rounded-full inset-0;
+        content: "";
+        background: radial-gradient(farthest-side,var(--complimentary) 98%,#0000) top/var(--borderThickness) var(--borderThickness) no-repeat,
+        conic-gradient(var(--complimentary) calc(var(--percent)*1%),#0000 0);
+        -webkit-mask:radial-gradient(farthest-side,#0000 calc(99% - var(--borderThickness)),#000 calc(100% - var(--borderThickness)));
+          mask:radial-gradient(farthest-side,#0000 calc(99% - var(--borderThickness)),#000 calc(100% - var(--borderThickness)));
+      }
+    .after {
+        @apply absolute rounded-full;
+        content: '';
+        inset:calc(50% - var(--borderThickness)/2);
+        background:var(--complimentary);
+        transform:rotate(calc(var(--percent)*3.6deg)) translateY(calc(50% - var(--width)/2));
+      }
+}

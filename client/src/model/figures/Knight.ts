@@ -7,14 +7,13 @@ import { FigureTypes, IFigure, ISpritesObj } from "./figures.interface";
 
 
 export class Knight extends Figure {
-    readonly sprite?;
     readonly type;
 
 
     constructor(x: number, y: number, color: Colors, sprites?: ISpritesObj) {
         super(x, y, color, sprites);
         this.sprite = color === Colors.BLACK ? sprites?.blackKnight : sprites?.whiteKnight;
-        this.type = FigureTypes.KNIGHT;
+        this.type = FigureTypes.KNIGHT;    
     }
 
     public getLegalMoves(board: IBoard) {

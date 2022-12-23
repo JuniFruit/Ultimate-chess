@@ -21,15 +21,17 @@ export interface ILegalMoveArg {
 }
 
 export interface IFigureBase {
-    sprites?: ISpritesObj;
+    readonly sprites?: ISpritesObj;
+    image?: HTMLImageElement;
+    sprite?: string;
     x: number;
-    y: number;  
+    y: number;
     prevX: number;
     prevY: number;
     pos: string;
     lastTake: IFigureInfo | null;
     takes: IFigureInfo[];
-    movesCount: number;    
+    movesCount: number;
     color: Colors;
     legalMoves: ILegalMove[];
     moveFigure: (target: ICell, board: IBoard, isFake?: boolean) => void;
@@ -40,16 +42,18 @@ export interface IFigureBase {
     getLegalMovesHorizontal: (arg: ILegalMoveArg) => void;
     getLegalMovesDiagonal: (arg: ILegalMoveArg) => void;
     addLegalMove: (cell: ICell) => boolean;
-    undo:() => void;
+    update: (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, isFlipped: boolean) => void;
+    draw: (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, isFlipped: boolean) => void;
+    setImgSrc: () => void;
+    undo: () => void;
 }
 
-export interface IFigure extends IFigureBase {    
-    type: FigureTypes;    
-    sprite?: string;    
+export interface IFigure extends IFigureBase {
+    type: FigureTypes;
 }
 
 
-export interface IFigureInfo extends Pick<IFigure, "color" | "type" | "x" | "y" | "sprite" | "pos"> {}
+export interface IFigureInfo extends Pick<IFigure, "color" | "type" | "x" | "y" | "sprite" | "pos"> { }
 
 export interface ILostFigure extends IFigureInfo {
     takenBy: IFigureInfo;
@@ -62,10 +66,10 @@ export interface ILegalMove extends Pick<ICell, "x" | "y" | "pos"> {
 
 
 export interface IMoveCoordinates {
-    
+
 }
 
-export interface IMovedFigure  {   
+export interface IMovedFigure {
     options: IMoveOptions;
     from: ICellInfo;
     to: ICellInfo;

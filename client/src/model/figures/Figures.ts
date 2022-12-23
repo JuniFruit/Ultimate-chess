@@ -11,6 +11,8 @@ import { IFigure, IFigureBase, IFigureInfo, ILegalMove, ILegalMoveArg, ISpritesO
 export class Figure implements IFigureBase {
     readonly color;
     readonly sprites;
+    image?: HTMLImageElement;
+    sprite?: string;
     x;
     y;
     prevX;
@@ -31,9 +33,10 @@ export class Figure implements IFigureBase {
         this.lastTake = null;
         this.sprites = sprites;
         this.pos = `${Positions[x]}${7 - y + 1}`;
+
     }
 
-    private onTake(figure: IFigure) {
+    private _onTake(figure: IFigure) {
         this.lastTake = { ...figure };
         this.takes.push({ ...figure });
     }
@@ -48,12 +51,11 @@ export class Figure implements IFigureBase {
 
 
         if (isFake) return;
-        if (target.figure) this.onTake(target.figure);
+        if (target.figure) this._onTake(target.figure);
         this.movesCount++;
     }
 
     public filterUncheckingMoves(board: IBoard) {
-        // if (!board.isCheck) return;
         if (this.color !== board.states.currentPlayer) return;
         this.legalMoves = [...this.legalMoves
             .filter(move => board.getCell(this.x, this.y).isUncheckingMove(board.getCell(move.x, move.y), board))]
@@ -162,6 +164,31 @@ export class Figure implements IFigureBase {
         this.pos = `${Positions[this.prevX]}${7 - this.prevY + 1}`;
 
 
+    }
+
+    public setImgSrc() {
+        this.image = new Image();
+        this.image.src = this.sprite!;
+    }
+
+    public draw(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, isFlipped: boolean) {
+        const w = canvas.width / 8;
+        const h = canvas.height / 8;
+        let posX = isFlipped ? 7 - this.x : this.x
+        let posY = isFlipped ? 7 -  this.y : this.y;
+
+
+        ctx.drawImage(
+            this.image!,
+            posX * w,
+            posY * h,
+            w,
+            h
+        )
+    }
+
+    public update(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, isFlipped: boolean) {
+        this.draw(ctx, canvas, isFlipped)
     }
 
 }

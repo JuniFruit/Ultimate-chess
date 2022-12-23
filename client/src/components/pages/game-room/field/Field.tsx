@@ -20,7 +20,8 @@ export const GameField: FC<IField> = (props) => {
                 isFlipped={props.myColor === Colors.BLACK}
                 onSelect={handlers.handleSelect}
                 selected={status.selectedCell}
-                premoves={status.premoves}               
+                premoves={status.premoves}   
+                board={props.board}            
             />
 
             {status.isPromotion && <PromotionWindow handlePromotion={handlers.handlePromotion} />}

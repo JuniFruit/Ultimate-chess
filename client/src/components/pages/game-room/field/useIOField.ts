@@ -10,7 +10,7 @@ export interface IUseIOField extends Pick<IUseField, "board" | "setBoard" | "isO
 
 export const useIOField = ({ board, setBoard, isObserver }: IUseIOField) => {
 
-    const {handleMoveSound} = useMoveSound();
+    const { handleMoveSound } = useMoveSound();
 
     const handleSendMove = useCallback((move: IMove) => {
         if (isObserver) return;
@@ -20,9 +20,10 @@ export const useIOField = ({ board, setBoard, isObserver }: IUseIOField) => {
 
     const handleReceiveMove = useCallback((move: IMove) => {
         board.receiveMove(move);
+        board.figures.forEach(figure => figure.setImgSrc());
         handleMoveSound(move);
         board.states.isFirstMove = false;
-        board.swapPlayer();        
+        board.swapPlayer();
 
         setBoard(prev => prev.getCopyBoard());
 

@@ -12,15 +12,15 @@ export interface IRook extends IFigure {
 
 
 export class Rook extends Figure implements IRook {
-    readonly sprite?;
     readonly type;
     isFirstMove
-
+   
     constructor(x: number, y: number, color: Colors, sprites?: ISpritesObj, isFirstMove: boolean = true) {
         super(x, y, color, sprites);
         this.sprite = color === Colors.BLACK ? sprites?.blackRook : sprites?.whiteRook;
         this.type = FigureTypes.ROOK;
         this.isFirstMove = isFirstMove;
+   
     }
 
     public getLegalMoves(board: IBoard) {

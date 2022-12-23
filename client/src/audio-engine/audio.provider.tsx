@@ -21,12 +21,12 @@ const AudioProvider: FC<PropsWithChildren> = ({ children }) => {
     const soundBuffers = useRef<ISoundBuffers>({});
    
     const handleFetchSounds = async () => {
-        for (let [sound, link] of Object.entries(Sounds)) {
-            await AudioService.fetchAudio(link)
-                .then(arrayBuffer => ctx.decodeAudioData(arrayBuffer))
-                .then(audioBuffer => (soundBuffers.current as any)[sound] = audioBuffer)
-                .catch(e => console.log(e));
-        }
+        // for (let [sound, link] of Object.entries(Sounds)) {
+        //     await AudioService.fetchAudio(link)
+        //         .then(arrayBuffer => ctx.decodeAudioData(arrayBuffer))
+        //         .then(audioBuffer => (soundBuffers.current as any)[sound] = audioBuffer)
+        //         .catch(e => console.log(e));
+        // }
     }
 
     useEffect(() => {

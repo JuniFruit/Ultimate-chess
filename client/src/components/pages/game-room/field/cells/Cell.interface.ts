@@ -1,3 +1,4 @@
+import { IBoard } from "../../../../../model/Board";
 import { ICell, IPremove } from "../../../../../model/Cell";
 import { Colors } from "../../../../../model/colors.enum";
 import { IFigure, IMovedFigure } from "../../../../../model/figures/figures.interface";
@@ -18,4 +19,5 @@ export interface ICellWrapper extends Pick<ICellComponent, "onSelect" | "selecte
     cells: ICell[][];
     isFlipped: boolean;
     premoves: IPremove[];
+    board: IBoard;
 }

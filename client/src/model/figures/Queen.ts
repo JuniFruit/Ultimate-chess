@@ -5,14 +5,14 @@ import { FigureTypes, ISpritesObj } from "./figures.interface";
 
 
 export class Queen extends Figure {
-    readonly sprite;
     readonly type;
 
 
     constructor(x: number, y: number, color: Colors, sprites?: ISpritesObj) {
         super(x, y, color, sprites);
         this.sprite = color === Colors.BLACK ? sprites?.blackQueen : sprites?.whiteQueen;
-        this.type = FigureTypes.QUEEN;
+        this.type = FigureTypes.QUEEN;   
+
     }
 
     public getLegalMoves(board: IBoard) {

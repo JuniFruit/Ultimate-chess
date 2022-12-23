@@ -19,7 +19,6 @@ export interface IPawn extends IFigure {
 
 
 export class Pawn extends Figure implements IPawn {
-    readonly sprite;
     readonly type;
     isFirstMove;
     cellsAdvanced = 0;

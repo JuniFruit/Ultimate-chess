@@ -38,20 +38,29 @@ export const Cell: FC<ICellComponent> = memo((
         return false
 
     }, [selected, isDraggedOver, cell.isAvailable])
+
+    const calcTransform = (coord: number) => {
+        return (coord * 100)
+    }
     
 
     return (
         <>
 
             <div
-                className={`${styles.cell} ${styles[color]} 
-                ${isSelected && styles.selected} ${isDraggedOver && styles.draggedOver} ${isPremoved && styles.premoved}`}
+                // className={`${styles.cell} 
+                // ${styles[color]} 
+                // ${isSelected && styles.selected} ${isDraggedOver && styles.draggedOver} ${isPremoved && styles.premoved}`}
+                className={styles.cell}
                 onClick={() => { onSelect(cell) }}
                 onDragEnter={handleDragOver}
                 onDragOver={handleDragOver}
                 onDragLeave={() => setIsDraggedOver(false)}
                 onDrop={(e) => { onSelect(cell); setIsDraggedOver(false) }}
                 // onDragEnd={(e) => { onSelect(cell) }}
+                style={{                
+                    transform: `translate(calc(${calcTransform(posX!)}%), calc(${calcTransform(posY!)}%))`,          
+                }}
             >
 
                 {checkIsAvailable() && <div className={styles.available_dot}></div>}

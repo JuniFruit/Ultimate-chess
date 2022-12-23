@@ -15,7 +15,7 @@ export const useGameRoom = (id?: string) => {
     const [isReadyToStart, setIsReadyToStart] = useState(false);
     const [result, setResult] = useState<IResultPayload | null>(null);
     const [enemyUser, setEnemyUser] = useState<IPlayerInfo>();
-    const [clientUser, setClientUser] = useState<IPlayerInfo>()   
+    const [clientUser, setClientUser] = useState<IPlayerInfo>()
     const [myColor, setMyColor] = useState<Colors>(Colors.WHITE)
     const [request, setRequest] = useState<Requests | null>(null);
     const [isObserver, setIsObserver] = useState(false);
@@ -34,8 +34,8 @@ export const useGameRoom = (id?: string) => {
         drawBoard(payload.boardData!,
             assignSpritePack(payload.myColor!, payload.playerOne!, payload.playerTwo!),
             assignSpritePack(payload.myColor === Colors.BLACK ? Colors.WHITE : Colors.BLACK, payload.playerOne!, payload.playerTwo!));
-    }, [])    
-   
+    }, [])
+
 
     const clearStates = useCallback(() => {
         setRequest(null);
@@ -50,6 +50,7 @@ export const useGameRoom = (id?: string) => {
             ...newBoard.states,
             ...boardData.board.states
         }
+        // newBoard.figures.forEach(figure => figure.setImgSrc());
         newBoard.updateAllLegalMoves();
         setBoard(prev => newBoard);
 
@@ -61,7 +62,7 @@ export const useGameRoom = (id?: string) => {
         setResult(prev => payload);
         setBoard(prev => prev.getCopyBoard())
     }, [board])
- 
+
 
     const handleRequestConfirm = useCallback((request: Requests) => {
         if (isObserver) return;
@@ -81,25 +82,25 @@ export const useGameRoom = (id?: string) => {
     }, [isObserver])
 
     useEffect(() => {
-        
+
         if (!isConnected || !id) return;
         ioClient.emit("joinGameRoom", id!)
 
     }, [isConnected, id])
 
-    useEffect(() => {       
+    useEffect(() => {
         ioClient.on("updateGame", handleUpdateGame);
-        ioClient.on("inGameRequest", (request) => setRequest(request));      
+        ioClient.on("inGameRequest", (request) => setRequest(request));
         ioClient.on("results", handleResults);
 
-        return () => {      
-            ioClient.off("inGameRequest");         
-            ioClient.off('updateGame');        
+        return () => {
+            ioClient.off("inGameRequest");
+            ioClient.off('updateGame');
             ioClient.off("results");
 
         }
 
-    }, [request, result, board, isObserver])   
+    }, [request, result, board, isObserver])
 
 
     return {
@@ -112,18 +113,18 @@ export const useGameRoom = (id?: string) => {
         },
         status: {
             isConnected,
-            isReadyToStart,     
+            isReadyToStart,
             myColor,
             result,
             isObserver
         },
         data: {
             enemyUser,
-            clientUser,                    
-            request,        
-            setRequest,    
+            clientUser,
+            request,
+            setRequest,
         }
-        
+
 
     }
 }

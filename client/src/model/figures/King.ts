@@ -15,7 +15,6 @@ export interface IKing extends IFigure {
 }
 
 export class King extends Figure implements IKing {
-    readonly sprite?;
     readonly type;
     isCastlingAvailable;
 
@@ -23,7 +22,7 @@ export class King extends Figure implements IKing {
         super(x, y, color, sprites);
         this.sprite = color === Colors.BLACK ? sprites?.blackKing : sprites?.whiteKing;
         this.type = FigureTypes.KING;
-        this.isCastlingAvailable = isCastlingAvailable;
+        this.isCastlingAvailable = isCastlingAvailable;     
     }
 
     public getLegalMoves(board: IBoard) {

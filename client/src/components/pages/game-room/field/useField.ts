@@ -20,11 +20,9 @@ export const useField = ({ board, setBoard, myColor, isObserver }: IUseField) =>
 
     const handleSelect = useCallback((cell: ICell) => {
         if (isPromotion || board.states.isGameOver) return;
-
         if (isObserver) return setSelectedCell(prev => cell);
 
         if (selectedCell) {
-            if (!selectedCell.figure || selectedCell === cell) return clearSelectedCells();
             if (selectedCell !== cell && board.states.currentPlayer === myColor) {
                 if (!selectedCell.isCastlingMove(cell) && cell.figure?.color === myColor) {
                     setPremoves(prev => [])
@@ -37,6 +35,9 @@ export const useField = ({ board, setBoard, myColor, isObserver }: IUseField) =>
             if (selectedCell !== cell && board.states.currentPlayer !== myColor) {
                 if (premoves.length >= maxPremoves) return clearSelectedCells();
                 return addPremove(cell);
+            }
+            if (selectedCell === cell && board.states.currentPlayer !== myColor) {
+                return clearSelectedCells()
             }
 
         } else {
@@ -117,6 +118,7 @@ export const useField = ({ board, setBoard, myColor, isObserver }: IUseField) =>
     useEffect(() => {
 
         if (!board.cells.length) return;
+        if (board.states.isGameOver) return clearSelectedCells();
         board.updateAllLegalMoves();
         console.log(board);        
         if (board.states.currentPlayer === myColor) handlePremoves();

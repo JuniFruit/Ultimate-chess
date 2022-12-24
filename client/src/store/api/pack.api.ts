@@ -1,4 +1,5 @@
 import { IPackForm, IPackUpdateForm, ISpriteForm } from "../../components/pages/admin/packs/add-pack/pack-forms/Forms.interface";
+import { ISpritesObj } from "../../model/figures/figures.interface";
 import { IPack } from "../../types/pack.interface";
 import { IUser } from "../../types/user.interface";
 import { api } from "./api";
@@ -21,8 +22,13 @@ export const packApi = api.injectEndpoints({
 
             }),
             providesTags: (res, err, id) => [{ type: 'Packs', id }]
-        })
-        ,
+        }),
+        getSpritePackById: builder.query<ISpritesObj, number>({
+            query: (id) => ({
+                url: `/${PACK}/sprite/by-id/${id}`,
+                method: "GET"                
+            })
+        }),
         addPackToProfile: builder.mutation<IUser, number>({
             query: (id) => ({
                 url: `/${PACK}/add`,
@@ -42,6 +48,16 @@ export const packApi = api.injectEndpoints({
                 }
             })
         }),
+        updateSpritePack: builder.mutation<ISpritesObj, ISpriteForm>({
+            query: (data) => ({
+                url: `/${PACK}/sprite/update/${data.id}`,
+                method: "PUT",
+                body: {
+                    ...data
+                }
+            })
+        }),
+        
         createPack: builder.mutation<IPack, IPackForm>({
             query: (data) => ({
                 url: `/${PACK}/create`,

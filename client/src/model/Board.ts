@@ -31,6 +31,7 @@ export interface IBoard {
     addLostFigure: (figure: ILostFigure) => void;
     addMove: (movedFigure: IMovedFigure) => void;
     popFigure: (figure: IFigure) => void
+    getFigures: () => void;
     convertToFEN: () => string;
     undo: () => void;
     incrementMoveCount: () => void;
@@ -84,7 +85,6 @@ export class Board implements IBoard {
 
     public startNewGame(fen: string) {
         this._initCells(fen);
-        this._getFigures();
     }
 
     public getCell(x: number, y: number) {
@@ -93,7 +93,7 @@ export class Board implements IBoard {
     public swapPlayer() {
         this.states.currentPlayer = this.states.currentPlayer === Colors.WHITE ? Colors.BLACK : Colors.WHITE;
     }
-    private _getFigures() {
+    public getFigures() {
         this.cells.forEach(row => row.forEach(cell => {
             if (cell.figure) {
                 this.figures.push(cell.figure);

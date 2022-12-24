@@ -2,8 +2,7 @@ import { ICanvasField } from "./CanvasField.interface";
 import { MouseEvent, MouseEventHandler, useCallback, useState, useRef } from 'react';
 import { Colors } from "../../../../../model/colors.enum";
 import { IFigure } from "../../../../../model/figures/figures.interface";
-import { getFlippedPos } from "../../../../../model/helpers";
-import { getCellSize } from "../../../../../utils/game.utils";
+import { getCellSize, getFlippedPos } from "../../../../../model/helpers";
 import { drawCircle, drawRect } from "./utils/canvas.utils";
 import { ICell } from "../../../../../model/Cell";
 import { COLORS } from "./utils/colors.utils";
@@ -17,7 +16,7 @@ export const useCanvasField = ({ props: { cells, board, onSelect, premoves, isFl
     const draggedOver = useRef<ICell | null>(null);
 
     const handlePreDraw = useCallback((context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
-        board.figures.forEach(figure => figure.setImgSrc());
+        board.figures.forEach(figure => figure.setSpriteObj());
         drawBoard(context, canvas);
         // drawDraggedOver(context, canvas);
         drawPremoves(context, canvas);
@@ -36,13 +35,13 @@ export const useCanvasField = ({ props: { cells, board, onSelect, premoves, isFl
         context.fillText(`frame count : ${frameCount} :)`, 10, 190);
         context.fillStyle = '#000000'
         context.fill()
-    }, [board, premoves.length, isFlipped])
+    }, [board, isFlipped])
 
 
     const drawFigures = useCallback((ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
 
         board.figures.forEach((figure) => {
-            if (figure.image) {
+            if (figure.sprite) {
                 figure.update(ctx, canvas, isFlipped);
             }
         })

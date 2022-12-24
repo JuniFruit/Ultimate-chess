@@ -4,21 +4,23 @@ import { ICell, IPremove } from "../../../../model/Cell";
 import { IMoveOptions } from "../../../../constants/socketIO/ClientEvents.interface";
 import { FigureTypes } from "../../../../model/figures/figures.interface";
 import { useIOField } from "./useIOField";
+import { ICellUlt } from "../../../../model/ultimate/CellUlt";
 
 
 export interface IUseField extends Pick<IField, 'board' | 'setBoard' | 'myColor' | 'isObserver'> { }
 
 export const useField = ({ board, setBoard, myColor, isObserver }: IUseField) => {
 
-    const [selectedCell, setSelectedCell] = useState<ICell | null>(null);
+    const [selectedCell, setSelectedCell] = useState<ICell | ICellUlt | null>(null);
     const [isPromotion, setIsPromotion] = useState(false);
-    const [lastTargetCell, setLastTargetCell] = useState<ICell | null>(null);
+    const [lastTargetCell, setLastTargetCell] = useState<ICell | ICellUlt | null>(null);
     const [premoves, setPremoves] = useState<IPremove[]>([]);
     const maxPremoves = 5;
 
     const { handleSendMove } = useIOField({ board, setBoard, isObserver });
 
-    const handleSelect = useCallback((cell: ICell) => {
+    const handleSelect = useCallback((cell: ICell | ICellUlt) => {
+        console.log(cell);
         if (isPromotion || board.states.isGameOver) return;
         if (isObserver) return setSelectedCell(prev => cell);
 
@@ -85,9 +87,8 @@ export const useField = ({ board, setBoard, myColor, isObserver }: IUseField) =>
         setSelectedCell(prev => null)
     }, [])
 
-    const handleMove = useCallback((from: ICell, to: ICell, options?: IMoveOptions) => {
+    const handleMove = useCallback((from: ICell | ICellUlt, to: ICell | ICellUlt, options?: IMoveOptions) => {
         if (!from || !to || isObserver) return;
-
         if (!from.canMoveFigure(to, board)) {
             return clearSelectedCells();
         }
@@ -101,14 +102,14 @@ export const useField = ({ board, setBoard, myColor, isObserver }: IUseField) =>
         const moveOptions = {
             ...options,
             isTake: to.figure !== null,
-            isCastling: from.isCastlingMove(to),         
+            isCastling: from.isCastlingMove(to),
         }
         board.incrementMoveCount();
         board.moveFigure(from, to, moveOptions);
 
         board.states.isFirstMove = false;
         board.swapPlayer();
-        handleSendMove({ from: { ...from.getCellInfo() }, to: { ...to.getCellInfo() }, options: {...moveOptions}})
+        handleSendMove({ from: { ...from.getCellInfo() }, to: { ...to.getCellInfo() }, options: { ...moveOptions } })
         setSelectedCell(to);
 
         setBoard(prev => prev.getCopyBoard())
@@ -120,7 +121,7 @@ export const useField = ({ board, setBoard, myColor, isObserver }: IUseField) =>
         if (!board.cells.length) return;
         if (board.states.isGameOver) return clearSelectedCells();
         board.updateAllLegalMoves();
-        console.log(board);        
+        console.log(board);
         if (board.states.currentPlayer === myColor) handlePremoves();
 
     }, [board])

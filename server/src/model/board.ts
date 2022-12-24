@@ -1,13 +1,16 @@
 import { IMove } from '../../../client/src/constants/socketIO/ClientEvents.interface';
 import { Board, IBoard, IBoardStates } from '../../../client/src/model/Board';
+import { BoardUlt, IBoardUlt } from '../../../client/src/model/ultimate/BoardUlt';
 import { Colors } from '../../../client/src/model/colors.enum';
 import { FENs, GameOverReasons, Results } from '../../../client/src/model/helper.enum';
 import { getInitTime } from '../utils/utils';
 
 
-const ROOM_GAME_BOARDS = new Map<string,IBoard>();
+const ROOM_GAME_BOARDS = new Map<string, IBoard | IBoardUlt>();
 
 export const boardApi = (roomId: string) => {
+
+    const isUltimate = roomId.includes('_ult');
 
     const getBoard = () => {
         if (ROOM_GAME_BOARDS.has(roomId)) return ROOM_GAME_BOARDS.get(roomId);
@@ -15,8 +18,10 @@ export const boardApi = (roomId: string) => {
     }
 
     const createBoard = () => {
-        const board: IBoard = new Board();
+        const board: IBoard | IBoardUlt = isUltimate ? new BoardUlt() : new Board();
+
         board.startNewGame(FENs.INIT);
+        board.getFigures();
         board.updateAllLegalMoves();
         board.states.whiteTime = getInitTime(roomId);
         board.states.blackTime = getInitTime(roomId);

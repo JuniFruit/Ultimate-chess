@@ -1,3 +1,4 @@
+
 import blackBishop from './black_bishop.png';
 import whiteBishop from './white_bishop.png';
 import blackKing from './black_king.png';
@@ -23,5 +24,8 @@ export const SPRITES = {
     blackRook,
     whiteRook,
     blackKnight,
-    whiteKnight
+    whiteKnight,
+    frames: 1
 }
+
+

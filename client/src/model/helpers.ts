@@ -55,7 +55,7 @@ export const getFigureInfo = (figure: IFigure): IFigureInfo => {
   return {
     x: figure.x,
     y: figure.y,
-    sprite: figure.sprite,
+    spriteSrc: figure.spriteSrc,
     pos: figure.pos,
     color: figure.color,
     type: figure.type
@@ -66,4 +66,11 @@ export const getFlippedPos = (posX: number, posY: number) => {
   const x = 7 - Math.floor(posX);
   const y = 7 - Math.floor(posY);
   return { x, y }
+}
+
+
+export const getCellSize = (canvas: HTMLCanvasElement) => {
+  const w = canvas.width / 8;
+  const h = canvas.height / 8;
+  return { w, h }
 }

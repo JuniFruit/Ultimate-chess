@@ -3,11 +3,12 @@ import { IBoard, IBoardStates } from "../../model/Board";
 import { Colors } from "../../model/colors.enum";
 import { GameOverReasons, Results } from "../../model/helper.enum";
 import { IPlayer } from "../../model/Player";
+import { IBoardUlt } from "../../model/ultimate/BoardUlt";
 import { Errors, Requests } from "../constants";
 import { IDisconnectedUser, IMessage, IMove } from "./ClientEvents.interface";
 
 export interface IBoardData {
-    board: IBoard;
+    board: IBoard | IBoardUlt;
     FEN: string;
 }
 

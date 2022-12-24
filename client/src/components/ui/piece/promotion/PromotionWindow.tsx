@@ -15,16 +15,16 @@ const PromotionWindow: FC<IPromotionWindow> = ({ handlePromotion }) => {
     return (
         <div className={styles.wrapper}>
             <button value={FigureTypes.BISHOP} onClick={handleClick}>
-                <PieceInfo sprite={SPRITES.whiteBishop} />
+                <PieceInfo spriteSrc={SPRITES.whiteBishop} />
             </button>
             <button value={FigureTypes.KNIGHT} onClick={handleClick}>
-                <PieceInfo sprite={SPRITES.whiteKnight} />
+                <PieceInfo spriteSrc={SPRITES.whiteKnight} />
             </button>
             <button value={FigureTypes.QUEEN} onClick={handleClick}>
-                <PieceInfo sprite={SPRITES.whiteQueen} />
+                <PieceInfo spriteSrc={SPRITES.whiteQueen} />
             </button>
             <button value={FigureTypes.ROOK} onClick={handleClick}>
-                <PieceInfo sprite={SPRITES.whiteRook} />
+                <PieceInfo spriteSrc={SPRITES.whiteRook} />
             </button>
 
         </div>

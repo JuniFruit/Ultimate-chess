@@ -27,5 +27,7 @@ export class SpriteEntity extends BaseEntity {
     blackKnight!: string;
     @Column({name: 'white_knight'})
     whiteKnight!: string;
+    @Column({default: 1})
+    frames!: number;
 }
 

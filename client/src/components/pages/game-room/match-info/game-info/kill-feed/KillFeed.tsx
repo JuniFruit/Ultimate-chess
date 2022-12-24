@@ -7,7 +7,7 @@ import styles from './KillFeed.module.scss';
 
 export const KillFeed: FC<IKillFeed> = memo(({ lostFigures }) => {
     const [blackLosses, whiteLosses] = getFilteredLostFigures(lostFigures);
-    
+
     return (
         <div className={styles.kill_wrapper}>
             <div>
@@ -15,7 +15,7 @@ export const KillFeed: FC<IKillFeed> = memo(({ lostFigures }) => {
                 <div className={styles.pieces}>
                     {blackLosses.length ? blackLosses.map((piece, ind) => (
                         <PieceInfo
-                            sprite={getDefaultSprite(piece)}
+                            spriteSrc={getDefaultSprite(piece)}
                             title={'piece'}
                             key={ind}
                         />
@@ -30,7 +30,7 @@ export const KillFeed: FC<IKillFeed> = memo(({ lostFigures }) => {
                 <div className={styles.pieces}>
                     {whiteLosses.length ? whiteLosses.map((piece, ind) => (
                         <PieceInfo
-                            sprite={getDefaultSprite(piece)}
+                            spriteSrc={getDefaultSprite(piece)}
                             title={'piece'}
                             key={ind}
                         />

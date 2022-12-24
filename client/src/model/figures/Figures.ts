@@ -1,6 +1,7 @@
 import { IBoard } from "../Board";
 import { ICell } from "../Cell";
 import { Colors } from "../colors.enum";
+import { ISprite, Sprite } from "../effects/Sprite";
 import { Direction } from "../helper.enum";
 import { getFigureInfo, isInBounds } from "../helpers";
 import { Positions } from "../positions";
@@ -11,8 +12,8 @@ import { IFigure, IFigureBase, IFigureInfo, ILegalMove, ILegalMoveArg, ISpritesO
 export class Figure implements IFigureBase {
     readonly color;
     readonly sprites;
-    image?: HTMLImageElement;
-    sprite?: string;
+    sprite?: ISprite;
+    spriteSrc?: string;
     x;
     y;
     prevX;
@@ -33,6 +34,7 @@ export class Figure implements IFigureBase {
         this.lastTake = null;
         this.sprites = sprites;
         this.pos = `${Positions[x]}${7 - y + 1}`;
+
 
     }
 
@@ -166,29 +168,15 @@ export class Figure implements IFigureBase {
 
     }
 
-    public setImgSrc() {
-        this.image = new Image();
-        this.image.src = this.sprite!;
+    public setSpriteObj() {
+        this.sprite = new Sprite({ sprite: this.spriteSrc!, framesMax: this.sprites?.frames })
     }
 
-    public draw(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, isFlipped: boolean) {
-        const w = canvas.width / 8;
-        const h = canvas.height / 8;
-        let posX = isFlipped ? 7 - this.x : this.x
-        let posY = isFlipped ? 7 -  this.y : this.y;
-
-
-        ctx.drawImage(
-            this.image!,
-            posX * w,
-            posY * h,
-            w,
-            h
-        )
-    }
 
     public update(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, isFlipped: boolean) {
-        this.draw(ctx, canvas, isFlipped)
+        let posX = isFlipped ? 7 - this.x : this.x
+        let posY = isFlipped ? 7 - this.y : this.y;
+        this.sprite?.update({ ctx, canvas, x: posX, y: posY });
     }
 
 }

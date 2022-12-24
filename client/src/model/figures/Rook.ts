@@ -17,7 +17,7 @@ export class Rook extends Figure implements IRook {
    
     constructor(x: number, y: number, color: Colors, sprites?: ISpritesObj, isFirstMove: boolean = true) {
         super(x, y, color, sprites);
-        this.sprite = color === Colors.BLACK ? sprites?.blackRook : sprites?.whiteRook;
+        this.spriteSrc = color === Colors.BLACK ? sprites?.blackRook : sprites?.whiteRook;
         this.type = FigureTypes.ROOK;
         this.isFirstMove = isFirstMove;
    

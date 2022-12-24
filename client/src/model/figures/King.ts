@@ -20,7 +20,7 @@ export class King extends Figure implements IKing {
 
     constructor(x: number, y: number, color: Colors, sprites?: ISpritesObj, isCastlingAvailable:boolean = true) {
         super(x, y, color, sprites);
-        this.sprite = color === Colors.BLACK ? sprites?.blackKing : sprites?.whiteKing;
+        this.spriteSrc = color === Colors.BLACK ? sprites?.blackKing : sprites?.whiteKing;
         this.type = FigureTypes.KING;
         this.isCastlingAvailable = isCastlingAvailable;     
     }

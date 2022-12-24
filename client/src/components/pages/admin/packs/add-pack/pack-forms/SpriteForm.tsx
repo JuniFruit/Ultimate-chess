@@ -1,31 +1,26 @@
 import { FC } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { packApi } from "../../../../../../store/api/pack.api";
-import { validURL } from "../../../../../../utils/validations.utils";
+import { onlyNumbers, validURL } from "../../../../../../utils/validations.utils";
 import { Button } from "../../../../../ui/button/Button";
 import Field from "../../../../../ui/field/Field";
-import { ISpriteForm } from "./Forms.interface";
+import { ISpriteForm, ISpriteFormComponent } from "./Forms.interface";
 import styles from './Forms.module.scss';
 
 const REQUIRED_MSG = 'Please provide a link to a sprite to continue';
 const VALID_MSG = 'Please provide a valid URL';
 
-const SpriteForm: FC<{ onSuccess: (id: number) => void; }> = ({ onSuccess }) => {
-
-    const [createSpritePack] = packApi.useCreateSpritePackMutation()
-    const { register, formState: { errors }, handleSubmit } = useForm<ISpriteForm>({
-        mode: "onChange"
-    })
+const SpriteForm: FC<ISpriteFormComponent> = ({ form: { handleSubmit, register, errors }, defaultValues }) => {
 
 
-    const onSubmit: SubmitHandler<ISpriteForm> = (data) => {
-        createSpritePack(data).unwrap().then(res => onSuccess(res.id));
-    }
+
+
+
 
     return (
         <form
             className={styles.form_wrapper}
-            onSubmit={(e) => { e.preventDefault(); handleSubmit(onSubmit)() }}>
+            onSubmit={(e) => { e.preventDefault(); handleSubmit(e) }}>
             <Field
                 {...register('blackBishop', {
                     required: REQUIRED_MSG,
@@ -35,7 +30,9 @@ const SpriteForm: FC<{ onSuccess: (id: number) => void; }> = ({ onSuccess }) => 
                     }
                 })}
                 placeholder={'Black Bishop'}
+                title={'Black Bishop'}
                 error={errors.blackBishop}
+                defaultValue={defaultValues?.blackBishop}
             />
             <Field
                 {...register('blackPawn', {
@@ -46,7 +43,10 @@ const SpriteForm: FC<{ onSuccess: (id: number) => void; }> = ({ onSuccess }) => 
                     }
                 })}
                 placeholder={'Black Pawn'}
+                title={'Black Pawn'}
                 error={errors.blackPawn}
+                defaultValue={defaultValues?.blackPawn}
+
             />
             <Field
                 {...register('blackKing', {
@@ -57,7 +57,11 @@ const SpriteForm: FC<{ onSuccess: (id: number) => void; }> = ({ onSuccess }) => 
                     }
                 })}
                 placeholder={'Black King'}
+                title={'Black King'}
+
                 error={errors.blackKing}
+                defaultValue={defaultValues?.blackKing}
+
             />
             <Field
                 {...register('blackRook', {
@@ -68,7 +72,11 @@ const SpriteForm: FC<{ onSuccess: (id: number) => void; }> = ({ onSuccess }) => 
                     }
                 })}
                 placeholder={'Black Rook'}
+                title={'Black Rook'}
+
                 error={errors.blackRook}
+                defaultValue={defaultValues?.blackRook}
+
             />
             <Field
                 {...register('blackQueen', {
@@ -79,7 +87,11 @@ const SpriteForm: FC<{ onSuccess: (id: number) => void; }> = ({ onSuccess }) => 
                     }
                 })}
                 placeholder={'Black Queen'}
+                title={'Black Queen'}
+
                 error={errors.blackQueen}
+                defaultValue={defaultValues?.blackQueen}
+
             />
             <Field
                 {...register('blackKnight', {
@@ -90,7 +102,11 @@ const SpriteForm: FC<{ onSuccess: (id: number) => void; }> = ({ onSuccess }) => 
                     }
                 })}
                 placeholder={'Black Knight'}
+                title={'Black Knight'}
+
                 error={errors.blackKnight}
+                defaultValue={defaultValues?.blackKnight}
+
             />
             <Field
                 {...register('whiteBishop', {
@@ -101,7 +117,11 @@ const SpriteForm: FC<{ onSuccess: (id: number) => void; }> = ({ onSuccess }) => 
                     }
                 })}
                 placeholder={'White Bishop'}
+                title={'White Bishop'}
+
                 error={errors.whiteBishop}
+                defaultValue={defaultValues?.whiteBishop}
+
             />
             <Field
                 {...register('whiteKing', {
@@ -112,7 +132,11 @@ const SpriteForm: FC<{ onSuccess: (id: number) => void; }> = ({ onSuccess }) => 
                     }
                 })}
                 placeholder={'White King'}
+                title={'White King'}
+
                 error={errors.whiteKing}
+                defaultValue={defaultValues?.whiteKing}
+
             />
             <Field
                 {...register('whiteKnight', {
@@ -123,7 +147,11 @@ const SpriteForm: FC<{ onSuccess: (id: number) => void; }> = ({ onSuccess }) => 
                     }
                 })}
                 placeholder={'White Knight'}
+                title={'White Knight'}
+
                 error={errors.whiteKnight}
+                defaultValue={defaultValues?.whiteKnight}
+
             />
             <Field
                 {...register('whitePawn', {
@@ -134,7 +162,11 @@ const SpriteForm: FC<{ onSuccess: (id: number) => void; }> = ({ onSuccess }) => 
                     }
                 })}
                 placeholder={'White Pawn'}
+                title={'White Pawn'}
+
                 error={errors.whitePawn}
+                defaultValue={defaultValues?.whitePawn}
+
             />
             <Field
                 {...register('whiteQueen', {
@@ -145,7 +177,11 @@ const SpriteForm: FC<{ onSuccess: (id: number) => void; }> = ({ onSuccess }) => 
                     }
                 })}
                 placeholder={'White Queen'}
+                title={'White Queen'}
+
                 error={errors.whiteQueen}
+                defaultValue={defaultValues?.whiteQueen}
+
             />
             <Field
                 {...register('whiteRook', {
@@ -156,17 +192,36 @@ const SpriteForm: FC<{ onSuccess: (id: number) => void; }> = ({ onSuccess }) => 
                     }
                 })}
                 placeholder={'White Rook'}
+                title={'White Rook'}
+
                 error={errors.whiteRook}
+                defaultValue={defaultValues?.whiteRook}
+
+            />
+            <Field
+                {...register('frames', {
+                    required: 'Please provide number of frames',
+                    pattern: {
+                        value: onlyNumbers,
+                        message: 'Only number is allowed'
+                    }
+                })}
+                placeholder={'Number of frames each sprite has'}
+                title={'Frames'}
+
+                error={errors.frames}
+                defaultValue={defaultValues?.frames}
+
             />
 
             <div className={styles.buttons}>
                 <Button>
-                    Create Sprites
+                    Save Sprites
                 </Button>
             </div>
 
         </form>
     )
-} 
+}
 
 export default SpriteForm

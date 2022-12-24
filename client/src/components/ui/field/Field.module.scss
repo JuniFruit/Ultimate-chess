@@ -1,11 +1,16 @@
 .input {
     @apply relative block;
 
+    .title {
+        @apply mb-2 text-main-200 opacity-90;
+        font-weight: 600;
+    }
+
     >input {
-        @apply rounded-lg py-3 px-2 outline-none appearance-none block text-white shadow-md transition-shadow bg-main-700 w-full;
+        @apply rounded-lg py-3 px-2 outline-none appearance-none block text-main-200 opacity-70 shadow-md transition-shadow bg-main-700 w-full;
         
         &:focus {
-            @apply shadow outline-none
+            @apply shadow outline-none opacity-100
         }
         
         &::placeholder {

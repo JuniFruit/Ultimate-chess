@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { useParams } from "react-router-dom";
+import { useHref, useParams } from "react-router-dom";
 import { Layout } from "../../layout/Layout";
 import { GameField } from "./field/Field";
 import { useGameRoom } from "./useGameRoom";
@@ -17,9 +17,9 @@ import { Announcer } from "./announcer/Announcer";
 
 
 const GameRoom: FC = () => {
-
+    const isUltimate = window.location.href.includes('_ult');
     const { id } = useParams()
-    const { field, status, data } = useGameRoom(id)
+    const { field, status, data } = useGameRoom(id, isUltimate)
 
     return (
         <Layout title="Ultimate Chess Game Room">

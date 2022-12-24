@@ -23,6 +23,7 @@ const PackForm: FC<IPackFormComponent> = ({form: {register, handleSubmit, errors
                         }
                     })}
                     placeholder={'Pack name'}
+                    title={'Name'}
                     error={errors.title}
                     defaultValue={defaultValues?.name}
                 />
@@ -35,6 +36,8 @@ const PackForm: FC<IPackFormComponent> = ({form: {register, handleSubmit, errors
                         }
                     })}
                     placeholder={'System name'}
+                    title={'System name'}
+
                     error={errors.sysName}
                     defaultValue={defaultValues?.sysName}
                 />
@@ -46,7 +49,9 @@ const PackForm: FC<IPackFormComponent> = ({form: {register, handleSubmit, errors
                             message: 'Please provide a valid link'
                         }
                     })}
-                    placeholder={'Pack preview'}
+                    placeholder={'Pack preview link'}
+                    title={'Preview'}
+
                     error={errors.preview}
                     defaultValue={defaultValues?.preview}
                 />
@@ -58,7 +63,9 @@ const PackForm: FC<IPackFormComponent> = ({form: {register, handleSubmit, errors
                             message: ERR_MSG
                         }
                     })}
-                    placeholder={'Pack path'}
+                    placeholder={'Sprite pack id'}
+                    title={'Path'}
+
                     error={errors.packPath?.id}
                     defaultValue={defaultValues?.packPath.id}
                 />

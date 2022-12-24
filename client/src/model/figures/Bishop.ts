@@ -12,7 +12,7 @@ export class Bishop extends Figure {
     constructor(x: number, y: number, color: Colors, sprites?: ISpritesObj) {
         super(x, y, color, sprites);
 
-        this.sprite = color === Colors.BLACK ? sprites?.blackBishop : sprites?.whiteBishop;
+        this.spriteSrc = color === Colors.BLACK ? sprites?.blackBishop : sprites?.whiteBishop;
         this.type = FigureTypes.BISHOP;     
     }
 

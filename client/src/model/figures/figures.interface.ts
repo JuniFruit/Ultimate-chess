@@ -1,9 +1,9 @@
-import { Direction } from "readline";
-import { SPRITES } from "../../assets/Packs/Default/sprites";
 import { IMoveOptions } from "../../constants/socketIO/ClientEvents.interface";
 import { IBoard } from "../Board";
 import { ICell, ICellInfo } from "../Cell";
 import { Colors } from "../colors.enum";
+import { ISprite } from "../effects/Sprite";
+import { Direction } from "../helper.enum";
 
 export enum FigureTypes {
     ROOK = 'r',
@@ -22,8 +22,8 @@ export interface ILegalMoveArg {
 
 export interface IFigureBase {
     readonly sprites?: ISpritesObj;
-    image?: HTMLImageElement;
-    sprite?: string;
+    spriteSrc?: string;
+    sprite?: ISprite;
     x: number;
     y: number;
     prevX: number;
@@ -43,8 +43,7 @@ export interface IFigureBase {
     getLegalMovesDiagonal: (arg: ILegalMoveArg) => void;
     addLegalMove: (cell: ICell) => boolean;
     update: (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, isFlipped: boolean) => void;
-    draw: (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, isFlipped: boolean) => void;
-    setImgSrc: () => void;
+    setSpriteObj: () => void;
     undo: () => void;
 }
 
@@ -53,7 +52,7 @@ export interface IFigure extends IFigureBase {
 }
 
 
-export interface IFigureInfo extends Pick<IFigure, "color" | "type" | "x" | "y" | "sprite" | "pos"> { }
+export interface IFigureInfo extends Pick<IFigure, "color" | "type" | "x" | "y" | "spriteSrc" | "pos"> { }
 
 export interface ILostFigure extends IFigureInfo {
     takenBy: IFigureInfo;
@@ -77,4 +76,18 @@ export interface IMovedFigure {
     figureMove: IFigureInfo;
 }
 
-export type ISpritesObj = typeof SPRITES;
+export interface ISpritesObj {
+    blackBishop: string;
+    whiteBishop: string;
+    blackKing: string;
+    whiteKing: string;
+    blackPawn: string;
+    whitePawn: string;
+    blackQueen: string;
+    whiteQueen: string;
+    blackRook: string;
+    whiteRook: string;
+    blackKnight: string;
+    whiteKnight: string;
+    frames: number;
+}

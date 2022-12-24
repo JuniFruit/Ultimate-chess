@@ -12,7 +12,7 @@ export class Knight extends Figure {
 
     constructor(x: number, y: number, color: Colors, sprites?: ISpritesObj) {
         super(x, y, color, sprites);
-        this.sprite = color === Colors.BLACK ? sprites?.blackKnight : sprites?.whiteKnight;
+        this.spriteSrc = color === Colors.BLACK ? sprites?.blackKnight : sprites?.whiteKnight;
         this.type = FigureTypes.KNIGHT;    
     }
 

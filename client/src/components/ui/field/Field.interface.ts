@@ -8,4 +8,6 @@ export interface IFieldProps {
 
 type InputPropsField = InputHTMLAttributes<HTMLInputElement> & IFieldProps
 
-export interface IField extends InputPropsField {}
+export interface IField extends InputPropsField {
+    title?:string
+}

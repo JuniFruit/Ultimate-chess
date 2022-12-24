@@ -51,8 +51,3 @@ export const getFilteredLostFigures = (lostFigures: ILostFigure[]) => {
 }
 
 
-export const getCellSize = (canvas: HTMLCanvasElement) => {
-    const w = canvas.width / 8;
-    const h = canvas.height / 8;
-    return { w, h }
-}

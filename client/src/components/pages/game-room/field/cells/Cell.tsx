@@ -69,10 +69,10 @@ export const Cell: FC<ICellComponent> = memo((
             {
                 figure && <Piece
 
-                    sprite={figure.sprite!}
+                    sprite={figure.spriteSrc!}
                     x={posX}
                     y={posY}
-                    key={`${figure.sprite} ${figure.x + figure.y}`}
+                    key={`${figure.spriteSrc} ${figure.x + figure.y}`}
                     isDraggedOver={isDraggedOver}
                     onClick={() => onSelect(cell)}                  
                     onDragStart={(e) => { if (!isSelected) {onSelect(cell)}; }}

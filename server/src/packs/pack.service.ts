@@ -46,24 +46,7 @@ export const PackService = {
         return packs;
     },
     async createSpritePack(data: ISpritePack) {
-        const lol = {
-            blackBishop: '',
-            whiteBishop: '',
-            blackKing: '',
-            whiteKing: '',
-            blackPawn: '',
-            whitePawn: '',
-            blackQueen: '',
-            whiteQueen: '',
-            blackRook: '',
-            whiteRook: '',
-            whiteKnight: '',
-            blackKnight: ''
-        };        
-       
-
-
-
+        
         const newSpritePack = await spriteRepository.create(data);
         await spriteRepository.save(newSpritePack);
         return newSpritePack.id;

@@ -7,10 +7,10 @@ import { useNavigate } from "react-router-dom";
 import { menuData } from "./menuData";
 
 
-const PlayChess: FC = () => {
+const PlayChess: FC<{ isUltimate?: boolean }> = ({ isUltimate = false }) => {
 
     const filteredData = menuData.map(item => {
-        if (item.link.includes('/game-room')) item.link = item.link + `${randomize()}`;
+        if (item.link.includes('/game-room')) item.link = item.link + `${randomize()}` + `${isUltimate ? '_ult' : ''}`;
         return item;
     })
 

@@ -6,12 +6,13 @@ import { useSocketConnect } from "../../../hooks/useSocketConnect";
 import { Board, IBoard } from "../../../model/Board";
 import { Colors } from "../../../model/colors.enum";
 import { ISpritesObj } from "../../../model/figures/figures.interface";
+import { BoardUlt, IBoardUlt } from "../../../model/ultimate/BoardUlt";
 import { assignSpritePack } from "../../../utils/game.utils";
 import { IPlayerInfo } from "../../ui/player/PlayerInfo.interface";
 
-export const useGameRoom = (id?: string) => {
+export const useGameRoom = (id?: string, isUltimate: boolean = false) => {
 
-    const [board, setBoard] = useState<IBoard>(new Board())
+    const [board, setBoard] = useState<IBoard | IBoardUlt>(new Board())
     const [isReadyToStart, setIsReadyToStart] = useState(false);
     const [result, setResult] = useState<IResultPayload | null>(null);
     const [enemyUser, setEnemyUser] = useState<IPlayerInfo>();
@@ -44,13 +45,13 @@ export const useGameRoom = (id?: string) => {
 
     const drawBoard = useCallback((boardData: IBoardData, whiteTeamSprites?: ISpritesObj, blackTeamSprites?: ISpritesObj) => {
 
-        const newBoard = new Board(whiteTeamSprites, blackTeamSprites);
+        const newBoard = isUltimate ? new BoardUlt(whiteTeamSprites, blackTeamSprites) : new Board(whiteTeamSprites, blackTeamSprites);
         newBoard.startNewGame(boardData.FEN);
+        newBoard.getFigures();
         newBoard.states = {
             ...newBoard.states,
             ...boardData.board.states
         }
-        // newBoard.figures.forEach(figure => figure.setImgSrc());
         newBoard.updateAllLegalMoves();
         setBoard(prev => newBoard);
 

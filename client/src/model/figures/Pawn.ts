@@ -28,7 +28,7 @@ export class Pawn extends Figure implements IPawn {
 
     constructor(x: number, y: number, color: Colors, sprites?: ISpritesObj, isEnPassant: boolean = false) {
         super(x, y, color, sprites);
-        this.sprite = color === Colors.BLACK ? sprites?.blackPawn : sprites?.whitePawn;
+        this.spriteSrc = color === Colors.BLACK ? sprites?.blackPawn : sprites?.whitePawn;
         this.type = FigureTypes.PAWN;
         this.isFirstMove = this.y === 1 || this.y === 6;
         this.isEnPassant = isEnPassant;

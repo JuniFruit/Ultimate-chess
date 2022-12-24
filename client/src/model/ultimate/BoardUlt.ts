@@ -1,6 +1,7 @@
 import { Board, IBoard } from "../Board";
 import { Colors } from "../colors.enum";
 import { FigureTypes } from "../figures/figures.interface";
+import { CellUlt } from "./CellUlt";
 import { BishopUlt } from "./figures/BishopUlt";
 import { IFigureUlt } from "./figures/FiguresUlt";
 import { KingUlt } from "./figures/KingUlt";
@@ -21,12 +22,19 @@ export class BoardUlt extends Board implements IBoardUlt {
 
     public startNewGame(fen: string): void {
         super.startNewGame(fen);
-
+        this._convertBoard();
     }
 
-    private _convertFigures() {
-        this.figures.forEach(figure => {
-
+    private _convertBoard() {
+        this.cells.forEach((row, y) => {
+            row.forEach((cell, x) => {
+                const newCell = new CellUlt({ ...cell });
+                if (cell.figure) {
+                    const char = cell.figure.color === Colors.BLACK ? cell.figure.type : cell.figure.type.toUpperCase();
+                    newCell.figure = this.createFigure(char, cell.x, cell.y)
+                }
+                this.cells[y][x] = newCell;
+            })
         })
     }
 
@@ -63,6 +71,13 @@ export class BoardUlt extends Board implements IBoardUlt {
         }
     }
 
+    public updateAllLegalMoves(): void {
+        super.updateAllLegalMoves();
+    }
+
+    public updateEnemyLegalMoves(): void {
+        super.updateEnemyLegalMoves()
+    }
 
 
 

@@ -22,6 +22,7 @@ const App: FC = () => {
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/play' element={<PlayChess />} />
+        <Route path='/play-ultimate' element={<PlayChess isUltimate={true}/>} />
         <Route path='/game-room/:id' element={<GameRoom />} />
         <Route path='/registration' element={<RegisterPage />} />
         <Route path='/packs' element={<Packs />} />

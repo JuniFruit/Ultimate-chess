@@ -12,31 +12,31 @@ export const MoveFeedItem: FC<IMoveFeedItem> = ({ piece, listCount }) => {
     return (
         <>
             <span>{listCount}.</span>
-            <PieceInfo sprite={getDefaultSprite(piece.figureMove)} key={piece.to.x + piece.to.y} title={'piece'} />
+            <PieceInfo spriteSrc={getDefaultSprite(piece.figureMove)} key={piece.to.x + piece.to.y} title={'piece'} />
             <p>{`${Positions[piece.to.x]}${7 - piece.to.y + 1}`}</p>
             {piece.figureTaken
                 ?
                 <>
                     <p>takes</p>
-                    <PieceInfo sprite={getDefaultSprite(piece.figureTaken)} title={'piece'}/>
+                    <PieceInfo spriteSrc={getDefaultSprite(piece.figureTaken)} title={'piece'}/>
                 </>
                 : null
             }
             {piece.options.isCastling
                 ?
-                <PieceInfo sprite={iconsGeneral.castling} title={'castling'} />
+                <PieceInfo spriteSrc={iconsGeneral.castling} title={'castling'} />
 
                 : null
             }
             {piece.options.isPromotion
                 ?
-                <PieceInfo sprite={iconsGeneral.promotion} title={'promotion'} />
+                <PieceInfo spriteSrc={iconsGeneral.promotion} title={'promotion'} />
                 : null
 
             }
             {piece.options.isEnPassant
                 ?
-                <PieceInfo sprite={iconsGeneral.enPassant} title={'en passant'} />
+                <PieceInfo spriteSrc={iconsGeneral.enPassant} title={'en passant'} />
                 : null
 
             }

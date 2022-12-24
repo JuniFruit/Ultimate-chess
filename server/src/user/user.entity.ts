@@ -19,7 +19,7 @@ export class UserEntity extends BaseEntity {
     @JoinColumn({ name: 'pack_in_use' })
     packInUse!: PacksEntity
 
-    @ManyToMany(() => PacksEntity, pack => pack.owner)
+    @ManyToMany(() => PacksEntity, pack => pack.owner, {onUpdate: 'CASCADE'})
     @JoinTable()
     packs!: PacksEntity[]
 

@@ -43,12 +43,29 @@ router.post('/create', async (req, res) => {
         res.status(500).send({ message: error.message })
     }
 })
+router.get('/sprite/by-id/:id', async (req, res) => {
+    try {
+        const pack = await PackService.getSpritePackById(Number(req.params.id));
+        res.send(pack);
+    } catch (error: any) {
+        res.status(500).send({ message: error.message })
+    }
+})
 
 router.post('/sprite/create', async (req, res) => {
     try {
         const result = await PackService.createSpritePack(req.body);
         console.log(result);
         res.send({id: result});
+    } catch (error: any) {
+        res.status(500).send({ message: error.message })
+    }
+})
+
+router.put('/sprite/update/:id', async (req, res) => {
+    try {
+        const result = await PackService.updateSpritePack(req.body, Number(req.params.id));
+        res.send(result);
     } catch (error: any) {
         res.status(500).send({ message: error.message })
     }

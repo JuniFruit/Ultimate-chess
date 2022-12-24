@@ -46,7 +46,7 @@ export const PackService = {
         return packs;
     },
     async createSpritePack(data: ISpritePack) {
-        
+
         const newSpritePack = await spriteRepository.create(data);
         await spriteRepository.save(newSpritePack);
         return newSpritePack.id;
@@ -74,6 +74,29 @@ export const PackService = {
             ...pack, ...data, packPath: {
                 id: Number(data.packPath.id)
             }
+        })
+    },
+
+    async getSpritePackById(spritePackId: number) {
+        const spritePack = await spriteRepository.findOne({
+            where: {
+                id: spritePackId
+            },
+            relations: {
+                owned: true
+            }
+
+        });
+        if (!spritePack) throw new Error('Such sprite pack doesn\'t exist');
+        return spritePack;
+
+    },
+
+    async updateSpritePack(data: ISpritePack, id: number) {
+        const spritePack = await this.getSpritePackById(id);
+
+        return await spriteRepository.save({
+            ...spritePack, ...data
         })
     }
 }

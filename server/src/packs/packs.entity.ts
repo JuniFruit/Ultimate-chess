@@ -7,19 +7,19 @@ import { SpriteEntity } from "./sprite.entity";
 @Entity({name: 'Packs'})
 export class PacksEntity extends BaseEntity {
 
-    @OneToOne(() => SpriteEntity, sprite => sprite.id)
-    @JoinColumn()
+    @OneToOne(() => SpriteEntity, sprite => sprite.owned, {onDelete: 'CASCADE', onUpdate: 'CASCADE'})
+    @JoinColumn({name: 'pack_path'})
     packPath!: SpriteEntity;
 
     @Column({default: ''})
     preview!: string;
 
-    @Column()
+    @Column({default: ''})
     title!:string;
 
-    @Column({name: 'sys_name'})
+    @Column({name: 'sys_name', default: 'undefined'})
     sysName!: string;
 
-    @ManyToMany(() => UserEntity, user => user.packs)
+    @ManyToMany(() => UserEntity, user => user.packs, {onDelete: 'RESTRICT'})
     owner!: UserEntity[]
 }

@@ -1,8 +1,11 @@
-import {Column, Entity} from 'typeorm';
+import {Column, Entity, OneToOne, PrimaryColumn} from 'typeorm';
 import { BaseEntity } from '../utils/base';
+import { PacksEntity } from './packs.entity';
 
 @Entity({name: 'Sprite'})
 export class SpriteEntity extends BaseEntity {
+    @OneToOne(() => PacksEntity, pack => pack.packPath, {onDelete: 'CASCADE', onUpdate: 'CASCADE'})
+    owned!: PacksEntity;
     @Column({name: 'black_bishop'})
     blackBishop!: string;
     @Column({name: 'white_bishop'})

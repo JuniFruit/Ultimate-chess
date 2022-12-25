@@ -6,9 +6,20 @@ import { getCellSize, getFlippedPos } from "../../../../../model/helpers";
 import { drawCircle, drawRect } from "./utils/canvas.utils";
 import { ICell } from "../../../../../model/Cell";
 import { COLORS } from "./utils/colors.utils";
+import { ICellUlt } from "../../../../../model/ultimate/CellUlt";
 
 
-export const useCanvasField = ({ props: { cells, board, onSelect, premoves, isFlipped, selected } }: ICanvasField) => {
+export const useCanvasField = (
+    { props: {
+        cells,
+        board,
+        onSelect,
+        premoves,
+        isFlipped,
+        selected,
+        ultimateStates
+    }
+    }: ICanvasField) => {
 
     const [isDragging, setIsDragging] = useState(false);
     const draggingPiece = useRef<IFigure | null>(null);
@@ -170,7 +181,7 @@ export const useCanvasField = ({ props: { cells, board, onSelect, premoves, isFl
         draggingPiece.current.x = isFlipped ? 7 - x + offset : x - offset;
         draggingPiece.current.y = isFlipped ? 7 - y + offset : y - offset;
 
-    }, [isFlipped])
+    }, [isFlipped])  
 
     const handleMouseMove: MouseEventHandler<HTMLCanvasElement> = useCallback((e) => {
         e.preventDefault()
@@ -194,16 +205,24 @@ export const useCanvasField = ({ props: { cells, board, onSelect, premoves, isFl
         e.preventDefault()
         const { x, y } = _getCellPosFromMouse(e);
         const target = cells[y][x];
+
+        if (ultimateStates.isSkillTargetSelecting) {
+            return ultimateStates.onSkillTargetSelect(target as ICellUlt);
+        }
+
+
         draggingPiece.current = target.figure
         dragStartCell.current = cells[y][x];
         _setPieceToMouse(e);
 
         setIsDragging(prev => true);
         onSelect(target)
-    }, [isDragging, cells.length, selected])
+    }, [isDragging, cells.length, selected, ultimateStates.isSkillTargetSelecting])
 
 
     const handleMouseUp: MouseEventHandler<HTMLCanvasElement> = useCallback((e) => {
+        if (ultimateStates.isSkillTargetSelecting) return; // only mouseDown handles skill target selection
+
         e.preventDefault()
 
         if (!draggingPiece.current || !dragStartCell.current) return;
@@ -216,7 +235,7 @@ export const useCanvasField = ({ props: { cells, board, onSelect, premoves, isFl
         }
         clearDragging();
 
-    }, [isDragging, cells.length])
+    }, [isDragging, cells.length, ultimateStates.isSkillTargetSelecting])
 
 
     const clearDragging = useCallback(() => {

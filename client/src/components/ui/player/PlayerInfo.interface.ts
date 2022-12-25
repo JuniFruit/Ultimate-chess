@@ -10,4 +10,6 @@ export interface IPlayerInfo extends Pick<IUser, 'avatarLink' | 'id' | "winsCoun
     // winsCount:number;
     // lossesCount:number;
     packInUse?: ISpritesObj;
+    isUltimate: boolean;
+    onBookClick: () => void;
 }

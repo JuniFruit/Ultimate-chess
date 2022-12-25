@@ -1,12 +1,14 @@
 import { IBoard } from "../Board";
 import { ICell } from "../Cell";
 import { Colors } from "../colors.enum";
+import { IBoardUlt } from "../ultimate/BoardUlt";
+import { ICellUlt } from "../ultimate/CellUlt";
 import { Figure } from "./Figures";
 import { FigureTypes, IFigure, ISpritesObj } from "./figures.interface";
 
 export interface IRook extends IFigure {
     isFirstMove?: boolean;
-    getCastleTarget: (board: IBoard) => ICell;
+    getCastleTarget: (board: IBoard | IBoardUlt) => ICell;
 }
 
 
@@ -23,16 +25,13 @@ export class Rook extends Figure implements IRook {
    
     }
 
-    public getLegalMoves(board: IBoard) {
+    public getLegalMoves(board: IBoard | IBoardUlt) {
         super.clearMoves()
         super.getLegalMovesHorizontal({ board, numCell: 8 });
         super.getLegalMovesVertical({ board, numCell: 8 });
-
-        super.filterUncheckingMoves(board);
-
     }
 
-    public moveFigure(target: ICell, board: IBoard, isFake: boolean = false): void {
+    public moveFigure(target: ICell | ICellUlt, board: IBoard | IBoardUlt, isFake: boolean = false): void {
         super.moveFigure(target, board, isFake);
 
         if (isFake) return;
@@ -40,7 +39,7 @@ export class Rook extends Figure implements IRook {
         this.isFirstMove = false;
     }
 
-    public getCastleTarget(board: IBoard) {
+    public getCastleTarget(board: IBoard | IBoardUlt) {
 
         let moveValue = 0;
         if (this.x === 0) moveValue = 3;

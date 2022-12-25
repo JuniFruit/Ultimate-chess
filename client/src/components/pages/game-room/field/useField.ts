@@ -20,7 +20,6 @@ export const useField = ({ board, setBoard, myColor, isObserver }: IUseField) =>
     const { handleSendMove } = useIOField({ board, setBoard, isObserver });
 
     const handleSelect = useCallback((cell: ICell | ICellUlt) => {
-        console.log(cell);
         if (isPromotion || board.states.isGameOver) return;
         if (isObserver) return setSelectedCell(prev => cell);
 

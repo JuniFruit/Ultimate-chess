@@ -36,6 +36,7 @@ export interface IBoard {
     undo: () => void;
     incrementMoveCount: () => void;
     moveFigure: (from: ICell, to: ICell, options: IMoveOptions) => void;
+
 }
 
 export interface IBoardStates {
@@ -112,7 +113,10 @@ export class Board implements IBoard {
     }
 
     public updateAllLegalMoves() {
-        this.figures.forEach(figure => figure.getLegalMoves(this));
+        this.figures.forEach(figure => {
+            figure.getLegalMoves(this);
+            figure.filterUncheckingMoves(this)
+        });
 
     }
 
@@ -270,11 +274,9 @@ export class Board implements IBoard {
 
     }
 
-    public moveFigure (from: ICell, to: ICell, options: IMoveOptions) {
-        // const start = this.getCell(from.x, from.y);
-        // const target = this.getCell(to.x, to.y);
+    public moveFigure(from: ICell, to: ICell, options: IMoveOptions) {
         from.moveFigure(to, this, options);
-    } 
+    }
 
     public convertToFEN() {
 
@@ -308,7 +310,7 @@ export class Board implements IBoard {
     public receiveMove({ from, to, options }: IMove) {
         const start = this.getCell(from.x, from.y);
         const target = this.getCell(to.x, to.y);
-       
+
         if (!start || !target) return;
         this.incrementMoveCount(); // it's important to update move count before moving figure 
         start.moveFigure(target, this, { isFake: false, ...options });
@@ -323,8 +325,8 @@ export class Board implements IBoard {
         currentCell.undo();
         initialCell.undo();
 
-        if (lastMove.options.isEnPassant) {       
-            const takenCell = this.getCell(lastMove.figureTaken?.x!, lastMove.figureTaken?.y!);       
+        if (lastMove.options.isEnPassant) {
+            const takenCell = this.getCell(lastMove.figureTaken?.x!, lastMove.figureTaken?.y!);
             takenCell.undo();
         }
     }

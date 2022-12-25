@@ -3,6 +3,8 @@ import { ICell } from "../Cell";
 import { Colors } from "../colors.enum";
 import { Direction } from "../helper.enum";
 import { isInBounds } from "../helpers";
+import { IBoardUlt } from "../ultimate/BoardUlt";
+import { ICellUlt } from "../ultimate/CellUlt";
 import { Figure } from "./Figures";
 import { FigureTypes, IFigure, ISpritesObj } from "./figures.interface";
 
@@ -12,8 +14,8 @@ export interface IPawn extends IFigure {
     cellsAdvanced: number;
     lastMove: number; // on which global move count the move was made
     isEnPassant: boolean
-    canEnPassant: (target: ICell, board: IBoard) => boolean;
-    
+    canEnPassant: (target: ICell, board: IBoard | IBoardUlt) => boolean;
+
 }
 
 
@@ -34,7 +36,7 @@ export class Pawn extends Figure implements IPawn {
         this.isEnPassant = isEnPassant;
     }
 
-    public moveFigure(target: ICell, board: IBoard, isFake?: boolean): void {
+    public moveFigure(target: ICell | ICellUlt, board: IBoard | IBoardUlt, isFake?: boolean): void {
 
         const prevY = this.y;
         super.moveFigure(target, board, isFake);
@@ -46,7 +48,7 @@ export class Pawn extends Figure implements IPawn {
         this.isEnPassant = this.cellsAdvanced === 3;
     }
 
-    public getLegalMoves(board: IBoard) {
+    public getLegalMoves(board: IBoard | IBoardUlt) {
         super.clearMoves()
 
         const direction = this.color === Colors.BLACK ? Direction.POS : Direction.NEG;
@@ -55,11 +57,10 @@ export class Pawn extends Figure implements IPawn {
         super.getLegalMovesVertical({ board, direction, numCell: numCells });
         super.getLegalMovesDiagonal({ board, direction, numCell: 1 });
         this._addEnPassantMove(board);
-        super.filterUncheckingMoves(board);
 
     }
 
-    public addLegalMove(cell: ICell): boolean {    
+    public addLegalMove(cell: ICell | ICellUlt): boolean {
 
         if (cell.isEmpty() && this.x === cell.x) {
             this.legalMoves.push(super.convertToLegalMove(cell))
@@ -71,7 +72,7 @@ export class Pawn extends Figure implements IPawn {
         return true;
     }
 
-    public canEnPassant(target: ICell, board: IBoard) {
+    public canEnPassant(target: ICell | ICellUlt, board: IBoard | IBoardUlt) {
         if (!this.isEnPassant) return false;
         if (!target.isEmpty()) return false;
 
@@ -87,11 +88,11 @@ export class Pawn extends Figure implements IPawn {
         return true;
     }
 
-    private _addEnPassantMove(board: IBoard) {
+    private _addEnPassantMove(board: IBoard | IBoardUlt) {
 
         const dirY = this.color === Colors.BLACK ? Direction.POS : Direction.NEG;
         if (isInBounds(this.x + 1, this.y + dirY)) {
-            const targetRight = board.getCell(this.x + 1, this.y + dirY);          
+            const targetRight = board.getCell(this.x + 1, this.y + dirY);
             if (this.canEnPassant(targetRight, board)) this.legalMoves.push(super.convertToLegalMove(targetRight));
         }
         if (isInBounds(this.x - 1, this.y + dirY)) {

@@ -21,7 +21,8 @@ export const GameField: FC<IField> = (props) => {
                 onSelect={handlers.handleSelect}
                 selected={status.selectedCell}
                 premoves={status.premoves}   
-                board={props.board}            
+                board={props.board}      
+                ultimateStates={props.ultimateStates}      
             />
 
             {status.isPromotion && <PromotionWindow handlePromotion={handlers.handlePromotion} />}

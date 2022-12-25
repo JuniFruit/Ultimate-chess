@@ -6,7 +6,7 @@ import { ICellWrapper } from './Cell.interface';
 import styles from '../Field.module.scss';
 import CanvasField from '../canvas/CanvasField';
 
-export const CellsWrapper: FC<ICellWrapper> = ({ cells, onSelect, isFlipped, selected, premoves, board }) => {
+export const CellsWrapper: FC<ICellWrapper> = ({ cells, onSelect, isFlipped, selected, premoves, board, ultimateStates }) => {
 
     const direction = (ind: number) => {
         return isFlipped ? 7 - ind : ind;
@@ -15,7 +15,7 @@ export const CellsWrapper: FC<ICellWrapper> = ({ cells, onSelect, isFlipped, sel
     return (
         <div className={styles.cells}>
             <CanvasField 
-                props={{cells, onSelect, isFlipped, selected, premoves, board}}
+                props={{cells, onSelect, isFlipped, selected, premoves, board, ultimateStates}}
                 className={styles.canvas}
             />
             {/* {

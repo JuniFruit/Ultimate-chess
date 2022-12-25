@@ -3,6 +3,8 @@ import { ICell } from "../Cell";
 import { Colors } from "../colors.enum";
 import { Direction } from "../helper.enum";
 import { isInBounds } from "../helpers";
+import { IBoardUlt } from "../ultimate/BoardUlt";
+import { ICellUlt } from "../ultimate/CellUlt";
 import { Figure } from "./Figures";
 import { FigureTypes, IFigure, ILegalMove, ISpritesObj } from "./figures.interface";
 import { IRook } from "./Rook";
@@ -25,17 +27,16 @@ export class King extends Figure implements IKing {
         this.isCastlingAvailable = isCastlingAvailable;     
     }
 
-    public getLegalMoves(board: IBoard) {
+    public getLegalMoves(board: IBoard | IBoardUlt) {
         super.clearMoves()
         super.getLegalMovesHorizontal({ board, numCell: 1 });
         super.getLegalMovesVertical({ board, numCell: 1 });
         super.getLegalMovesDiagonal({ board, numCell: 1 });
         this.legalMoves = this.legalMoves.filter(move => !this._isEnemyKingNear(move, board));
-        super.filterUncheckingMoves(board);
 
     }
 
-    private _isEnemyKingNear(target: ILegalMove, board: IBoard) {
+    private _isEnemyKingNear(target: ILegalMove, board: IBoard | IBoardUlt) {
 
         if (this._isEnemyKing(board.getCell(target.x + 1, target.y))) return true;
         if (this._isEnemyKing(board.getCell(target.x - 1, target.y))) return true;
@@ -54,14 +55,14 @@ export class King extends Figure implements IKing {
 
     }
 
-    private _isEnemyKing(target: ICell): boolean {
+    private _isEnemyKing(target: ICell | ICellUlt): boolean {
 
         if (!target) return false;
 
         return target.figure?.type === FigureTypes.KING && target.figure.color !== this.color;
     }
 
-    public moveFigure(target: ICell, board: IBoard, isFake?: boolean) {
+    public moveFigure(target: ICell | ICellUlt, board: IBoard | IBoardUlt, isFake?: boolean) {
         super.moveFigure(target, board, isFake);
 
         if (isFake) return;
@@ -69,7 +70,7 @@ export class King extends Figure implements IKing {
         this.isCastlingAvailable = false;
     }
 
-    public canPerformCastle(target: ICell, board: IBoard) {
+    public canPerformCastle(target: ICell | ICellUlt, board: IBoard | IBoardUlt) {
         // check if none of the pieces moved and they are on the same row
         if (!this.isCastlingAvailable || target.figure?.type !== FigureTypes.ROOK) return false;
         if (this.color !== target.figure.color) return false;

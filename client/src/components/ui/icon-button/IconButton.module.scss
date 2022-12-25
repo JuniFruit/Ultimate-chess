@@ -1,0 +1,9 @@
+.icon_button {
+    @apply py-1.5 rounded-lg px-5 text-main-200 opacity-90 transition-colors duration-150 hover:opacity-100;
+    font-size: 1.2rem; 
+    font-weight: 600;
+
+    &:disabled {
+        @apply text-main-200 bg-main-500 opacity-60;
+    }
+}

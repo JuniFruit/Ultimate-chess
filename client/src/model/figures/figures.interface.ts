@@ -4,6 +4,8 @@ import { ICell, ICellInfo } from "../Cell";
 import { Colors } from "../colors.enum";
 import { ISprite } from "../effects/Sprite";
 import { Direction } from "../helper.enum";
+import { IBoardUlt } from "../ultimate/BoardUlt";
+import { ICellUlt } from "../ultimate/CellUlt";
 
 export enum FigureTypes {
     ROOK = 'r',
@@ -15,7 +17,7 @@ export enum FigureTypes {
 }
 
 export interface ILegalMoveArg {
-    board: IBoard;
+    board: IBoard | IBoardUlt;
     direction?: Direction;
     numCell: number;
 }
@@ -34,14 +36,14 @@ export interface IFigureBase {
     movesCount: number;
     color: Colors;
     legalMoves: ILegalMove[];
-    moveFigure: (target: ICell, board: IBoard, isFake?: boolean) => void;
-    getLegalMoves: (board: IBoard) => void;
+    moveFigure: (target: ICell | ICellUlt, board: IBoard | IBoardUlt, isFake?: boolean) => void;
+    getLegalMoves: (board: IBoard | IBoardUlt) => void;
     clearMoves: () => void;
-    filterUncheckingMoves: (board: IBoard) => void
+    filterUncheckingMoves: (board: IBoard | IBoardUlt) => void
     getLegalMovesVertical: (arg: ILegalMoveArg) => void;
     getLegalMovesHorizontal: (arg: ILegalMoveArg) => void;
     getLegalMovesDiagonal: (arg: ILegalMoveArg) => void;
-    addLegalMove: (cell: ICell) => boolean;
+    addLegalMove: (cell: ICell | ICellUlt) => boolean;
     update: (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, isFlipped: boolean) => void;
     setSpriteObj: () => void;
     undo: () => void;

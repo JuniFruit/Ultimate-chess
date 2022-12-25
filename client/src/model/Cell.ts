@@ -3,9 +3,11 @@ import { IBoard } from "./Board";
 import { Colors } from "./colors.enum";
 import { FigureTypes, IFigure, IMovedFigure } from "./figures/figures.interface";
 import { IKing } from "./figures/King";
+import { IPawn } from "./figures/Pawn";
 import { IRook } from "./figures/Rook";
 import { getFigureInfo } from "./helpers";
 import { Positions } from "./positions";
+import { IFigureUlt } from "./ultimate/figures/FiguresUlt";
 
 export interface ICell {
     readonly x: number;
@@ -160,7 +162,6 @@ export class Cell implements ICell {
     }
 
     private _handleAddMove(target: ICell, board: IBoard, options: IMoveOptions) {
-
         let moveToAdd: IMovedFigure = {
             from: {
                 x: this.x,

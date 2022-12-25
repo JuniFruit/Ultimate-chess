@@ -20,7 +20,6 @@ export const useIOField = ({ board, setBoard, isObserver }: IUseIOField) => {
 
     const handleReceiveMove = useCallback((move: IMove) => {
         board.receiveMove(move);
-        // board.figures.forEach(figure => figure.setImgSrc());
         handleMoveSound(move);
         board.states.isFirstMove = false;
         board.swapPlayer();

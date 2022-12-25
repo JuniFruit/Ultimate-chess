@@ -2,6 +2,7 @@ import { IBoard } from "../Board";
 import { Colors } from "../colors.enum";
 import { Direction } from "../helper.enum";
 import { isInBounds } from "../helpers";
+import { IBoardUlt } from "../ultimate/BoardUlt";
 import { Figure } from "./Figures";
 import { FigureTypes, IFigure, ISpritesObj } from "./figures.interface";
 
@@ -16,7 +17,7 @@ export class Knight extends Figure {
         this.type = FigureTypes.KNIGHT;    
     }
 
-    public getLegalMoves(board: IBoard) {
+    public getLegalMoves(board: IBoard | IBoardUlt) {
         super.clearMoves()
 
         this._checkMoves(board, 1, 2, Direction.POS, Direction.POS)
@@ -27,11 +28,10 @@ export class Knight extends Figure {
         this._checkMoves(board, 1, 2, Direction.POS, Direction.NEG)
         this._checkMoves(board, 2, 1, Direction.NEG, Direction.POS)
         this._checkMoves(board, 2, 1, Direction.POS, Direction.NEG)
-        super.filterUncheckingMoves(board);
 
     }
 
-    private _checkMoves(board: IBoard, rangeX: number, rangeY: number, dirX: Direction, dirY: Direction) {
+    private _checkMoves(board: IBoard | IBoardUlt, rangeX: number, rangeY: number, dirX: Direction, dirY: Direction) {
 
         if (isInBounds(this.x - rangeX * dirX, this.y - rangeY * dirY)) {
             let current = board.getCell(this.x - rangeX * dirX, this.y - rangeY * dirY);      

@@ -3,6 +3,7 @@ import { ICell, IPremove } from "../../../../../model/Cell";
 import { Colors } from "../../../../../model/colors.enum";
 import { IFigure, IMovedFigure } from "../../../../../model/figures/figures.interface";
 import { IBoardUlt } from "../../../../../model/ultimate/BoardUlt";
+import { IFieldUltimateStates } from "../Field.interface";
 
 export interface ICellComponent {
     color: Colors;
@@ -21,4 +22,5 @@ export interface ICellWrapper extends Pick<ICellComponent, "onSelect" | "selecte
     isFlipped: boolean;
     premoves: IPremove[];
     board: IBoard | IBoardUlt;
+    ultimateStates: IFieldUltimateStates;
 }

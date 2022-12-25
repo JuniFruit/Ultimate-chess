@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { useHref, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Layout } from "../../layout/Layout";
 import { GameField } from "./field/Field";
 import { useGameRoom } from "./useGameRoom";
@@ -14,19 +14,29 @@ import { Requests } from "../../../constants/constants";
 import { ConfirmModal } from "./modals/ConfirmModal";
 import { TimerHandler } from "./utils/TimerHandler/TimerHandler";
 import { Announcer } from "./announcer/Announcer";
+import { useUltimate } from "./useUltimate";
+import { SkillBook } from "../../ui/skill-book/SkillBook";
 
 
 const GameRoom: FC = () => {
     const isUltimate = window.location.href.includes('_ult');
     const { id } = useParams()
-    const { field, status, data } = useGameRoom(id, isUltimate)
+    const { field, status, data } = useGameRoom(id, isUltimate);
+    const { ultHandlers, ultStatus } = useUltimate({ ...field, ...status });
 
     return (
         <Layout title="Ultimate Chess Game Room">
             <div className={styles.room_wrapper}>
                 <div className={styles.board_wrapper}>
                     <div className={styles.player_bar}>
-                        {data.enemyUser && <PlayerInfo key={data.enemyUser?.username} {...data.enemyUser} />}
+                        {
+                            data.enemyUser && <PlayerInfo
+                                key={'enemyInfo'}
+                                {...data.enemyUser}
+                                isUltimate={isUltimate}
+                                onBookClick={ultHandlers.handleToggleSkillBook}
+                            />
+                        }
                         {
                             status.isReadyToStart && <TimerHandler
                                 states={field.board.states}
@@ -42,9 +52,23 @@ const GameRoom: FC = () => {
                         setBoard={field.setBoard}
                         myColor={status.myColor}
                         isObserver={status.isObserver}
+                        ultimateStates={
+                            {
+                                onSkillTargetSelect: ultHandlers.handlePerformSkill,
+                                isUltimate: isUltimate,
+                                isSkillTargetSelecting: ultStatus.isSkillTargetSelecting
+                            }
+                        }
                     />
                     <div className={styles.player_bar}>
-                        {data.clientUser && <PlayerInfo key={data.clientUser?.username} {...data.clientUser} />}
+                        {
+                            data.clientUser && <PlayerInfo
+                                key={'clientInfo'}
+                                {...data.clientUser}
+                                isUltimate={isUltimate}
+                                onBookClick={ultHandlers.handleToggleSkillBook}
+                            />
+                        }
                         {
                             status.isReadyToStart && <TimerHandler
                                 states={field.board.states}
@@ -55,10 +79,6 @@ const GameRoom: FC = () => {
 
                             />
                         }
-
-
-
-
                     </div>
                 </div>
                 <MatchInfo
@@ -70,10 +90,13 @@ const GameRoom: FC = () => {
                     states={field.board.states}
                     isObserver={status.isObserver}
                 />
-                <Announcer 
-                    {...{players: {client: {...data.clientUser!},opponent: {...data.enemyUser!}}, 
-                    states: {...field.board.states}, myColor: status.myColor}}
+                <Announcer
+                    {...{
+                        players: { client: { ...data.clientUser! }, opponent: { ...data.enemyUser! } },
+                        states: { ...field.board.states }, myColor: status.myColor
+                    }}
                 />
+                {ultStatus.isSkillBookOpen && <SkillBook onSkillSelect={ultHandlers.handleSetChosenSkill} />}
             </div>
             <ErrorModal />
             <GameOverModal

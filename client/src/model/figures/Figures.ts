@@ -5,6 +5,8 @@ import { ISprite, Sprite } from "../effects/Sprite";
 import { Direction } from "../helper.enum";
 import { getFigureInfo, isInBounds } from "../helpers";
 import { Positions } from "../positions";
+import { IBoardUlt } from "../ultimate/BoardUlt";
+import { ICellUlt } from "../ultimate/CellUlt";
 import { IFigure, IFigureBase, IFigureInfo, ILegalMove, ILegalMoveArg, ISpritesObj } from "./figures.interface";
 
 
@@ -57,7 +59,7 @@ export class Figure implements IFigureBase {
         this.movesCount++;
     }
 
-    public filterUncheckingMoves(board: IBoard) {
+    public filterUncheckingMoves(board: IBoard | IBoardUlt) {
         if (this.color !== board.states.currentPlayer) return;
         this.legalMoves = [...this.legalMoves
             .filter(move => board.getCell(this.x, this.y).isUncheckingMove(board.getCell(move.x, move.y), board))]
@@ -126,7 +128,7 @@ export class Figure implements IFigureBase {
     }
 
 
-    public addLegalMove(cell: ICell) {
+    public addLegalMove(cell: ICell | ICellUlt) {
 
         if (cell.isEmpty()) {
             this.legalMoves.push(this.convertToLegalMove(cell));
@@ -143,11 +145,11 @@ export class Figure implements IFigureBase {
         this.legalMoves = [];
     }
 
-    public getLegalMoves(board: IBoard) {
+    public getLegalMoves(board: IBoard | IBoardUlt) {
 
     }
 
-    public convertToLegalMove(cell: ICell) {
+    public convertToLegalMove(cell: ICell | ICellUlt) {
         const figure = cell.figure ? getFigureInfo(cell.figure) : null;
         const prevFigure = cell.prevFigure ? getFigureInfo(cell.prevFigure) : null;
 

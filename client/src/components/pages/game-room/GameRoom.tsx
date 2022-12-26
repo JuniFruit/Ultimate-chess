@@ -15,14 +15,26 @@ import { ConfirmModal } from "./modals/ConfirmModal";
 import { TimerHandler } from "./utils/TimerHandler/TimerHandler";
 import { Announcer } from "./announcer/Announcer";
 import { useUltimate } from "./useUltimate";
-import { SkillBook } from "../../ui/skill-book/SkillBook";
+import { SkillBook } from "./skill-book/SkillBook";
+import { iconsGeneral } from "../../../assets/icons/general/iconsGeneral";
+import { Button } from "../../ui/button/Button";
+import { IBoardUlt } from "../../../model/ultimate/BoardUlt";
 
 
 const GameRoom: FC = () => {
     const isUltimate = window.location.href.includes('_ult');
     const { id } = useParams()
     const { field, status, data } = useGameRoom(id, isUltimate);
-    const { ultHandlers, ultStatus } = useUltimate({ ...field, ...status });
+
+    const { ultHandlers, ultStatus } = useUltimate(
+        {
+            board: field.board as IBoardUlt,
+            setBoard: field.setBoard,
+            ...status
+        }
+    );
+
+
 
     return (
         <Layout title="Ultimate Chess Game Room">
@@ -33,8 +45,6 @@ const GameRoom: FC = () => {
                             data.enemyUser && <PlayerInfo
                                 key={'enemyInfo'}
                                 {...data.enemyUser}
-                                isUltimate={isUltimate}
-                                onBookClick={ultHandlers.handleToggleSkillBook}
                             />
                         }
                         {
@@ -64,10 +74,13 @@ const GameRoom: FC = () => {
                         {
                             data.clientUser && <PlayerInfo
                                 key={'clientInfo'}
-                                {...data.clientUser}
-                                isUltimate={isUltimate}
-                                onBookClick={ultHandlers.handleToggleSkillBook}
-                            />
+                                {...data.clientUser}>
+
+                                {isUltimate && <Button onClick={ultHandlers.handleToggleSkillBook}>
+                                    <img src={iconsGeneral.book} alt="skill book" />
+                                </Button>}
+
+                            </PlayerInfo>
                         }
                         {
                             status.isReadyToStart && <TimerHandler
@@ -96,7 +109,10 @@ const GameRoom: FC = () => {
                         states: { ...field.board.states }, myColor: status.myColor
                     }}
                 />
-                {ultStatus.isSkillBookOpen && <SkillBook onSkillSelect={ultHandlers.handleSetChosenSkill} />}
+                {ultStatus.isSkillBookOpen &&
+                    <SkillBook onChooseSkill={ultHandlers.handleSetChosenSkill}
+                        onClose={ultHandlers.handleToggleSkillBook} />
+                }
             </div>
             <ErrorModal />
             <GameOverModal

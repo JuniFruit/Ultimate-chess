@@ -1,0 +1,29 @@
+
+
+.skill_item_wrapper {
+    @apply px-2 py-3 flex items-center gap-2 cursor-pointer hover:opacity-80;
+    >svg {
+        @apply text-main-900 text-base;
+        
+    } 
+    .skill_info {
+        @apply flex flex-col;
+
+        >h2 {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+        >p {
+            font-size: .7rem;
+            font-weight: 500;
+        }
+        >h3 {
+            @apply opacity-70;
+            font-size: .65rem;
+        }
+        >span {
+            @apply opacity-70;
+            font-size: .65rem;
+        }
+    }
+}

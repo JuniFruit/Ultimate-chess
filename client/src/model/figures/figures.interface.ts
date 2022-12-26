@@ -51,6 +51,9 @@ export interface IFigureBase {
 
 export interface IFigure extends IFigureBase {
     type: FigureTypes;
+    ultimateStates?: {
+        isStunned: boolean
+    }
 }
 
 

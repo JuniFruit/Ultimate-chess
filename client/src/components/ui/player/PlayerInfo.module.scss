@@ -1,7 +1,7 @@
 
 
 .info_container {
-    @apply w-full bg-main-900 rounded-2xl px-2 py-1 shadow-md;
+    @apply w-full bg-main-900 rounded-2xl px-2 py-1 shadow-md flex items-center justify-between;
 
     .info_wrapper {
         @apply flex gap-3 items-center;
@@ -22,6 +22,17 @@
                     font-size: .85rem;
                     font-weight: 300;
                 }
+            }
+        }
+    }
+
+    .book_button {
+        @apply w-20 h-max;
+        >button {
+            @apply bg-transparent w-full h-full;
+            >img {
+                @apply w-full h-full;   
+                object-fit: cover;          
             }
         }
     }

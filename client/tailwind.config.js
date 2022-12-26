@@ -128,6 +128,16 @@ module.exports = {
           "100%": {
             transform: 'rotate(360deg)'
           }
+        },
+        openPage: {
+          "0%": {
+            transform: 'rotateX(20deg) rotateY(0deg)'
+
+          },
+          "100%": {
+            transform: 'rotateX(20deg) rotateY(-180deg)',
+
+          }
         }
 
 
@@ -157,7 +167,8 @@ module.exports = {
         slideInRight: 'slideInRight .35s ease',
         slideInTop: 'slideInTop .35s ease',
         scaleDown: 'scaleDown .15s ease',
-        spin: 'spin  .5s cubic-bezier(0, 0, 0, 0) infinite'
+        spin: 'spin  .5s cubic-bezier(0, 0, 0, 0) infinite',
+        openPage: 'openPage 3s cubic-bezier(0, 0, 0, 0)'
 
       }
     },

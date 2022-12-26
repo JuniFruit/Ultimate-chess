@@ -7,38 +7,62 @@ import { IKing } from "../figures/King";
 import { IRook } from "../figures/Rook";
 import { getFigureInfo } from "../helpers";
 import { IBoardUlt } from "./BoardUlt";
+import { SkillNames } from "./Skills";
 
 
 export interface ICellUltStates {
-    isPoisoned: boolean
+    isOnFire: boolean
 }
 
 export interface ICellUlt extends ICell {
     states: ICellUltStates;
-    canPerformSkill: (skill: string, target: ICellUlt) => boolean;
-    performSkill: (skill: string, target: ICellUlt, board: IBoardUlt) => void;
-    performSacrifice: (target: ICellUlt, board: IBoardUlt) => void;
+    canPerformSkill: (skill: SkillNames, board: IBoardUlt) => boolean;
+    performSkill: (skill: SkillNames, board: IBoardUlt) => void;
+    performSacrifice: (board: IBoardUlt) => void;
 }
 
 export class CellUlt extends Cell implements ICellUlt {
     states: ICellUltStates = {
-        isPoisoned: false
+        isOnFire: false
     }
 
 
-    public canPerformSkill(skill: string, target: ICellUlt) {
-        return true;
+    public canPerformSkill(skill: SkillNames, board: IBoardUlt) {
+        switch (skill) {
+            case SkillNames.SACRIFICE:
+                return this._canSacrifice(board);
+            default:
+                return false;
+        }
     }
 
-    public performSkill(skill: string, target: ICellUlt, board: IBoardUlt) {
-        this.performSacrifice(target, board)
-    }   
+    public performSkill(skill: SkillNames, board: IBoardUlt) {
+        switch (skill) {
+            case SkillNames.SACRIFICE:
+                return this.performSacrifice(board);
+            default:
+                return false;
+        }
+    }
 
-    public performSacrifice(target: ICellUlt, board: IBoardUlt) {
+    public performSacrifice(board: IBoardUlt) {
         board.popFigure(this.figure!);
         this.figure = null;
         this.prevFigure = null;
     }
+
+    private _canSacrifice(board: IBoardUlt) {
+        if (this.figure?.type !== FigureTypes.PAWN) return false;
+        if (this.figure.color !== board.states.currentPlayer) return false;
+        if (board.isSkillUsedByPlayer(SkillNames.SACRIFICE)) return false;
+        if (board.figures.filter(figure => figure.type === FigureTypes.PAWN
+            && figure.color === board.states.currentPlayer).length > 1) return false;
+        return true;
+    }
+
+    
+
+
 
 
 }

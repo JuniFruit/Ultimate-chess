@@ -1,17 +1,12 @@
-import { IMoveOptions } from "../../constants/socketIO/ClientEvents.interface";
-import { IBoard } from "../Board";
-import { Cell, ICell, ICellInfo } from "../Cell";
-import { Colors } from "../colors.enum";
-import { FigureTypes, IFigure, IMovedFigure } from "../figures/figures.interface";
-import { IKing } from "../figures/King";
-import { IRook } from "../figures/Rook";
-import { getFigureInfo } from "../helpers";
 import { IBoardUlt } from "./BoardUlt";
+import { Cell, ICell } from "../Cell";
+import { FigureTypes } from "../figures/figures.interface";
 import { SkillNames } from "./Skills";
 
 
 export interface ICellUltStates {
     isOnFire: boolean
+
 }
 
 export interface ICellUlt extends ICell {
@@ -19,6 +14,8 @@ export interface ICellUlt extends ICell {
     canPerformSkill: (skill: SkillNames, board: IBoardUlt) => boolean;
     performSkill: (skill: SkillNames, board: IBoardUlt) => void;
     performSacrifice: (board: IBoardUlt) => void;
+    isOnFire: () => boolean
+
 }
 
 export class CellUlt extends Cell implements ICellUlt {
@@ -31,6 +28,8 @@ export class CellUlt extends Cell implements ICellUlt {
         switch (skill) {
             case SkillNames.SACRIFICE:
                 return this._canSacrifice(board);
+            case SkillNames.LIGHTNING_BOLT:
+                return this._canLightningBolt(board);
             default:
                 return false;
         }
@@ -39,9 +38,15 @@ export class CellUlt extends Cell implements ICellUlt {
     public performSkill(skill: SkillNames, board: IBoardUlt) {
         switch (skill) {
             case SkillNames.SACRIFICE:
-                return this.performSacrifice(board);
+                board.addUsedSkill(skill, this)
+                this.performSacrifice(board);
+            break;
+            case SkillNames.LIGHTNING_BOLT:
+                board.addUsedSkill(skill, this);
+                this.performDisable(board)
+            break;
             default:
-                return false;
+                return;
         }
     }
 
@@ -51,16 +56,33 @@ export class CellUlt extends Cell implements ICellUlt {
         this.prevFigure = null;
     }
 
+    public performDisable(board:IBoardUlt) {
+        this.figure?.applySkill(SkillNames.LIGHTNING_BOLT, board.states.currentPlayer,board.states.globalMovesCount);
+    }
+
     private _canSacrifice(board: IBoardUlt) {
         if (this.figure?.type !== FigureTypes.PAWN) return false;
         if (this.figure.color !== board.states.currentPlayer) return false;
         if (board.isSkillUsedByPlayer(SkillNames.SACRIFICE)) return false;
         if (board.figures.filter(figure => figure.type === FigureTypes.PAWN
-            && figure.color === board.states.currentPlayer).length > 1) return false;
+            && figure.color === board.states.currentPlayer).length < 2) return false;
         return true;
     }
 
-    
+    private _canLightningBolt(board: IBoardUlt) {
+        if (this.figure?.type === FigureTypes.KING) return false;
+        if (this.figure?.color === board.states.currentPlayer) return false;
+        if (board.isSkillUsedByPlayer(SkillNames.LIGHTNING_BOLT)) return false // Temporary solution
+        return true;
+    }
+
+    private _canSetOnFire() {
+        if (this.figure || this.states.isOnFire) return false;
+    }
+
+    public isOnFire() {
+        return this.states.isOnFire
+    }
 
 
 

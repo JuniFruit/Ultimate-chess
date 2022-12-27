@@ -1,4 +1,4 @@
-import { FC, MouseEvent, useState } from "react";
+import { FC, MouseEvent, useState, memo } from "react";
 import { IoGameControllerOutline, IoChatboxEllipsesOutline } from "react-icons/io5";
 import { GiDiceShield, GiKneeling } from "react-icons/gi";
 import styles from './MatchInfo.module.scss';
@@ -12,23 +12,25 @@ import { DisconnectUser } from "./footer/disconnect-user/DisconnectUser";
 
 type activeWindow = 'game' | 'chat';
 
-const MatchInfo: FC<IMatchInfo> = ({
+const MatchInfo: FC<IMatchInfo> = memo(({
     onConfirmDraw,
     onRequestDraw,
     onRequestResign,
     onDeclineDraw,
     request,
-    states,   
+    moves,
+    lostFigures,
     isObserver,
+    currentPlayer,
+    isFirstMove,
+    isGameOver
  
 }) => {
     const [activeWindow, setActiveWindow] = useState<activeWindow>('game');
-
     const handleSetWindow = (e: MouseEvent<HTMLButtonElement>) => {
         const currentValue = e.currentTarget.value as activeWindow;
         setActiveWindow(currentValue);
     }
-
     return (
         <div className={styles.match_info_wrapper}>
             <div className={styles.match_header}>
@@ -70,7 +72,7 @@ const MatchInfo: FC<IMatchInfo> = ({
                 </div>
             </div>
 
-            {activeWindow === 'game' ? <GameInfo {...{ ...states }} /> : null}
+            {activeWindow === 'game' ? <GameInfo {...{ lostFigures,currentPlayer,moves }} /> : null}
 
             <div
                 className={`${activeWindow === 'chat' ? styles.chat_wrapper_active : styles.chat_wrapper_disabled}`}
@@ -79,13 +81,13 @@ const MatchInfo: FC<IMatchInfo> = ({
             </div>
             <div className={styles.match_info_footer}>
                 {request === Requests.DRAW ? <DrawHandler onConfirm={onConfirmDraw} onDecline={onDeclineDraw} /> : null}
-             <DisconnectUser {...{ ...states, isObserver}} /> 
+             <DisconnectUser {...{currentPlayer, isFirstMove,isGameOver, isObserver}} /> 
             </div>
 
 
 
         </div>
     )
-}
+})
 
 export default MatchInfo;

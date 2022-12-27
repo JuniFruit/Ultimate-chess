@@ -3,7 +3,7 @@
 .field {
     @apply w-full h-min animate-slideInLeft shadow relative;
     
-    .cells {
+    .board {
         @apply flex flex-wrap border-main-800 relative;
         width: calc(8 * var(--cellSize));
         height: calc(8 * var(--cellSize));
@@ -13,7 +13,7 @@
             height: calc(8 * var(--cellSize));
             z-index: 35;
         }
-        .cell {
+        /* .cell {
             @apply absolute  top-0 left-0;
             border: 5px solid transparent;
             width: var(--cellSize);
@@ -43,7 +43,7 @@
 
         .premoved {
             @apply bg-red-700 opacity-60 border-red-500;
-        }
+        } */
 
     }
     >div:nth-child(n+2) {

@@ -1,18 +1,16 @@
-import { FC, useState, useEffect, useCallback, useContext, useRef } from 'react'
+import { FC, useState, useEffect, useCallback, useContext, useRef, memo } from 'react'
 import { AudioCtx } from '../../../../audio-engine/audio.provider';
 import { AudioContextType } from '../../../../audio-engine/audio.types';
-import { IBoardStates } from '../../../../model/Board';
 import { Colors } from '../../../../model/colors.enum';
 import { KillThreshold } from '../../../../model/helper.enum';
 import { Announces } from './Announcer.enum';
-import { IAnnouncer } from './Announcer.interface'
+import { IAnnouncer, IAnnouncerBoardStates } from './Announcer.interface'
 import styles from './Announcer.module.scss';
 
-export const Announcer: FC<IAnnouncer> = ({ players, states, myColor }) => {
+export const Announcer: FC<IAnnouncer> = memo(({ players, states, myColor, isUltimate }) => {
     const [isActive, setIsActive] = useState(false);
 
-    const prevStates = useRef<{ last: IBoardStates | null }>({ last: null });
-
+    const prevStates = useRef<{ last: IAnnouncerBoardStates | null }>({ last: null });
     const { playSound } = useContext(AudioCtx) as AudioContextType;
 
     const getFisrtBlood = useCallback(() => {
@@ -29,14 +27,24 @@ export const Announcer: FC<IAnnouncer> = ({ players, states, myColor }) => {
         )
     }, [states.lostFiguresCount])
 
+    const getLastSkillApplied = useCallback(() => {
+        if (!prevStates.current.last || !states.skillsUsed) return;
+        const lastSkill = states.skillsUsed[states.skillsUsed.length - 1]
+        if (!lastSkill || lastSkill.appliedAt !== states.globalMovesCount) return;
+        return (
+            <h2>
+                <span>{lastSkill.castBy === myColor ? players.client?.username : players.opponent?.username} used</span> {lastSkill.title}
+            </h2>
+        )
 
+    }, [states.globalMovesCount])
 
     const getAnnounceInfo = useCallback((team: Colors) => {
         return myColor === team ? players.client?.username : players.opponent?.username;
     }, [players, myColor])
 
     const getKillingAnnounce = useCallback(() => {
-        
+
         const { whiteKillCount, blackKillCount } = states;
         if (!prevStates.current.last) return null;
         const { whiteKillCount: prevWhite, blackKillCount: prevBlack } = prevStates.current.last
@@ -51,7 +59,7 @@ export const Announcer: FC<IAnnouncer> = ({ players, states, myColor }) => {
             playSound('spree');
         }
 
-        if (whiteKillCount === KillThreshold.DOMINATING || blackKillCount === KillThreshold.DOMINATING)  {
+        if (whiteKillCount === KillThreshold.DOMINATING || blackKillCount === KillThreshold.DOMINATING) {
             announce = Announces.DOMINATING;
             username = whiteKillCount === KillThreshold.DOMINATING && whiteKillCount !== prevWhite ? getAnnounceInfo(Colors.WHITE)
                 : blackKillCount === KillThreshold.DOMINATING && blackKillCount !== prevBlack && getAnnounceInfo(Colors.BLACK);
@@ -59,7 +67,7 @@ export const Announcer: FC<IAnnouncer> = ({ players, states, myColor }) => {
         }
 
 
-        if (whiteKillCount === KillThreshold.UNSTOPPABLE || blackKillCount === KillThreshold.UNSTOPPABLE)  {
+        if (whiteKillCount === KillThreshold.UNSTOPPABLE || blackKillCount === KillThreshold.UNSTOPPABLE) {
             announce = Announces.UNSTOPPABLE;
             username = whiteKillCount === KillThreshold.UNSTOPPABLE && whiteKillCount !== prevWhite ? getAnnounceInfo(Colors.WHITE)
                 : blackKillCount === KillThreshold.UNSTOPPABLE && blackKillCount !== prevBlack && getAnnounceInfo(Colors.BLACK);
@@ -110,7 +118,7 @@ export const Announcer: FC<IAnnouncer> = ({ players, states, myColor }) => {
             clearTimeout(timeout);
         }
 
-    }, [states.globalMovesCount, states.isGameOver, myColor]);
+    }, [states.globalMovesCount, states.isGameOver, myColor, states.skillsUsed]);
 
     if (!isActive) return null;
 
@@ -119,7 +127,8 @@ export const Announcer: FC<IAnnouncer> = ({ players, states, myColor }) => {
             {getFisrtBlood()}
             {getKillingAnnounce()}
             {getPromotionAnnounce()}
+            {isUltimate ? getLastSkillApplied() : null}
         </div>
     )
-}
+}, (prev, next) => prev.states.globalMovesCount === next.states.globalMovesCount)
 

@@ -7,6 +7,7 @@ import { MoveFeedItem } from './MoveFeedItem';
 export const MovesFeed: FC<IMoveFeed> = ({ moves }) => {
 
     const listRef = useRef<HTMLOListElement>(null);
+    if (!moves.length) return null;
 
     return (
         <div className={styles.move_wrapper}>
@@ -18,15 +19,14 @@ export const MovesFeed: FC<IMoveFeed> = ({ moves }) => {
                 {
                     moves.length
                         ?
+
                         moves.map((piece, ind) => (
-
                             <li key={ind}>
-                                <MoveFeedItem {...{piece, listCount: ind + 1}} key={piece.to.x + piece.to.y}/>
+                                <MoveFeedItem {...{ piece, listCount: ind + 1 }} key={piece.figureMove.pos} />
                             </li>
-
                         ))
                         : null
-                }
+                }               
             </ol>
         </div>
     )

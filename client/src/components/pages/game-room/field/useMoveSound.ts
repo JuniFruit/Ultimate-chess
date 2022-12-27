@@ -8,13 +8,13 @@ export const useMoveSound = () => {
 
     const { playSound } = useContext(AudioCtx) as AudioContextType;
 
-    const handleMoveSound = (move: IMove) => {
+    const handleMoveSound = useCallback((move: IMove) => {
 
         if (move.options?.isCastling) return playSound('castle');
         if (move.options?.isPromotion) return playSound('promotion');
         if (move.options?.isTake) return playSound('take');
         return playSound('move');
-    }
+    }, [playSound])
 
 
     return {

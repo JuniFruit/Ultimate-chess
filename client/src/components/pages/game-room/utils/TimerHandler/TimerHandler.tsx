@@ -1,17 +1,15 @@
-import { FC, useCallback, useEffect } from "react";
+import { FC, useCallback, useEffect, memo } from "react";
 import ioClient from "../../../../../api/socketApi";
 import { ITimerPayload } from "../../../../../constants/socketIO/ServerEvents.interface";
 import { Timer } from "../../../../ui/timer/Timer";
 import { ITimerHandler } from "./TimerHandler.interface";
 
 
-export const TimerHandler: FC<ITimerHandler> = ({ states: { isFirstMove, isGameOver }, ...rest }) => {
-
+export const TimerHandler: FC<ITimerHandler> = memo(({ states: { isFirstMove, isGameOver }, ...rest }) => {
     const handleTimeout = useCallback(() => {
         if (rest.isObserver) return;
         ioClient.emit("timeout")
     }, [rest.isObserver])
-
     const handleUpdateTimer = useCallback((time: ITimerPayload) => {
         rest.board.states.blackTime = time.black;
         rest.board.states.whiteTime = time.white;
@@ -36,4 +34,4 @@ export const TimerHandler: FC<ITimerHandler> = ({ states: { isFirstMove, isGameO
         />
     )
 
-}
+})

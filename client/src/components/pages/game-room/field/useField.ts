@@ -128,7 +128,9 @@ export const useField = ({ board, setBoard, myColor, isObserver }: IUseField) =>
     return {
         handlers: {
             handleSelect,
-            handlePromotion
+            handlePromotion,
+            handleSendMove,
+            
         },
         status: {
             selectedCell,

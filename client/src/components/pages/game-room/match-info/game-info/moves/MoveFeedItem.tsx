@@ -11,6 +11,7 @@ export const MoveFeedItem: FC<IMoveFeedItem> = ({ piece, listCount }) => {
 
     return (
         <>
+
             <span>{listCount}.</span>
             <PieceInfo spriteSrc={getDefaultSprite(piece.figureMove)} key={piece.to.x + piece.to.y} title={'piece'} />
             <p>{`${Positions[piece.to.x]}${7 - piece.to.y + 1}`}</p>
@@ -18,7 +19,7 @@ export const MoveFeedItem: FC<IMoveFeedItem> = ({ piece, listCount }) => {
                 ?
                 <>
                     <p>takes</p>
-                    <PieceInfo spriteSrc={getDefaultSprite(piece.figureTaken)} title={'piece'}/>
+                    <PieceInfo spriteSrc={getDefaultSprite(piece.figureTaken)} title={'piece'} />
                 </>
                 : null
             }
@@ -40,6 +41,8 @@ export const MoveFeedItem: FC<IMoveFeedItem> = ({ piece, listCount }) => {
                 : null
 
             }
+
         </>
+
     )
 }

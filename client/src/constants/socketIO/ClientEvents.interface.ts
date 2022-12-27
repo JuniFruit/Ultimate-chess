@@ -1,5 +1,6 @@
 import { ICellInfo } from "../../model/Cell";
 import { FigureTypes } from "../../model/figures/figures.interface";
+import { ISkillUsed, SkillNames } from "../../model/ultimate/Skills";
 import { Requests } from "../constants";
 
 export interface IMoveOptions {
@@ -9,6 +10,7 @@ export interface IMoveOptions {
     isCastling?: boolean;
     isEnPassant?:boolean;
     isTake?:boolean;
+    skill?: SkillNames
 
 }
 

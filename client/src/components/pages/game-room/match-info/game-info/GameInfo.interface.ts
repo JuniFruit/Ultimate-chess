@@ -1,8 +1,6 @@
-import { Colors } from "../../../../../model/colors.enum";
-import { ILostFigure, IMovedFigure } from "../../../../../model/figures/figures.interface";
 
-export interface IGameInfo {
-    moves: IMovedFigure[];
-    lostFigures: ILostFigure[];
-    currentPlayer: Colors;
+import { IMatchInfo } from "../MatchInfo.interfact";
+
+export interface IGameInfo extends Pick<IMatchInfo, "currentPlayer" | "moves" | "lostFigures"> {
+ 
 }

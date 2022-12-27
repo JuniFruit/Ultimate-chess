@@ -1,5 +1,7 @@
+import { Board, IBoard } from "./Board";
 import { Colors } from "./colors.enum";
 import { IFigure, IFigureInfo } from "./figures/figures.interface";
+import { BoardUlt, IBoardUlt } from "./ultimate/BoardUlt";
 
 export const flipFEN = (FEN: string): string => {
 
@@ -58,7 +60,8 @@ export const getFigureInfo = (figure: IFigure): IFigureInfo => {
     spriteSrc: figure.spriteSrc,
     pos: figure.pos,
     color: figure.color,
-    type: figure.type
+    type: figure.type,
+    ultimateStates: figure.ultimateStates
   }
 }
 
@@ -74,3 +77,4 @@ export const getCellSize = (canvas: HTMLCanvasElement) => {
   const h = canvas.height / 8;
   return { w, h }
 }
+

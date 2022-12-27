@@ -7,13 +7,17 @@ import { getFigureInfo, isInBounds } from "../helpers";
 import { Positions } from "../positions";
 import { IBoardUlt } from "../ultimate/BoardUlt";
 import { ICellUlt } from "../ultimate/CellUlt";
-import { IFigure, IFigureBase, IFigureInfo, ILegalMove, ILegalMoveArg, ISpritesObj } from "./figures.interface";
+import { ISkillApplied, SkillList, SkillNames, SkillTypes } from "../ultimate/Skills";
+import { IFigure, IFigureBase, IFigureInfo, IFigureUltimateStates, ILegalMove, ILegalMoveArg, ISpritesObj } from "./figures.interface";
 
 
 
 export class Figure implements IFigureBase {
     readonly color;
     readonly sprites;
+    ultimateStates: IFigureUltimateStates = {
+        skillsApplied: []
+    }
     sprite?: ISprite;
     spriteSrc?: string;
     x;
@@ -129,7 +133,7 @@ export class Figure implements IFigureBase {
 
 
     public addLegalMove(cell: ICell | ICellUlt) {
-
+        if ((cell as ICellUlt).states && (cell as ICellUlt).isOnFire()) return true; // if cell has states, we in ultimate mode
         if (cell.isEmpty()) {
             this.legalMoves.push(this.convertToLegalMove(cell));
             return false;
@@ -179,6 +183,30 @@ export class Figure implements IFigureBase {
         let posX = isFlipped ? 7 - this.x : this.x
         let posY = isFlipped ? 7 - this.y : this.y;
         this.sprite?.update({ ctx, canvas, x: posX, y: posY });
+    }
+
+
+    /* Ultimate mode methods */
+
+
+    public applySkill(skill: SkillNames, castBy: Colors, currentGlobalMovesCount: number) {
+        const skillInfo = SkillList.find(item => item.title === skill)
+        const skillToApply: ISkillApplied = {
+            castBy,
+            title: skill,
+            expireAt: skillInfo?.lasts ? currentGlobalMovesCount + skillInfo.lasts : -1,
+            type: skillInfo?.type
+        }
+        this.ultimateStates.skillsApplied = [...this.ultimateStates.skillsApplied, skillToApply];
+    }
+
+    public clearExpiredStates(currentGlobalMoveCount: number) {
+        this.ultimateStates.skillsApplied = this.ultimateStates.skillsApplied.filter(skill => skill.expireAt !== currentGlobalMoveCount)
+    }
+
+    public filterDisabled() {
+        const isDisabled = this.ultimateStates.skillsApplied.some(skill => skill.type === SkillTypes.DISABLER)
+        if (isDisabled) this.legalMoves = [];
     }
 
 }

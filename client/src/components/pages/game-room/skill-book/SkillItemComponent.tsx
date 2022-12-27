@@ -3,12 +3,13 @@ import {FC} from 'react';
 import { ISkillItemComponent } from './SkillBook.interface';
 import styles from './SkillBook.module.scss';
 
-export const SkillItemComponent: FC<ISkillItemComponent> = ({description, title, constraints, lasts, onClick}) => {
-
+export const SkillItemComponent: FC<ISkillItemComponent> = ({description, title, constraints, lasts, onClick ,board, myColor, isTargeted}) => {
+    const isDisabled = board.states.skillsUsed.some(skill => skill.title === title && skill.castBy === myColor);
     return (
-        <div 
+        <button 
         className={styles.skill_item_wrapper}
-        onClick={() => onClick(title)}
+        onClick={() => onClick({title,description,constraints,lasts,isTargeted})}
+        disabled={isDisabled}
         title={`${title}. ${description}. ${constraints}. ${lasts ? `Lasts ${lasts} moves` : ''}`}
         >
             <div className={styles.skill_info}>
@@ -17,6 +18,6 @@ export const SkillItemComponent: FC<ISkillItemComponent> = ({description, title,
                 <h3>{constraints}</h3>
                 {lasts && <span>Lasts {lasts} moves</span>}
             </div>
-        </div>
+        </button>
     )
 }

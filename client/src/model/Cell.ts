@@ -3,11 +3,10 @@ import { IBoard } from "./Board";
 import { Colors } from "./colors.enum";
 import { FigureTypes, IFigure, IMovedFigure } from "./figures/figures.interface";
 import { IKing } from "./figures/King";
-import { IPawn } from "./figures/Pawn";
 import { IRook } from "./figures/Rook";
 import { getFigureInfo } from "./helpers";
 import { Positions } from "./positions";
-import { IFigureUlt } from "./ultimate/figures/FiguresUlt";
+import { ICellUlt } from "./ultimate/CellUlt";
 
 export interface ICell {
     readonly x: number;
@@ -16,7 +15,8 @@ export interface ICell {
     readonly color: Colors;
     prevFigure: IFigure | null;
     figure: IFigure | null;
-    isAvailable: boolean
+    isAvailable: boolean;
+    isMouseOver: boolean
     isEmpty: () => boolean;
     isEnemy: (figure: IFigure | null) => boolean;
     promote: (figureToPromote: FigureTypes, board: IBoard) => void;
@@ -49,6 +49,7 @@ export class Cell implements ICell {
     color: Colors;
     figure: IFigure | null;
     isAvailable = false;
+    isMouseOver = false;
 
 
     constructor({ x, y, color, figure }: ICellInit) {
@@ -118,6 +119,7 @@ export class Cell implements ICell {
     }
 
     private _isEnPassantMove(target: ICell) {
+        if ((target as ICellUlt).states) return false // Temporary solution
         if (this.figure?.type !== FigureTypes.PAWN || !target.isEmpty() || !this.isTargetDiagonal(target)) return false;
         return true;
     }

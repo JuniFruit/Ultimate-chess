@@ -10,7 +10,9 @@ export interface IField {
     setBoard: Dispatch<SetStateAction<IBoard>>   
     isObserver: boolean;
     myColor: Colors;
-    ultimateStates: IFieldUltimateStates;
+    isUltimate: boolean
+    isSkillBookOpen: boolean;
+    setIsSkillBookOpen: Dispatch<SetStateAction<boolean>>  
 }
 
 export interface IFieldUltimateStates {

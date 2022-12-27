@@ -7,7 +7,7 @@ import styles from './Book.module.scss';
 
 export const Book: FC<PropsWithChildren<IBook>> = ({ pages, children }) => {
     const [currentPage, setCurrentPage] = useState(0);
-    const dummyPages = new Array(5).fill(<div className={styles.dummy_page}></div>)
+    const dummyPages = new Array(5).fill('').map((item, ind) => <div className={styles.dummy_page} key={ind}></div>)
 
     const handleChangePage = useCallback((nav: 'prev' | 'next') => {
         setCurrentPage(prev => nav === 'next' ? prev+=1 : prev-=1);

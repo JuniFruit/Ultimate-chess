@@ -10,6 +10,7 @@ import { Pawn } from "./figures/Pawn";
 import { Queen } from "./figures/Queen";
 import { Rook } from "./figures/Rook";
 import { convertToChar, returnColorCell } from "./helpers";
+import { BoardUlt } from "./ultimate/BoardUlt";
 
 export interface IBoard {
     cells: ICell[][];
@@ -18,7 +19,7 @@ export interface IBoard {
     startNewGame: (fen: string) => void;
     receiveMove: (move: IMove) => void;
     getCell: (x: number, y: number) => ICell;
-    getCopyBoard: () => IBoard;
+    getCopyBoard: () => Board | BoardUlt;
     isKingChecked: () => boolean;
     isSufficientMaterial: (player: Colors) => boolean;
     isDraw: () => boolean;

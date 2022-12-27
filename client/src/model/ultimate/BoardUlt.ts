@@ -1,9 +1,10 @@
+import { IMove } from "../../constants/socketIO/ClientEvents.interface";
 import { Board, IBoard, IBoardStates } from "../Board";
+import { ICell } from "../Cell";
 import { Colors } from "../colors.enum";
-import { FigureTypes } from "../figures/figures.interface";
+import { FigureTypes, IFigure } from "../figures/figures.interface";
 import { CellUlt, ICellUlt } from "./CellUlt";
 import { BishopUlt } from "./figures/BishopUlt";
-import { IFigureUlt } from "./figures/FiguresUlt";
 import { KingUlt } from "./figures/KingUlt";
 import { KnightUlt } from "./figures/KnightUlt";
 import { PawnUlt } from "./figures/PawnUlt";
@@ -17,15 +18,15 @@ export interface IBoardUltStates extends IBoardStates {
 
 
 export interface IBoardUlt extends IBoard {
-    states: IBoardUltStates   
-    
-    createFigure: (char: string, x: number, y: number) => IFigureUlt | null;
+    states: IBoardUltStates
+
+    createFigure: (char: string, x: number, y: number) => IFigure | null;
     addUsedSkill: (skill: SkillNames, target: ICellUlt) => void;
     isSkillUsedByPlayer: (skill: SkillNames) => boolean;
 }
 
 export class BoardUlt extends Board implements IBoardUlt {
-    states:IBoardUltStates = {
+    states: IBoardUltStates = {
         ...this.states,
         skillsUsed: []
     }
@@ -33,6 +34,17 @@ export class BoardUlt extends Board implements IBoardUlt {
     public startNewGame(fen: string): void {
         super.startNewGame(fen);
         this._convertBoard();
+    }
+
+
+    public getCopyBoard(): Board {
+        const newBoard = new BoardUlt();
+        newBoard.cells = this.cells;
+        newBoard.figures = this.figures;
+        newBoard.states = this.states;
+        newBoard.states.blackTeamSprites = this.states.blackTeamSprites;
+        newBoard.states.whiteTeamSprites = this.states.whiteTeamSprites;
+        return newBoard;
     }
 
     private _convertBoard() {
@@ -46,6 +58,10 @@ export class BoardUlt extends Board implements IBoardUlt {
                 this.cells[y][x] = newCell;
             })
         })
+    }
+
+    public getCell(x: number, y: number): ICell {
+        return this.cells[y][x]
     }
 
     public createFigure(char: string, x: number, y: number) {
@@ -81,14 +97,16 @@ export class BoardUlt extends Board implements IBoardUlt {
         }
     }
 
-    public updateAllLegalMoves(): void {
-        super.updateAllLegalMoves();
+    public updateAllLegalMoves() {
+        this.figures.forEach(figure => {
+            figure.clearExpiredStates(this.states.globalMovesCount);
+            figure.getLegalMoves(this);
+            figure.filterDisabled();
+            figure.filterUncheckingMoves(this)
+        });
     }
 
-    public updateEnemyLegalMoves(): void {
-        super.updateEnemyLegalMoves()
-    }
-
+  
     public addUsedSkill(skill: SkillNames, target: ICellUlt) {
         const skillInfo = SkillList.find(item => item.title === skill);
         const cellInfo = target.getCellInfo();
@@ -104,9 +122,21 @@ export class BoardUlt extends Board implements IBoardUlt {
     }
 
     public isSkillUsedByPlayer(skill: SkillNames) {
+        if (!this.states.skillsUsed.length) return false;
         return this.states.skillsUsed.some(item => item.title === skill && item.castBy === this.states.currentPlayer)
     }
 
-    
+    public receiveMove({ from, to, options }: IMove): void {
+        if (options?.skill) {
+            this.incrementMoveCount();
+            const target = this.getCell(to.x, to.y);
+            (target as ICellUlt).performSkill(options.skill, this);
+            return;
+        }
+
+        super.receiveMove({ from, to, options });
+    }
+
+
 
 }

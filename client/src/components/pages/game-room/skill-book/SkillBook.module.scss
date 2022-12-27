@@ -1,11 +1,8 @@
 
 
 .skill_item_wrapper {
-    @apply px-2 py-3 flex items-center gap-2 cursor-pointer hover:opacity-80;
-    >svg {
-        @apply text-main-900 text-base;
-        
-    } 
+    @apply px-2 py-3 cursor-pointer hover:opacity-80;
+    
     .skill_info {
         @apply flex flex-col;
 

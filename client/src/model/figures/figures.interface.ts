@@ -1,3 +1,4 @@
+import { SPRITES } from "../../assets/Packs/Default/sprites";
 import { IMoveOptions } from "../../constants/socketIO/ClientEvents.interface";
 import { IBoard } from "../Board";
 import { ICell, ICellInfo } from "../Cell";
@@ -6,6 +7,7 @@ import { ISprite } from "../effects/Sprite";
 import { Direction } from "../helper.enum";
 import { IBoardUlt } from "../ultimate/BoardUlt";
 import { ICellUlt } from "../ultimate/CellUlt";
+import { ISkillApplied, SkillNames } from "../ultimate/Skills";
 
 export enum FigureTypes {
     ROOK = 'r',
@@ -26,6 +28,7 @@ export interface IFigureBase {
     readonly sprites?: ISpritesObj;
     spriteSrc?: string;
     sprite?: ISprite;
+    ultimateStates: IFigureUltimateStates
     x: number;
     y: number;
     prevX: number;
@@ -47,17 +50,19 @@ export interface IFigureBase {
     update: (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, isFlipped: boolean) => void;
     setSpriteObj: () => void;
     undo: () => void;
+
+    /* ultimate methods */
+
+    applySkill: (skill: SkillNames, castBy: Colors, currentGlobalMovesCount: number) => void;
+    clearExpiredStates: (currentGlobalMoveCount: number) => void;
+    filterDisabled: () => void;
 }
 
 export interface IFigure extends IFigureBase {
     type: FigureTypes;
-    ultimateStates?: {
-        isStunned: boolean
-    }
 }
 
-
-export interface IFigureInfo extends Pick<IFigure, "color" | "type" | "x" | "y" | "spriteSrc" | "pos"> { }
+export interface IFigureInfo extends Pick<IFigure, "color" | "type" | "x" | "y" | "spriteSrc" | "pos" | "ultimateStates"> { }
 
 export interface ILostFigure extends IFigureInfo {
     takenBy: IFigureInfo;
@@ -81,18 +86,9 @@ export interface IMovedFigure {
     figureMove: IFigureInfo;
 }
 
-export interface ISpritesObj {
-    blackBishop: string;
-    whiteBishop: string;
-    blackKing: string;
-    whiteKing: string;
-    blackPawn: string;
-    whitePawn: string;
-    blackQueen: string;
-    whiteQueen: string;
-    blackRook: string;
-    whiteRook: string;
-    blackKnight: string;
-    whiteKnight: string;
-    frames: number;
+export type ISpritesObj = typeof SPRITES;
+
+
+export interface IFigureUltimateStates {
+    skillsApplied: ISkillApplied[]
 }

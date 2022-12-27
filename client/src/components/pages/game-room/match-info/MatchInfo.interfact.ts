@@ -1,5 +1,7 @@
 import { Requests } from "../../../../constants/constants";
-import { IBoardStates } from "../../../../model/Board";
+import { Colors } from "../../../../model/colors.enum";
+import { ILostFigure, IMovedFigure } from "../../../../model/figures/figures.interface";
+import { ISkillUsed } from "../../../../model/ultimate/Skills";
 
 
 export interface IMatchInfo {
@@ -8,6 +10,10 @@ export interface IMatchInfo {
     onConfirmDraw: () => void;
     onDeclineDraw: () => void;
     request: Requests | null;
-    states: IBoardStates;
+    moves: IMovedFigure[]
+    lostFigures: ILostFigure[]
     isObserver: boolean;  
+    currentPlayer: Colors;
+    isFirstMove:boolean;
+    isGameOver: boolean;
 }

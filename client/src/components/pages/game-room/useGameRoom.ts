@@ -20,6 +20,8 @@ export const useGameRoom = (id?: string, isUltimate: boolean = false) => {
     const [myColor, setMyColor] = useState<Colors>(Colors.WHITE)
     const [request, setRequest] = useState<Requests | null>(null);
     const [isObserver, setIsObserver] = useState(false);
+    const [isSkillBookOpen, setIsSkillBookOpen] = useState(false);
+
     const { isConnected } = useSocketConnect();
 
 
@@ -36,7 +38,6 @@ export const useGameRoom = (id?: string, isUltimate: boolean = false) => {
             assignSpritePack(payload.myColor!, payload.playerOne!, payload.playerTwo!),
             assignSpritePack(payload.myColor === Colors.BLACK ? Colors.WHITE : Colors.BLACK, payload.playerOne!, payload.playerTwo!));
     }, [])
-
 
     const clearStates = useCallback(() => {
         setRequest(null);
@@ -117,7 +118,9 @@ export const useGameRoom = (id?: string, isUltimate: boolean = false) => {
             isReadyToStart,
             myColor,
             result,
-            isObserver
+            isObserver,
+            isSkillBookOpen,
+            setIsSkillBookOpen
         },
         data: {
             enemyUser,

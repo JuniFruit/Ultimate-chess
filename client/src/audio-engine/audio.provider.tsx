@@ -1,6 +1,4 @@
 import { FC, createContext, PropsWithChildren, useEffect, useRef } from 'react';
-import { Sounds } from './audio.data';
-import { AudioService } from './audio.service';
 import { DefaultSettings } from './audio.settings';
 import { AudioContextType, ISoundBuffers, sound } from './audio.types';
 

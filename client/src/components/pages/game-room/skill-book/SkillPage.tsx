@@ -6,14 +6,20 @@ import { SkillItemComponent } from "./SkillItemComponent";
 
 
 
-export const SkillPage: FC<ISkillPage> = ({ skills, onChooseSkill }) => {
+export const SkillPage: FC<ISkillPage> = ({skills,onChooseSkill,board, myColor}) => {
 
 
     return (
         <PageItem>
             {
                 skills.map(skill => (
-                    <SkillItemComponent {...{ ...skill }} onClick={onChooseSkill} />
+                    <SkillItemComponent 
+                    board={board} 
+                    onClick={onChooseSkill} 
+                    {...{...skill}}  
+                    myColor={myColor}
+                    key={skill.title}
+                    />
                 ))
             }
         </PageItem>

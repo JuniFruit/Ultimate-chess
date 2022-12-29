@@ -1,4 +1,5 @@
 import { IMove } from "../../constants/socketIO/ClientEvents.interface";
+import { IBoardData } from "../../constants/socketIO/ServerEvents.interface";
 import { Board, IBoard, IBoardStates } from "../Board";
 import { ICell } from "../Cell";
 import { Colors } from "../colors.enum";
@@ -23,6 +24,7 @@ export interface IBoardUlt extends IBoard {
     createFigure: (char: string, x: number, y: number) => IFigure | null;
     addUsedSkill: (skill: SkillNames, target: ICellUlt) => void;
     isSkillUsedByPlayer: (skill: SkillNames) => boolean;
+    mergeBoardData: (boardData: IBoardData) => void;
 }
 
 export class BoardUlt extends Board implements IBoardUlt {
@@ -98,15 +100,22 @@ export class BoardUlt extends Board implements IBoardUlt {
     }
 
     public updateAllLegalMoves() {
+
+        this._clearExpiredStates();
+
         this.figures.forEach(figure => {
-            figure.clearExpiredStates(this.states.globalMovesCount);
             figure.getLegalMoves(this);
             figure.filterDisabled();
             figure.filterUncheckingMoves(this)
         });
     }
 
-  
+    private _clearExpiredStates() {
+        this.cells.forEach(row => {
+            row.forEach(cell => (cell as ICellUlt).clearExpiredStates(this.states.globalMovesCount))
+        })
+    }
+
     public addUsedSkill(skill: SkillNames, target: ICellUlt) {
         const skillInfo = SkillList.find(item => item.title === skill);
         const cellInfo = target.getCellInfo();
@@ -137,6 +146,16 @@ export class BoardUlt extends Board implements IBoardUlt {
         super.receiveMove({ from, to, options });
     }
 
-
+    public mergeBoardData(boardData: IBoardData) {
+        (this.cells as ICellUlt[][]).forEach((row, y) => {
+            row.forEach((cell, x) => {
+                const currentBoardDataCell = boardData.board.cells[y][x] as ICellUlt
+                cell.states = { ...currentBoardDataCell.states };
+                if (cell.figure) {
+                    cell.figure.ultimateStates = { ...currentBoardDataCell.figure?.ultimateStates! }
+                }
+            })
+        })
+    }
 
 }

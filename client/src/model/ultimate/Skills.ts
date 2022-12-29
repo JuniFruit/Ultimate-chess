@@ -4,7 +4,7 @@ import { Colors } from "../colors.enum";
 export enum SkillNames {
     SACRIFICE = 'Sacrifice',
     INCINERATE = 'Incinerate',
-    INVISIBILITY = 'Invisibility',
+    PLAGUE = 'Plague',
     LIGHTNING_BOLT = 'Lightning bolt',
 }
 
@@ -16,25 +16,21 @@ export enum SkillTypes {
 export const SkillList: ISkillItem[] = [
     {
         title: SkillNames.SACRIFICE,
-        description: 'You can sacrifice one of your pawns once',
+        description: 'Sacrifices one of your pawns',
         constraints: 'Cannot be performed on a last standing pawn',
         isTargeted: true,
+        canBeAppliedAt: 'figure',
+        
 
-    },
-    {
-        title: SkillNames.INVISIBILITY,
-        description: 'Makes one of your pieces invisible for the enemy',
-        constraints: 'Cannot be performed on a King',
-        lasts: 4,
-        isTargeted: true,
-
-    },
+    },    
     {
         title: SkillNames.INCINERATE,
         description: 'Sets a square on fire, making it unreachable for any pieces. Acts like a wall',
         constraints: 'Cannot be performed on an occupied square',
         lasts: 4,
         isTargeted: true,
+        canBeAppliedAt: 'cell'
+
 
     },
     {
@@ -44,7 +40,15 @@ export const SkillList: ISkillItem[] = [
         lasts: 4,
         type: SkillTypes.DISABLER,
         isTargeted: true,
-
+        canBeAppliedAt: 'figure'
+    },
+    {
+        title: SkillNames.PLAGUE,
+        description: 'Curses an enemy pawn, making it die from plague in 6 moves',
+        constraints: 'Cannot be performed on a last standing pawn',
+        lasts: 6,
+        isTargeted: true,
+        canBeAppliedAt: 'figure'
     }
 
 ]
@@ -57,6 +61,8 @@ export interface ISkillItem {
     isTargeted: boolean;
     lasts?: number;
     type?: SkillTypes;
+    canBeAppliedAt: 'cell' | 'figure';
+
 }
 
 export enum SkillErrorMsg {

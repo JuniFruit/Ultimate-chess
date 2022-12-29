@@ -1,7 +1,7 @@
 
 
 .skill_item_wrapper {
-    @apply px-2 py-3 cursor-pointer hover:opacity-80;
+    @apply px-2 py-3 cursor-pointer hover:opacity-80 disabled:opacity-40;
     
     .skill_info {
         @apply flex flex-col;

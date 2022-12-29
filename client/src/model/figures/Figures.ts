@@ -1,13 +1,15 @@
 import { IBoard } from "../Board";
 import { ICell } from "../Cell";
 import { Colors } from "../colors.enum";
+import { IEffectItem } from "../effects/data/effects.data";
 import { ISprite, Sprite } from "../effects/Sprite";
+import { IVFXConstructor, VFX } from "../effects/VFX";
 import { Direction } from "../helper.enum";
 import { getFigureInfo, isInBounds } from "../helpers";
 import { Positions } from "../positions";
 import { IBoardUlt } from "../ultimate/BoardUlt";
 import { ICellUlt } from "../ultimate/CellUlt";
-import { ISkillApplied, SkillList, SkillNames, SkillTypes } from "../ultimate/Skills";
+import { ISkillApplied, SkillTypes } from "../ultimate/Skills";
 import { IFigure, IFigureBase, IFigureInfo, IFigureUltimateStates, ILegalMove, ILegalMoveArg, ISpritesObj } from "./figures.interface";
 
 
@@ -16,7 +18,8 @@ export class Figure implements IFigureBase {
     readonly color;
     readonly sprites;
     ultimateStates: IFigureUltimateStates = {
-        skillsApplied: []
+        skillsApplied: [],
+        effects: []
     }
     sprite?: ISprite;
     spriteSrc?: string;
@@ -133,7 +136,6 @@ export class Figure implements IFigureBase {
 
 
     public addLegalMove(cell: ICell | ICellUlt) {
-        if ((cell as ICellUlt).states && (cell as ICellUlt).isOnFire()) return true; // if cell has states, we in ultimate mode
         if (cell.isEmpty()) {
             this.legalMoves.push(this.convertToLegalMove(cell));
             return false;
@@ -183,25 +185,29 @@ export class Figure implements IFigureBase {
         let posX = isFlipped ? 7 - this.x : this.x
         let posY = isFlipped ? 7 - this.y : this.y;
         this.sprite?.update({ ctx, canvas, x: posX, y: posY });
+        if (this.ultimateStates.effects.length) this.ultimateStates.effects.forEach(effect => effect.update({ ctx, canvas, x: posX, y: posY }))
     }
 
 
     /* Ultimate mode methods */
 
+    public setEffect(args: IEffectItem) {
+        this.ultimateStates.effects.push(
+            new VFX({ ...args })
+        )
+    }
 
-    public applySkill(skill: SkillNames, castBy: Colors, currentGlobalMovesCount: number) {
-        const skillInfo = SkillList.find(item => item.title === skill)
-        const skillToApply: ISkillApplied = {
-            castBy,
-            title: skill,
-            expireAt: skillInfo?.lasts ? currentGlobalMovesCount + skillInfo.lasts : -1,
-            type: skillInfo?.type
-        }
-        this.ultimateStates.skillsApplied = [...this.ultimateStates.skillsApplied, skillToApply];
+
+    public applySkill(skill: ISkillApplied) {
+        this.ultimateStates.skillsApplied = [...this.ultimateStates.skillsApplied, skill];
     }
 
     public clearExpiredStates(currentGlobalMoveCount: number) {
         this.ultimateStates.skillsApplied = this.ultimateStates.skillsApplied.filter(skill => skill.expireAt !== currentGlobalMoveCount)
+    }
+
+    public clearEffects() {
+        this.ultimateStates.effects = [];
     }
 
     public filterDisabled() {

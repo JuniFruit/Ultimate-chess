@@ -16,7 +16,7 @@ export const SkillPage: FC<ISkillPage> = ({skills,onChooseSkill,board, myColor})
                     <SkillItemComponent 
                     board={board} 
                     onClick={onChooseSkill} 
-                    {...{...skill}}  
+                    skillItem={skill}
                     myColor={myColor}
                     key={skill.title}
                     />

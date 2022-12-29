@@ -3,11 +3,13 @@ import { IMoveOptions } from "../../constants/socketIO/ClientEvents.interface";
 import { IBoard } from "../Board";
 import { ICell, ICellInfo } from "../Cell";
 import { Colors } from "../colors.enum";
+import { IEffectItem } from "../effects/data/effects.data";
 import { ISprite } from "../effects/Sprite";
+import { IVFX, IVFXConstructor } from "../effects/VFX";
 import { Direction } from "../helper.enum";
 import { IBoardUlt } from "../ultimate/BoardUlt";
 import { ICellUlt } from "../ultimate/CellUlt";
-import { ISkillApplied, SkillNames } from "../ultimate/Skills";
+import { ISkillApplied } from "../ultimate/Skills";
 
 export enum FigureTypes {
     ROOK = 'r',
@@ -53,9 +55,11 @@ export interface IFigureBase {
 
     /* ultimate methods */
 
-    applySkill: (skill: SkillNames, castBy: Colors, currentGlobalMovesCount: number) => void;
+    applySkill: (skill: ISkillApplied) => void;
     clearExpiredStates: (currentGlobalMoveCount: number) => void;
     filterDisabled: () => void;
+    setEffect: (args: IEffectItem) => void;
+    clearEffects: () => void;
 }
 
 export interface IFigure extends IFigureBase {
@@ -91,4 +95,5 @@ export type ISpritesObj = typeof SPRITES;
 
 export interface IFigureUltimateStates {
     skillsApplied: ISkillApplied[]
+    effects: IVFX[]
 }

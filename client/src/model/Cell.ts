@@ -78,7 +78,6 @@ export class Cell implements ICell {
     }
 
     public isUnderAttack(board: IBoard) {
-        console.log({ isAttack: this });
         return board.figures.some(figure => {
             return figure.legalMoves.some(move => move.pos === this.pos && figure.color !== board.states.currentPlayer);
         })

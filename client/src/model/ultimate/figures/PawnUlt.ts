@@ -6,10 +6,7 @@ import { ICellUlt } from "../CellUlt";
 
 
 export class PawnUlt extends Pawn {
-
-    ultimateStates = {
-        skillsApplied: []
-    }
+    
 
     public getLegalMoves(board: IBoard): void {
         super.getLegalMoves(board);

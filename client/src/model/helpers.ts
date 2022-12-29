@@ -73,8 +73,9 @@ export const getFlippedPos = (posX: number, posY: number) => {
 
 
 export const getCellSize = (canvas: HTMLCanvasElement) => {
-  const w = canvas.width / 8;
-  const h = canvas.height / 8;
+  const { width, height } = canvas.getBoundingClientRect()
+  const w = width / 8;
+  const h = height / 8;
   return { w, h }
 }
 

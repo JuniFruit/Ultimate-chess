@@ -8,6 +8,7 @@ import { ICellUlt } from "../../../../../model/ultimate/CellUlt";
 export interface ICanvasField extends CanvasHTMLAttributes<HTMLCanvasElement> {
     cells: ICell[][];
     isFlipped: boolean;
+    isUltimate: boolean;
     premoves: IPremove[];
     board: IBoard | IBoardUlt;
     ultimateStates: IFieldUltimateStates;

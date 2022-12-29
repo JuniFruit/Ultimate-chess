@@ -7,6 +7,8 @@ import { drawCircle, drawRect } from "./utils/canvas.utils";
 import { ICell } from "../../../../../model/Cell";
 import { COLORS } from "./utils/colors.utils";
 import { ICellUlt } from "../../../../../model/ultimate/CellUlt";
+import { IBoardUlt } from "../../../../../model/ultimate/BoardUlt";
+import { setEffectsOnBoard } from "../../../../../model/effects/utils";
 
 
 export const useCanvasField = (
@@ -17,7 +19,8 @@ export const useCanvasField = (
         premoves,
         isFlipped,
         selected,
-        ultimateStates
+        ultimateStates,
+        isUltimate
 
     }: ICanvasField) => {
 
@@ -29,14 +32,14 @@ export const useCanvasField = (
 
     const handlePreDraw = useCallback((context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
         board.figures.forEach(figure => figure.setSpriteObj());
+        if (isUltimate) setEffectsOnBoard(board as IBoardUlt);
         drawBoard(context, canvas);
-        // drawDraggedOver(context, canvas);
         drawPremoves(context, canvas);
         drawAvailable(context, canvas);
         drawSelected(context, canvas);
         drawMouseOver(context, canvas)
 
-    }, [cells.length, isFlipped, premoves.length, selected, board, draggedOver.current])
+    }, [cells.length, isFlipped, premoves.length, selected, board, isUltimate])
 
     const handlePostDraw = useCallback((context: CanvasRenderingContext2D, frameCount: number) => {
         return frameCount
@@ -45,7 +48,8 @@ export const useCanvasField = (
     const draw = useCallback((context: CanvasRenderingContext2D, canvas: HTMLCanvasElement, frameCount: number) => {
         context.clearRect(0, 0, context.canvas.width, context.canvas.height)
         drawMouseOver(context, canvas)
-        drawFigures(context, canvas)
+        // drawFigures(context, canvas)
+        drawEffects(context, canvas);
 
         context.font = '24px serif';
         context.fillText(`frame count : ${frameCount} :)`, 10, 190);
@@ -121,6 +125,12 @@ export const useCanvasField = (
         })
     }, [selected, cells.length])
 
+
+    const drawEffects = useCallback((ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
+        if (!isUltimate) return;
+        board.cells.forEach(row => row.forEach(cell => (cell as ICellUlt).updateEffect(ctx, canvas, isFlipped)));
+    }, [isUltimate, board])
+
     const drawMouseOver = useCallback((ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
 
         if (!ultimateStates.isSkillTargetSelecting) return;
@@ -160,25 +170,7 @@ export const useCanvasField = (
                 })
             })
         })
-    }, [cells.length, isFlipped])
-
-    const drawDraggedOver = useCallback((ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
-        if (!draggedOver.current) return;
-
-        const { w, h } = getCellSize(canvas)
-        const { x, y } = _getCellPosFromCoord(draggedOver.current.x, draggedOver.current.y)
-
-        drawRect({
-            ctx,
-            x: x * w,
-            y: y * h,
-            width: w,
-            height: h,
-            fill: draggedOver.current.color === Colors.BLACK ? COLORS.CELL.black : COLORS.CELL.white,
-            strokeWidth: 5,
-            stroke: COLORS.CELL.draggedOver
-        })
-    }, [draggedOver.current, isDragging])
+    }, [cells.length, isFlipped])    
 
 
     const _getCellPosFromMouse = useCallback((e: MouseEvent<HTMLCanvasElement>) => {

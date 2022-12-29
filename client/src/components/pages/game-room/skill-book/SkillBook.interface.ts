@@ -3,10 +3,11 @@ import { IBoardUlt } from "../../../../model/ultimate/BoardUlt";
 import { ISkillItem, SkillNames } from "../../../../model/ultimate/Skills";
 
 
-export interface ISkillItemComponent extends ISkillItem {
+export interface ISkillItemComponent {
     onClick: (skill: ISkillItem) => void;
     board: IBoardUlt;
-    myColor: Colors
+    myColor: Colors;
+    skillItem: ISkillItem;
 }
 
 export interface ISkillPage {

@@ -5,7 +5,7 @@ export const resizeCanvas = (canvas: HTMLCanvasElement) => {
     const context = canvas.getContext('2d')
     canvas.width = width * ratio
     canvas.height = height * ratio
-    //   context!.scale(ratio, ratio)
+      context!.scale(ratio, ratio)
     return canvas
   }
 

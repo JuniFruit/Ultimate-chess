@@ -6,7 +6,6 @@ import { Colors } from "../../../../model/colors.enum";
 import { IBoardUlt } from "../../../../model/ultimate/BoardUlt";
 import { ICellUlt } from "../../../../model/ultimate/CellUlt";
 import { ISkillItem, SkillErrorMsg } from "../../../../model/ultimate/Skills";
-import { useIOField } from "./useIOField";
 
 
 interface IUseUltimate {
@@ -57,7 +56,7 @@ export const useUltimate = ({
 
     const handlePerformSkill = useCallback((cell: ICellUlt) => {
         if (board.states.isGameOver) return _handleClearStates();
-        if (!chosenSkill.current || !cell.canPerformSkill(chosenSkill.current.title, board)) {
+        if (!chosenSkill.current || !cell.canPerformSkill(chosenSkill.current, board)) {
             addMsg({ message: SkillErrorMsg.INVALID_TARGET, status: 500 })
             return _handleClearStates();
         }

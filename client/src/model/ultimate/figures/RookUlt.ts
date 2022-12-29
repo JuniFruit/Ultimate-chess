@@ -9,10 +9,7 @@ import { ICellUlt } from "../CellUlt";
 
 
 export class RookUlt extends Rook {
-
-    ultimateStates = {
-        skillsApplied: []
-    }
+   
 
 
     // Now can move 1 cell diagonal and 4 cells both vertical and horizontal

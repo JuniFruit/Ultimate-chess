@@ -36,6 +36,7 @@ export const GameField: FC<IField> = (props) => {
                 selected={status.selectedCell}
                 premoves={status.premoves}
                 board={props.board}
+                isUltimate={props.isUltimate}
                 ultimateStates={
                     {
                         onSkillTargetSelect: ultHandlers.handlePerformSkill,

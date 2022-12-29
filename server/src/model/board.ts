@@ -1,5 +1,5 @@
 import { IMove } from '../../../client/src/constants/socketIO/ClientEvents.interface';
-import { Board, IBoard, IBoardStates } from '../../../client/src/model/Board';
+import { Board, IBoard } from '../../../client/src/model/Board';
 import { BoardUlt, IBoardUlt } from '../../../client/src/model/ultimate/BoardUlt';
 import { Colors } from '../../../client/src/model/colors.enum';
 import { FENs, GameOverReasons, Results } from '../../../client/src/model/helper.enum';
@@ -12,17 +12,17 @@ export const boardApi = (roomId: string) => {
 
     const isUltimate = roomId.includes('_ult');
 
-    const getBoard = () => {
-        if (ROOM_GAME_BOARDS.has(roomId)) return ROOM_GAME_BOARDS.get(roomId);
+    const getBoard = (): IBoard | IBoardUlt => {
+        if (ROOM_GAME_BOARDS.has(roomId)) return ROOM_GAME_BOARDS.get(roomId)!;
         return createBoard();
     }
 
-    const createBoard = () => {
+    const createBoard = (): IBoard | IBoardUlt => {
         const board: IBoard | IBoardUlt = isUltimate ? new BoardUlt() : new Board();
 
         board.startNewGame(FENs.INIT);
         board.getFigures();
-        board.updateAllLegalMoves();
+        // board.updateAllLegalMoves();
         board.states.whiteTime = getInitTime(roomId);
         board.states.blackTime = getInitTime(roomId);
 
@@ -48,7 +48,7 @@ export const boardApi = (roomId: string) => {
     }
 
     const moveFigure = (move: IMove) => {
-        const board = getBoard()!;
+        const board = getBoard();
         updateTime(board)
         board.receiveMove(move);
         board.states.isFirstMove = false;
@@ -57,7 +57,7 @@ export const boardApi = (roomId: string) => {
     }
 
     const getBoardData = () => {
-        const board = getBoard()!;
+        const board = getBoard();
         updateTime(board);
         const boardFEN = board.convertToFEN();
         return {
@@ -79,19 +79,19 @@ export const boardApi = (roomId: string) => {
     }
 
     const getTime = () => {
-        const board = getBoard()!;
+        const board = getBoard();
         return { white: board.states.whiteTime, black: board.states.blackTime };
     }
 
     const isTimeout = (player: Colors) => {
-        const board = getBoard()!;
+        const board = getBoard();
         updateTime(board);
         const timer = player === Colors.BLACK ? 'blackTime' : 'whiteTime';
         return board.states[timer] <= 0;
     }
 
     const isSufficientMaterial = () => {
-        const board = getBoard()!;
+        const board = getBoard();
         board.updateAllLegalMoves();
         return board.isSufficientMaterial(board.states.currentPlayer === Colors.BLACK ? Colors.WHITE : Colors.BLACK); //checking enemy
 

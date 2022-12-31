@@ -22,7 +22,7 @@ export const boardApi = (roomId: string) => {
 
         board.startNewGame(FENs.INIT);
         board.getFigures();
-        // board.updateAllLegalMoves();
+        board.updateAllLegalMoves();
         board.states.whiteTime = getInitTime(roomId);
         board.states.blackTime = getInitTime(roomId);
 

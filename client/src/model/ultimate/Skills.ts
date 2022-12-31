@@ -20,9 +20,9 @@ export const SkillList: ISkillItem[] = [
         constraints: 'Cannot be performed on a last standing pawn',
         isTargeted: true,
         canBeAppliedAt: 'figure',
-        
 
-    },    
+
+    },
     {
         title: SkillNames.INCINERATE,
         description: 'Sets a square on fire, making it unreachable for any pieces. Acts like a wall',
@@ -48,7 +48,8 @@ export const SkillList: ISkillItem[] = [
         constraints: 'Cannot be performed on a last standing pawn',
         lasts: 6,
         isTargeted: true,
-        canBeAppliedAt: 'figure'
+        canBeAppliedAt: 'figure',
+        onExpire: SkillNames.SACRIFICE
     }
 
 ]
@@ -61,6 +62,7 @@ export interface ISkillItem {
     isTargeted: boolean;
     lasts?: number;
     type?: SkillTypes;
+    onExpire?: SkillNames; // what skill will be used after expiration
     canBeAppliedAt: 'cell' | 'figure';
 
 }
@@ -72,15 +74,13 @@ export enum SkillErrorMsg {
     IN_CHECK = 'Cannot use skills while in check'
 }
 
-export interface ISkillUsed {
-    title: SkillNames;
+export interface ISkillUsed extends Pick<ISkillItem, "title" | "lasts" | "onExpire"> {
     target: ICellInfo;
     castBy: Colors;
-    lasts?: number;
     appliedAt: number;
 }
 
-export interface ISkillApplied extends Pick<ISkillUsed, "title" |  "castBy" >{
+export interface ISkillApplied extends Pick<ISkillUsed, "title" | "castBy" | "onExpire"> {
     expireAt: number;
     type?: SkillTypes;
 }

@@ -46,10 +46,13 @@ export const drawRect = ({ ctx, x, y, fill, stroke, strokeWidth = 0, width, heig
   if (fill) {
     ctx.fillStyle = fill
     ctx.fillRect(x, y, width, height)
-  }
-  // if (stroke) {
-  //   ctx.lineWidth = strokeWidth
-  //   ctx.strokeStyle = stroke
-  //   ctx.strokeRect(x, y, width, height)
-  // }
+  } 
 } 
+
+export const getCellSize = (canvas: HTMLCanvasElement) => {
+  const { width, height } = canvas.getBoundingClientRect()
+  const w = width / 8;
+  const h = height / 8;
+  return { w, h }
+}
+

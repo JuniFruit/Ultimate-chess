@@ -3,7 +3,7 @@ import { ICell } from "../Cell";
 import { Colors } from "../colors.enum";
 import { IEffectItem } from "../effects/data/effects.data";
 import { ISprite, Sprite } from "../effects/Sprite";
-import { IVFXConstructor, VFX } from "../effects/VFX";
+import { VFX } from "../effects/VFX";
 import { Direction } from "../helper.enum";
 import { getFigureInfo, isInBounds } from "../helpers";
 import { Positions } from "../positions";
@@ -14,7 +14,7 @@ import { IFigure, IFigureBase, IFigureInfo, IFigureUltimateStates, ILegalMove, I
 
 
 
-export class Figure implements IFigureBase {
+export abstract class Figure implements IFigureBase {
     readonly color;
     readonly sprites;
     ultimateStates: IFigureUltimateStates = {
@@ -47,10 +47,6 @@ export class Figure implements IFigureBase {
 
     }
 
-    private _onTake(figure: IFigure) {
-        this.lastTake = { ...figure };
-        this.takes.push({ ...figure });
-    }
 
     public moveFigure(target: ICell, board: IBoard, isFake?: boolean) {
         this.prevX = this.x;
@@ -62,7 +58,6 @@ export class Figure implements IFigureBase {
 
 
         if (isFake) return;
-        if (target.figure) this._onTake(target.figure);
         this.movesCount++;
     }
 
@@ -135,6 +130,8 @@ export class Figure implements IFigureBase {
     }
 
 
+
+
     public addLegalMove(cell: ICell | ICellUlt) {
         if (cell.isEmpty()) {
             this.legalMoves.push(this.convertToLegalMove(cell));
@@ -151,9 +148,7 @@ export class Figure implements IFigureBase {
         this.legalMoves = [];
     }
 
-    public getLegalMoves(board: IBoard | IBoardUlt) {
-
-    }
+    abstract getLegalMoves(board: IBoard | IBoardUlt): void
 
     public convertToLegalMove(cell: ICell | ICellUlt) {
         const figure = cell.figure ? getFigureInfo(cell.figure) : null;
@@ -177,15 +172,18 @@ export class Figure implements IFigureBase {
     }
 
     public setSpriteObj() {
-        this.sprite = new Sprite({ sprite: this.spriteSrc!, framesMax: this.sprites?.frames })
+        this.sprite = new Sprite({ sprite: this.spriteSrc!, framesMaxWidth: this.sprites?.frames })
     }
 
 
     public update(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, isFlipped: boolean) {
         let posX = isFlipped ? 7 - this.x : this.x
         let posY = isFlipped ? 7 - this.y : this.y;
-        this.sprite?.update({ ctx, canvas, x: posX, y: posY });
-        if (this.ultimateStates.effects.length) this.ultimateStates.effects.forEach(effect => effect.update({ ctx, canvas, x: posX, y: posY }))
+        const { imgH, imgW } = this.sprite?.rescaleToCellSize(canvas)!
+        const drawArgs = { ctx, x: posX * imgW, y: posY * imgH, imgHeight: imgH, imgWidth: imgW }
+
+        this.sprite?.update(drawArgs);
+        if (this.ultimateStates.effects.length) this.ultimateStates.effects.forEach(effect => effect.update(drawArgs))
     }
 
 
@@ -202,8 +200,17 @@ export class Figure implements IFigureBase {
         this.ultimateStates.skillsApplied = [...this.ultimateStates.skillsApplied, skill];
     }
 
-    public clearExpiredStates(currentGlobalMoveCount: number) {
-        this.ultimateStates.skillsApplied = this.ultimateStates.skillsApplied.filter(skill => skill.expireAt !== currentGlobalMoveCount)
+    public clearExpiredStates(board: IBoardUlt) {
+
+        const skillToExpire = this.ultimateStates.skillsApplied.find(skill => skill.expireAt === board.states.globalMovesCount);
+        if (skillToExpire?.onExpire) {
+            const myCell = board.getCell(this.x, this.y)
+            myCell.performSkill(skillToExpire.onExpire, board)
+        }
+
+
+        this.ultimateStates.skillsApplied = this.ultimateStates.skillsApplied.filter(
+            skill => skill.expireAt !== board.states.globalMovesCount)
     }
 
     public clearEffects() {

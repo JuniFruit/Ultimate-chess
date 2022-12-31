@@ -6,6 +6,7 @@ import { IKing } from "./figures/King";
 import { IRook } from "./figures/Rook";
 import { getFigureInfo } from "./helpers";
 import { Positions } from "./positions";
+import { IBoardUlt } from "./ultimate/BoardUlt";
 import { ICellUlt } from "./ultimate/CellUlt";
 
 export interface ICell {
@@ -28,7 +29,6 @@ export interface ICell {
     isPromotionMove: (target: ICell) => boolean;
     isCastlingMove: (target: ICell) => boolean;
     getCellInfo: () => ICellInfo;
-
     undo: () => void;
 }
 
@@ -63,6 +63,8 @@ export class Cell implements ICell {
     public isEmpty(): boolean {
         return this.figure === null;
     }
+
+    
 
     private _validateMove(target: ICell, board: IBoard): boolean {
 

@@ -79,3 +79,22 @@ export const getCellSize = (canvas: HTMLCanvasElement) => {
   return { w, h }
 }
 
+export const generateOffsets = (range: number, shape: 'square' | 'knight' | 'VnH',) => {
+  const offsets: number[][] = [];
+  let vals = [-range, 0, range];
+
+  if (shape === 'knight') vals = [range, range + 1, -range, -range - 1]
+
+  for (let i = 0; i < vals.length; i++) {
+    for (let j = 0; j < vals.length; j++) {
+      if (vals[i] === 0 && vals[j] === 0) continue;
+      if ((shape === 'knight' || shape === 'VnH') && Math.abs(vals[i]) === Math.abs(vals[j])) continue;
+
+      const offset = [];
+      offset.push(vals[i]);
+      offset.push(vals[j]);
+      offsets.push(offset);
+    }
+  }
+  return offsets
+}

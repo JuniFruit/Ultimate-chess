@@ -3,10 +3,10 @@ import { ICanvas } from './Canvas.interface';
 import { useCanvas } from './useCanvas';
 
 
-const Canvas: FC<ICanvas> = ({ onAnimate, postDraw, isAnimationStopped, preDraw, ...rest }) => {
+const Canvas: FC<ICanvas> = ({ onAnimate, isAnimationStopped, preDraw, ...rest }) => {
 
 
-    const canvasRef = useCanvas({onAnimate, postDraw, preDraw, isAnimationStopped});
+    const canvasRef = useCanvas({ onAnimate, preDraw, isAnimationStopped });
 
     return (
         <canvas ref={canvasRef} {...rest}>

@@ -16,8 +16,8 @@ export interface ICellUlt extends ICell {
     states: ICellUltStates;
     canPerformSkill: (skill: ISkillItem, board: IBoardUlt) => boolean;
     performSkill: (skill: SkillNames, board: IBoardUlt) => void;
-    applySkill: (skill: ISkillItem, castBy: Colors, currentGlobalMovesCount: number) => void;
-    clearExpiredStates: (currentGlobalMoveCount: number) => void;
+    applySkill: (skill: ISkillItem, board: IBoardUlt) => void;
+    clearExpiredStates: (board: IBoardUlt) => void;
     setEffect: (args: IEffectItem) => void;
     updateEffect: (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, isFlipped: boolean) => void;
     clearEffects: () => void;
@@ -41,6 +41,8 @@ export class CellUlt extends Cell implements ICellUlt {
                 return this._canLightningBolt(board);
             case SkillNames.INCINERATE:
                 return this._canSetOnFire();
+            case SkillNames.PLAGUE:
+                return this._canPlague(board);
             default:
                 return false;
         }
@@ -48,12 +50,11 @@ export class CellUlt extends Cell implements ICellUlt {
     }
 
     public performSkill(skillTitle: SkillNames, board: IBoardUlt) {
-        board.addUsedSkill(skillTitle, this)
         const skillItem = SkillList.find(item => item.title === skillTitle);
 
         if (!skillItem?.lasts) return this._performInstantSkill(skillTitle, board);
 
-        this.applySkill(skillItem!, board.states.currentPlayer, board.states.globalMovesCount)
+        this.applySkill(skillItem!, board)
     }
 
 
@@ -76,8 +77,7 @@ export class CellUlt extends Cell implements ICellUlt {
     private _canSacrifice(board: IBoardUlt) {
         if (this.figure?.type !== FigureTypes.PAWN) return false;
         if (this.figure.color !== board.states.currentPlayer) return false;
-        if (board.figures.filter(figure => figure.type === FigureTypes.PAWN
-            && figure.color === board.states.currentPlayer).length < 2) return false;
+        if (board.isLastStandingPiece(FigureTypes.PAWN, board.states.currentPlayer)) return false;
         return true;
     }
 
@@ -96,25 +96,37 @@ export class CellUlt extends Cell implements ICellUlt {
     }
 
 
+    private _canPlague(board: IBoardUlt) {
+        if (this.figure?.type !== FigureTypes.PAWN) return false;
+        const enemyColor = board.states.currentPlayer === Colors.WHITE ? Colors.BLACK : Colors.WHITE
+        if (this.figure.color !== enemyColor) return false;
+        if (board.isLastStandingPiece(FigureTypes.PAWN, enemyColor)) return false;
+        return true
+    }
+
     public isEmpty(): boolean {
         if (this._isOnFire()) return false;
         return super.isEmpty();
     }
 
 
-    public applySkill(skill: ISkillItem, castBy: Colors, currentGlobalMovesCount: number) {
+    public applySkill(skill: ISkillItem, board: IBoardUlt) {
         const skillToApply: ISkillApplied = {
-            castBy,
-            title: skill.title,
-            expireAt: skill?.lasts ? currentGlobalMovesCount + skill.lasts : -1,
-            type: skill?.type
+            ...skill,
+            castBy: board.states.currentPlayer,
+            expireAt: skill?.lasts ? board.states.globalMovesCount + skill.lasts : -1,
         }
         if (skill.canBeAppliedAt === 'figure') return this.figure?.applySkill(skillToApply);
         this.states.skillsApplied = [...this.states.skillsApplied, skillToApply];
     }
 
-    public clearExpiredStates(currentGlobalMoveCount: number) {
-        if (this.figure) this.figure.clearExpiredStates(currentGlobalMoveCount);
+    public clearExpiredStates(board: IBoardUlt) {
+        const currentGlobalMoveCount = board.states.globalMovesCount;
+
+        if (this.figure) this.figure.clearExpiredStates(board);
+        const skillToExpire = this.states.skillsApplied.find(skill => skill.expireAt === currentGlobalMoveCount);
+
+        if (skillToExpire?.onExpire) this.performSkill(skillToExpire.onExpire, board)
 
         this.states.skillsApplied = this.states.skillsApplied.filter(skill => skill.expireAt !== currentGlobalMoveCount)
     }
@@ -124,7 +136,7 @@ export class CellUlt extends Cell implements ICellUlt {
             new VFX({ ...args })
         )
     }
-    
+
     public clearEffects() {
         this.states.effects = []
     }
@@ -132,7 +144,11 @@ export class CellUlt extends Cell implements ICellUlt {
     public updateEffect(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, isFlipped: boolean) {
         let posX = isFlipped ? 7 - this.x : this.x
         let posY = isFlipped ? 7 - this.y : this.y;
-        this.states.effects.forEach(effect => effect.update({ ctx, canvas, x: posX, y: posY }));
+        this.states.effects.forEach(effect => {
+            const { imgH, imgW } = effect.rescaleToCellSize(canvas)!
+            const drawArgs = { ctx, x: posX * imgW, y: posY * imgH, imgHeight: imgH, imgWidth: imgW }
+            effect.update(drawArgs)
+        });
     }
 
 

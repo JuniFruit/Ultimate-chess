@@ -35,9 +35,7 @@ export interface IFigureBase {
     y: number;
     prevX: number;
     prevY: number;
-    pos: string;
-    lastTake: IFigureInfo | null;
-    takes: IFigureInfo[];
+    pos: string;  
     movesCount: number;
     color: Colors;
     legalMoves: ILegalMove[];
@@ -56,7 +54,7 @@ export interface IFigureBase {
     /* ultimate methods */
 
     applySkill: (skill: ISkillApplied) => void;
-    clearExpiredStates: (currentGlobalMoveCount: number) => void;
+    clearExpiredStates: (board: IBoardUlt) => void;
     filterDisabled: () => void;
     setEffect: (args: IEffectItem) => void;
     clearEffects: () => void;

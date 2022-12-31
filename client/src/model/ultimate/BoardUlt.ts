@@ -1,7 +1,6 @@
 import { IMove } from "../../constants/socketIO/ClientEvents.interface";
 import { IBoardData } from "../../constants/socketIO/ServerEvents.interface";
 import { Board, IBoard, IBoardStates } from "../Board";
-import { ICell } from "../Cell";
 import { Colors } from "../colors.enum";
 import { FigureTypes, IFigure } from "../figures/figures.interface";
 import { CellUlt, ICellUlt } from "./CellUlt";
@@ -25,6 +24,8 @@ export interface IBoardUlt extends IBoard {
     addUsedSkill: (skill: SkillNames, target: ICellUlt) => void;
     isSkillUsedByPlayer: (skill: SkillNames) => boolean;
     mergeBoardData: (boardData: IBoardData) => void;
+    isLastStandingPiece: (figureType: FigureTypes, color: Colors) => boolean;
+    getCell: (x: number, y: number) => ICellUlt
 }
 
 export class BoardUlt extends Board implements IBoardUlt {
@@ -62,8 +63,8 @@ export class BoardUlt extends Board implements IBoardUlt {
         })
     }
 
-    public getCell(x: number, y: number): ICell {
-        return this.cells[y][x]
+    public getCell(x: number, y: number): ICellUlt {
+        return this.cells[y][x] as ICellUlt
     }
 
     public createFigure(char: string, x: number, y: number) {
@@ -112,7 +113,7 @@ export class BoardUlt extends Board implements IBoardUlt {
 
     private _clearExpiredStates() {
         this.cells.forEach(row => {
-            row.forEach(cell => (cell as ICellUlt).clearExpiredStates(this.states.globalMovesCount))
+            row.forEach(cell => (cell as ICellUlt).clearExpiredStates(this))
         })
     }
 
@@ -139,6 +140,7 @@ export class BoardUlt extends Board implements IBoardUlt {
         if (options?.skill) {
             this.incrementMoveCount();
             const target = this.getCell(to.x, to.y);
+            this.addUsedSkill(options.skill, target);
             (target as ICellUlt).performSkill(options.skill, this);
             return;
         }
@@ -156,6 +158,11 @@ export class BoardUlt extends Board implements IBoardUlt {
                 }
             })
         })
+    }
+
+    public isLastStandingPiece(figureType: FigureTypes, color: Colors) {
+        return this.figures.filter(figure => figure.type === figureType
+            && figure.color === color).length < 2
     }
 
 }

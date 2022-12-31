@@ -4,7 +4,7 @@ import { IUseCanvas } from "./Canvas.interface";
 
 
 
-export const useCanvas = ({ onAnimate, postDraw, preDraw, isAnimationStopped }: IUseCanvas) => {
+export const useCanvas = ({ onAnimate, preDraw, isAnimationStopped }: IUseCanvas) => {
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
     
@@ -37,7 +37,6 @@ export const useCanvas = ({ onAnimate, postDraw, preDraw, isAnimationStopped }: 
             animationFrameId = window.requestAnimationFrame(render)
             frameCount++
             onAnimate(context!, canvas, frameCount)
-            frameCount = postDraw(context!, frameCount);
         }
         render()
         return () => {

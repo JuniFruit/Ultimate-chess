@@ -2,8 +2,8 @@ import { ICanvasField } from "./CanvasField.interface";
 import { MouseEvent, MouseEventHandler, useCallback, useState, useRef } from 'react';
 import { Colors } from "../../../../../model/colors.enum";
 import { IFigure } from "../../../../../model/figures/figures.interface";
-import { getCellSize, getFlippedPos } from "../../../../../model/helpers";
-import { drawCircle, drawRect } from "./utils/canvas.utils";
+import { getFlippedPos } from "../../../../../model/helpers";
+import { drawCircle, drawRect, getCellSize } from "./utils/canvas.utils";
 import { ICell } from "../../../../../model/Cell";
 import { COLORS } from "./utils/colors.utils";
 import { ICellUlt } from "../../../../../model/ultimate/CellUlt";
@@ -27,34 +27,33 @@ export const useCanvasField = (
     const [isDragging, setIsDragging] = useState(false);
     const draggingPiece = useRef<IFigure | null>(null);
     const dragStartCell = useRef<ICell | null>(null);
-    const draggedOver = useRef<ICell | null>(null);
-    const prevMouseOver = useRef<ICell | ICellUlt | null>(null)
+    const prevMouseOver = useRef<ICell | ICellUlt | null>(null);
+    const prevMoveCount = useRef<number>(board.states.globalMovesCount);
 
     const handlePreDraw = useCallback((context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
         board.figures.forEach(figure => figure.setSpriteObj());
-        if (isUltimate) setEffectsOnBoard(board as IBoardUlt);
+        if (isUltimate && prevMoveCount.current !== board.states.globalMovesCount) setEffectsOnBoard(board as IBoardUlt);
         drawBoard(context, canvas);
         drawPremoves(context, canvas);
         drawAvailable(context, canvas);
         drawSelected(context, canvas);
         drawMouseOver(context, canvas)
 
-    }, [cells.length, isFlipped, premoves.length, selected, board, isUltimate])
+        prevMoveCount.current = board.states.globalMovesCount;
 
-    const handlePostDraw = useCallback((context: CanvasRenderingContext2D, frameCount: number) => {
-        return frameCount
-    }, [])
+    }, [cells.length, isFlipped, premoves.length, selected, board, isUltimate])
+   
 
     const draw = useCallback((context: CanvasRenderingContext2D, canvas: HTMLCanvasElement, frameCount: number) => {
         context.clearRect(0, 0, context.canvas.width, context.canvas.height)
         drawMouseOver(context, canvas)
-        // drawFigures(context, canvas)
+        drawFigures(context, canvas)
         drawEffects(context, canvas);
 
-        context.font = '24px serif';
-        context.fillText(`frame count : ${frameCount} :)`, 10, 190);
-        context.fillStyle = '#000000'
-        context.fill()
+        // context.font = '24px serif';
+        // context.fillText(`frame count : ${frameCount} :)`, 10, 190);
+        // context.fillStyle = '#000000'
+        // context.fill()
     }, [board, isFlipped, ultimateStates.isSkillTargetSelecting])
 
 
@@ -128,7 +127,7 @@ export const useCanvasField = (
 
     const drawEffects = useCallback((ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
         if (!isUltimate) return;
-        board.cells.forEach(row => row.forEach(cell => (cell as ICellUlt).updateEffect(ctx, canvas, isFlipped)));
+        (board.cells as ICellUlt[][]).forEach(row => row.forEach(cell => cell.updateEffect(ctx, canvas, isFlipped)));
     }, [isUltimate, board])
 
     const drawMouseOver = useCallback((ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
@@ -170,7 +169,7 @@ export const useCanvasField = (
                 })
             })
         })
-    }, [cells.length, isFlipped])    
+    }, [cells.length, isFlipped])
 
 
     const _getCellPosFromMouse = useCallback((e: MouseEvent<HTMLCanvasElement>) => {
@@ -202,6 +201,7 @@ export const useCanvasField = (
         draggingPiece.current.y = isFlipped ? 7 - y + offset : y - offset;
 
     }, [isFlipped])
+
     const _setCellMouseOver = useCallback((e: MouseEvent<HTMLCanvasElement>) => {
         const { x, y } = _getCellPosFromMouse(e);
         const target = cells[y][x]
@@ -220,9 +220,6 @@ export const useCanvasField = (
 
         if (!isDragging) return;
         _setPieceToMouse(e);
-
-        // const { x, y } = _getCellPosFromMouse(e);
-        // draggedOver.current = cells[y][x]
     }, [isDragging, cells.length, ultimateStates.isSkillTargetSelecting])
 
     const handleMouseOut: MouseEventHandler<HTMLCanvasElement> = useCallback((e) => {
@@ -278,15 +275,13 @@ export const useCanvasField = (
         draggingPiece.current.y = dragStartCell.current.y;
         dragStartCell.current = null;
         draggingPiece.current = null;
-        draggedOver.current = null;
         setIsDragging(prev => false);
-    }, [isDragging, dragStartCell, draggingPiece])
+    }, [isDragging])
 
     return {
 
         canvas: {
             draw,
-            handlePostDraw,
             handlePreDraw,
         },
         mouse: {

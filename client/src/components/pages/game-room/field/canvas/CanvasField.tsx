@@ -13,7 +13,6 @@ const CanvasField: FC<ICanvasField> = (props) => {
             <Canvas
                 onAnimate={() => { }}
                 preDraw={canvas.handlePreDraw}
-                postDraw={canvas.handlePostDraw}
                 className={styles.canvas}
                 isAnimationStopped={true}
                 key={'background'}
@@ -21,7 +20,6 @@ const CanvasField: FC<ICanvasField> = (props) => {
             <Canvas
                 onAnimate={canvas.draw}
                 preDraw={() => { }}
-                postDraw={canvas.handlePostDraw}
                 onMouseMove={mouse.handleMouseMove}
                 onMouseDown={mouse.handleMouseDown}
                 onMouseUp={mouse.handleMouseUp}

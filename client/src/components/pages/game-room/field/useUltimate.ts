@@ -66,6 +66,7 @@ export const useUltimate = ({
         }
 
         board.incrementMoveCount();
+        board.addUsedSkill(chosenSkill.current.title, cell);
         cell.performSkill(chosenSkill.current.title, board);
         board.swapPlayer();
         handleSendSkillMove(cell, chosenSkill.current);

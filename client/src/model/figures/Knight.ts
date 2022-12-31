@@ -1,7 +1,7 @@
 import { IBoard } from "../Board";
 import { Colors } from "../colors.enum";
 import { Direction } from "../helper.enum";
-import { isInBounds } from "../helpers";
+import { generateOffsets, isInBounds } from "../helpers";
 import { IBoardUlt } from "../ultimate/BoardUlt";
 import { Figure } from "./Figures";
 import { FigureTypes, IFigure, ISpritesObj } from "./figures.interface";
@@ -14,30 +14,18 @@ export class Knight extends Figure {
     constructor(x: number, y: number, color: Colors, sprites?: ISpritesObj) {
         super(x, y, color, sprites);
         this.spriteSrc = color === Colors.BLACK ? sprites?.blackKnight : sprites?.whiteKnight;
-        this.type = FigureTypes.KNIGHT;    
+        this.type = FigureTypes.KNIGHT;
     }
 
     public getLegalMoves(board: IBoard | IBoardUlt) {
         super.clearMoves()
-
-        this._checkMoves(board, 1, 2, Direction.POS, Direction.POS)
-        this._checkMoves(board, 2, 1, Direction.POS, Direction.POS)
-        this._checkMoves(board, 1, 2, Direction.NEG, Direction.NEG)
-        this._checkMoves(board, 2, 1, Direction.NEG, Direction.NEG)
-        this._checkMoves(board, 1, 2, Direction.NEG, Direction.POS)
-        this._checkMoves(board, 1, 2, Direction.POS, Direction.NEG)
-        this._checkMoves(board, 2, 1, Direction.NEG, Direction.POS)
-        this._checkMoves(board, 2, 1, Direction.POS, Direction.NEG)
-
-    }
-
-    private _checkMoves(board: IBoard | IBoardUlt, rangeX: number, rangeY: number, dirX: Direction, dirY: Direction) {
-
-        if (isInBounds(this.x - rangeX * dirX, this.y - rangeY * dirY)) {
-            let current = board.getCell(this.x - rangeX * dirX, this.y - rangeY * dirY);      
-            super.addLegalMove(current);
-        }
-
-
+              
+        const offsets = generateOffsets(1, 'knight');
+        offsets.forEach(offset => {
+            const [x, y] = offset;
+            if (isInBounds(this.x + x, this.y + y)) {
+                super.addLegalMove(board.getCell(this.x + x, this.y + y))
+            }
+        })
     }
 }

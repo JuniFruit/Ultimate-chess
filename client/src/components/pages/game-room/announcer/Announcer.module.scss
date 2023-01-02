@@ -2,7 +2,7 @@
 
 
 .announcer_wrapper {
-    @apply absolute left-1/2 top-1/4 text-amber-200 text-4xl w-max h-min p-2 rounded-lg select-none;
+    @apply absolute left-1/2 top-1/4 text-amber-200 text-tiny w-max h-min p-2 rounded-lg select-none;
     font-weight: 900; 
     z-index: 76;
     transform: translate(-50%, -50%);
@@ -11,5 +11,9 @@
         @apply text-center animate-scaleDown;
         animation-duration: .5s;
         text-shadow: 0 0 .25rem #7fa650, 0 0 .35rem #000000;
+    }
+
+    @screen md {
+        @apply text-4xl
     }
 }

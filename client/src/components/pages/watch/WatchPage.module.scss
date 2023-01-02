@@ -28,13 +28,21 @@
 
                 >h3 {
                     @apply text-main-200 opacity-80;
-                    font-size: 1rem;
+                    font-size: .85rem;
                     font-weight: 400;
                 }
 
                 span {
                     @apply text-main-200;
+                    font-size: .85rem;
                     font-weight: 600;
+                }
+
+                @screen sm {
+                    >h3,
+                    span {
+                        @apply text-sm
+                    }
                 }
             }
             &:hover,
@@ -44,7 +52,11 @@
         }
         
         .not_found {
-            @apply text-main-200 text-base text-center opacity-70 mt-10;
+            @apply text-main-200 text-sm text-center opacity-70 mt-10;
+
+            @screen md {
+                @apply text-base
+            }
         }
 
         &::-webkit-scrollbar {

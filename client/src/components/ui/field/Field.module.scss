@@ -38,5 +38,9 @@
 
 .error {
     @apply mt-1 ml-1 text-red-400;
-    font-size: .8rem;
+    font-size: .75rem;
+
+    @screen md {
+        font-size: .85rem;
+    }
 }

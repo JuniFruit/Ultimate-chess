@@ -34,9 +34,7 @@
 
             .dummy_page,
             .page {
-                @apply bg-white absolute w-full h-full;
-                /* height: calc(var(--book-h) - 1.5rem);
-                width: calc(var(--book-w) - 1.5rem); */
+                @apply bg-white absolute w-full h-full;           
                 background: url('https://i.pinimg.com/736x/ce/f6/8f/cef68fa17400009b88d81b9099423120.jpg');
                 background-size: cover;
                 background-position: center;
@@ -74,14 +72,22 @@
             }
     
             .book_nav {
-                @apply flex justify-between w-full absolute left-0 px-2;
-                top: calc(100% - 3.5rem);
+                @apply flex justify-between w-full absolute -left-2 px-2;
+
+                top: calc(100% - 2.5rem);
                 z-index: -1;
 
                 >button {
-                    @apply bg-transparent text-base opacity-70 text-main-900 hover:opacity-100 disabled:opacity-30;
+                    @apply bg-transparent text-sm w-1 opacity-70 text-main-900 hover:opacity-100 disabled:opacity-30;
                     
                     
+                }
+
+                @screen sm {
+                    top: calc(100% - 3.5rem);
+                    >button {
+                        @apply w-5 text-base;
+                    }
                 }
             }
 

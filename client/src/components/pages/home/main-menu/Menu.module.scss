@@ -4,8 +4,14 @@
     @apply  mt-20 p-2 flex gap-10 justify-center relative items-center;
     min-height: 20rem;
     >div:first-child {
-        max-width: 50rem;
-        height: 30rem;
+        display: none;
+    }
+    @screen md {
+        >div:first-child {
+            @apply block;
+            max-width: 50rem;
+            height: 30rem;
+        }
     }
     
    

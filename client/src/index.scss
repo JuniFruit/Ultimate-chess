@@ -36,10 +36,10 @@ body {
   --complimentary: #008e7e;
   --secondary: #7cacc8; 
 
-  --game-info-h: calc((var(--cellSize)*8) - 5rem);
+  --game-info-h: calc((var(--cellSize)*8) - 8rem);
 
-  --book-h: 35rem;
-  --book-w: 32rem;
+  --book-h: 18rem;
+  --book-w: 10rem;
 }
 
 a {
@@ -58,7 +58,9 @@ input, button {
 
 @screen sm {
   :root {
-    --cellSize: 3.5rem
+    --cellSize: 3.5rem;
+    --book-h: 25rem;
+    --book-w: 17rem;
   }
 }
 
@@ -76,7 +78,9 @@ input, button {
 
 @screen xl {
   :root {
-    --cellSize: 4.5rem
+    --cellSize: 4.5rem;
+    --book-h: 35rem;
+    --book-w: 32rem;
   }
 }
 

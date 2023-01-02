@@ -2,14 +2,18 @@
     @apply rounded-lg block shadow-sm fixed bottom-5 left-1/2 overflow-hidden bg-main-700 animate-fadeIn duration-150; 
     z-index: 110;
     transform: translateX(-50%);
-    min-height: 2rem;
+    min-height: 1.5rem;
+
+    @screen sm {
+        min-height: 2rem;
+    }
     
 
     .message_wrapper {
-        @apply flex justify-center align-middle gap-4 py-6 sticky;
+        @apply flex justify-center align-middle gap-2 py-2 sticky;
 
         &:nth-child(n+1) {
-           @apply flex justify-center items-center mx-3;
+           @apply flex justify-center items-center mx-2;
         }
 
         .icon {
@@ -17,12 +21,22 @@
         }
 
         .message {
-            @apply text-white break-words max-w-md;
-            font-size: .85rem; 
+            @apply text-main-200 break-words max-w-md;
+            font-size: .65rem; 
         }
         .message_close {
-            @apply text-white opacity-60 transition-opacity hover:opacity-100;
+            @apply text-main-200 opacity-60 transition-opacity hover:opacity-100;
             font-size: 1rem;
+        }
+
+        @screen sm {
+            @apply gap-4 py-6;
+            .message {
+                font-size: .85rem; 
+            }
+            &:nth-child(n+1) {
+                @apply mx-3;
+             }
         }
     }
 }

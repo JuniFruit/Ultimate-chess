@@ -4,9 +4,12 @@
     @apply animate-slideInRight w-full;
     
     >div {
-        @apply bg-complimentary  text-white text-opacity-90 p-3 w-full rounded-lg transition-all duration-150;
-        font-size: 1.2rem;
+        @apply bg-complimentary  text-sm text-main-200 text-opacity-90 p-3 w-full rounded-lg transition-all duration-150;
         font-weight: 600;
+
+        @screen lg {
+            @apply text-tiny
+        }
 
         &:hover,
         &:focus {

@@ -20,13 +20,15 @@
 
     }
     .menu {
-        @apply absolute left-0 w-full p-3 rounded-lg z-50 shadow bg-main-800 min-w-max animate-fadeIn duration-150;
+        @apply absolute  w-full p-3 rounded-lg z-50 shadow bg-main-800 min-w-max animate-fadeIn duration-150;
         top: calc(100% + 1.4rem);
+        left: -50%;
         
         >ul {
-            @apply flex-col flex gap-4;
+            @apply flex-col flex gap-2;
             >li {
-                @apply text-white  opacity-75 relative;
+                @apply text-main-200  opacity-75 relative;
+                font-size: .85rem;
 
                 &:hover::before {
                     @apply w-full
@@ -37,6 +39,16 @@
                     
                 }
             }
+            @screen md {
+                @apply gap-4;
+                >li {
+                    @apply text-sm;
+                }
+            }
+        }
+
+        @screen md {
+            left: -1rem;
         }
     }
 }

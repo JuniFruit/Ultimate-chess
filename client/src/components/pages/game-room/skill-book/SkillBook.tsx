@@ -1,5 +1,6 @@
 import { FC, useCallback } from "react";
 import { IoCloseCircle } from "react-icons/io5";
+import { useIsMobile } from "../../../../hooks/useMobile";
 import { ISkillItem, SkillList } from "../../../../model/ultimate/Skills";
 import { Book } from "../../../ui/book/Book";
 import { Button } from "../../../ui/button/Button";
@@ -10,13 +11,15 @@ import { SkillPage } from "./SkillPage";
 
 export const SkillBook: FC<ISkillBook> = ({ onChooseSkill, onClose, board, myColor }) => {
 
+    const { isMobile } = useIsMobile();
+
     const getPages = useCallback((): JSX.Element[] => {
         const pages: ISkillItem[][] = []
-
+        const skillsOnPage = isMobile ? 1 : 4;
         let temp: ISkillItem[] = [];
 
         SkillList.forEach((item, ind) => {
-            if (ind % 4 === 0 && ind !== 0) {
+            if (ind % skillsOnPage === 0 && ind !== 0) {
                 pages.push(temp)
                 temp = []
             }

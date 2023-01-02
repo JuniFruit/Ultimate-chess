@@ -34,7 +34,7 @@
                 @apply flex flex-col gap-2 justify-between items-center;
 
                 >button {
-                    @apply p-1 rounded-lg bg-opacity-70 transition-colors hover:bg-opacity-100;
+                    @apply p-2 rounded-md bg-opacity-70 transition-colors hover:bg-opacity-100;
                     font-size: .75rem;
                 }
             }
@@ -56,7 +56,7 @@
                 }    
                 .panel_buttons {
                     >button {
-                        @apply text-sm p-2;
+                        @apply text-sm;
                     }
                 }
             }

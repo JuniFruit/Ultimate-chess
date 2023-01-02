@@ -7,20 +7,35 @@
         @apply flex flex-col;
 
         >h2 {
-            font-size: 1rem;
+            font-size: .75rem;
             font-weight: 700;
         }
         >p {
-            font-size: .7rem;
+            font-size: .65rem;
             font-weight: 500;
         }
         >h3 {
-            @apply opacity-70;
-            font-size: .65rem;
+            @apply opacity-90;
+            font-size: .55rem;
         }
         >span {
-            @apply opacity-70;
-            font-size: .65rem;
+            @apply opacity-90;
+            font-size: .55rem;
+        }
+
+        @screen sm {
+            >h2 {
+                font-size: 1rem;
+            }
+            >p {
+                font-size: .7rem;
+            }
+            >h3 {
+                font-size: .75rem;
+            }
+            >span {
+                font-size: .75rem;
+            }
         }
     }
 }

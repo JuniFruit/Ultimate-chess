@@ -3,11 +3,16 @@
 
     .title {
         @apply mb-2 text-main-200 opacity-90;
+        font-size: .85rem;
         font-weight: 600;
+        @screen sm {
+            @apply text-sm;
+        }
     }
 
     >input {
-        @apply rounded-lg py-3 px-2 outline-none appearance-none block text-main-200 opacity-70 shadow-md transition-shadow bg-main-700 w-full;
+        @apply rounded-lg py-2 px-1 outline-none 
+        appearance-none block text-main-200 opacity-70 shadow-md transition-shadow bg-main-700 w-full;
         
         &:focus {
             @apply shadow outline-none opacity-100
@@ -15,7 +20,16 @@
         
         &::placeholder {
             @apply text-main-200 opacity-40;
+            font-size: .75rem;
+
+            @screen sm {
+                @apply text-sm;
+            }
            
+        }
+
+        @screen sm {
+            @apply py-3 px-2;
         }
     }
 

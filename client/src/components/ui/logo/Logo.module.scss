@@ -1,8 +1,16 @@
 .logo {
-    @apply font-semibold text-base;
-    color: white;
+    @apply font-semibold text-main-200;
+    font-size: .85rem;
 
     >:first-child {
         @apply text-complimentary;
+    }
+
+    @screen sm {
+        @apply text-sm
+    }
+
+    @screen md {
+        @apply text-base
     }
 }

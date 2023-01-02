@@ -23,7 +23,7 @@ body {
 }
 
 :root {
-  --cellSize: 4.5rem; 
+  --cellSize: 2.3rem; 
   --main-900: #272522;
   --main-800:#312e2b;
   --main-700: #413e3c;
@@ -36,7 +36,7 @@ body {
   --complimentary: #008e7e;
   --secondary: #7cacc8; 
 
-  --game-info-h: 20rem;
+  --game-info-h: calc((var(--cellSize)*8) - 5rem);
 
   --book-h: 35rem;
   --book-w: 32rem;
@@ -52,3 +52,31 @@ input, button {
   outline: none;
   appearance: none;
 }
+
+
+
+
+@screen sm {
+  :root {
+    --cellSize: 3.5rem
+  }
+}
+
+/* @screen md {
+  :root {
+    --cellSize: 3.5rem
+  }
+} */
+/* 
+@screen lg {
+  :root {
+    --cellSize: 3.5rem
+  }
+} */
+
+@screen xl {
+  :root {
+    --cellSize: 4.5rem
+  }
+}
+

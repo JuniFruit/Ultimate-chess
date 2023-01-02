@@ -1,17 +1,17 @@
 
 
 .message_item_wrapper {
-    @apply px-2 py-1 relative rounded-lg my-2 shadow;
-    background: linear-gradient(90deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.0));   
+    @apply px-2 py-1 relative rounded-lg my-1 shadow;
+      
 
     >h3 {
-        @apply text-secondary;
-        font-size: .9rem;
+        @apply text-secondary italic;
+        font-size: .75rem;
     }
 
     >p {
-        @apply break-words text-white;
-        font-size: 1rem;
+        @apply break-words text-main-200;
+        font-size: .85rem;
         font-weight: 300;
     }
     .client_name {
@@ -19,9 +19,21 @@
     }
 
     >span {
-        @apply text-white;
-        font-size: .75rem;
+        @apply text-main-200 italic;
+        font-size: .65rem;
         font-weight: 200;
-        font-style: italic;
     }   
+
+    @screen md {
+        @apply my-2;
+        >h3 {
+            font-size: .9rem;
+        }
+        >p {
+            @apply text-sm;
+        }
+        >span {
+            font-size: .9rem;
+        }
+    }
 }

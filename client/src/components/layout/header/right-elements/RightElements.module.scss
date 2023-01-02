@@ -3,5 +3,17 @@
 }
 
 .button {
-    @apply inline-flex mx-2 text-3xl ml-6 text-white items-center justify-center opacity-60 transition-opacity hover:opacity-100;
+    @apply inline-flex mx-2 text-base ml-6 text-main-200 items-center justify-center opacity-60 transition-opacity hover:opacity-100;
+}
+
+@screen sm {
+    .button {
+        @apply text-xl
+    }
+}
+
+@screen md {
+    .button {
+        @apply text-2xl;
+    }
 }

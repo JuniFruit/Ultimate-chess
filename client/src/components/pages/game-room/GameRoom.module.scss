@@ -1,21 +1,27 @@
 
 
 .room_wrapper {
-    @apply flex gap-5 items-center m-auto mt-4 w-full justify-center relative;
+
+    @apply flex gap-5 items-center m-auto mt-4 w-full justify-center relative flex-col;
 
     .board_wrapper {
         @apply flex flex-col gap-3;
-
+    
         >div:first-child {
             @apply animate-slideInTop;
         }
-
+    
         >div:last-child {
             @apply animate-slideInBottom;
         }
-
+    
         .player_bar {
             @apply flex gap-3;
         }
     }
+ 
+    @screen lg {
+        @apply flex-row;
+    }
+
 }

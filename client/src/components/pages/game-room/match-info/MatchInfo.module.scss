@@ -1,25 +1,28 @@
 
 
 .match_info_wrapper {
+ 
     @apply bg-main-900 rounded-2xl mt-5 shadow overflow-hidden animate-slideInRight;
-    width: 40%;
-    min-height: calc(var(--cellSize) * 7);
-
+    width: 100%;
+    min-height: calc(var(--cellSize) * 8);
+    
     .match_header {
         background-color: rgba(0, 0, 0, 0.200);
-
+    
         .match_buttons {
             @apply flex;
             flex: 1 1;         
-            
-          
+                
+              
             .button {
-                @apply flex flex-col py-2 px-4 gap-2 text-white items-center;    
-                flex-basis: (100% / 4);            
+                @apply flex flex-col py-2 px-4 gap-1 text-main-200 items-center;    
+                flex-basis: (100% / 4);  
+                font-size: .85rem;          
                 >svg {
-                    @apply text-white text-base;
+                    @apply text-main-200;
+                    font-size: .85rem;
                 }
-            
+                
                 &:hover {
                     @apply text-opacity-75;
                     >svg {
@@ -27,23 +30,43 @@
                     }
                 }
             }
-
+    
             .button_active {
                 @apply bg-main-900;
             }
         }
-        
+            
     }
     .chat_wrapper_active {
-        @apply opacity-100 pointer-events-auto h-fit w-full;
+         @apply opacity-100 pointer-events-auto h-fit w-full;
     }
-
+    
     .chat_wrapper_disabled {
         @apply opacity-0 pointer-events-none h-0 w-0;
     }
-
+    
     .match_info_footer {
         @apply mt-8;
+    }
+
+  
+
+    @screen md {
+        max-width: 50rem;
+        .match_header {
+            .match_buttons {
+                .button {
+                    @apply gap-2 text-sm;
+                    >svg {
+                        @apply text-tiny;
+                    }
+                }
+            }
+        }
+    }
+
+    @screen lg {
+        width: 40%;
     }
 
 

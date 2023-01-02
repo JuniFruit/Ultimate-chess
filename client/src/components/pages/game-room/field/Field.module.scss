@@ -1,10 +1,10 @@
 
 
 .field {
-    @apply w-full h-min animate-slideInLeft shadow relative;
+    @apply w-full h-min animate-slideInLeft relative;
     
     .board {
-        @apply flex flex-wrap border-main-800 relative;
+        @apply border-main-800 relative mx-auto rounded-md overflow-hidden;
         width: calc(8 * var(--cellSize));
         height: calc(8 * var(--cellSize));
         .canvas {
@@ -12,38 +12,7 @@
             width: calc(8 * var(--cellSize));
             height: calc(8 * var(--cellSize));
             z-index: 35;
-        }
-        /* .cell {
-            @apply absolute  top-0 left-0;
-            border: 5px solid transparent;
-            width: var(--cellSize);
-            height: var(--cellSize);
-            z-index: 45;
-         
-            .available_dot {
-                @apply absolute rounded-full bg-stone-700 opacity-60 h-5 w-5 top-1/2 left-1/2 animate-fadeIn;
-                animation-duration: .15s;
-                transform: translate(-50%, -50%);
-                color: #44403c9f;
-                z-index: 30;
-            }
-        }
-        .w {
-            @apply bg-main-200 opacity-90;
-        }
-        .b {
-            @apply bg-complimentary opacity-90;
-        }
-        .selected {
-            @apply bg-secondary;
-        }
-        .draggedOver {
-            @apply border-secondary ;
-        }
-
-        .premoved {
-            @apply bg-red-700 opacity-60 border-red-500;
-        } */
+        }  
 
     }
     >div:nth-child(n+2) {

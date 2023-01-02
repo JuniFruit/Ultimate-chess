@@ -2,18 +2,20 @@
 
 .move_wrapper {
     @apply my-2;
-    height: 70%;   
+    height: 50%;   
 
     h3 {
         @apply text-center text-main-200;
+        font-size: .75rem;
         font-weight: 600;
     }
 
     ol {
-        @apply text-main-200 flex items-start flex-col gap-2 px-5 w-full h-full overflow-y-scroll;
+        @apply text-main-200 flex items-start flex-col gap-1 px-5 w-full h-full overflow-y-scroll;
         scrollbar-width: 0;
+        font-size: .65rem;
         li {
-            @apply flex gap-3 bg-main-700 w-full items-center px-1 rounded-md;
+            @apply flex gap-3 bg-main-800 bg-opacity-80 w-full items-center px-1 rounded-md;
             >span:first-child {
                 @apply opacity-70;
                 font-weight: 200;
@@ -27,6 +29,23 @@
         }
         &::-webkit-scrollbar {
             width: 0px;
+        }
+    }
+
+    @screen sm {
+        h3 {
+            @apply text-sm;
+        }
+    
+        ol {
+            @apply gap-2;
+            font-size: .85rem;
+        }
+    }
+
+    @screen md {      
+        ol {
+            @apply text-sm;
         }
     }
 

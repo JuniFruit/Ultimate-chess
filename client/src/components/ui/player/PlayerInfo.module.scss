@@ -1,38 +1,87 @@
 
 
 .info_container {
-    @apply w-full bg-main-900 rounded-2xl px-2 py-1 shadow-md flex items-center justify-between;
-
+ 
+    @apply w-full bg-main-900 rounded-lg px-1 py-1 shadow-md flex items-center justify-between;
+    
     .info_wrapper {
-        @apply flex gap-3 items-center;
-
+         @apply flex gap-2 items-center;
+    
         >div:first-child{
-            @apply w-10 h-10;
+            @apply w-7 h-7 rounded-md;
         }
         .stats_wrapper {
-            @apply flex flex-col gap-0 text-white;
-
+            @apply flex flex-col text-main-200;
+    
             >h3 {
-                @apply text-sm;
+                font-size: .75rem;
                 font-weight: 600;
             }
             .stats {
-                @apply flex gap-2;
+                 @apply flex gap-1;
                 >span {
-                    font-size: .85rem;
-                    font-weight: 300;
+                        font-size: .65rem;
+                        font-weight: 300;
                 }
             }
         }
     }
-
+    
     .book_button {
-        @apply w-20 h-max;
         >button {
-            @apply bg-transparent w-full h-full;
+            @apply bg-transparent w-8 h-8 p-1;
             >img {
-                @apply w-full h-full;   
-                object-fit: cover;          
+                    @apply w-full h-full;   
+                    object-fit: cover;          
+            }
+        }
+    }
+  
+
+    @screen sm {
+        @apply rounded-xl px-2;
+    
+        .info_wrapper {
+            @apply gap-3;
+    
+            >div:first-child{
+                @apply w-10 h-10 rounded-lg;
+            }
+            .stats_wrapper {
+    
+                >h3 {
+                    font-size: .85rem;
+                }
+                .stats {
+                    >span {
+                        font-size: .75rem;
+                    }
+                }
+            }
+        }
+    
+        .book_button {          
+            >button {
+                @apply bg-transparent w-10 h-10;               
+            }
+        }
+
+    }
+
+    @screen lg {
+        
+        .info_wrapper {            
+            .stats_wrapper {    
+                >h3 {
+                    @apply text-sm;
+                }
+                
+            }
+        }
+        .book_button {
+          
+            >button {
+                @apply bg-transparent w-14 h-14;              
             }
         }
     }

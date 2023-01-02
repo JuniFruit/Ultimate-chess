@@ -1,14 +1,29 @@
 
 
-.timer_wrapper {
-    @apply inline-flex text-base items-center bg-main-900 w-max rounded-2xl px-2 justify-center;
-    width: 10rem;
-
+.timer_wrapper { 
+    @apply inline-flex items-center bg-main-900 w-max rounded-lg px-2 justify-center;
+    width: 4.5rem;
+    font-size: .85rem;
+    
     >span {
-        @apply h-max text-white;
-        width: 4rem;
+         @apply h-max text-main-200;
+            width: 2rem;
     }
     >svg {
-        @apply w-10 h-10 text-complimentary;
+        @apply w-5 h-5 text-complimentary;
     }
+ 
+    @screen sm {
+        @apply text-tiny rounded-xl;
+        width: 7rem;
+    
+        >span {    
+            width: 3rem;
+        }
+        >svg {
+            @apply w-9 h-9 ;
+        }
+
+    }
+   
 }

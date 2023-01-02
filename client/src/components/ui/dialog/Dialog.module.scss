@@ -12,30 +12,67 @@
             .panel_title {
                 @apply text-center text-opacity-90 my-2 text-main-200;
                 font-weight: 700;
-                font-size: 1.2rem;
+                font-size: .85rem
             }
 
             .panel_msg {
-                @apply text-sm text-center text-opacity-80 my-5 text-main-200 flex flex-col gap-2;
+                @apply text-center text-opacity-80 my-5 text-main-200 flex flex-col gap-2;
                 font-weight: 600;
+                font-size: .65rem;
 
                 >span {
-                    font-size: .85rem;
+                    font-size: .65rem;
                     font-weight: 300;
                 }
             }
 
             >img {
-                @apply w-16 h-16 m-auto my-1;
+                @apply w-12 h-12 m-auto my-1;
             }
 
             .panel_buttons {
                 @apply flex flex-col gap-2 justify-between items-center;
 
                 >button {
-                    @apply p-2 rounded-lg bg-opacity-70 transition-colors hover:bg-opacity-100;
-                    font-size: 1rem;
+                    @apply p-1 rounded-lg bg-opacity-70 transition-colors hover:bg-opacity-100;
+                    font-size: .75rem;
                 }
+            }
+        }
+
+        @screen sm {
+            .panel_wrapper {
+                .panel_title {
+                    @apply text-sm
+                }    
+                .panel_msg {
+                    font-size: .85rem;    
+                    >span {
+                        font-size: .75rem;
+                    }
+                }    
+                >img {
+                    @apply w-16 h-16 m-auto my-1;
+                }    
+                .panel_buttons {
+                    >button {
+                        @apply text-sm p-2;
+                    }
+                }
+            }
+        }
+        @screen md {
+            .panel_wrapper {
+                .panel_title {
+                    @apply text-tiny
+                }    
+                .panel_msg {
+                    @apply text-sm;  
+                    >span {
+                        font-size: .85rem;
+                    }
+                }
+               
             }
         }
        

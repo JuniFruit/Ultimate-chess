@@ -1,9 +1,39 @@
 
 
 .wrapper {
-    >div:first-child {
-        > img {
-            object-fit: scale-down; 
+    @apply flex flex-col;
+
+    >section {
+        @apply w-full h-full;
+    }
+    >button {
+        width: 20%
+    }
+}
+
+.slide_wrapper {
+    @apply relative text-main-200 cursor-pointer transition-all duration-200 shadow rounded-lg m-2 bg-main-900;
+
+    >h2 {
+        @apply text-tiny absolute top-2 left-0 text-center w-full break-words transition-all duration-200 opacity-80;
+        z-index: 5;
+        font-weight: 700;
+    }
+    >div > img {
+        object-fit: scale-down
+    }   
+
+    >h3 {
+        @apply absolute bottom-2 left-0 text-center w-full break-words text-emerald-400 italic;
+        z-index: 5;
+
+    }
+
+    &:hover {
+        transform: translateY(-.2rem);
+        >h2 {
+            @apply opacity-100;
         }
+        
     }
 }

@@ -3,8 +3,13 @@
 .handler_wrapper {
     @apply p-2;
     >h4 {
-        @apply text-white;
+        @apply text-main-200;
+        font-size: .75rem;
         font-weight: 300;
+
+        @screen sm {
+            @apply text-sm;
+        }
     }
 
     .buttons {
@@ -18,7 +23,7 @@
     .timer {
         >div {
             >span {
-                @apply text-sm;
+                font-size: .85rem;
             }
             >svg {
                 @apply hidden;

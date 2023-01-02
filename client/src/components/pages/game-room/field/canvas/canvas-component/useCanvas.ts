@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react"
+import { useResize } from "../../../../../../hooks/useResize";
 import { resizeCanvas } from "../utils/canvas.utils";
 import { IUseCanvas } from "./Canvas.interface";
 
@@ -7,10 +8,10 @@ import { IUseCanvas } from "./Canvas.interface";
 export const useCanvas = ({ onAnimate, preDraw, isAnimationStopped }: IUseCanvas) => {
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    const currentWidth = useResize();
     
-
     useEffect(() => {
-
+        
         if (!canvasRef.current) return;
         const canvas = canvasRef.current
         const context = canvas.getContext('2d')
@@ -44,7 +45,7 @@ export const useCanvas = ({ onAnimate, preDraw, isAnimationStopped }: IUseCanvas
         }
 
 
-    }, [onAnimate, isAnimationStopped])
+    }, [onAnimate, isAnimationStopped, currentWidth])
 
     return canvasRef;
 }

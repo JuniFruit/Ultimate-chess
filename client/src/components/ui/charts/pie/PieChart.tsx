@@ -1,8 +1,7 @@
-import { FC, useEffect, useRef, useState } from 'react';
+import { FC, useRef } from 'react';
 import styles from './PieChart.module.scss';
 
 export const PieChart: FC<{ value: number }> = ({ value }) => {
-    // const [percent, setPercent] = useState(value)
 
     const pieBefore = useRef<HTMLDivElement>(null);
     const pieAfter = useRef<HTMLDivElement>(null);
@@ -19,26 +18,21 @@ export const PieChart: FC<{ value: number }> = ({ value }) => {
     }
 
 
-
-    // useEffect(() => {
-    //     setPercent(value)
-    // }, [value])
-
     return (
         <div className={styles.pie}
 
         >
             <div className={styles.before} ref={pieBefore}
-                style={{background: `radial-gradient(farthest-side,var(--complimentary) 98%,#0000) top/var(--borderThickness) var(--borderThickness) no-repeat,
-                conic-gradient(var(--complimentary) calc(${value}*1%),#0000 0)`}}
+                style={{
+                    background: `radial-gradient(farthest-side,var(--complimentary) 98%,#0000) top/var(--borderThickness) var(--borderThickness) no-repeat,
+                conic-gradient(var(--complimentary) calc(${value}*1%),#0000 0)`
+                }}
             ></div>
             <>
                 {!isNaN(value) ? `${value}%` : 'No data'}
-                {/* {setValue()} */}
-
             </>
             <div className={styles.after} ref={pieAfter}
-                style={{transform: `rotate(calc(${value}*3.6deg)) translateY(calc(50% - var(--width)/2))`}}
+                style={{ transform: `rotate(calc(${value}*3.6deg)) translateY(calc(50% - var(--width)/2))` }}
             ></div>
 
         </div>

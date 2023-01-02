@@ -1,11 +1,11 @@
 
 .admin_container {
-    @apply flex justify-center w-full mt-10 mb-5;
+    @apply flex justify-center w-full mt-10 mb-5 px-10;
 
     .main_wrapper {
         @apply rounded-3xl bg-main-700 shadow pb-2 pr-2 relative;
         min-height: 40rem;
-        width: 75%;
+        width: 70rem;
 
         .admin_wrapper {
             @apply rounded-3xl bg-main-900 h-full w-full shadow;         

@@ -7,8 +7,8 @@ export const Timer: FC<ITimer> = ({ initTime, isStopped, onTimeout }) => {
     const [currentTime, setCurrentTime] = useState(initTime)
 
     useEffect(() => {
-        setCurrentTime(initTime)
-    }, [initTime])
+        setCurrentTime(prev => initTime)
+    }, [initTime, isStopped])
 
     useEffect(() => {
         let interval:any;

@@ -7,18 +7,33 @@
 
     >div:first-child {
         @apply w-7 h-7;
-    }
-
+    }    
+    
     span,
     h3 {
         @apply text-main-200 opacity-80;
         font-size: .85rem;
         font-weight: 300;
     }
+    h3,
+    .using {
+        display: none;
+    }
 
-    &:hover,
-    &:focus {
-        @apply bg-main-800;
+
+    @media (hover: hover) {
+        &:hover,
+        &:active,
+        &:focus {
+            @apply bg-main-800;
+        }
+    }
+
+    @screen sm {
+        h3,
+        .using {
+           @apply block;
+        }      
     }
 }
 

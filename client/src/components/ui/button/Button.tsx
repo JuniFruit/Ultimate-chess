@@ -7,11 +7,14 @@ export const Button: FC<PropsWithChildren<IButton>> = ({
     className,
     ...rest
 }) => {
+
     return (
         <button
-            className={className ? className : styles.button} {...rest}            
+            className={className ? className : styles.button} 
+            {...rest}          
         >
             {children}
+           
         </button>
     )
 }

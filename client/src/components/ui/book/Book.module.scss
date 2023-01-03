@@ -35,7 +35,7 @@
             .dummy_page,
             .page {
                 @apply bg-white absolute w-full h-full;           
-                background: url('https://i.pinimg.com/736x/ce/f6/8f/cef68fa17400009b88d81b9099423120.jpg');
+                background: url('../../../assets/mockups/page_bg.jpg');
                 background-size: cover;
                 background-position: center;
                 transform: rotateX(20deg);
@@ -78,9 +78,13 @@
                 z-index: -1;
 
                 >button {
-                    @apply bg-transparent text-sm w-1 opacity-70 text-main-900 hover:opacity-100 disabled:opacity-30;
+                    @apply bg-transparent text-sm w-1 opacity-70 text-main-900 disabled:opacity-30;
                     
-                    
+                    @media (hover: hover) {
+                        &:hover {
+                            @apply opacity-100
+                        }
+                    }
                 }
 
                 @screen sm {

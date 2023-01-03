@@ -8,7 +8,7 @@
         width: calc(8 * var(--cellSize));
         height: calc(8 * var(--cellSize));
         .canvas {
-            @apply absolute top-0 left-0;
+            @apply absolute top-0 left-0 touch-none;
             width: calc(8 * var(--cellSize));
             height: calc(8 * var(--cellSize));
             z-index: 35;

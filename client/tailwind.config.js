@@ -138,6 +138,12 @@ module.exports = {
             transform: 'rotateX(20deg) rotateY(-180deg)',
 
           }
+        },
+        ripple: {
+          "100%": {
+            transform: 'scale(4)',
+            opacity: '0'
+          }
         }
 
 
@@ -168,7 +174,8 @@ module.exports = {
         slideInTop: 'slideInTop .35s ease',
         scaleDown: 'scaleDown .15s ease',
         spin: 'spin  .5s cubic-bezier(0, 0, 0, 0) infinite',
-        openPage: 'openPage 3s cubic-bezier(0, 0, 0, 0)'
+        openPage: 'openPage 3s cubic-bezier(0, 0, 0, 0)',
+        ripple: 'ripple 600ms linear'
 
       }
     },

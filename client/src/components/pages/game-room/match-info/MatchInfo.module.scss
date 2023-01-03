@@ -15,20 +15,23 @@
                 
               
             .button {
-                @apply flex flex-col py-2 px-4 gap-1 text-main-200 items-center;    
+                @apply flex flex-col py-2 px-4 gap-1 text-main-200 items-center relative;    
                 flex-basis: (100% / 4);  
                 font-size: .85rem;          
                 >svg {
                     @apply text-main-200;
                     font-size: .85rem;
                 }
-                
-                &:hover {
-                    @apply text-opacity-75;
-                    >svg {
-                        @apply text-opacity-75;
+
+                @media (hover: hover) {
+                    &:hover {
+                        @apply opacity-75;
+                        >svg {
+                            @apply opacity-75;
+                        }
                     }
                 }
+                
             }
     
             .button_active {

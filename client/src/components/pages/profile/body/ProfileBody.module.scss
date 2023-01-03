@@ -21,8 +21,11 @@
             }
         }
 
-        &:hover {
-            @apply opacity-70;           
+        @media (hover: hover) {
+            &:hover {
+                @apply opacity-70;           
+            }
         }
+
     }
 }

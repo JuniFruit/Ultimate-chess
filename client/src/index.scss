@@ -12,7 +12,9 @@
   padding: 0;
 }
 body {
-  @apply bg-main-800;
+  @apply bg-main-800 overflow-x-hidden;
+  width: 100vw;
+  height: 100vh;
   line-height: 1.5rem;
   letter-spacing: .05rem;
   margin: 0;

@@ -6,12 +6,18 @@
     z-index: 52;
 
     >button {
-        @apply w-max h-max hover:bg-main-500;
+        @apply w-max h-max;
 
         >img {
             @apply bg-transparent;
             width: calc(var(--cellSize) - .5rem);
             height: calc(var(--cellSize) - .5rem);
+        }
+
+        @media (hover: hover) {
+            &:hover {
+                @apply bg-main-500;
+            }
         }
     }
 }

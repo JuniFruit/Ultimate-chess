@@ -4,8 +4,14 @@
     @apply relative  w-full h-full justify-center flex items-center gap-2;
     >button:first-child,
     >button:last-child {
-        @apply bg-transparent text-main-200 opacity-80 transition-colors duration-200 hover:opacity-100 disabled:opacity-50 p-0;
+        @apply bg-transparent text-main-200 opacity-80 transition-colors duration-200 disabled:opacity-50 p-0;
         font-size: 1.5rem;
+        
+        @media (hover: hover) {
+            &:hover {
+                @apply opacity-100;
+            }
+        }
     }
     .carousel_overlay {
         @apply  overflow-hidden relative;

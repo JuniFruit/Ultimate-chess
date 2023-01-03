@@ -1,25 +1,38 @@
 
 
 .button_wrapper {
-    @apply animate-slideInRight w-full;
+    @apply animate-slideInRight w-full relative overflow-hidden;
     
     >div {
         @apply bg-complimentary  text-sm text-main-200 text-opacity-90 p-3 w-full rounded-lg transition-all duration-150;
         font-weight: 600;
-
+        
         @screen lg {
             @apply text-tiny
         }
 
-        &:hover,
-        &:focus {
-            @apply animate-hover_effect;
-            animation-direction: alternate;
-            transform: scale(1.05);
+        @media (hover: hover){
+            &:hover,
+            &:focus {
+                @apply animate-hover_effect;
+                animation-direction: alternate;
+                transform: scale(1.05);
+    
+            }
 
         }
+    }
+    .ripple {
+        @apply rounded-full animate-ripple absolute top-1/2 left-1/2;
+        background-color: rgba(255, 255, 255, 0.7);
+        width: calc(100% /2);
+        height: calc(100%/2);
+        transform-origin: center;
+        animation-duration: 400ms;
+        transform: scale(0) translate(-50%, -50%);
+    }
 
-        
-
+    @screen md {
+        @apply overflow-visible;
     }
 }   

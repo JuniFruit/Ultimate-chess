@@ -8,10 +8,12 @@
         >ul {
             @apply flex-col flex gap-4;
             >li {
-                @apply text-white  opacity-75 relative;
+                @apply text-main-200  opacity-75 relative;
 
-                &:hover {
-                    @apply opacity-100;
+                @media (hover: hover) {
+                    &:hover {
+                        @apply opacity-100;
+                    }
                 }
                 >a {
                     @apply flex items-center gap-2 justify-center;

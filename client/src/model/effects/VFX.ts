@@ -31,7 +31,6 @@ export class VFX extends Sprite implements IVFX {
         if (!this.isLooped && this.framesTotalElapsed >= this.framesTotal - 1) return;
 
         const { newImgH, newX, newY, newimgW } = this._rescaleAndCenter(args);
-        console.log(this.framesTotalElapsed, this.framesTotal)
 
         super.update({ ...args, x: newX, y: newY, imgHeight: newImgH, imgWidth: newimgW });
     }

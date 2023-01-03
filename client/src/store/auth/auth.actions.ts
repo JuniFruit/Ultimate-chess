@@ -11,6 +11,7 @@ export const login = createAsyncThunk<any, IAuthDto>('auth/login', async(data, t
         thunkAPI.dispatch(addMsg({message: 'Login successful', status: 200}))
         return response
     } catch (error:any) {
+        if (error.code === 'ERR_NETWORK') thunkAPI.dispatch(addMsg({message: error.message, status: 500}))
         thunkAPI.dispatch(addMsg({message: error.response.data.message, status: error.response.status}))
         thunkAPI.rejectWithValue(error);
     }
@@ -22,6 +23,7 @@ export const register = createAsyncThunk<any, IRegisterDto>('auth/register', asy
         thunkAPI.dispatch(addMsg({message: 'Registration successful', status: 200}))
         return response
     } catch (error:any) {
+        if (error.code === 'ERR_NETWORK') thunkAPI.dispatch(addMsg({message: error.message, status: 500}))
         thunkAPI.dispatch(addMsg({message: error.response.data.message, status: error.response.status}))
         thunkAPI.rejectWithValue(error);
     }

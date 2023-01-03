@@ -1,4 +1,4 @@
-import { FC, PropsWithChildren } from "react";
+import { FC, PropsWithChildren, MouseEventHandler } from "react";
 import { IUser } from "../../../../types/user.interface";
 import { ImagePreview } from "../../image-preview/ImagePreview";
 import styles from './Items.module.scss';
@@ -12,11 +12,15 @@ interface IPlayerItem {
 
 export const PlayerItem: FC<PropsWithChildren<IPlayerItem>> = ({ user, children, onClick }) => {
 
+    const handleClick: MouseEventHandler<HTMLDivElement> = (e) => {
+        if ((e.target as any).className.includes('Button')) return;
+        onClick();
+    }
 
     return (
         <div
             className={styles.item_container}
-            // onClick={onClick}
+            onClick={handleClick}
         >
             <ImagePreview imageSrc={user.avatarLink} />
             <span>ID: {user.id}</span>

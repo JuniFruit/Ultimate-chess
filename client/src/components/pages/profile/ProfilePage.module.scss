@@ -1,12 +1,9 @@
 
 
 .page_wrapper {
-    @apply w-9/12 mx-auto;
-}
+    @apply w-full mx-auto;
 
-.header_wrapper {
-    @apply flex gap-4 h-full w-full items-center;
-    >div:first-child {
-        @apply w-40 h-40;
+    @screen md {
+        max-width: 50rem;
     }
 }

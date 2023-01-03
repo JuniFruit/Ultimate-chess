@@ -22,6 +22,11 @@ export const menuData: IMenuData[] = [{
     preview: ''
 },
 {
+    title: 'Tutorial',
+    link: '',
+    preview: ''
+},
+{
     title: 'Back',
     link: '/',
     preview: ''

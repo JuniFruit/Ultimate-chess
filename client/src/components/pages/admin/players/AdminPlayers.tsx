@@ -10,12 +10,13 @@ import { DeleteRole } from "./actions/DeleteRole";
 import styles from './AdminPlayer.module.scss';
 import Search from "./search-bar/Search";
 import { useNavigate } from "react-router-dom";
+import { useIsMobile } from "../../../../hooks/useMobile";
 
 const AdminPlayers: FC = () => {
     useAdminAuth();
 
     const [dataToRender, setDataToRender] = useState<IUser[]>([]);
-
+    const {isMobile} = useIsMobile();
     const navigate = useNavigate()
     const { data: users } = api.useGetAllQuery(null);
     const { handleSearch, data: searchResults, searchTerm } = useSearch()
@@ -25,7 +26,7 @@ const AdminPlayers: FC = () => {
     }
 
     useEffect(() => {
-
+        if (isMobile) return navigate('/');
         if (searchResults?.length) return setDataToRender(searchResults);
         if (users?.length) return setDataToRender(users);
 

@@ -6,7 +6,7 @@
 
     >h3 {
         @apply text-secondary italic;
-        font-size: .75rem;
+        font-size: .65rem;
     }
 
     >p {
@@ -27,13 +27,13 @@
     @screen md {
         @apply my-2;
         >h3 {
-            font-size: .9rem;
+            font-size: .85rem;
         }
         >p {
             @apply text-sm;
         }
         >span {
-            font-size: .9rem;
+            font-size: .85rem;
         }
     }
 }

@@ -23,7 +23,7 @@ export const PackItem: FC<IPackItem> = ({ id, sysName, title, preview, ownerCoun
                 <h3>Game Title: {title}</h3>
                 <h3>Sys Title: {sysName}</h3>
             </div>
-            <span>Currently using: {formatToKilo(ownerCount)}</span>
+            <span className={styles.using}>Currently using: {formatToKilo(ownerCount)}</span>
 
         </div>
     )

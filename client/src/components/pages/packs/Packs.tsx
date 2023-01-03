@@ -19,7 +19,7 @@ const Packs: FC = () => {
                 />
                 <MenuButton
                     onClick={() => navigate('/')}>
-                    Back
+                    Menu
                 </MenuButton>
 
             </div>

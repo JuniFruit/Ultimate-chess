@@ -12,3 +12,9 @@ export const formatToKilo = (num: number): (string | number) => {
 
     return num
 }
+
+export const formatTime = (time:number) => {
+    const str = time.toString();
+    if (str.length < 2) return `0${str}`;
+    return str;
+}

@@ -1,0 +1,92 @@
+
+
+.tutorial_container {
+    @apply fixed flex items-center justify-center top-0 left-0 w-min h-min ;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 77;
+
+    .tutorial_wrapper {
+        @apply relative;
+        width: 95%;
+        min-height: 20rem;
+
+        .tutorial_page {
+            @apply flex gap-6 p-6 rounded-2xl bg-main-700 shadow flex-col items-center;            
+    
+            .img_container {
+                @apply w-full my-auto;
+                >div {
+                    @apply mx-auto;
+                    width: 10rem;
+                    height: 10rem;
+                    >img {
+                        object-fit: cover;
+                    }
+                    @screen md {
+                        width: 15rem;
+                        height: 15rem;
+                    }
+                }
+                @screen md {
+                    @apply w-1/3;
+                }
+            }
+    
+            .page_body {
+                @apply flex flex-col text-main-200 mt-5 w-full;
+    
+                h2 {
+                    @apply text-sm;
+                    font-weight: 600;
+
+                    @screen md {
+                        @apply text-2xl;
+                    }
+                }
+    
+                p {
+                    @apply mt-5;
+                    font-size: .85rem;
+
+                    @screen md {
+                        @apply text-sm;
+                    }
+                }
+                @screen md {
+                    @apply w-1/2;
+                }
+            }
+
+            @screen md {
+                @apply flex-row;
+            }
+        }
+    
+        .nav {
+            @apply flex justify-between w-full absolute left-0 rounded-xl bg-transparent;  
+            top: calc(100% - 1.5rem);
+    
+            >button {
+                @apply bg-transparent text-base opacity-70 text-main-200 disabled:opacity-30;
+                
+                @media (hover: hover) {
+                    &:hover {
+                        @apply opacity-100
+                    }
+                }
+            }
+
+            @screen md {
+                background-color: rgba(0,0,0,0.1);
+            }
+        }
+        
+
+        @screen md {
+            width: 50rem;
+        }
+    }
+
+}

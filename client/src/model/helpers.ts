@@ -72,12 +72,6 @@ export const getFlippedPos = (posX: number, posY: number) => {
 }
 
 
-export const getCellSize = (canvas: HTMLCanvasElement) => {
-  const { width, height } = canvas.getBoundingClientRect()
-  const w = width / 8;
-  const h = height / 8;
-  return { w, h }
-}
 
 export const generateOffsets = (range: number, shape: 'square' | 'knight' | 'VnH',) => {
   const offsets: number[][] = [];

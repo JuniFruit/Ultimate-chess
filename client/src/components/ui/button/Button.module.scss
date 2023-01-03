@@ -1,12 +1,19 @@
 .button {
-    @apply py-1.5 rounded-md px-5 text-main-200 bg-complimentary opacity-90 transition-colors duration-150 hover:opacity-100;
+    @apply py-1.5 rounded-md px-5 text-main-200 bg-complimentary opacity-90 transition-colors duration-150 relative;
     font-size: .85rem; 
     font-weight: 600;
+
+    @media (hover: hover) {
+        &:hover {
+            @apply opacity-100;
+        }
+    }
+
     @screen md {
         @apply text-sm;
     }
 
     &:disabled {
         @apply text-main-200 bg-main-500 opacity-60;
-    }
+    }   
 }

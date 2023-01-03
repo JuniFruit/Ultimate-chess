@@ -32,11 +32,14 @@
 
     }
 
-    &:hover {
-        transform: translateY(-.2rem);
-        >h2 {
-            @apply opacity-100;
+    @media (hover: hover) {
+        &:hover {
+            transform: translateY(-.2rem);
+            >h2 {
+                @apply opacity-100;
+            }
+            
         }
-        
     }
+
 }

@@ -15,11 +15,10 @@ export const Carousel: FC<ICarousel> = ({ slides }) => {
 
     const handleChange = (dir: 'prev' | 'next') => {
         dir === 'prev' ? setCurrent(prev => prev -= 1) : setCurrent(prev => prev += 1)
-
     }
 
     if (viewportRef.current) viewportRef.current.style.transform = `translateX(calc(${current}* -100%))`;
-    console.log({ itemsPerScreen, current })
+    
     return (
         <div className={styles.carousel_container}>
             <Button

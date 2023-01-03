@@ -6,7 +6,7 @@ import styles from '../Field.module.scss';
 
 const CanvasField: FC<ICanvasField> = (props) => {
 
-    const { canvas, mouse } = useCanvasField(props);
+    const { canvas, handlers } = useCanvasField(props);
 
     return (
         <div className={styles.board}>
@@ -20,10 +20,13 @@ const CanvasField: FC<ICanvasField> = (props) => {
             <Canvas
                 onAnimate={canvas.draw}
                 preDraw={() => { }}
-                onMouseMove={mouse.handleMouseMove}
-                onMouseDown={mouse.handleMouseDown}
-                onMouseUp={mouse.handleMouseUp}
-                onMouseOut={mouse.handleMouseOut}
+                onMouseMove={handlers.handleMouseMove}
+                onMouseDown={handlers.handleMouseDown}
+                onMouseUp={handlers.handleMouseUp}
+                onMouseOut={handlers.handleMouseOut}
+                onTouchStart={handlers.handleTouchStart}
+                onTouchEnd={handlers.handleTouchEnd}
+                onTouchMove={handlers.handleTouchMove}
                 className={styles.canvas}
                 isAnimationStopped={false}
                 key={'main'}

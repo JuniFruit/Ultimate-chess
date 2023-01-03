@@ -1,9 +1,7 @@
 import { IUserFields } from "../../types/auth.interface"
 import { createSlice } from '@reduxjs/toolkit';
-import {login, register, logout} from './auth.actions';
+import {login, register} from './auth.actions';
 import { loginSpan } from "../../constants/constants";
-import storage from "redux-persist/lib/storage";
-
 
 interface IAuthInitial extends IUserFields {
     isLoading: boolean

@@ -1,7 +1,7 @@
 import express from 'express';
 import { PackService } from '../packs/pack.service';
 import { authGuard } from '../auth/auth.guard';
-import { adminGuard } from '../guards/role.guard';
+import { adminGuard, creatorGuard } from '../guards/role.guard';
 
 const router = express.Router();
 
@@ -82,7 +82,7 @@ router.put('/update/:id', async (req, res) => {
     }
 })
 
-router.delete('/delete', async (req, res) => {
+router.delete('/delete', creatorGuard, async (req, res) => {
     try {
         await PackService.delete(Number(req.body.id));
         res.status(200).send();

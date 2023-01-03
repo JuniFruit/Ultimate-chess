@@ -16,3 +16,13 @@ export const adminGuard: RequestHandler = async (req, res, next) => {
     next();
 
 }
+
+export const creatorGuard: RequestHandler = async (req,res,next) => {
+    const userRoles = (await UserService.getById(Number(req.body.currentUser))).roles;
+    if (!userRoles.length) return res.status(403).send({message: 'Forbidden resource'})
+
+    const creatorRole = userRoles.find((userRole: RolesEntity) => userRole.role === 'CREATOR');
+    if (!creatorRole) return res.status(403).send({message: 'Forbidden'})
+
+    next();
+}

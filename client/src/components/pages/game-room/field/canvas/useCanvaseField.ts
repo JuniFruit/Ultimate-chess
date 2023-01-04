@@ -22,8 +22,9 @@ export const useCanvasField = (
 
     }: ICanvasField) => {
 
-    const {handlers} = useHandleMoves({cells,onCellSelect,selected,isFlipped,ultimateStates})
+    const { handlers } = useHandleMoves({ cells, onCellSelect, selected, isFlipped, ultimateStates, premoves })
     const prevMoveCount = useRef<number>(board.states.globalMovesCount);
+
 
     const handlePreDraw = useCallback((context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
         board.figures.forEach(figure => figure.setSpriteObj());
@@ -36,7 +37,7 @@ export const useCanvasField = (
 
         prevMoveCount.current = board.states.globalMovesCount;
 
-    }, [cells.length, isFlipped, premoves.length, selected, board, isUltimate])
+    }, [isFlipped, premoves.length, selected, board, isUltimate])
 
 
     const draw = useCallback((context: CanvasRenderingContext2D, canvas: HTMLCanvasElement, frameCount: number) => {
@@ -44,7 +45,7 @@ export const useCanvasField = (
         drawMouseOver(context, canvas)
         drawFigures(context, canvas)
         drawEffects(context, canvas);
-       
+
     }, [board, isFlipped, ultimateStates.isSkillTargetSelecting])
 
 
@@ -168,7 +169,7 @@ export const useCanvasField = (
         return { x, y }
     }, [isFlipped])
 
-    
+
 
     return {
 

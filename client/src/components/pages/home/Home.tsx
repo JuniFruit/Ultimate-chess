@@ -7,7 +7,6 @@ import { IMenuData } from "./main-menu/Menu.interface";
 import Menu from "./main-menu/MenuWrapper";
 
 
-
 const Home: FC = () => {
 
     const { user } = useAuth();
@@ -19,14 +18,13 @@ const Home: FC = () => {
     })
     const handleClick = (item: IMenuData) => {
         navigate(item.link);
-    } 
+    }
 
     return (
         <Layout title="Ultimate Chess Home Page">
-            <Menu<IMenuData>
-                onClick={handleClick}
-                items={filteredData} />          
-
+                <Menu<IMenuData>
+                    onClick={handleClick}
+                    items={filteredData} />
         </Layout>
     )
 }

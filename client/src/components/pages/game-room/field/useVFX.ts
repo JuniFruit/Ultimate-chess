@@ -24,22 +24,7 @@ export const useVFX = ({board, isUltimate}: IUseVFX) => {
 
         const result = [];
 
-        (board.cells as ICellUlt[][]).forEach(row => {
-            row.forEach(cell => {
-                cell.clearEffects()
-                cell.states.skillsApplied.forEach(skill => {
-                    const effectItem = effectList.find(effect => effect.title === skill.title);
-                    cell.setEffect(effectItem!)
-                })
-                if (cell.figure) {
-                    cell.figure.clearEffects();
-                    cell.figure.ultimateStates.skillsApplied.forEach(skill => {
-                        const effectItem = effectList.find(effect => effect.title === skill.title)
-                        cell.figure!.setEffect(effectItem!)
-                    })
-                }
-            })
-        })
+        
 
     }, [board.states.globalMovesCount])
 }

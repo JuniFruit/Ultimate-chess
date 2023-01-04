@@ -17,7 +17,6 @@ const WatchPage: FC = () => {
 
     const handleGetCurrentGames = useCallback((payload: IGameRoomShortData[]) => {
         setIsLoading(prev => false);
-        console.log(payload)
         setGames(prev => payload || []);
     }, [isLoading, games])
 

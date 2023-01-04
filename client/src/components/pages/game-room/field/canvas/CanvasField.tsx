@@ -20,13 +20,13 @@ const CanvasField: FC<ICanvasField> = (props) => {
             <Canvas
                 onAnimate={canvas.draw}
                 preDraw={() => { }}
-                onMouseMove={handlers.handleMouseMove}
-                onMouseDown={handlers.handleMouseDown}
-                onMouseUp={handlers.handleMouseUp}
-                onMouseOut={handlers.handleMouseOut}
                 onTouchStart={handlers.handleTouchStart}
-                onTouchEnd={handlers.handleTouchEnd}
                 onTouchMove={handlers.handleTouchMove}
+                onTouchEnd={handlers.handleTouchEnd}
+                onMouseDown={handlers.handleMouseDown}
+                onMouseMove={handlers.handleMouseMove}
+                onMouseOut={handlers.handleMouseOut}
+                onMouseUp={handlers.handleMouseUp}
                 className={styles.canvas}
                 isAnimationStopped={false}
                 key={'main'}

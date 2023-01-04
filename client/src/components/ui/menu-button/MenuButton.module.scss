@@ -22,15 +22,7 @@
 
         }
     }
-    .ripple {
-        @apply rounded-full animate-ripple absolute top-1/2 left-1/2;
-        background-color: rgba(255, 255, 255, 0.7);
-        width: calc(100% /2);
-        height: calc(100%/2);
-        transform-origin: center;
-        animation-duration: 400ms;
-        transform: scale(0) translate(-50%, -50%);
-    }
+    
 
     @screen md {
         @apply overflow-visible;

@@ -1,5 +1,24 @@
 
 
-.wrapper {
-    @apply px-4;
+.main {
+    @apply  h-full w-full;
+    .page {
+        @apply w-full min-h-full;
+        background: linear-gradient(280deg, rgba(0, 0, 0, 0.200) , rgba(0, 0, 0, 0.0) 60%),
+        linear-gradient(300deg, rgba(0, 0, 0, 0.200), rgba(0, 0, 0, 0.0) 60%),
+        linear-gradient(330deg, rgba(0, 0, 0, 0.200), rgba(0, 0, 0, 0.0) 60%),
+        linear-gradient(200deg, rgba(0, 0, 0, 0.200), rgba(0, 0, 0, 0.0) 65%),
+        linear-gradient(180deg, rgba(0, 0, 0, 0.100), rgba(0, 0, 0, 0.0) 25%),
+        linear-gradient(140deg, rgba(0, 0, 0, 0.200), rgba(0, 0, 0, 0.0) 35%),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.200), rgba(0, 0, 0, 0.0) 35%),
+        linear-gradient(0deg, rgba(0, 0, 0, 0.200), rgba(0, 0, 0, 0.0) 25%);  
+        background-size: 100%;
+        
+        .wrapper {
+        @apply px-4 w-full h-full;
+        }
+
+    }
 }
+    
+

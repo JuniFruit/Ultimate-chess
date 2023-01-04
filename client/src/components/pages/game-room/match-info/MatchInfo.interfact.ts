@@ -1,7 +1,6 @@
 import { Requests } from "../../../../constants/constants";
 import { Colors } from "../../../../model/colors.enum";
 import { ILostFigure, IMovedFigure } from "../../../../model/figures/figures.interface";
-import { ISkillUsed } from "../../../../model/ultimate/Skills";
 
 
 export interface IMatchInfo {

@@ -1,20 +1,34 @@
 import { ICanvasField } from "./CanvasField.interface";
-import { useState, useRef, useCallback, TouchEventHandler, TouchEvent, MouseEventHandler, Touch } from 'react';
+import { useState, useRef, useCallback, TouchEventHandler, MouseEventHandler, useEffect } from 'react';
 import { IFigure } from "../../../../../model/figures/figures.interface";
 import { ICell } from "../../../../../model/Cell";
 import { ICellUlt } from "../../../../../model/ultimate/CellUlt";
 import { getFlippedPos } from "../../../../../model/helpers";
 
 interface IUseHandleMoves extends Pick<ICanvasField, "isFlipped" | "onCellSelect"
-    | "cells" | "ultimateStates" | "selected"> { }
+    | "cells" | "ultimateStates" | "selected" | "premoves"> {}
 
-export const useHandleMoves = ({ isFlipped, onCellSelect, cells, ultimateStates, selected }: IUseHandleMoves) => {
+export const useHandleMoves = ({ isFlipped, onCellSelect, cells, ultimateStates, selected, premoves }: IUseHandleMoves) => {
 
     const [isDragging, setIsDragging] = useState(false);
+    const [isTouchOngoing, setIsTouchOngoing] = useState(false);
     const draggingPiece = useRef<IFigure | null>(null);
     const dragStartCell = useRef<ICell | null>(null);
-    const ongoingTouch = useRef<Touch | null>(null)
     const prevMouseOver = useRef<ICell | ICellUlt | null>(null);
+
+    useEffect(() => {
+        if (!isTouchOngoing) return;
+
+        const timeout = setTimeout(() => {
+            setIsTouchOngoing(prev => false);
+        }, 2000)
+
+        return () => {
+            clearTimeout(timeout);
+        }
+
+    }, [isTouchOngoing])
+
 
     const _getCellPosFromMouse = useCallback((clientX: number, clientY: number, canvas: HTMLCanvasElement) => {
 
@@ -80,7 +94,7 @@ export const useHandleMoves = ({ isFlipped, onCellSelect, cells, ultimateStates,
         setIsDragging(prev => true);
         onCellSelect(target)
 
-    }, [isDragging, cells.length, selected, ultimateStates.isSkillTargetSelecting])
+    }, [cells.length, selected, ultimateStates.isSkillTargetSelecting, premoves])
 
     const _handleSelectEnd = useCallback((clientX: number, clientY: number, canvas: HTMLCanvasElement) => {
         if (ultimateStates.isSkillTargetSelecting) return; // only mouseDown handles skill target selection
@@ -88,14 +102,13 @@ export const useHandleMoves = ({ isFlipped, onCellSelect, cells, ultimateStates,
         if (!draggingPiece.current || !dragStartCell.current) return;
         const { x, y } = _getCellPosFromMouse(clientX, clientY, canvas);
         const target = cells[y][x];
-
         if (dragStartCell.current !== target) {
             _clearDragging()
             onCellSelect(target);
             return;
         }
         _clearDragging();
-    }, [isDragging, cells.length, ultimateStates.isSkillTargetSelecting])
+    }, [isDragging, cells.length, ultimateStates.isSkillTargetSelecting, premoves])
 
     const _clearDragging = useCallback(() => {
         if (!draggingPiece.current || !dragStartCell.current) return;
@@ -109,15 +122,17 @@ export const useHandleMoves = ({ isFlipped, onCellSelect, cells, ultimateStates,
     // Handlers ..............................
 
     const handleTouchStart: TouchEventHandler<HTMLCanvasElement> = useCallback((e) => {
-
         const canvas = e.target as HTMLCanvasElement;
         const touch = e.changedTouches[0]
-        console.log(e)
         const { clientX, clientY } = touch;
         _handleSelectStart(clientX, clientY, canvas);
-        ongoingTouch.current = touch
 
-    }, [isDragging, cells.length, selected, ultimateStates.isSkillTargetSelecting])
+        if (isTouchOngoing) return;
+
+        setIsTouchOngoing(prev => true);
+        
+
+    }, [isDragging, isTouchOngoing, cells.length, selected, ultimateStates.isSkillTargetSelecting, premoves])
 
     const handleTouchMove: TouchEventHandler<HTMLCanvasElement> = useCallback((e) => {
 
@@ -135,44 +150,45 @@ export const useHandleMoves = ({ isFlipped, onCellSelect, cells, ultimateStates,
         const { clientX, clientY } = touch;
         _handleSelectEnd(clientX, clientY, canvas);
 
-    }, [isDragging, cells.length, ultimateStates.isSkillTargetSelecting])
+    }, [isDragging, cells.length, ultimateStates.isSkillTargetSelecting, premoves])
 
     const handleMouseMove: MouseEventHandler<HTMLCanvasElement> = useCallback((e) => {
+        if (isTouchOngoing) return;
         e.preventDefault()
         const canvas = e.target as HTMLCanvasElement;
         const { clientX, clientY } = e;
         _handleMovement(clientX, clientY, canvas)
 
-    }, [isDragging, cells.length, selected, ultimateStates.isSkillTargetSelecting])
+    }, [isDragging, isTouchOngoing, cells.length, selected, ultimateStates.isSkillTargetSelecting])
 
     const handleMouseOut: MouseEventHandler<HTMLCanvasElement> = useCallback((e) => {
-        e.preventDefault()
-
-        if (!draggingPiece.current) return;
-        draggingPiece.current.x = draggingPiece.current.prevX
-        draggingPiece.current.y = draggingPiece.current.prevY;
-
+        e.preventDefault()     
         _clearDragging();
-    }, [isDragging, cells.length])
+
+    }, [cells.length])
 
     const handleMouseDown: MouseEventHandler<HTMLCanvasElement> = useCallback((e) => {
+        if (isTouchOngoing) return;
+
         e.preventDefault()
         const canvas = e.target as HTMLCanvasElement;
         const { clientX, clientY } = e;
 
         _handleSelectStart(clientX, clientY, canvas);
 
-    }, [isDragging, cells.length, selected, ultimateStates.isSkillTargetSelecting])
+    }, [isDragging, isTouchOngoing, cells.length, selected, ultimateStates.isSkillTargetSelecting, premoves])
 
 
     const handleMouseUp: MouseEventHandler<HTMLCanvasElement> = useCallback((e) => {
+        if (isTouchOngoing) return;
+
         e.preventDefault();
         const canvas = e.target as HTMLCanvasElement;
         const { clientX, clientY } = e;
 
         _handleSelectEnd(clientX, clientY, canvas)
 
-    }, [isDragging, cells.length, ultimateStates.isSkillTargetSelecting])
+    }, [isDragging, isTouchOngoing, cells.length, ultimateStates.isSkillTargetSelecting, premoves])
 
 
 

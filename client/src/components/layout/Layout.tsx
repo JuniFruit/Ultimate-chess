@@ -8,15 +8,14 @@ import { InfoPop } from "../ui/info-pop/InfoPop";
 export const Layout: FC<PropsWithChildren<{ title: string }>> = ({ title, children }) => {
     setTabTitle(title);
     return (
-        <main>
-            <section className="relative">
+        <main className={styles.main}>
+            <div className={styles.page}>
                 <Header />
                 <div className={styles.wrapper}>
                     {children}
                 </div>
                 <InfoPop />
-            </section>
-
+            </div>
         </main>
     )
 }

@@ -2,7 +2,7 @@
 
 .match_info_wrapper {
  
-    @apply bg-main-900 rounded-2xl mt-5 shadow overflow-hidden animate-slideInRight;
+    @apply bg-main-900 rounded-2xl shadow overflow-hidden animate-slideInRight;
     width: 100%;
     min-height: calc(var(--cellSize) * 8);
     

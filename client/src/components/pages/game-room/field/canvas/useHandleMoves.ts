@@ -87,11 +87,14 @@ export const useHandleMoves = ({ isFlipped, onCellSelect, cells, ultimateStates,
             return ultimateStates.onSkillTargetSelect(target as ICellUlt);
         }
 
-        draggingPiece.current = target.figure
-        dragStartCell.current = cells[y][x];
-        _setPieceToMouse(clientX, clientY, canvas);
-
-        setIsDragging(prev => true);
+        if (target.figure) {
+            draggingPiece.current = target.figure
+            dragStartCell.current = cells[y][x];
+            _setPieceToMouse(clientX, clientY, canvas);
+    
+            setIsDragging(prev => true);
+        }
+        
         onCellSelect(target)
 
     }, [cells.length, selected, ultimateStates.isSkillTargetSelecting, premoves])

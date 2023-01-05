@@ -1,18 +1,19 @@
 import { IField } from "./Field.interface"
 import { useEffect, useState, useCallback } from 'react';
 import { ICell, IPremove } from "../../../../model/Cell";
-import { IMoveOptions } from "../../../../constants/socketIO/ClientEvents.interface";
+import { IMove, IMoveOptions } from "../../../../constants/socketIO/ClientEvents.interface";
 import { FigureTypes } from "../../../../model/figures/figures.interface";
-import { useIOField } from "./useIOField";
 import { ICellUlt } from "../../../../model/ultimate/CellUlt";
 import { useIsMobile } from "../../../../hooks/useMobile";
 
 
-export interface IUseField extends Pick<IField, 'board' | 'setBoard' | 'myColor' | 'isObserver'> { }
+export interface IUseField extends Pick<IField, 'board' | 'setBoard' | 'myColor' | 'isObserver'> { 
+    handleSendMove: (move:IMove) => void;
+}
 
-export const useField = ({ board, setBoard, myColor, isObserver }: IUseField) => {
+export const useField = ({ board, setBoard, myColor, isObserver, handleSendMove }: IUseField) => {
     
-    const { handleSendMove } = useIOField({ board, setBoard, isObserver });
+   
     const { isMobile } = useIsMobile();
     const [selectedCell, setSelectedCell] = useState<ICell | ICellUlt | null>(null);
     const [isPromotion, setIsPromotion] = useState(false);

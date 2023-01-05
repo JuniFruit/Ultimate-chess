@@ -7,14 +7,21 @@ import CanvasField from './canvas/CanvasField';
 import { IField } from "./Field.interface";
 import styles from './Field.module.scss';
 import { useField } from './useField';
+import { useIOField } from './useIOField';
 import { useUltimate } from './useUltimate';
+import { useVFX } from './useVFX';
 
 
 
 export const GameField: FC<IField> = (props) => {
 
-    const { handlers, status } = useField({ ...props })
-
+    const { handleAddEffectFromMove, vfx } = useVFX({
+        board: props.board as IBoardUlt,
+        isUltimate: props.isUltimate,
+        isFlipped: props.myColor === Colors.BLACK
+    });
+    const { handleSendMove } = useIOField({ ...props, onReceiveMove: handleAddEffectFromMove, onSendMove: handleAddEffectFromMove });
+    const { handlers, status } = useField({ ...props, handleSendMove })
     const { ultHandlers, ultStatus } = useUltimate(
         {
             board: props.board as IBoardUlt,
@@ -22,7 +29,7 @@ export const GameField: FC<IField> = (props) => {
             myColor: props.myColor,
             setIsSkillBookOpen: props.setIsSkillBookOpen,
             isObserver: props.isObserver,
-            handleSendMove: handlers.handleSendMove
+            handleSendMove: handlers.handleSendMove,
         }
     )
 
@@ -37,6 +44,7 @@ export const GameField: FC<IField> = (props) => {
                 premoves={status.premoves}
                 board={props.board}
                 isUltimate={props.isUltimate}
+                vfx={vfx}
                 ultimateStates={
                     {
                         onSkillTargetSelect: ultHandlers.handlePerformSkill,

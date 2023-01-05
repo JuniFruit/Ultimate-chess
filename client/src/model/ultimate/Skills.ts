@@ -20,8 +20,6 @@ export const SkillList: ISkillItem[] = [
         constraints: 'Cannot be performed on a last standing pawn',
         isTargeted: true,
         canBeAppliedAt: 'figure',
-
-
     },
     {
         title: SkillNames.INCINERATE,
@@ -30,8 +28,6 @@ export const SkillList: ISkillItem[] = [
         lasts: 4,
         isTargeted: true,
         canBeAppliedAt: 'cell'
-
-
     },
     {
         title: SkillNames.LIGHTNING_BOLT,

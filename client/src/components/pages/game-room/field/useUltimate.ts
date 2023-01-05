@@ -15,13 +15,11 @@ interface IUseUltimate {
     setBoard: Dispatch<SetStateAction<IBoard | IBoardUlt>>
     setIsSkillBookOpen: Dispatch<SetStateAction<boolean>>
     handleSendMove: (move: IMove) => void;
-    // handleReceiveMove: (move:IMove) => void;
 }
 
 
 export const useUltimate = ({
     board,
-    isObserver,
     myColor,
     setBoard,
     setIsSkillBookOpen,

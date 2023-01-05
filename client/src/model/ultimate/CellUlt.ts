@@ -3,13 +3,10 @@ import { Cell, ICell } from "../Cell";
 import { FigureTypes } from "../figures/figures.interface";
 import { ISkillApplied, ISkillItem, SkillList, SkillNames } from "./Skills";
 import { Colors } from "../colors.enum";
-import { IVFX, IVFXConstructor, VFX } from "../effects/VFX";
-import { IEffectItem } from "../effects/data/effects.data";
 
 
 export interface ICellUltStates {
-    skillsApplied: ISkillApplied[]
-    effects: IVFX[];
+    skillsApplied: ISkillApplied[]   
 }
 
 export interface ICellUlt extends ICell {
@@ -18,16 +15,12 @@ export interface ICellUlt extends ICell {
     performSkill: (skill: SkillNames, board: IBoardUlt) => void;
     applySkill: (skill: ISkillItem, board: IBoardUlt) => void;
     clearExpiredStates: (board: IBoardUlt) => void;
-    setEffect: (args: IEffectItem) => void;
-    updateEffect: (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, isFlipped: boolean) => void;
-    clearEffects: () => void;
 
 }
 
 export class CellUlt extends Cell implements ICellUlt {
     states: ICellUltStates = {
-        skillsApplied: [],
-        effects: []
+        skillsApplied: []   
     }
 
 
@@ -129,29 +122,6 @@ export class CellUlt extends Cell implements ICellUlt {
         if (skillToExpire?.onExpire) this.performSkill(skillToExpire.onExpire, board)
 
         this.states.skillsApplied = this.states.skillsApplied.filter(skill => skill.expireAt !== currentGlobalMoveCount)
-    }
-
-    public setEffect(args: IEffectItem) {
-        this.states.effects.push(
-            new VFX({ ...args })
-        )
-    }
-
-    public clearEffects() {
-        this.states.effects = []
-    }
-
-    public updateEffect(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, isFlipped: boolean) {
-        let posX = isFlipped ? 7 - this.x : this.x
-        let posY = isFlipped ? 7 - this.y : this.y;
-        this.states.effects.forEach(effect => {
-            const { imgH, imgW } = effect.rescaleToCellSize(canvas)!
-            const drawArgs = { ctx, x: posX * imgW, y: posY * imgH, imgHeight: imgH, imgWidth: imgW }
-            effect.update(drawArgs)
-        });
-    }
-
-
-
+    }   
 
 }

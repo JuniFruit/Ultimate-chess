@@ -3,9 +3,7 @@ import { IMoveOptions } from "../../constants/socketIO/ClientEvents.interface";
 import { IBoard } from "../Board";
 import { ICell, ICellInfo } from "../Cell";
 import { Colors } from "../colors.enum";
-import { IEffectItem } from "../effects/data/effects.data";
-import { ISprite } from "../effects/Sprite";
-import { IVFX, IVFXConstructor } from "../effects/VFX";
+import { IVFX } from "../effects/VFX";
 import { Direction } from "../helper.enum";
 import { IBoardUlt } from "../ultimate/BoardUlt";
 import { ICellUlt } from "../ultimate/CellUlt";
@@ -29,8 +27,8 @@ export interface ILegalMoveArg {
 export interface IFigureBase {
     readonly sprites?: ISpritesObj;
     spriteSrc?: string;
-    sprite?: ISprite;
-    ultimateStates: IFigureUltimateStates
+    animation?: IVFX;
+    ultimateStates: IFigureUltimateStates;
     x: number;
     y: number;
     prevX: number;
@@ -47,17 +45,16 @@ export interface IFigureBase {
     getLegalMovesHorizontal: (arg: ILegalMoveArg) => void;
     getLegalMovesDiagonal: (arg: ILegalMoveArg) => void;
     addLegalMove: (cell: ICell | ICellUlt) => boolean;
-    update: (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, isFlipped: boolean) => void;
-    setSpriteObj: () => void;
+    draw: (ctx: CanvasRenderingContext2D, isFlipped: boolean) => void;
+    setAnimation: (vfx: IVFX) => void;
     undo: () => void;
 
     /* ultimate methods */
-
     applySkill: (skill: ISkillApplied) => void;
     clearExpiredStates: (board: IBoardUlt) => void;
     filterDisabled: () => void;
-    setEffect: (args: IEffectItem) => void;
-    clearEffects: () => void;
+    setEffect: (vfx: IVFX) => void;
+    drawEffect: (ctx: CanvasRenderingContext2D, isFlipped: boolean) => void; 
 }
 
 export interface IFigure extends IFigureBase {

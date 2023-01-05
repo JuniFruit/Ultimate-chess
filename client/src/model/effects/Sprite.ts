@@ -1,4 +1,3 @@
-import { getCellSize } from "../../components/pages/game-room/field/canvas/utils/canvas.utils";
 
 export interface ISprite {
     framesHold: number;
@@ -9,10 +8,10 @@ export interface ISprite {
     framesElapsed: number
     framesTotal: number;
     framesTotalElapsed: number;
+    isLooped: boolean;
     image: HTMLImageElement;
     draw: (arg: IDrawArgs) => void;
     update: (arg: IDrawArgs) => void;
-    rescaleToCellSize: (canvas: HTMLCanvasElement) => { imgW: number, imgH: number }
 
 
 }
@@ -25,7 +24,7 @@ export interface IDrawArgs {
     imgHeight: number,
 }
 
-export interface ISpriteConstructor extends Pick<ISprite, "framesMaxWidth" | "framesMaxHeight"> {
+export interface ISpriteConstructor extends Pick<ISprite, "framesMaxWidth" | "framesMaxHeight" | "isLooped"> {
     sprite: string;
     framesHold?: number;
 }
@@ -40,14 +39,17 @@ export class Sprite implements ISprite {
     image;
     framesTotal;
     framesTotalElapsed = 0;
+    isLooped: boolean;
 
-    constructor({ sprite, framesMaxWidth = 6, framesMaxHeight = 1, framesHold = 5 }: ISpriteConstructor) {
+
+    constructor({ sprite, framesMaxWidth = 6, framesMaxHeight = 1, framesHold = 5, isLooped }: ISpriteConstructor) {
         this.framesMaxWidth = framesMaxWidth;
         this.framesMaxHeight = framesMaxHeight;
         this.image = new Image();
         this.image.src = sprite;
         this.framesHold = framesHold;
         this.framesTotal = this.framesMaxWidth * this.framesMaxHeight;
+        this.isLooped = isLooped
     }
 
 
@@ -67,17 +69,17 @@ export class Sprite implements ISprite {
 
     }
 
-    public rescaleToCellSize(canvas: HTMLCanvasElement) {
-        const { w, h } = getCellSize(canvas);
-        const scale_factor = Math.min(w / (this.image.width / this.framesMaxWidth), h / (this.image.height / this.framesMaxHeight));
-        const imgW = (this.image!.width / this.framesMaxWidth) * scale_factor;
-        const imgH = (this.image.height / this.framesMaxHeight) * scale_factor;
-
-        return { imgW, imgH }
-    }
+   
 
     private _animateFrames() {
         this.framesElapsed++
+
+        if (!this.isLooped && this.framesTotalElapsed >= this.framesTotal - 1) {
+            this.framesCurrentHeight = -1;
+            this.framesCurrentWidth = -1;
+            return;
+        }
+        
         if (this.framesElapsed % this.framesHold === 0) {
             this.framesTotalElapsed++;
             if (this.framesCurrentWidth < this.framesMaxWidth - 1) {

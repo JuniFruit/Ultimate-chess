@@ -1,9 +1,7 @@
 import { IBoard } from "../Board";
 import { ICell } from "../Cell";
 import { Colors } from "../colors.enum";
-import { IEffectItem } from "../effects/data/effects.data";
-import { ISprite, Sprite } from "../effects/Sprite";
-import { VFX } from "../effects/VFX";
+import { IVFX } from "../effects/VFX";
 import { Direction } from "../helper.enum";
 import { getFigureInfo, isInBounds } from "../helpers";
 import { Positions } from "../positions";
@@ -21,7 +19,7 @@ export abstract class Figure implements IFigureBase {
         skillsApplied: [],
         effects: []
     }
-    sprite?: ISprite;
+    animation?: IVFX;
     spriteSrc?: string;
     x;
     y;
@@ -171,30 +169,36 @@ export abstract class Figure implements IFigureBase {
 
     }
 
-    public setSpriteObj() {
-        this.sprite = new Sprite({ sprite: this.spriteSrc!, framesMaxWidth: this.sprites?.frames })
+    public setAnimation(vfx: IVFX) {
+        this.animation = vfx
     }
 
 
-    public update(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, isFlipped: boolean) {
-        let posX = isFlipped ? 7 - this.x : this.x
-        let posY = isFlipped ? 7 - this.y : this.y;
-        const { imgH, imgW } = this.sprite?.rescaleToCellSize(canvas)!
-        const drawArgs = { ctx, x: posX * imgW, y: posY * imgH, imgHeight: imgH, imgWidth: imgW }
+    public draw(ctx: CanvasRenderingContext2D, isFlipped: boolean) {
+        if (this.animation) {
+            this.animation.updatePosition(this.x, this.y);
+            isFlipped && this.animation.flipPosition();
+            this.animation.updateVFX(ctx);
+        }
 
-        this.sprite?.update(drawArgs);
-        if (this.ultimateStates.effects.length) this.ultimateStates.effects.forEach(effect => effect.update(drawArgs))
     }
 
 
     /* Ultimate mode methods */
 
-    public setEffect(args: IEffectItem) {
-        this.ultimateStates.effects.push(
-            new VFX({ ...args })
-        )
+    public setEffect(vfx: IVFX) {
+        this.ultimateStates.effects.push(vfx)
     }
 
+    public drawEffect(ctx: CanvasRenderingContext2D, isFlipped: boolean) {
+        if (this.ultimateStates.effects.length) {
+            this.ultimateStates.effects.forEach(effect => {
+                effect.updatePosition(this.x, this.y);
+                isFlipped && effect.flipPosition();
+                effect.updateVFX(ctx);
+            })
+        }
+    }
 
     public applySkill(skill: ISkillApplied) {
         this.ultimateStates.skillsApplied = [...this.ultimateStates.skillsApplied, skill];
@@ -208,14 +212,10 @@ export abstract class Figure implements IFigureBase {
             myCell.performSkill(skillToExpire.onExpire, board)
         }
 
-
         this.ultimateStates.skillsApplied = this.ultimateStates.skillsApplied.filter(
             skill => skill.expireAt !== board.states.globalMovesCount)
     }
 
-    public clearEffects() {
-        this.ultimateStates.effects = [];
-    }
 
     public filterDisabled() {
         const isDisabled = this.ultimateStates.skillsApplied.some(skill => skill.type === SkillTypes.DISABLER)

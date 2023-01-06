@@ -1,12 +1,12 @@
 import { ICanvasField } from "./CanvasField.interface";
 import { useState, useRef, useCallback, TouchEventHandler, MouseEventHandler, useEffect } from 'react';
-import { IFigure } from "../../../../../model/figures/figures.interface";
+import { FigureTypes, IFigure } from "../../../../../model/figures/figures.interface";
 import { ICell } from "../../../../../model/Cell";
 import { ICellUlt } from "../../../../../model/ultimate/CellUlt";
 import { getFlippedPos } from "../../../../../model/helpers";
 
 interface IUseHandleMoves extends Pick<ICanvasField, "isFlipped" | "onCellSelect"
-    | "cells" | "ultimateStates" | "selected" | "premoves"> {}
+    | "cells" | "ultimateStates" | "selected" | "premoves"> { }
 
 export const useHandleMoves = ({ isFlipped, onCellSelect, cells, ultimateStates, selected, premoves }: IUseHandleMoves) => {
 
@@ -88,13 +88,15 @@ export const useHandleMoves = ({ isFlipped, onCellSelect, cells, ultimateStates,
         }
 
         if (target.figure) {
+            if ((selected?.figure?.type === FigureTypes.KING
+                && selected.figure.color === target.figure.color) && target.figure.type === FigureTypes.ROOK) return onCellSelect(target);
             draggingPiece.current = target.figure
             dragStartCell.current = cells[y][x];
             _setPieceToMouse(clientX, clientY, canvas);
-    
+
             setIsDragging(prev => true);
         }
-        
+
         onCellSelect(target)
 
     }, [cells.length, selected, ultimateStates.isSkillTargetSelecting, premoves])
@@ -133,7 +135,7 @@ export const useHandleMoves = ({ isFlipped, onCellSelect, cells, ultimateStates,
         if (isTouchOngoing) return;
 
         setIsTouchOngoing(prev => true);
-        
+
 
     }, [isDragging, isTouchOngoing, cells.length, selected, ultimateStates.isSkillTargetSelecting, premoves])
 
@@ -165,7 +167,7 @@ export const useHandleMoves = ({ isFlipped, onCellSelect, cells, ultimateStates,
     }, [isDragging, isTouchOngoing, cells.length, selected, ultimateStates.isSkillTargetSelecting])
 
     const handleMouseOut: MouseEventHandler<HTMLCanvasElement> = useCallback((e) => {
-        e.preventDefault()     
+        e.preventDefault()
         _clearDragging();
 
     }, [cells.length])

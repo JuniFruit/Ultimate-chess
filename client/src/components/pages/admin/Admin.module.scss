@@ -1,4 +1,3 @@
-
 .admin_container {
     @apply flex justify-center w-full mt-10 mb-5 pl-12;
 
@@ -28,7 +27,7 @@
                 }
         }
 
-        >nav {
+        nav {
             @apply absolute top-1/2 shadow;
             right: calc(100%);
             transform: translateY(-50%);
@@ -41,4 +40,24 @@
             width: 70rem;
         }
     }
+}
+
+.menu_wrapper {
+    @apply bg-main-700 p-2 flex flex-col gap-4;
+    border-radius: 1.2rem 0 0 1.2rem;
+
+    >button {
+        @apply p-2 bg-main-700 text-main-200 text-tiny rounded-lg opacity-80;
+
+        @media (hover: hover) {
+            &:hover {
+                @apply opacity-100;
+            }
+        }
+    }
+
+    .link_active {
+        @apply bg-complimentary opacity-100;
+    }
+
 }

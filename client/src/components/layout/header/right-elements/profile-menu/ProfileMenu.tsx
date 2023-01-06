@@ -42,7 +42,7 @@ const ProfileMenu: FC = () => {
                             <Link to={`/user/${user?.id}`}>My Profile</Link>
                         </li>
                         <li>
-                            {isAdmin ? <Link to={`/admin/home`}>Admin Panel</Link> : null}
+                            {isAdmin ? <Link to={`/admin`}>Admin Panel</Link> : null}
                         </li>
                         <li>
                             <button onClick={() => logout(null)}>Logout</button>

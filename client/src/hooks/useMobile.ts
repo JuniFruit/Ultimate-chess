@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react';
 
 export const useIsMobile = () => {
     const [isMobile, setIsMobile] = useState(window.innerWidth < 769);
-    const [isLaptopSmall, setIsLaptopSmall] = useState(window.innerHeight < 1200)
+    const [isLaptopSmall, setIsLaptopSmall] = useState(window.innerWidth < 1024)
 
     useEffect(() => {
         const updateSize = (): void => {
 
             setIsMobile(window.innerWidth < 768);
-            setIsLaptopSmall(window.innerHeight < 1200)
+            setIsLaptopSmall(window.innerWidth < 1024)
         };
         window.addEventListener('resize', updateSize);
 

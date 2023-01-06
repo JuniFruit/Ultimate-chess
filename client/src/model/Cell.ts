@@ -64,7 +64,7 @@ export class Cell implements ICell {
         return this.figure === null;
     }
 
-    
+
 
     private _validateMove(target: ICell, board: IBoard): boolean {
 
@@ -142,7 +142,12 @@ export class Cell implements ICell {
 
     private _performCastle(target: ICell, board: IBoard, options: IMoveOptions) {
         this._makeMove((this.figure as IKing).getCastleTarget(target, board), board, options);
-        target.moveFigure((target.figure as IRook).getCastleTarget(board), board, options);
+
+        let rookTargetX = 0;
+        if (target.x === 0) rookTargetX = 3;
+        if (target.x === 7) rookTargetX = -2;
+        const moveToCell = board.getCell(target.x + rookTargetX, target.y);
+        target.moveFigure(moveToCell, board, options);
     }
 
     private _makeMove(target: ICell, board: IBoard, options: IMoveOptions) {
@@ -158,6 +163,7 @@ export class Cell implements ICell {
 
 
     public moveFigure(target: ICell, board: IBoard, options: IMoveOptions) {
+
         if (this.isCastlingMove(target)) return this._performCastle(target, board, options);
         if (this._isEnPassantMove(target)) return this._performEnPassant(target, board, options);
         this._makeMove(target, board, options);

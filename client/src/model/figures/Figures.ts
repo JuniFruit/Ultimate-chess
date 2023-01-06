@@ -174,9 +174,11 @@ export abstract class Figure implements IFigureBase {
     }
 
 
-    public draw(ctx: CanvasRenderingContext2D, isFlipped: boolean) {
+    public draw(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, isFlipped: boolean) {
         if (this.animation) {
             this.animation.updatePosition(this.x, this.y);
+            this.animation.scaleToCellSize(canvas);
+            this.animation.rescaleAndCenter()
             isFlipped && this.animation.flipPosition();
             this.animation.updateVFX(ctx);
         }
@@ -190,10 +192,12 @@ export abstract class Figure implements IFigureBase {
         this.ultimateStates.effects.push(vfx)
     }
 
-    public drawEffect(ctx: CanvasRenderingContext2D, isFlipped: boolean) {
+    public drawEffect(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, isFlipped: boolean) {
         if (this.ultimateStates.effects.length) {
             this.ultimateStates.effects.forEach(effect => {
                 effect.updatePosition(this.x, this.y);
+                effect.scaleToCellSize(canvas);
+                effect.rescaleAndCenter()
                 isFlipped && effect.flipPosition();
                 effect.updateVFX(ctx);
             })

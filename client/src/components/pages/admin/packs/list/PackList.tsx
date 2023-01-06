@@ -1,32 +1,29 @@
 import { FC } from "react";
-import { useNavigate } from "react-router-dom";
 import { packApi } from "../../../../../store/api/pack.api";
 import { PackItem } from "../../../../ui/admin/items/PackItem";
+import { Spinner } from "../../../../ui/loading/Spinner";
 import styles from './PackList.module.scss';
 
-export const PackList: FC = () => {
+export const PackList: FC<{ onClick: (packId: number) => void }> = ({ onClick }) => {
 
-    const { data: packs } = packApi.useGetPacksQuery(null);
+    const { data: packs, isLoading } = packApi.useGetPacksQuery(null);
 
-    const navigate = useNavigate();
+    if (isLoading) return <Spinner />
 
-    const handleClick = (id:number) => {
-        navigate(`/admin/packs/edit/${id}`)
-    }
     return (
         <div className={styles.pack_list_wrapper}>
             {
-                packs?.length 
-                ?
-                packs.map(pack => (
-                    <PackItem 
-                        {...{...pack}}
-                        ownerCount={pack.owner.length}
-                        onClick={() => handleClick(pack.id)}
-                        key={pack.id}
-                    />
-                ))
-                : null 
+                packs?.length
+                    ?
+                    packs.map(pack => (
+                        <PackItem
+                            {...{ ...pack }}
+                            ownerCount={pack.owner.length}
+                            onClick={() => onClick(pack.id)}
+                            key={pack.id}
+                        />
+                    ))
+                    : null
             }
         </div>
     )

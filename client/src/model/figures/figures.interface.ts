@@ -45,7 +45,7 @@ export interface IFigureBase {
     getLegalMovesHorizontal: (arg: ILegalMoveArg) => void;
     getLegalMovesDiagonal: (arg: ILegalMoveArg) => void;
     addLegalMove: (cell: ICell | ICellUlt) => boolean;
-    draw: (ctx: CanvasRenderingContext2D, isFlipped: boolean) => void;
+    draw: (ctx: CanvasRenderingContext2D, canvas:HTMLCanvasElement, isFlipped: boolean) => void;
     setAnimation: (vfx: IVFX) => void;
     undo: () => void;
 
@@ -54,7 +54,7 @@ export interface IFigureBase {
     clearExpiredStates: (board: IBoardUlt) => void;
     filterDisabled: () => void;
     setEffect: (vfx: IVFX) => void;
-    drawEffect: (ctx: CanvasRenderingContext2D, isFlipped: boolean) => void; 
+    drawEffect: (ctx: CanvasRenderingContext2D, canvas:HTMLCanvasElement, isFlipped: boolean) => void; 
 }
 
 export interface IFigure extends IFigureBase {

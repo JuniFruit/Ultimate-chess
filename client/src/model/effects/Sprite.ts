@@ -10,10 +10,7 @@ export interface ISprite {
     framesTotalElapsed: number;
     isLooped: boolean;
     image: HTMLImageElement;
-    draw: (arg: IDrawArgs) => void;
     update: (arg: IDrawArgs) => void;
-
-
 }
 
 export interface IDrawArgs {
@@ -53,7 +50,8 @@ export class Sprite implements ISprite {
     }
 
 
-    public draw({ ctx, x, y, imgHeight, imgWidth }: IDrawArgs) {
+    private _draw({ ctx, x, y, imgHeight, imgWidth }: IDrawArgs) {
+        // console.log(imgHeight, this.image.height)
         ctx.drawImage(
             this.image!,
             this.framesCurrentWidth * (this.image!.width / this.framesMaxWidth),
@@ -69,7 +67,7 @@ export class Sprite implements ISprite {
 
     }
 
-   
+
 
     private _animateFrames() {
         this.framesElapsed++
@@ -79,7 +77,7 @@ export class Sprite implements ISprite {
             this.framesCurrentWidth = -1;
             return;
         }
-        
+
         if (this.framesElapsed % this.framesHold === 0) {
             this.framesTotalElapsed++;
             if (this.framesCurrentWidth < this.framesMaxWidth - 1) {
@@ -95,7 +93,7 @@ export class Sprite implements ISprite {
     }
 
     public update(args: IDrawArgs) {
-        this.draw(args);
+        this._draw(args);
         this._animateFrames();
     }
 

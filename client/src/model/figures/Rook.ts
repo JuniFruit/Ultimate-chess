@@ -8,7 +8,6 @@ import { FigureTypes, IFigure, ISpritesObj } from "./figures.interface";
 
 export interface IRook extends IFigure {
     isFirstMove?: boolean;
-    getCastleTarget: (board: IBoard | IBoardUlt) => ICell;
 }
 
 
@@ -16,13 +15,13 @@ export interface IRook extends IFigure {
 export class Rook extends Figure implements IRook {
     readonly type;
     isFirstMove
-   
+
     constructor(x: number, y: number, color: Colors, sprites?: ISpritesObj, isFirstMove: boolean = true) {
         super(x, y, color, sprites);
         this.spriteSrc = color === Colors.BLACK ? sprites?.blackRook : sprites?.whiteRook;
         this.type = FigureTypes.ROOK;
         this.isFirstMove = isFirstMove;
-   
+
     }
 
     public getLegalMoves(board: IBoard | IBoardUlt) {
@@ -38,15 +37,5 @@ export class Rook extends Figure implements IRook {
 
         this.isFirstMove = false;
     }
-
-    public getCastleTarget(board: IBoard | IBoardUlt) {
-
-        let moveValue = 0;
-        if (this.x === 0) moveValue = 3;
-        if (this.x === 7) moveValue = -2;
-        const moveToCell = board.getCell(this.x + moveValue, this.y);
-
-        return moveToCell
-
-    }
+    
 }

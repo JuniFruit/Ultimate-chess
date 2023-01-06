@@ -3,25 +3,23 @@ import { useSearch } from "../../../../hooks/useSearch";
 import { api } from "../../../../store/api/api";
 import { IUser } from "../../../../types/user.interface";
 import { PlayerItem } from "../../../ui/admin/items/PlayerItem";
-import { AdminPanel } from "../../../ui/admin/main/AdminPanel";
-import { useAdminAuth } from "../../../../hooks/useAdminAuth";
 import { AddRole } from "./actions/AddRole";
 import { DeleteRole } from "./actions/DeleteRole";
 import styles from './AdminPlayer.module.scss';
 import Search from "./search-bar/Search";
 import { useNavigate } from "react-router-dom";
 import { useIsMobile } from "../../../../hooks/useMobile";
+import { Spinner } from "../../../ui/loading/Spinner";
 
 const AdminPlayers: FC = () => {
-    useAdminAuth();
 
     const [dataToRender, setDataToRender] = useState<IUser[]>([]);
-    const {isMobile} = useIsMobile();
+    const { isMobile } = useIsMobile();
     const navigate = useNavigate()
-    const { data: users } = api.useGetAllQuery(null);
+    const { data: users, isLoading } = api.useGetAllQuery(null);
     const { handleSearch, data: searchResults, searchTerm } = useSearch()
 
-    const handleClick = (id:number) => {
+    const handleClick = (id: number) => {
         navigate(`/user/${id}`)
     }
 
@@ -32,8 +30,10 @@ const AdminPlayers: FC = () => {
 
     }, [searchResults, users])
 
+    if (isLoading) return <Spinner />
+
     return (
-        <AdminPanel title="Players">
+        <>
             <div className={styles.search_bar}>
                 <Search
                     handleSearch={handleSearch}
@@ -49,16 +49,17 @@ const AdminPlayers: FC = () => {
                                 user={{ ...user }}
                                 onClick={() => handleClick(user.id)}
                                 key={user.id}>
-                                    <AddRole userId={user.id} />
-                                    <DeleteRole userId={user.id} roles={user.roles} />
+                                <AddRole userId={user.id} />
+                                <DeleteRole userId={user.id} roles={user.roles} />
                             </PlayerItem>
 
                         ))
                         : null
                 }
             </div>
+        </>
 
-        </AdminPanel>
+
     )
 }
 

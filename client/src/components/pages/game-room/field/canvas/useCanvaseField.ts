@@ -1,5 +1,5 @@
 import { ICanvasField } from "./CanvasField.interface";
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useEffect } from 'react';
 import { Colors } from "../../../../../model/colors.enum";
 import { getFlippedPos } from "../../../../../model/helpers";
 import { drawCircle, drawRect, getCellSize } from "./utils/canvas.utils";
@@ -26,9 +26,9 @@ export const useCanvasField = (
     const { handlers } = useHandleMoves({ cells, onCellSelect, selected, isFlipped, ultimateStates, premoves })
     const prevMoveCount = useRef<number>(board.states.globalMovesCount);
 
-    const handlePreDraw = useCallback((context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
-        
-        _setFigureAnimationAndEffects(canvas);
+    const handlePreDraw = useCallback((context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {        
+        _setFigureAnimation(canvas);
+        if (prevMoveCount.current !== board.states.globalMovesCount) _setFigureEffects(canvas)
         _drawBoard(context, canvas);
         _drawPremoves(context, canvas);
         _drawAvailable(context, canvas);
@@ -42,13 +42,16 @@ export const useCanvasField = (
     const draw = useCallback((context: CanvasRenderingContext2D, canvas: HTMLCanvasElement, frameCount: number) => {
         context.clearRect(0, 0, context.canvas.width, context.canvas.height)
         _drawMouseOver(context, canvas)
-        _drawFigures(context)
+        _drawFigures(context, canvas)
         _drawEffects(context, canvas);
 
     }, [board, isFlipped, ultimateStates.isSkillTargetSelecting, vfx])
 
 
-    const _setFigureAnimationAndEffects = useCallback((canvas: HTMLCanvasElement) => {
+   
+
+
+    const _setFigureAnimation = useCallback((canvas: HTMLCanvasElement) => {
         board.figures.forEach(figure => {
             const animation = new VFX({
                 sprite: figure.spriteSrc!,
@@ -60,11 +63,15 @@ export const useCanvasField = (
                 title: SkillNames.INCINERATE, // Any
                 isLooped: true
             });
-            animation.scaleToCellSize(canvas);
-            animation.rescaleAndCenter()
-            isFlipped && animation.flipPosition();
+            
             figure.setAnimation(animation);
 
+        })
+    }, [board, isFlipped])
+
+    const _setFigureEffects = useCallback((canvas: HTMLCanvasElement) => {
+
+        board.figures.forEach(figure => {
             if (figure.ultimateStates.skillsApplied.length) {
                 figure.ultimateStates.effects = []; // clear before add 
                 figure.ultimateStates.skillsApplied.forEach(skill => {
@@ -75,23 +82,20 @@ export const useCanvasField = (
                             x: figure.x,
                             y: figure.y
                         }
-                    })
-                    skillEffect.scaleToCellSize(canvas);
-                    skillEffect.rescaleAndCenter()
-                    isFlipped && skillEffect.flipPosition();
+                    })                    
                     figure.setEffect(skillEffect);
                 })
             }
-
         })
+
     }, [board, isFlipped])
 
 
-    const _drawFigures = useCallback((ctx: CanvasRenderingContext2D) => {
+    const _drawFigures = useCallback((ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
 
         board.figures.forEach((figure) => {
-            figure.draw(ctx, isFlipped);
-            figure.drawEffect(ctx, isFlipped)
+            figure.draw(ctx, canvas, isFlipped);
+            figure.drawEffect(ctx, canvas, isFlipped)
         })
 
     }, [board, isFlipped])
@@ -210,7 +214,7 @@ export const useCanvasField = (
         return { x, y }
     }, [isFlipped])
 
-
+   
 
     return {
 

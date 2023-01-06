@@ -61,6 +61,7 @@ export class VFX extends Sprite implements IVFX {
 
     public scaleToCellSize(canvas: HTMLCanvasElement) {
         const { w, h } = getCellSize(canvas);
+        // console.log(w, this.image.width)
         const scale_factor = Math.min(w / (this.image.width / this.framesMaxWidth), h / (this.image.height / this.framesMaxHeight));
         this.destImgWidth = (this.image!.width / this.framesMaxWidth) * scale_factor;
         this.destImgHeight = (this.image.height / this.framesMaxHeight) * scale_factor;
@@ -95,6 +96,5 @@ export class VFX extends Sprite implements IVFX {
 
         this.destImgHeight = newImgH;
         this.destImgWidth = newimgW;
-
     }
 }

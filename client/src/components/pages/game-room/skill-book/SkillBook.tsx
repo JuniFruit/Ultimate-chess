@@ -11,11 +11,11 @@ import { SkillPage } from "./SkillPage";
 
 export const SkillBook: FC<ISkillBook> = ({ onChooseSkill, onClose, board, myColor }) => {
 
-    const { isMobile } = useIsMobile();
+    const { isLaptopSmall } = useIsMobile();
 
     const getPages = useCallback((): JSX.Element[] => {
         const pages: ISkillItem[][] = []
-        const skillsOnPage = isMobile ? 1 : 4;
+        const skillsOnPage = isLaptopSmall ? 1 : 4;
         let temp: ISkillItem[] = [];
 
         SkillList.forEach((item, ind) => {

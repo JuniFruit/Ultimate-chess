@@ -2,11 +2,22 @@ import { Effects } from "../../../assets/Effects/Effects";
 import { SkillNames } from "../../ultimate/Skills"
 import { IVFXConstructor } from "../VFX";
 
-export enum EffectNames {   
+export enum EffectNames {
     ON_MOVE = 'onMove'
 }
 
 export const effectList: IEffectItem[] = [{
+    title: SkillNames.SACRIFICE,
+    framesHold: 5,
+    framesMaxWidth: 6,
+    framesMaxHeight: 6,
+    isLooped: false,
+    sprite: Effects.blood,
+
+},
+
+{
+
     title: SkillNames.INCINERATE,
     framesHold: 5,
     framesMaxWidth: 18,

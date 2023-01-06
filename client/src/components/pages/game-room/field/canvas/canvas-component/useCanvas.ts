@@ -11,7 +11,6 @@ export const useCanvas = ({ onAnimate, preDraw, isAnimationStopped }: IUseCanvas
     const currentWidth = useResize();
     
     useEffect(() => {
-        
         if (!canvasRef.current) return;
         const canvas = canvasRef.current
         const context = canvas.getContext('2d')

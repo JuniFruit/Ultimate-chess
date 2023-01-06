@@ -1,27 +1,24 @@
 import { FC } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useActions } from '../../../../../hooks/useActions';
 import { packApi } from '../../../../../store/api/pack.api';
-import { AdminPanel } from '../../../../ui/admin/main/AdminPanel';
 import { Button } from '../../../../ui/button/Button';
-import { useAdminAuth } from '../../../../../hooks/useAdminAuth';
 import { IPackForm, ISpriteForm } from '../add-pack/pack-forms/Forms.interface';
 import PackForm from '../add-pack/pack-forms/PackForm';
 import styles from './PackEdit.module.scss';
 import SpriteForm from '../add-pack/pack-forms/SpriteForm';
+import { Spinner } from '../../../../ui/loading/Spinner';
 
-const PackEdit: FC = () => {
-    useAdminAuth();
+const PackEdit: FC<{ id: number }> = ({ id }) => {
 
-    const { id } = useParams()
     const {
         register,
         formState: { errors },
         handleSubmit
     } = useForm<IPackForm>({ mode: "onChange" })
 
-    const { data: pack } = packApi.useGetPackByIdQuery(Number(id), {
+    const { data: pack, isLoading } = packApi.useGetPackByIdQuery(Number(id), {
         skip: !id,
     })
     const { addMsg } = useActions();
@@ -57,39 +54,38 @@ const PackEdit: FC = () => {
     }
 
     if (!pack || !spritePack) return null;
-    return (
-        <AdminPanel title='Edit Pack'>
-            <div>
-                <div className={styles.buttons}>
-                    <Link to="/admin/packs">List</Link>
-                    <Button onClick={handleDelete}> Delete</Button>
-                </div>
-                <SpriteForm
-                    form={
-                        {
-                            handleSubmit: spriteHandleSubmit(onSpriteSubmit),
-                            register: spriteRegister,
-                            errors: spriteErrors
-                        }
+    if (isLoading) return <Spinner />
 
-                    }
-                    defaultValues={spritePack}
-                />
-                <PackForm
-                    form={{
-                        handleSubmit: handleSubmit(onSubmit),
-                        register,
-                        errors
-                    }}
-                    defaultValues={
-                        {
-                            ...pack,
-                            name: pack.title
-                        }
-                    }
-                />
+    return (
+        <div>
+            <div className={styles.buttons}>
+                <Button onClick={handleDelete}> Delete</Button>
             </div>
-        </AdminPanel>
+            <SpriteForm
+                form={
+                    {
+                        handleSubmit: spriteHandleSubmit(onSpriteSubmit),
+                        register: spriteRegister,
+                        errors: spriteErrors
+                    }
+
+                }
+                defaultValues={spritePack}
+            />
+            <PackForm
+                form={{
+                    handleSubmit: handleSubmit(onSubmit),
+                    register,
+                    errors
+                }}
+                defaultValues={
+                    {
+                        ...pack,
+                        name: pack.title
+                    }
+                }
+            />
+        </div>
     )
 
 }

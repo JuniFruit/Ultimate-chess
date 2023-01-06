@@ -1,6 +1,6 @@
 import { Like } from "typeorm"
 import { RegisterDto } from "../auth/auth.dto"
-import { packRepository, roleRepository, userRepository } from "../database/db.connect"
+import { roleRepository, userRepository } from "../database/db.connect"
 
 export const UserService = {
     async getById(id: number) {
@@ -47,14 +47,15 @@ export const UserService = {
 
     },
 
-    async deleteRole(userId:number, roleValue: string) {
+    async deleteRole(userId: number, roleValue: string) {
         const user = await this.getById(userId);
         if (!user) throw new Error('Such user doesn\'t exist');
 
-        const role = await roleRepository.findOne({ 
+        const role = await roleRepository.findOne({
             where: {
                 role: roleValue
-            } });
+            }
+        });
 
         if (!role) throw new Error("Such role doesn\'t exist");
 
@@ -67,17 +68,17 @@ export const UserService = {
         user.lossesCount++;
         return await userRepository.save(user);
     },
-    async create(dto: RegisterDto) {       
+    async create(dto: RegisterDto) {
 
         const defaults = {
-            ...dto,      
+            ...dto,
             roles: [{
                 id: 1
             }]
         }
 
         const newUser = await userRepository.create(defaults);
-     
+
         return await userRepository.save(newUser);
     },
     async getAll() {
@@ -94,10 +95,10 @@ export const UserService = {
 
         return users
     },
-    async getBySearchTerm(term:string = '') {
+    async getBySearchTerm(term: string = '') {
         const users = await userRepository.find({
             where: {
-                username: Like(term)
+                username: Like(`%${term}%`)
             },
             relations: {
                 packInUse: true,

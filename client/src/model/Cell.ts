@@ -4,6 +4,7 @@ import { Colors } from "./colors.enum";
 import { FigureTypes, IFigure, IMovedFigure } from "./figures/figures.interface";
 import { IKing } from "./figures/King";
 import { IRook } from "./figures/Rook";
+import { Direction } from "./helper.enum";
 import { getFigureInfo } from "./helpers";
 import { Positions } from "./positions";
 import { IBoardUlt } from "./ultimate/BoardUlt";
@@ -141,13 +142,16 @@ export class Cell implements ICell {
     }
 
     private _performCastle(target: ICell, board: IBoard, options: IMoveOptions) {
-        this._makeMove((this.figure as IKing).getCastleTarget(target, board), board, options);
+
+        const dir = target.x < this.x ? Direction.NEG : Direction.POS;
+        const moveKingTo = board.getCell(this.x + 2 * dir, this.y);
+        this._makeMove(moveKingTo, board, options);
 
         let rookTargetX = 0;
         if (target.x === 0) rookTargetX = 3;
         if (target.x === 7) rookTargetX = -2;
-        const moveToCell = board.getCell(target.x + rookTargetX, target.y);
-        target.moveFigure(moveToCell, board, options);
+        const moveRookTo = board.getCell(target.x + rookTargetX, target.y);
+        target.moveFigure(moveRookTo, board, options);
     }
 
     private _makeMove(target: ICell, board: IBoard, options: IMoveOptions) {

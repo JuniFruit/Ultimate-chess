@@ -20,10 +20,15 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
+  "typeRoots": [
+    "node_modules/@types",
+    "custom-types/"
+  ],
   "include": [
     "**/*.ts",
     "**/*.tsx",   
     "src/setupProxy.js",
+    "custom-types"
   ],
   "exclude": [
     "node_modules",

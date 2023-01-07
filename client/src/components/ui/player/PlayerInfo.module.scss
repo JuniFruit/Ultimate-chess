@@ -2,7 +2,7 @@
 
 .info_container {
  
-    @apply w-full bg-main-900 rounded-lg px-1 py-1 shadow-md flex items-center justify-between;
+    @apply w-full bg-main-900 rounded-lg px-1 py-1 shadow flex items-center justify-between ;
     
     .info_wrapper {
          @apply flex gap-2 items-center;

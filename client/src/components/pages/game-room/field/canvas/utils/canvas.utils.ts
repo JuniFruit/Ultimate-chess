@@ -1,11 +1,11 @@
 export const resizeCanvas = (canvas: HTMLCanvasElement) => {
   const { width, height } = canvas.getBoundingClientRect()
   if (canvas.width !== width || canvas.height !== height) {
-    const { devicePixelRatio: ratio = 1 } = window
+    const { devicePixelRatio: ratio } = window
     const context = canvas.getContext('2d')
     canvas.width = width * ratio
     canvas.height = height * ratio
-      context!.scale(ratio, ratio)
+    context!.scale(ratio, ratio)
     return canvas
   }
 
@@ -42,12 +42,12 @@ interface IDrawRectArg extends Pick<IDrawCircleArg, "x" | "y" | "fill" | "stroke
 }
 
 export const drawRect = ({ ctx, x, y, fill, stroke, strokeWidth = 0, width, height }: IDrawRectArg) => {
-  
+
   if (fill) {
     ctx.fillStyle = fill
     ctx.fillRect(x, y, width, height)
-  } 
-} 
+  }
+}
 
 export const getCellSize = (canvas: HTMLCanvasElement) => {
   const { width, height } = canvas.getBoundingClientRect()

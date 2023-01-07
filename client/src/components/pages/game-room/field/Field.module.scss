@@ -7,6 +7,9 @@
         @apply border-main-800 relative mx-auto rounded-md overflow-hidden;
         width: calc(8 * var(--cellSize));
         height: calc(8 * var(--cellSize));
+        -webkit-user-select: none; 
+        -ms-user-select: none; 
+        user-select: none;
         .canvas {
             @apply absolute top-0 left-0 touch-none;
             width: calc(8 * var(--cellSize));

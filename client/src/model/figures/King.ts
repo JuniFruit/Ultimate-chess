@@ -13,7 +13,6 @@ import { IRook } from "./Rook";
 export interface IKing extends IFigure {
     isCastlingAvailable: boolean;
     canPerformCastle: (target: ICell, board: IBoard) => boolean;
-    getCastleTarget: (target: ICell, board: IBoard) => ICell;
 }
 
 export class King extends Figure implements IKing {
@@ -82,14 +81,6 @@ export class King extends Figure implements IKing {
 
         return true;
     }
-
-    public getCastleTarget(target: ICell, board: IBoard) {
-        const dir = target.x < this.x ? Direction.NEG : Direction.POS;
-        const moveToCell = board.getCell(this.x + 2 * dir, this.y);
-
-        return moveToCell;
-
-    }
-
+   
 
 }

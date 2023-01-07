@@ -79,7 +79,7 @@
 
                 >button {
                     @apply bg-transparent text-sm w-1 opacity-70 text-main-900 disabled:opacity-30;
-                    
+                    z-index: 1;
                     @media (hover: hover) {
                         &:hover {
                             @apply opacity-100

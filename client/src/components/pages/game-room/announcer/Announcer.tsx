@@ -56,14 +56,14 @@ export const Announcer: FC<IAnnouncer> = memo(({ players, states, myColor, isUlt
             announce = Announces.SPREE;
             username = whiteKillCount === KillThreshold.SPREE && whiteKillCount !== prevWhite ? getAnnounceInfo(Colors.WHITE)
                 : blackKillCount === KillThreshold.SPREE && blackKillCount !== prevBlack && getAnnounceInfo(Colors.BLACK);
-            playSound('spree');
+            username && playSound('spree');
         }
 
         if (whiteKillCount === KillThreshold.DOMINATING || blackKillCount === KillThreshold.DOMINATING) {
             announce = Announces.DOMINATING;
             username = whiteKillCount === KillThreshold.DOMINATING && whiteKillCount !== prevWhite ? getAnnounceInfo(Colors.WHITE)
                 : blackKillCount === KillThreshold.DOMINATING && blackKillCount !== prevBlack && getAnnounceInfo(Colors.BLACK);
-            playSound('dominating');
+            username && playSound('dominating');
         }
 
 
@@ -71,7 +71,7 @@ export const Announcer: FC<IAnnouncer> = memo(({ players, states, myColor, isUlt
             announce = Announces.UNSTOPPABLE;
             username = whiteKillCount === KillThreshold.UNSTOPPABLE && whiteKillCount !== prevWhite ? getAnnounceInfo(Colors.WHITE)
                 : blackKillCount === KillThreshold.UNSTOPPABLE && blackKillCount !== prevBlack && getAnnounceInfo(Colors.BLACK);
-            playSound('unstoppable');
+            username && playSound('unstoppable');
         }
 
 

@@ -6,7 +6,9 @@ import PlayChess from '../components/pages/play/PlayChess';
 import ProfilePage from '../components/pages/profile/ProfilePage';
 import RegisterPage from '../components/pages/auth/register/Register';
 import Login from '../components/pages/auth/login/Login';
+import { NotFoundPage } from '../components/pages/not-found/NotFoundPage';
 
+const Settings = lazy(() => import('../components/pages/settings/Settings'));
 const AdminPage = lazy(() => import('../components/pages/admin/Admin'));
 const GameRoom = lazy(() => import('../components/pages/game-room/GameRoom'));
 const Home = lazy(() => import('../components/pages/home/Home'));
@@ -34,6 +36,8 @@ const App: FC = () => {
           <Route path='/admin' element={<AdminPage />} />
           <Route path='/watch' element={<WatchPage />} />
           <Route path='/user/:id' element={<ProfilePage />} />
+          <Route path='/settings' element={<Settings />} />
+          <Route path='*' element={<NotFoundPage />} />
         </Routes>
 
       </Suspense>

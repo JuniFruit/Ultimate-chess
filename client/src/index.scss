@@ -76,6 +76,11 @@ input, button {
 
 
 
+@media (min-width: 350px) {
+  :root {
+    --cellSize: 2.8rem;
+  }
+}
 
 @screen sm {
   :root {
@@ -85,9 +90,15 @@ input, button {
   }
 }
 
-@screen lg {
+@screen md {
   :root {
     --cellSize: 4.5rem;
+    
+  }
+}
+
+@screen lg {
+  :root { 
     --book-h: 35rem;
     --book-w: 32rem;
   }

@@ -19,7 +19,7 @@ export const menuData: IMenuData[] = [
         preview: splashes.watchSplash,
     },
     {
-        title: 'Setting',
+        title: 'Settings',
         link: '/settings',
         preview: splashes.settingsSplash,
     },

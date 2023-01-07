@@ -45,9 +45,11 @@
                     }
                 }
             }
-            &:hover,
-            &:focus {
-                @apply bg-main-800;
+            @media (hover: hover) {
+                &:hover{
+                    @apply bg-main-800;
+                }
+
             }
         }
         

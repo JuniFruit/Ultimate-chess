@@ -22,13 +22,7 @@ export const useVFX = ({ board, isUltimate, isFlipped }: IUseVFX) => {
     // const lastMove = useRef<IMove | null>(null)
     const prevLastUsedSkill = useRef<ISkillUsed | null>(null);
     const prevLastMove = useRef<IMovedFigure | null>(null);
-
-    const handleAddEffectFromMove = useCallback((move: IMove) => {
-
-        // lastMove.current = null;        
-        // lastMove.current = move;
-
-    }, [])
+   
 
     const _getEffectFromLastMove = useCallback(() => {
 
@@ -39,7 +33,8 @@ export const useVFX = ({ board, isUltimate, isFlipped }: IUseVFX) => {
         const lastMove = board.states.moves[board.states.moves.length - 1];
 
         if (lastMove && lastMove !== prevLastMove.current) {
-            const effectItem = effectList.find(effect => effect.title === EffectNames.ON_MOVE);
+            let effectItem = effectList.find(effect => effect.title === EffectNames.ON_MOVE);
+            if (lastMove.options.isCastling) effectItem = effectList.find(effect => effect.title === EffectNames.ON_CASTLE);
             const effect = new VFX({
                 ...effectItem!,
                 position: {
@@ -117,7 +112,6 @@ export const useVFX = ({ board, isUltimate, isFlipped }: IUseVFX) => {
 
 
     return {
-        vfx,
-        handleAddEffectFromMove,
+        vfx,      
     }
 }

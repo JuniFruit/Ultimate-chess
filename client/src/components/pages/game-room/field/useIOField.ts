@@ -2,30 +2,25 @@ import ioClient from "../../../../api/socketApi";
 import { IUseField } from "./useField";
 import { useEffect, useCallback } from 'react';
 import { IMove } from "../../../../constants/socketIO/ClientEvents.interface";
-import { useMoveSound } from "./useMoveSound";
+import { useSound } from "./useSound";
 
 
 
-export interface IUseIOField extends Pick<IUseField, "board" | "setBoard" | "isObserver"> {
-    onReceiveMove: (move: IMove) => void;
-    onSendMove: (move: IMove) => void;
-}
+export interface IUseIOField extends Pick<IUseField, "board" | "setBoard" | "isObserver"> {}
 
-export const useIOField = ({ board, setBoard, isObserver, onReceiveMove, onSendMove }: IUseIOField) => {
+export const useIOField = ({ board, setBoard, isObserver }: IUseIOField) => {
 
-    const { handleMoveSound } = useMoveSound();
+    const { handleMoveSound } = useSound(board);
 
     const handleSendMove = useCallback((move: IMove) => {
         if (isObserver) return;
         handleMoveSound(move);
-        onSendMove(move);
         ioClient.emit("sendMove", move)
     }, [isObserver])
 
     const handleReceiveMove = useCallback((move: IMove) => {
         board.receiveMove(move);
         handleMoveSound(move);
-        onReceiveMove(move);
         board.states.isFirstMove = false;
         board.swapPlayer();
 
@@ -40,7 +35,7 @@ export const useIOField = ({ board, setBoard, isObserver, onReceiveMove, onSendM
             ioClient.off("move");
         }
 
-    }, [board, isObserver])
+    }, [board])
 
 
     return {

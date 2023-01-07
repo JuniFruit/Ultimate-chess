@@ -10,6 +10,8 @@ export interface IVFX extends ISprite {
     position: IVFXPosition;
     destImgWidth: number;
     destImgHeight: number;
+    offsetX: number;
+    offsetY: number;
     scaleToCellSize: (canvas: HTMLCanvasElement) => void;
     updateVFX: (ctx: CanvasRenderingContext2D) => void;
     rescaleAndCenter: () => void;
@@ -25,7 +27,9 @@ export interface IVFXPosition {
 export interface IVFXConstructor extends ISpriteConstructor {
     title: SkillNames | EffectNames;
     position: IVFXPosition;
-    scale?: number
+    scale?: number;
+    offsetX?: number;
+    offsetY?: number;
 }
 
 export class VFX extends Sprite implements IVFX {
@@ -34,6 +38,8 @@ export class VFX extends Sprite implements IVFX {
     title;
     destImgWidth;
     destImgHeight;
+    offsetX;
+    offsetY;
 
     constructor({
         sprite,
@@ -43,6 +49,8 @@ export class VFX extends Sprite implements IVFX {
         framesHold = 10,
         scale = 1,
         title,
+        offsetX = 0,
+        offsetY = 0,
         position }: IVFXConstructor) {
 
         super({ sprite, framesMaxHeight, framesMaxWidth, framesHold, isLooped });
@@ -51,6 +59,8 @@ export class VFX extends Sprite implements IVFX {
         this.position = position;
         this.destImgHeight = this.image.height;
         this.destImgWidth = this.image.width;
+        this.offsetX = offsetX;
+        this.offsetY = offsetY;
     }
 
     public flipPosition() {
@@ -62,9 +72,10 @@ export class VFX extends Sprite implements IVFX {
     public scaleToCellSize(canvas: HTMLCanvasElement) {
         const { w, h } = getCellSize(canvas);
         // console.log(w, this.image.width)
-        const scale_factor = Math.min(w / (this.image.width / this.framesMaxWidth), h / (this.image.height / this.framesMaxHeight));
-        this.destImgWidth = (this.image!.width / this.framesMaxWidth) * scale_factor;
-        this.destImgHeight = (this.image.height / this.framesMaxHeight) * scale_factor;
+        const scale_factorW = w / (this.image.width / this.framesMaxWidth);
+        const scale_factorH = h / (this.image.height / this.framesMaxHeight);
+        this.destImgWidth = (this.image!.width / this.framesMaxWidth) * scale_factorW;
+        this.destImgHeight = (this.image.height / this.framesMaxHeight) * scale_factorH;
     }
 
     public updateVFX(ctx: CanvasRenderingContext2D): void {
@@ -77,8 +88,8 @@ export class VFX extends Sprite implements IVFX {
 
         super.update({
             ctx,
-            x: (this.position.x * prevDestImgW) - (diffW / 2), // Accounting for rescale
-            y: (this.position.y * prevDestImgH) - (diffH / 2),
+            x: ((this.position.x - this.offsetX) * prevDestImgW) - (diffW / 2), // Accounting for rescale
+            y: ((this.position.y - this.offsetY) * prevDestImgH) - (diffH / 2),
             imgHeight: this.destImgHeight,
             imgWidth: this.destImgWidth
         });

@@ -117,15 +117,19 @@ const GameRoom: FC = () => {
                 />
             </div>
             <ErrorModal />
-            <GameOverModal
-                {...{ ...status }}
-                onRematch={() => field.handleSendRequest(Requests.REMATCH)}
-            />
-            <ConfirmModal
-                request={data.request}
-                onConfirm={field.handleRequestConfirm}
-                onClose={() => data.setRequest(null)}
-            />
+            {
+                field.board.states.isGameOver ? <GameOverModal
+                    {...{ ...status }}
+                    onRematch={() => field.handleSendRequest(Requests.REMATCH)}
+                /> : null
+            }
+            {
+                data.request ? <ConfirmModal
+                    request={data.request}
+                    onConfirm={field.handleRequestConfirm}
+                    onClose={() => data.setRequest(null)}
+                /> : null
+            }
             {!status.isReadyToStart && status.isConnected ? <WaitingModal /> : null}
 
 

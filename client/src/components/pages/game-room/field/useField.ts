@@ -1,10 +1,12 @@
 import { IField } from "./Field.interface"
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useContext } from 'react';
 import { ICell, IPremove } from "../../../../model/Cell";
 import { IMove, IMoveOptions } from "../../../../constants/socketIO/ClientEvents.interface";
 import { FigureTypes } from "../../../../model/figures/figures.interface";
 import { ICellUlt } from "../../../../model/ultimate/CellUlt";
 import { useIsMobile } from "../../../../hooks/useMobile";
+import { AudioCtx } from "../../../../audio-engine/audio.provider";
+import { AudioContextType } from "../../../../audio-engine/audio.types";
 
 
 export interface IUseField extends Pick<IField, 'board' | 'setBoard' | 'myColor' | 'isObserver'> { 
@@ -19,13 +21,15 @@ export const useField = ({ board, setBoard, myColor, isObserver, handleSendMove 
     const [isPromotion, setIsPromotion] = useState(false);
     const [lastTargetCell, setLastTargetCell] = useState<ICell | ICellUlt | null>(null);
     const [premoves, setPremoves] = useState<IPremove[]>([]);
+    const {playSound} = useContext(AudioCtx) as AudioContextType;
     const maxPremoves = isMobile ? 1 : 5;
     
-
+    
+    
     const handleSelect = useCallback((cell: ICell | ICellUlt) => {
-        if (isPromotion || board.states.isGameOver) return;
+        if (isPromotion) return;
         if (isObserver) return setSelectedCell(prev => cell);
-
+        
         if (selectedCell) {
             if (selectedCell !== cell && board.states.currentPlayer === myColor) {
                 if (!selectedCell.isCastlingMove(cell) && cell.figure?.color === myColor) {
@@ -47,13 +51,13 @@ export const useField = ({ board, setBoard, myColor, isObserver, handleSendMove 
             if (selectedCell === cell && board.states.currentPlayer !== myColor) {
                 return clearSelectedCells()
             }
-
+            
         } else {
             if (!cell.figure) return;
             setSelectedCell(prev => cell);
         }
 
-    }, [selectedCell, lastTargetCell, isPromotion, board, isObserver, premoves])
+    }, [board, selectedCell, isPromotion, isObserver, premoves.length])
   
 
     const handlePremoves = useCallback(() => {
@@ -65,7 +69,7 @@ export const useField = ({ board, setBoard, myColor, isObserver, handleSendMove 
         handleMove(selectedCell, current.to);
         setPremoves(prev => [...premovesCopy]);
 
-    }, [selectedCell, premoves, isPromotion, board])
+    }, [selectedCell, premoves.length, isPromotion, board])
 
     const handlePromotion = useCallback((figureType: FigureTypes) => {
 
@@ -88,12 +92,13 @@ export const useField = ({ board, setBoard, myColor, isObserver, handleSendMove 
     }, [])
 
     const handleMove = useCallback((from: ICell | ICellUlt, to: ICell | ICellUlt, options?: IMoveOptions) => {
-        if (!from || !to || isObserver) return;
+        if (!from || !to || isObserver || board.states.isGameOver) return;
         if (!from.canMoveFigure(to, board)) {
             return clearSelectedCells();
         }
 
         if (from.isPromotionMove(to) && !isPromotion) {
+            playSound('promotionVoice');
             setLastTargetCell(prev => to);
             setIsPromotion(prev => true);
             return
@@ -117,13 +122,13 @@ export const useField = ({ board, setBoard, myColor, isObserver, handleSendMove 
     }, [selectedCell, lastTargetCell, isPromotion, board])
 
     useEffect(() => {
-
+        if (isObserver) return;
         if (!board.cells.length) return;
         if (board.states.isGameOver) return clearSelectedCells();
         board.updateAllLegalMoves();
         if (board.states.currentPlayer === myColor) handlePremoves();
 
-    }, [board])
+    }, [board, isObserver])
 
     return {
         handlers: {

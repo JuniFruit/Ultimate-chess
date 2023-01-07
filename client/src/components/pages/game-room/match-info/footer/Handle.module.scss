@@ -22,8 +22,13 @@
 
     .timer {
         >div {
+            @apply shadow-sm;
             >span {
-                font-size: .85rem;
+                font-size: .65rem;
+
+                @screen sm {
+                    font-size: .85rem;
+                }
             }
             >svg {
                 @apply hidden;

@@ -1,4 +1,5 @@
 import { FC, createContext, PropsWithChildren, useEffect, useRef } from 'react';
+import { SkillNames } from '../model/ultimate/Skills';
 import { Sounds } from './audio.data';
 import { AudioService } from './audio.service';
 import { DefaultSettings } from './audio.settings';
@@ -41,11 +42,12 @@ const AudioProvider: FC<PropsWithChildren> = ({ children }) => {
         bufferSource.connect(soundsGain);
         bufferSource.start(0);
         bufferSource.stop(ctx.currentTime + stopOffset);
+        // soundsGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + stopOffset)
     }
 
-    const playSound = (sound: sound) => {
+    const playSound = (sound: sound, stopOffset = 2) => {
         if (!soundBuffers.current[sound]) return;
-        return playbackFX(soundBuffers.current[sound]!);
+        return playbackFX(soundBuffers.current[sound]!, stopOffset);
     }
 
     const playSoundtrack = () => {
@@ -68,6 +70,8 @@ const AudioProvider: FC<PropsWithChildren> = ({ children }) => {
     const changeFXGain = (value: number) => {
         soundsGain.gain.value = value;
     }
+
+    
 
     return (
 

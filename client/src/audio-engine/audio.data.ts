@@ -1,4 +1,5 @@
 import { SoundData } from "../assets/Sounds/SoundAssets"
+import { SkillNames } from "../model/ultimate/Skills"
 
 
 export const Sounds = {
@@ -12,9 +13,14 @@ export const Sounds = {
     dominating: SoundData.dominating,
     firstblood: SoundData.firstblood,
     take: SoundData.chess_take,
-
+    [SkillNames.SACRIFICE]: SoundData.cast_hollow,
+    [SkillNames.INCINERATE]: SoundData.fire_ball,
+    [SkillNames.LIGHTNING_BOLT]: SoundData.tempest,
+    [SkillNames.PLAGUE]: SoundData.cast_crystal
 
 }
+
+
 
 
 export const Soundtracks = {

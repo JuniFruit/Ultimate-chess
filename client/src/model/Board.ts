@@ -1,5 +1,5 @@
 import { IMove, IMoveOptions } from "../constants/socketIO/ClientEvents.interface";
-import { Cell, ICellInfo } from "./Cell";
+import { Cell } from "./Cell";
 import { ICell } from "./Cell"
 import { Colors } from "./colors.enum";
 import { Bishop } from "./figures/Bishop";

@@ -45,7 +45,6 @@ export const useGameRoom = (id?: string, isUltimate: boolean = false) => {
     }, [])
 
     const drawBoard = useCallback((boardData: IBoardData, whiteTeamSprites?: ISpritesObj, blackTeamSprites?: ISpritesObj) => {
-       
         const newBoard = isUltimate ? new BoardUlt(whiteTeamSprites, blackTeamSprites) : new Board(whiteTeamSprites, blackTeamSprites);
         newBoard.startNewGame(boardData.FEN);
         newBoard.getFigures();
@@ -54,7 +53,7 @@ export const useGameRoom = (id?: string, isUltimate: boolean = false) => {
             ...boardData.board.states
         }
         isUltimate && (newBoard as unknown as IBoardUlt).mergeBoardData(boardData);
-        newBoard.updateAllLegalMoves();
+        !isObserver && newBoard.updateAllLegalMoves();
         setBoard(prev => newBoard);
 
     }, [request])

@@ -25,7 +25,7 @@ const GameOverDialog: FC<IGameOverDialog> = ({ message, onDialog, isOpen, onClos
     return (
         <Dialog
             open={isOpen}
-            onClose={onClose}
+            onClose={() => { }}
             className={styles.container}
         >
             <div className={styles.wrapper}>

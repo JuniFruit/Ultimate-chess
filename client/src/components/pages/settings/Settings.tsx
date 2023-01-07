@@ -21,7 +21,7 @@ const Settings: FC = () => {
                 window.localStorage.setItem("masterGain", value.toString())
                 break;
             case 'FX':
-                playSound('firstblood');
+                playSound('castle');
                 changeFXGain(value);
                 window.localStorage.setItem("FXGain", value.toString())
                 break;

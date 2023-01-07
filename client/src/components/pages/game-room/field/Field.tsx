@@ -15,12 +15,12 @@ import { useVFX } from './useVFX';
 
 export const GameField: FC<IField> = (props) => {
 
-    const { handleAddEffectFromMove, vfx } = useVFX({
+    const { vfx } = useVFX({
         board: props.board as IBoardUlt,
         isUltimate: props.isUltimate,
         isFlipped: props.myColor === Colors.BLACK
     });
-    const { handleSendMove } = useIOField({ ...props, onReceiveMove: handleAddEffectFromMove, onSendMove: handleAddEffectFromMove });
+    const { handleSendMove } = useIOField({ ...props});
     const { handlers, status } = useField({ ...props, handleSendMove })
     const { ultHandlers, ultStatus } = useUltimate(
         {

@@ -1,0 +1,22 @@
+{
+  "name": "ultimatechess",
+  "version": "1.0.0",
+  "description": "Multiplayer chess game",
+  "main": "index.js",
+  "scripts": {
+    "postbuild": "cd client && npm install && npm run build",
+    "build": "cd server && npm install && npm run tsc && cd .. && npm run postbuild",
+    "start": "NODE_ENV=production node server/build/server/src/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JuniFruit/Ultimate-chess.git"
+  },
+  "keywords": ["chess", "game", "multiplayer", "ultimate chess", "play"],
+  "author": "JuniFruit",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JuniFruit/Ultimate-chess/issues"
+  },
+  "homepage": "https://github.com/JuniFruit/Ultimate-chess#readme"
+}

@@ -1,5 +1,4 @@
 import { IResultPayload } from '../../../client/src/constants/socketIO/ServerEvents.interface';
-import { Colors } from '../../../client/src/model/colors.enum';
 import { IPlayer } from '../../../client/src/model/Player';
 
 

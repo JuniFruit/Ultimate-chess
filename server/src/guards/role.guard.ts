@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express'
-import dotenv from 'dotenv';
+import * as dotenv from 'dotenv';
 import { RolesEntity } from '../roles/role.entity';
 import { UserService } from '../user/user.service';
 

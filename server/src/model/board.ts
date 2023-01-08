@@ -31,19 +31,18 @@ export const boardApi = (roomId: string) => {
     }
 
     const getResults = () => {
-        const board = getBoard()!;
+        const board = getBoard();
 
         board.updateAllLegalMoves();
-        if (board.isDraw()) return {
-            result: Results.DRAW,
-            loser: board.states.currentPlayer
-        }
         if (board.isKingChecked()) {
             if (board.isCheckMate()) return {
                 result: Results.CHECKMATE,
                 loser: board.states.currentPlayer,
                 reason: GameOverReasons.CHECKMATE
             }
+        } else if (board.isDraw()) return {
+            result: Results.DRAW,
+            loser: board.states.currentPlayer
         }
     }
 

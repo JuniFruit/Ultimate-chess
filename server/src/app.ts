@@ -30,6 +30,10 @@ app.use('/user', userRouter);
 app.use('/packs', packRouter);
 app.use('/roles', roleRouter)
 
+app.get("*", function (request, response) {
+    response.sendFile(path.resolve(__dirname, "../../../../client/build", "index.html"));
+});
+
 const httpServer = createServer(app);
 const ioServer = new Server<IClientEvents, IServerEvents>(httpServer, getWSconfig());
 
@@ -47,9 +51,6 @@ ioServer.on('connection', (socket) => {
 
 })
 
-app.get("*", function (request, response) {
-    response.sendFile(path.resolve(__dirname, "../../../../client/build", "index.html"));
-});
 
 
 httpServer.listen(port, () => {

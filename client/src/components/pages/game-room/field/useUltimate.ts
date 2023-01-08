@@ -1,4 +1,6 @@
-import { Dispatch, SetStateAction, useCallback, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useCallback, useContext, useRef, useState } from "react";
+import { AudioCtx } from "../../../../audio-engine/audio.provider";
+import { AudioContextType } from "../../../../audio-engine/audio.types";
 import { IMove } from "../../../../constants/socketIO/ClientEvents.interface";
 import { useActions } from "../../../../hooks/useActions";
 import { IBoard } from "../../../../model/Board";
@@ -29,14 +31,15 @@ export const useUltimate = ({
     const chosenSkill = useRef<ISkillItem | null>(null);
     const [isSkillTargetSelecting, setIsSkillTargetSelecting] = useState(false);
     const { addMsg } = useActions()
+    const {playSound} = useContext(AudioCtx) as AudioContextType
 
     const handleSetChosenSkill = useCallback((skill: ISkillItem) => {
         if (board.states.isFirstMove) {
-            addMsg({ message: SkillErrorMsg.INVALID_STATE, status: 500 })
+            _setInvalid(SkillErrorMsg.INVALID_STATE);
             return _handleClearStates();
         }
         if (board.states.currentPlayer !== myColor) {
-            addMsg({ message: SkillErrorMsg.NOT_YOUR_TURN, status: 500 })
+            _setInvalid(SkillErrorMsg.NOT_YOUR_TURN)
             return _handleClearStates()
         }
         if (chosenSkill.current?.title === skill.title) return _handleClearStates();
@@ -52,14 +55,19 @@ export const useUltimate = ({
         setIsSkillTargetSelecting(prev => false)
     }, [])
 
+    const _setInvalid = useCallback((msg: SkillErrorMsg) => {
+        addMsg({ message: msg, status: 500 });
+        playSound('invalid');
+    }, [])
+
     const handlePerformSkill = useCallback((cell: ICellUlt) => {
         if (board.states.isGameOver) return _handleClearStates();
         if (!chosenSkill.current || !cell.canPerformSkill(chosenSkill.current, board)) {
-            addMsg({ message: SkillErrorMsg.INVALID_TARGET, status: 500 })
+            _setInvalid(SkillErrorMsg.INVALID_TARGET)
             return _handleClearStates();
         }
-        if (board.states.isCheck) {
-            addMsg({ message: SkillErrorMsg.IN_CHECK, status: 500 })
+        if (board.isKingChecked()) {
+            _setInvalid(SkillErrorMsg.IN_CHECK)
             return _handleClearStates()
         }
 

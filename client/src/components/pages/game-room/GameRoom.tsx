@@ -1,4 +1,4 @@
-import { FC, useCallback } from "react";
+import { FC, useCallback, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { Layout } from "../../layout/Layout";
 import { GameField } from "./field/Field";
@@ -17,12 +17,15 @@ import { Announcer } from "./announcer/Announcer";
 import { iconsGeneral } from "../../../assets/icons/general/iconsGeneral";
 import { Button } from "../../ui/button/Button";
 import { IBoardUlt } from "../../../model/ultimate/BoardUlt";
+import { AudioContextType } from "../../../audio-engine/audio.types";
+import { AudioCtx } from "../../../audio-engine/audio.provider";
 
 
 const GameRoom: FC = () => {
     const isUltimate = window.location.href.includes('_ult');
     const { id } = useParams()
     const { field, status, data } = useGameRoom(id, isUltimate);
+    const { playSound } = useContext(AudioCtx) as AudioContextType
 
     return (
         <Layout title="Ultimate Chess Game Room">
@@ -68,7 +71,7 @@ const GameRoom: FC = () => {
                                 {
                                     isUltimate && !status.isObserver
                                         ?
-                                        <Button onClick={() => status.setIsSkillBookOpen(prev => true)}>
+                                        <Button onClick={() => { playSound('bookOpen'); status.setIsSkillBookOpen(prev => true) }}>
                                             <img src={iconsGeneral.book} alt="skill book" />
                                         </Button> : null
                                 }

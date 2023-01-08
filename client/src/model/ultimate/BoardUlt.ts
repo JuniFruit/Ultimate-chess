@@ -99,6 +99,14 @@ export class BoardUlt extends Board implements IBoardUlt {
                 return null;
         }
     }
+    public updateEnemyLegalMoves(): void {
+        this._clearExpiredStates();
+        super.updateEnemyLegalMoves();
+        this.figures.forEach(figure => {
+            figure.filterDisabled()
+        })
+
+    }
 
     public updateAllLegalMoves() {
 

@@ -70,13 +70,15 @@ export class Cell implements ICell {
     private _validateMove(target: ICell, board: IBoard): boolean {
 
         let isValidMove = false;
+        board.incrementMoveCount()
         this.moveFigure(target, board, { isFake: true });
         board.updateEnemyLegalMoves();
-        board.isKingChecked();
-        if (!board.states.isCheck) {
+
+        if (!board.isKingChecked()) {
             isValidMove = true;
         }
         board.undo();
+        board.states.globalMovesCount--;
         return isValidMove
     }
 

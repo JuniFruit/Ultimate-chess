@@ -25,7 +25,7 @@ export const SkillList: ISkillItem[] = [
         title: SkillNames.INCINERATE,
         description: 'Sets a square on fire, making it unreachable for any pieces. Acts like a wall',
         constraints: 'Cannot be performed on an occupied square',
-        lasts: 4,
+        lasts: 3,
         isTargeted: true,
         canBeAppliedAt: 'cell'
     },
@@ -33,7 +33,7 @@ export const SkillList: ISkillItem[] = [
         title: SkillNames.LIGHTNING_BOLT,
         description: 'Stuns an enemy piece, making it unable to move',
         constraints: 'Cannot be performed on a King',
-        lasts: 4,
+        lasts: 3,
         type: SkillTypes.DISABLER,
         isTargeted: true,
         canBeAppliedAt: 'figure'
@@ -42,7 +42,7 @@ export const SkillList: ISkillItem[] = [
         title: SkillNames.PLAGUE,
         description: 'Curses an enemy pawn, making it die from plague in 6 moves',
         constraints: 'Cannot be performed on a last standing pawn',
-        lasts: 6,
+        lasts: 5,
         isTargeted: true,
         canBeAppliedAt: 'figure',
         onExpire: SkillNames.SACRIFICE

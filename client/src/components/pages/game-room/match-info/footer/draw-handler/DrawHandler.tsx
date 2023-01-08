@@ -1,10 +1,16 @@
-import { FC } from 'react';
+import { FC, useContext } from 'react';
 import { Button } from '../../../../../ui/button/Button';
 import { IDrawHandler } from './DrawHandler.interface';
 import styles from '../Handle.module.scss';
 import { IoCheckmarkOutline, IoCloseOutline } from 'react-icons/io5';
+import { AudioCtx } from '../../../../../../audio-engine/audio.provider';
+import { AudioContextType } from '../../../../../../audio-engine/audio.types';
 
-export const DrawHandler: FC<IDrawHandler> = ({onConfirm, onDecline}) => {
+export const DrawHandler: FC<IDrawHandler> = ({ onConfirm, onDecline }) => {
+
+    const { playSound } = useContext(AudioCtx) as AudioContextType;
+
+    playSound('drawRequest');
 
     return (
         <div className={styles.handler_wrapper}>
@@ -15,7 +21,7 @@ export const DrawHandler: FC<IDrawHandler> = ({onConfirm, onDecline}) => {
                 </Button>
                 <Button onClick={onDecline}>
                     <IoCloseOutline />
-                </Button>   
+                </Button>
             </div>
         </div>
     )

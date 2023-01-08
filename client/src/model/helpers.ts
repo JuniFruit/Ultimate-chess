@@ -1,7 +1,5 @@
-import { Board, IBoard } from "./Board";
 import { Colors } from "./colors.enum";
 import { IFigure, IFigureInfo } from "./figures/figures.interface";
-import { BoardUlt, IBoardUlt } from "./ultimate/BoardUlt";
 
 export const flipFEN = (FEN: string): string => {
 

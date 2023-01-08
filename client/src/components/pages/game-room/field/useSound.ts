@@ -17,15 +17,9 @@ export const useSound = (board: IBoard) => {
         if (move.options?.skill) return playSound(move.options.skill, 4);     
         return playSound('move');
         
-    }, [])
+    }, []) 
+
    
-
-    useEffect(() => {
-        
-        board.states.isCheck && playSound('check');
-        board.states.isGameOver && playSound('gameOver', 4);
-
-    }, [board.states.globalMovesCount, board.states.isGameOver, board.states.isCheck])
 
     return {
         handleMoveSound

@@ -22,6 +22,10 @@
                     @apply text-main-200;
                     font-size: .85rem;
                 }
+                .new_msg_pop {
+                    @apply absolute top-1 rounded-full w-5 h-5 text-complimentary;
+                    right: 5%;
+                }
 
                 @media (hover: hover) {
                     &:hover {

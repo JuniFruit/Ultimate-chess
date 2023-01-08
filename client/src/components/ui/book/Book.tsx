@@ -1,5 +1,7 @@
-import { FC, PropsWithChildren, useCallback, useState } from "react";
+import { FC, PropsWithChildren, useCallback, useContext, useState } from "react";
 import { IoArrowBackCircle, IoArrowForwardCircle } from "react-icons/io5";
+import { AudioCtx } from "../../../audio-engine/audio.provider";
+import { AudioContextType } from "../../../audio-engine/audio.types";
 import { Button } from "../button/Button";
 import { IBook } from "./Book.interface";
 import styles from './Book.module.scss';
@@ -8,12 +10,14 @@ import styles from './Book.module.scss';
 export const Book: FC<PropsWithChildren<IBook>> = ({ pages, children }) => {
     const [currentPage, setCurrentPage] = useState(0);
     const dummyPages = new Array(5).fill('').map((item, ind) => <div className={styles.dummy_page} key={ind}></div>)
+    const { playSound } = useContext(AudioCtx) as AudioContextType;
 
     const handleChangePage = useCallback((nav: 'prev' | 'next') => {
-        setCurrentPage(prev => nav === 'next' ? prev+=1 : prev-=1);
-        
+        playSound('turnPage');
+        setCurrentPage(prev => nav === 'next' ? prev += 1 : prev -= 1);
+
     }, [currentPage])
-    
+
     return (
         <div className={styles.book_container}>
 
@@ -37,7 +41,7 @@ export const Book: FC<PropsWithChildren<IBook>> = ({ pages, children }) => {
                             onClick={() => handleChangePage('next')}
                             disabled={currentPage >= pages.length - 1}
                             title={'Next page'}
-                            >
+                        >
                             <IoArrowForwardCircle />
                         </Button>
                     </div>

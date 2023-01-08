@@ -1,20 +1,26 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useContext } from 'react';
 import ioClient from '../../../../../api/socketApi';
+import { AudioCtx } from '../../../../../audio-engine/audio.provider';
+import { AudioContextType } from '../../../../../audio-engine/audio.types';
 import { IMessage } from '../../../../../constants/socketIO/ClientEvents.interface';
 import { IMessagePayload } from '../../../../../constants/socketIO/ServerEvents.interface';
+import { IChat } from './Chat.interface';
 
 
-export const useChat = () => {
+export const useChat = ({ onNewMsg }: IChat) => {
 
     const [messages, setMessages] = useState<IMessagePayload[]>([]);
+    const {playSound} = useContext(AudioCtx) as AudioContextType
 
     const handleReceiveMessage = useCallback((payload: IMessagePayload) => {
         setMessages(prev => [...prev, payload]);
-    }, [messages])
+        playSound('newMsg');
+        onNewMsg();
+    }, [messages, onNewMsg])
 
     const handleSendMessage = useCallback((message: IMessage) => {
         ioClient.emit("message", message);
-        setMessages(prev => [...prev, {username: 'You', body: message.body, timestamp: Date.now()}]);
+        setMessages(prev => [...prev, { username: 'You', body: message.body, timestamp: Date.now() }]);
     }, [messages])
 
     useEffect(() => {
@@ -24,7 +30,7 @@ export const useChat = () => {
         return () => {
             ioClient.off("message", handleReceiveMessage);
         }
-    }, []);
+    }, [handleReceiveMessage]);
 
 
 

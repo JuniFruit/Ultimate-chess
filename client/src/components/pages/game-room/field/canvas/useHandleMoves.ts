@@ -3,7 +3,7 @@ import { useState, useRef, useCallback, TouchEventHandler, MouseEventHandler, us
 import { FigureTypes, IFigure } from "../../../../../model/figures/figures.interface";
 import { ICell } from "../../../../../model/Cell";
 import { ICellUlt } from "../../../../../model/ultimate/CellUlt";
-import { getFlippedPos } from "../../../../../model/helpers";
+import { getFlippedPos, isInBounds } from "../../../../../model/helpers";
 
 interface IUseHandleMoves extends Pick<ICanvasField, "isFlipped" | "onCellSelect"
     | "cells" | "ultimateStates" | "selected" | "premoves"> { }
@@ -106,6 +106,9 @@ export const useHandleMoves = ({ isFlipped, onCellSelect, cells, ultimateStates,
 
         if (!draggingPiece.current || !dragStartCell.current) return;
         const { x, y } = _getCellPosFromMouse(clientX, clientY, canvas);
+
+        if (!isInBounds(x,y)) return _clearDragging();
+
         const target = cells[y][x];
         if (dragStartCell.current !== target) {
             _clearDragging()
@@ -131,7 +134,7 @@ export const useHandleMoves = ({ isFlipped, onCellSelect, cells, ultimateStates,
         const touch = e.changedTouches[0]
         const { clientX, clientY } = touch;
         _handleSelectStart(clientX, clientY, canvas);
-
+        draggingPiece.current && draggingPiece.current.animation!.scaleBy(draggingPiece.current.animation!._scale * 2.5);
         if (isTouchOngoing) return;
 
         setIsTouchOngoing(prev => true);
@@ -140,10 +143,11 @@ export const useHandleMoves = ({ isFlipped, onCellSelect, cells, ultimateStates,
     }, [isDragging, isTouchOngoing, cells.length, selected, ultimateStates.isSkillTargetSelecting, premoves, onCellSelect])
 
     const handleTouchMove: TouchEventHandler<HTMLCanvasElement> = useCallback((e) => {
-
         const canvas = e.target as HTMLCanvasElement;
         const touch = e.changedTouches[0]
         const { clientX, clientY } = touch;
+
+        draggingPiece.current && draggingPiece.current.animation!.scaleBy(2.5);
         _handleMovement(clientX, clientY, canvas);
 
     }, [isDragging, cells.length, selected, ultimateStates.isSkillTargetSelecting])
@@ -153,6 +157,7 @@ export const useHandleMoves = ({ isFlipped, onCellSelect, cells, ultimateStates,
         const canvas = e.target as HTMLCanvasElement;
         const touch = e.changedTouches[0]
         const { clientX, clientY } = touch;
+
         _handleSelectEnd(clientX, clientY, canvas);
 
     }, [isDragging, cells.length, ultimateStates.isSkillTargetSelecting, premoves])

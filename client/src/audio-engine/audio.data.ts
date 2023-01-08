@@ -13,10 +13,16 @@ export const Sounds = {
     dominating: SoundData.dominating,
     firstblood: SoundData.firstblood,
     take: SoundData.chess_take,
-    [SkillNames.SACRIFICE]: SoundData.cast_hollow,
+    [SkillNames.SACRIFICE]: SoundData.sacrifice,
     [SkillNames.INCINERATE]: SoundData.fire_ball,
     [SkillNames.LIGHTNING_BOLT]: SoundData.tempest,
-    [SkillNames.PLAGUE]: SoundData.cast_crystal
+    [SkillNames.PLAGUE]: SoundData.cast_crystal,
+    bookOpen: SoundData.bookOpen,
+    turnPage: SoundData.turnPage,
+    check: SoundData.chess_check,
+    newMsg: SoundData.newMsg,
+    invalid: SoundData.unable,
+    drawRequest: SoundData.drawRequest, 
 
 }
 

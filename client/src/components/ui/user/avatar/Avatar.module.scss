@@ -1,7 +1,5 @@
 .avatar {
     @apply rounded-lg h-10 w-10 overflow-hidden bg-main-700;
-    border: .1rem solid rgb(107 107 123);
-
 
     >img {
         @apply w-full h-full;

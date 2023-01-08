@@ -1,5 +1,5 @@
 import { FC, MouseEvent, useState, memo } from "react";
-import { IoGameControllerOutline, IoChatboxEllipsesOutline } from "react-icons/io5";
+import { IoGameControllerOutline, IoChatboxEllipsesOutline, IoNotificationsCircleSharp } from "react-icons/io5";
 import { GiDiceShield, GiKneeling } from "react-icons/gi";
 import styles from './MatchInfo.module.scss';
 import { Button } from "../../../ui/button/Button";
@@ -24,12 +24,21 @@ const MatchInfo: FC<IMatchInfo> = memo(({
     currentPlayer,
     isFirstMove,
     isGameOver
- 
+
 }) => {
     const [activeWindow, setActiveWindow] = useState<activeWindow>('game');
+    const [isNewMsg, setIsNewMsg] = useState(false);
+
     const handleSetWindow = (e: MouseEvent<HTMLButtonElement>) => {
         const currentValue = e.currentTarget.value as activeWindow;
+        currentValue === 'chat' && setIsNewMsg(false);
         setActiveWindow(currentValue);
+    }
+
+    const handleNewMsg = () => {
+        console.log(activeWindow);
+        if (activeWindow === 'chat') return;
+        setIsNewMsg(true);
     }
     return (
         <div className={styles.match_info_wrapper}>
@@ -40,6 +49,7 @@ const MatchInfo: FC<IMatchInfo> = memo(({
                         onClick={handleSetWindow}
                         className={`${styles.button} ${activeWindow === 'game' && styles.button_active}`} >
                         <span>Game</span>
+
                         <IoGameControllerOutline />
                     </Button>
                     <Button
@@ -47,6 +57,11 @@ const MatchInfo: FC<IMatchInfo> = memo(({
                         onClick={handleSetWindow}
                         className={`${styles.button} ${activeWindow === 'chat' && styles.button_active}`}  >
                         <span>Chat</span>
+                        {isNewMsg ?
+                            <div className={styles.new_msg_pop}>
+                                <IoNotificationsCircleSharp />
+                            </div> : null
+                        }
                         <IoChatboxEllipsesOutline />
                     </Button>
                     {!isObserver
@@ -72,16 +87,16 @@ const MatchInfo: FC<IMatchInfo> = memo(({
                 </div>
             </div>
 
-            {activeWindow === 'game' ? <GameInfo {...{ lostFigures,currentPlayer,moves }} /> : null}
+            {activeWindow === 'game' ? <GameInfo {...{ lostFigures, currentPlayer, moves }} /> : null}
 
             <div
                 className={`${activeWindow === 'chat' ? styles.chat_wrapper_active : styles.chat_wrapper_disabled}`}
             >
-                <Chat />
+                <Chat onNewMsg={handleNewMsg} />
             </div>
             <div className={styles.match_info_footer}>
                 {request === Requests.DRAW ? <DrawHandler onConfirm={onConfirmDraw} onDecline={onDeclineDraw} /> : null}
-             <DisconnectUser {...{currentPlayer, isFirstMove,isGameOver, isObserver}} /> 
+                <DisconnectUser {...{ currentPlayer, isFirstMove, isGameOver, isObserver }} />
             </div>
 
 

@@ -9,7 +9,6 @@ export const WaitingModal: FC = () => {
     const navigate = useNavigate();
 
     const handleCopy = () => {
-        console.log(navigator)
         navigator.clipboard.writeText(window.location.href);
     }
 

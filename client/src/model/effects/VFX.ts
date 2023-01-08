@@ -5,7 +5,7 @@ import { ISprite, ISpriteConstructor, Sprite } from "./Sprite";
 
 
 export interface IVFX extends ISprite {
-    readonly scale: number;
+    _scale: number;
     title: SkillNames | EffectNames;
     position: IVFXPosition;
     destImgWidth: number;
@@ -17,6 +17,7 @@ export interface IVFX extends ISprite {
     rescaleAndCenter: () => void;
     flipPosition: () => void;
     updatePosition: (x: number, y: number) => void;
+    scaleBy: (value:number) => void;
 }
 
 export interface IVFXPosition {
@@ -33,7 +34,7 @@ export interface IVFXConstructor extends ISpriteConstructor {
 }
 
 export class VFX extends Sprite implements IVFX {
-    readonly scale;
+    _scale;
     position: IVFXPosition;
     title;
     destImgWidth;
@@ -55,7 +56,7 @@ export class VFX extends Sprite implements IVFX {
 
         super({ sprite, framesMaxHeight, framesMaxWidth, framesHold, isLooped });
         this.title = title;
-        this.scale = scale;
+        this._scale = scale;
         this.position = position;
         this.destImgHeight = this.image.height;
         this.destImgWidth = this.image.width;
@@ -68,10 +69,13 @@ export class VFX extends Sprite implements IVFX {
         this.position.y = 7 - this.position.y;
     }
 
+    public scaleBy(value:number) {
+        this._scale = value;
+    }
+
 
     public scaleToCellSize(canvas: HTMLCanvasElement) {
         const { w, h } = getCellSize(canvas);
-        // console.log(w, this.image.width)
         const scale_factorW = w / (this.image.width / this.framesMaxWidth);
         const scale_factorH = h / (this.image.height / this.framesMaxHeight);
         this.destImgWidth = (this.image!.width / this.framesMaxWidth) * scale_factorW;
@@ -80,8 +84,8 @@ export class VFX extends Sprite implements IVFX {
 
     public updateVFX(ctx: CanvasRenderingContext2D): void {
 
-        const prevDestImgH = this.destImgHeight / this.scale;
-        const prevDestImgW = this.destImgWidth / this.scale;
+        const prevDestImgH = this.destImgHeight / this._scale;
+        const prevDestImgW = this.destImgWidth / this._scale;
         const diffW = this.destImgWidth - prevDestImgW
         const diffH = this.destImgHeight - prevDestImgH
 
@@ -102,8 +106,8 @@ export class VFX extends Sprite implements IVFX {
 
     public rescaleAndCenter() {
 
-        const newImgH = this.destImgHeight * this.scale;
-        const newimgW = this.destImgWidth * this.scale;
+        const newImgH = this.destImgHeight * this._scale;
+        const newimgW = this.destImgWidth * this._scale;
 
         this.destImgHeight = newImgH;
         this.destImgWidth = newimgW;

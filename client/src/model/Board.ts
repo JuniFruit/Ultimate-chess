@@ -133,7 +133,8 @@ export class Board implements IBoard {
     public isKingChecked() {
         this.states.isCheck = this.cells.some(rows => {
             return rows.some(cell => {
-                return cell.figure?.legalMoves.some(move => move.figure?.type === FigureTypes.KING && move.figure.color !== cell.figure?.color)
+                return cell.figure?.legalMoves.some(move =>
+                    move.figure?.type === FigureTypes.KING && move.figure.color !== cell.figure?.color)
             })
         })
 
@@ -167,7 +168,6 @@ export class Board implements IBoard {
 
 
     public isDraw() {
-        if (this.figures.length > 5) return false;
         if (this._isStalemate()) return true
         if (!this.isSufficientMaterial(this.states.currentPlayer)
             && !this.isSufficientMaterial(this.states.currentPlayer === Colors.WHITE ? Colors.BLACK : Colors.WHITE)) return true;

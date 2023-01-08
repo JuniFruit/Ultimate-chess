@@ -7,10 +7,11 @@ import { MessageItem } from '../../../../ui/chat/MessageItem';
 import Field from '../../../../ui/field/Field';
 import { useChat } from './useChat';
 import styles from './Chat.module.scss';
+import { IChat } from './Chat.interface';
 
-const Chat: FC = () => {
+const Chat: FC<IChat> = (props) => {
 
-    const { messages, handleSendMessage } = useChat()
+    const { messages, handleSendMessage } = useChat(props)
     const { register, formState: { errors }, handleSubmit, setValue } = useForm<IMessage>()
     const onSubmit: SubmitHandler<IMessage> = (data) => {
         handleSendMessage(data);

@@ -3,11 +3,9 @@ import { IBoard } from "./Board";
 import { Colors } from "./colors.enum";
 import { FigureTypes, IFigure, IMovedFigure } from "./figures/figures.interface";
 import { IKing } from "./figures/King";
-import { IRook } from "./figures/Rook";
 import { Direction } from "./helper.enum";
 import { getFigureInfo } from "./helpers";
 import { Positions } from "./positions";
-import { IBoardUlt } from "./ultimate/BoardUlt";
 import { ICellUlt } from "./ultimate/CellUlt";
 
 export interface ICell {

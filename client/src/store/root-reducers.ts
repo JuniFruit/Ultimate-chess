@@ -1,7 +1,7 @@
 import { authSlice } from "./auth/auth.slice";
 import { AnyAction, combineReducers, Reducer } from '@reduxjs/toolkit';
-import {api} from './api/api';
-import {messageSlice} from "./message/message.slice";
+import { api } from './api/api';
+import { messageSlice } from "./message/message.slice";
 import storage from "redux-persist/lib/storage";
 
 

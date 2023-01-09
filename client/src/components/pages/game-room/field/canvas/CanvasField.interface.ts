@@ -1,5 +1,5 @@
 import { IBoard } from "../../../../../model/Board";
-import {CanvasHTMLAttributes} from 'react';
+import { CanvasHTMLAttributes } from 'react';
 import { ICell, IPremove } from "../../../../../model/Cell";
 import { IBoardUlt } from "../../../../../model/ultimate/BoardUlt";
 import { IFieldUltimateStates } from "../Field.interface";

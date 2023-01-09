@@ -1,5 +1,5 @@
 import { Layout } from "../../../layout/Layout"
-import { FC, useEffect} from 'react';
+import { FC, useEffect } from 'react';
 import { useActions } from "../../../../hooks/useActions";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { IAuthDto } from "../../../../types/auth.interface";
@@ -46,7 +46,7 @@ const Login: FC = () => {
                     title={"Please enter your username and password to log in"}
                     buttonTitle="Log in"
                     buttons={[<Link key={'/register'} className={styles.link} to={'/registration'}>Sign Up</Link>]}
-                />                
+                />
             </section>
 
         </Layout>

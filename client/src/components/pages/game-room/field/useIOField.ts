@@ -1,7 +1,7 @@
+import { useCallback, useEffect } from 'react';
 import ioClient from "../../../../api/socketApi";
-import { IUseField } from "./useField";
-import { useEffect, useCallback } from 'react';
 import { IMove } from "../../../../constants/socketIO/ClientEvents.interface";
+import { IUseField } from "./useField";
 import { useSound } from "./useSound";
 
 

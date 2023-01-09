@@ -38,7 +38,7 @@ const WatchPage: FC = () => {
     useEffect(() => {
         if (!isConnected) return;
         handleSendRequest()
-        
+
     }, [isConnected])
 
     return (

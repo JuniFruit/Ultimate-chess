@@ -1,21 +1,14 @@
 import { FC } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { packApi } from "../../../../../../store/api/pack.api";
 import { onlyNumbers, validURL } from "../../../../../../utils/validations.utils";
 import { Button } from "../../../../../ui/button/Button";
 import Field from "../../../../../ui/field/Field";
-import { ISpriteForm, ISpriteFormComponent } from "./Forms.interface";
+import { ISpriteFormComponent } from "./Forms.interface";
 import styles from './Forms.module.scss';
 
 const REQUIRED_MSG = 'Please provide a link to a sprite to continue';
 const VALID_MSG = 'Please provide a valid URL';
 
 const SpriteForm: FC<ISpriteFormComponent> = ({ form: { handleSubmit, register, errors }, defaultValues }) => {
-
-
-
-
-
 
     return (
         <form

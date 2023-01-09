@@ -19,7 +19,7 @@ const AdminPage: FC = () => {
     const handleChangePage = (page: "Packs" | "Home" | "Players") => {
         setActiveWindow(page);
     }
-   
+
     return (
 
         <Layout title={`Ultimate Chess Admin ${activeWindow}`}>

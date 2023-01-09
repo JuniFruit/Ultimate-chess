@@ -1,4 +1,4 @@
-import { FC,useState, useEffect } from 'react'
+import { FC, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Colors } from '../../../../model/colors.enum';
 import { GameOver, Results } from '../../../../model/helper.enum';

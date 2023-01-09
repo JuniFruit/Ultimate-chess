@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect } from 'react';
+import { useCallback, useContext } from 'react';
 import { AudioCtx } from '../../../../audio-engine/audio.provider';
 import { AudioContextType } from '../../../../audio-engine/audio.types';
 import { IMove } from '../../../../constants/socketIO/ClientEvents.interface';

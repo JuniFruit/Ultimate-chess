@@ -1,6 +1,6 @@
 import { Colors } from "../../../../model/colors.enum";
 import { IBoardUlt } from "../../../../model/ultimate/BoardUlt";
-import { ISkillItem, SkillNames } from "../../../../model/ultimate/Skills";
+import { ISkillItem } from "../../../../model/ultimate/Skills";
 
 
 export interface ISkillItemComponent {

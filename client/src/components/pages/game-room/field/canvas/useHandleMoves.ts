@@ -1,9 +1,9 @@
-import { ICanvasField } from "./CanvasField.interface";
-import { useState, useRef, useCallback, TouchEventHandler, MouseEventHandler, useEffect } from 'react';
-import { FigureTypes, IFigure } from "../../../../../model/figures/figures.interface";
+import { MouseEventHandler, TouchEventHandler, useCallback, useEffect, useRef, useState } from 'react';
 import { ICell } from "../../../../../model/Cell";
-import { ICellUlt } from "../../../../../model/ultimate/CellUlt";
+import { FigureTypes, IFigure } from "../../../../../model/figures/figures.interface";
 import { getFlippedPos, isInBounds } from "../../../../../model/helpers";
+import { ICellUlt } from "../../../../../model/ultimate/CellUlt";
+import { ICanvasField } from "./CanvasField.interface";
 
 interface IUseHandleMoves extends Pick<ICanvasField, "isFlipped" | "onCellSelect"
     | "cells" | "ultimateStates" | "selected" | "premoves"> { }

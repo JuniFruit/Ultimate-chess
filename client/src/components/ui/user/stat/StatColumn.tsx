@@ -1,9 +1,9 @@
 import { formatToKilo } from "../../../../utils/format.utils"
-import {FC} from 'react'
+import { FC } from 'react'
 import { IStatItem } from "./StatItem.interface"
 import styles from './Stat.module.scss';
 
-export const StatColumnItem: FC<IStatItem> = ({value, valueTitle}) => {
+export const StatColumnItem: FC<IStatItem> = ({ value, valueTitle }) => {
 
 
     return (

@@ -1,13 +1,13 @@
-import { ICanvasField } from "./CanvasField.interface";
-import { useCallback, useRef, useEffect } from 'react';
+import { useCallback, useRef } from 'react';
 import { Colors } from "../../../../../model/colors.enum";
+import { effectList } from "../../../../../model/effects/data/effects.data";
+import { VFX } from "../../../../../model/effects/VFX";
 import { getFlippedPos } from "../../../../../model/helpers";
+import { SkillNames } from "../../../../../model/ultimate/Skills";
+import { ICanvasField } from "./CanvasField.interface";
+import { useHandleMoves } from "./useHandleMoves";
 import { drawCircle, drawRect, getCellSize } from "./utils/canvas.utils";
 import { COLORS } from "./utils/colors.utils";
-import { useHandleMoves } from "./useHandleMoves";
-import { VFX } from "../../../../../model/effects/VFX";
-import { SkillNames } from "../../../../../model/ultimate/Skills";
-import { effectList } from "../../../../../model/effects/data/effects.data";
 
 export const useCanvasField = (
     {
@@ -26,7 +26,7 @@ export const useCanvasField = (
     const { handlers } = useHandleMoves({ cells, onCellSelect, selected, isFlipped, ultimateStates, premoves })
     const prevMoveCount = useRef<number>(board.states.globalMovesCount);
 
-    const handlePreDraw = useCallback((context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {        
+    const handlePreDraw = useCallback((context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
         _setFigureAnimation(canvas);
         if (prevMoveCount.current !== board.states.globalMovesCount) _setFigureEffects(canvas)
         _drawBoard(context, canvas);
@@ -48,7 +48,7 @@ export const useCanvasField = (
     }, [board, isFlipped, ultimateStates.isSkillTargetSelecting, vfx])
 
 
-   
+
 
 
     const _setFigureAnimation = useCallback((canvas: HTMLCanvasElement) => {
@@ -63,7 +63,7 @@ export const useCanvasField = (
                 title: SkillNames.INCINERATE, // Any
                 isLooped: true
             });
-            
+
             figure.setAnimation(animation);
 
         })
@@ -82,7 +82,7 @@ export const useCanvasField = (
                             x: figure.x,
                             y: figure.y
                         }
-                    })                    
+                    })
                     figure.setEffect(skillEffect);
                 })
             }
@@ -214,7 +214,7 @@ export const useCanvasField = (
         return { x, y }
     }, [isFlipped])
 
-   
+
 
     return {
 

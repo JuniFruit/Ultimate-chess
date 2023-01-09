@@ -9,8 +9,8 @@ import { IRegisterDto } from "../../../../types/auth.interface";
 import styles from './Register.module.scss';
 
 const RegisterPage: FC = () => {
-   
-    const {user} = useAuth()
+
+    const { user } = useAuth()
     const { register: registerAction } = useActions();
     const navigate = useNavigate()
 
@@ -30,15 +30,15 @@ const RegisterPage: FC = () => {
 
     const onSubmit: SubmitHandler<IRegisterDto> = (data) => {
         console.log(data);
-        registerAction(data)       
+        registerAction(data)
     }
 
     return (
 
         <Layout title="Ultimate Chess registration">
             <section className={styles.container}>
-                <RegisterForm 
-                    form = {{
+                <RegisterForm
+                    form={{
                         handleSubmit: handleSubmit(onSubmit),
                         setValue,
                         control,

@@ -1,6 +1,6 @@
 import { IUserFields } from "../../types/auth.interface"
 import { createSlice } from '@reduxjs/toolkit';
-import {login, register} from './auth.actions';
+import { login, register } from './auth.actions';
 import { loginSpan } from "../../constants/constants";
 
 interface IAuthInitial extends IUserFields {
@@ -33,7 +33,7 @@ export const authSlice = createSlice({
             .addCase(register.rejected, (state, { payload }) => {
                 state.isLoading = false;
                 state.user = null;
-               
+
             })
             .addCase(login.pending, (state) => {
                 state.isLoading = true;
@@ -48,7 +48,7 @@ export const authSlice = createSlice({
             .addCase(login.rejected, (state, { payload }) => {
                 state.isLoading = false;
                 state.user = null;
-                
-            })           
+
+            })
     }
 })

@@ -1,10 +1,7 @@
 
 import { IBoard } from "../../Board";
-import { ICell } from "../../Cell";
-import { IFigure } from "../../figures/figures.interface";
 import { Rook } from "../../figures/Rook";
 import { IBoardUlt } from "../BoardUlt";
-import { ICellUlt } from "../CellUlt";
 
 
 

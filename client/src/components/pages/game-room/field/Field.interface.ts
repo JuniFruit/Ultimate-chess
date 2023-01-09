@@ -1,4 +1,4 @@
-import {Dispatch, SetStateAction} from 'react'
+import { Dispatch, SetStateAction } from 'react';
 import { IBoard } from "../../../../model/Board";
 import { Colors } from '../../../../model/colors.enum';
 import { IBoardUlt } from '../../../../model/ultimate/BoardUlt';

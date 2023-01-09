@@ -1,4 +1,4 @@
-import { FC, useState, useEffect } from 'react'
+import { FC, useEffect, useState } from 'react';
 import { RequestMessages, Requests } from '../../../../constants/constants';
 import ConfirmationDialog from '../../../ui/dialog/confirm/ConfirmDialog';
 

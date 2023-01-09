@@ -1,13 +1,13 @@
-import { FC, useRef, useEffect } from 'react';
+import { FC, useEffect, useRef } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { IoSend } from 'react-icons/io5';
 import { IMessage } from '../../../../../constants/socketIO/ClientEvents.interface';
 import { Button } from '../../../../ui/button/Button';
 import { MessageItem } from '../../../../ui/chat/MessageItem';
 import Field from '../../../../ui/field/Field';
-import { useChat } from './useChat';
-import styles from './Chat.module.scss';
 import { IChat } from './Chat.interface';
+import styles from './Chat.module.scss';
+import { useChat } from './useChat';
 
 const Chat: FC<IChat> = (props) => {
 

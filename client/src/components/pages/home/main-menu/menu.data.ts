@@ -1,4 +1,3 @@
-import { mockups } from "../../../../assets/mockups/images";
 import { splashes } from "../../../../assets/splashes/splash";
 import { IMenuData } from "./Menu.interface";
 

@@ -1,11 +1,11 @@
-import { FC, useState } from 'react'
-import { Dialog } from '@headlessui/react'
-import styles from '../Dialog.module.scss';
-import { IDialog } from '../Dialog.interface';
-import { Button } from '../../button/Button';
+import { Dialog } from '@headlessui/react';
+import { FC } from 'react';
+import { iconsGeneral } from '../../../../assets/icons/general/iconsGeneral';
 import { useActions } from '../../../../hooks/useActions';
 import { GameOverReasons } from '../../../../model/helper.enum';
-import { iconsGeneral } from '../../../../assets/icons/general/iconsGeneral';
+import { Button } from '../../button/Button';
+import { IDialog } from '../Dialog.interface';
+import styles from '../Dialog.module.scss';
 
 interface IGameOverDialog extends IDialog {
     isObserver: boolean;

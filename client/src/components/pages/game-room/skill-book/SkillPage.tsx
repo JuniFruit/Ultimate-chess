@@ -1,5 +1,4 @@
 import { FC } from "react";
-import { ISkillItem } from "../../../../model/ultimate/Skills";
 import { PageItem } from "../../../ui/book/PageItem";
 import { ISkillPage } from "./SkillBook.interface";
 import { SkillItemComponent } from "./SkillItemComponent";

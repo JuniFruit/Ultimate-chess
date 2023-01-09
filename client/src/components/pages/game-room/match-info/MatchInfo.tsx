@@ -1,14 +1,14 @@
-import { FC, MouseEvent, useState, memo } from "react";
-import { IoGameControllerOutline, IoChatboxEllipsesOutline, IoNotificationsCircleSharp } from "react-icons/io5";
+import { FC, memo, MouseEvent, useState } from "react";
 import { GiDiceShield, GiKneeling } from "react-icons/gi";
-import styles from './MatchInfo.module.scss';
-import { Button } from "../../../ui/button/Button";
-import { IMatchInfo } from "./MatchInfo.interfact";
-import { GameInfo } from "./game-info/GameInfo";
-import Chat from "./chat/Chat";
-import { DrawHandler } from "./footer/draw-handler/DrawHandler";
+import { IoChatboxEllipsesOutline, IoGameControllerOutline, IoNotificationsCircleSharp } from "react-icons/io5";
 import { Requests } from "../../../../constants/constants";
+import { Button } from "../../../ui/button/Button";
+import Chat from "./chat/Chat";
 import { DisconnectUser } from "./footer/disconnect-user/DisconnectUser";
+import { DrawHandler } from "./footer/draw-handler/DrawHandler";
+import { GameInfo } from "./game-info/GameInfo";
+import { IMatchInfo } from "./MatchInfo.interfact";
+import styles from './MatchInfo.module.scss';
 
 type activeWindow = 'game' | 'chat';
 

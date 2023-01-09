@@ -1,13 +1,13 @@
-import {FC} from 'react';
+import { FC } from 'react';
 import styles from './ImagePreview.module.scss';
 
-export const ImagePreview:FC<{imageSrc?: string}> = ({imageSrc}) => {
+export const ImagePreview: FC<{ imageSrc?: string }> = ({ imageSrc }) => {
 
     return (
         <div className={styles.wrapper}>
-            {imageSrc && <img 
+            {imageSrc && <img
                 src={imageSrc}
-                
+
             />}
         </div>
     )

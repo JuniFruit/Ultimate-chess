@@ -1,24 +1,24 @@
 import { FC, useCallback, useContext } from "react";
 import { useParams } from "react-router-dom";
+import { iconsGeneral } from "../../../assets/icons/general/iconsGeneral";
+import { AudioCtx } from "../../../audio-engine/audio.provider";
+import { AudioContextType } from "../../../audio-engine/audio.types";
+import { Requests } from "../../../constants/constants";
+import { Colors } from "../../../model/colors.enum";
+import { IBoardUlt } from "../../../model/ultimate/BoardUlt";
 import { Layout } from "../../layout/Layout";
+import { Button } from "../../ui/button/Button";
+import { PlayerInfo } from "../../ui/player/PlayerInfo";
+import { Announcer } from "./announcer/Announcer";
 import { GameField } from "./field/Field";
-import { useGameRoom } from "./useGameRoom";
 import styles from './GameRoom.module.scss';
 import MatchInfo from "./match-info/MatchInfo";
-import { WaitingModal } from "./modals/WaitingModal";
-import { PlayerInfo } from "../../ui/player/PlayerInfo";
+import { ConfirmModal } from "./modals/ConfirmModal";
 import { ErrorModal } from "./modals/ErrorModal";
 import { GameOverModal } from "./modals/GameOverModal";
-import { Colors } from "../../../model/colors.enum";
-import { Requests } from "../../../constants/constants";
-import { ConfirmModal } from "./modals/ConfirmModal";
+import { WaitingModal } from "./modals/WaitingModal";
+import { useGameRoom } from "./useGameRoom";
 import { TimerHandler } from "./utils/TimerHandler/TimerHandler";
-import { Announcer } from "./announcer/Announcer";
-import { iconsGeneral } from "../../../assets/icons/general/iconsGeneral";
-import { Button } from "../../ui/button/Button";
-import { IBoardUlt } from "../../../model/ultimate/BoardUlt";
-import { AudioContextType } from "../../../audio-engine/audio.types";
-import { AudioCtx } from "../../../audio-engine/audio.provider";
 
 
 const GameRoom: FC = () => {

@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { IMove } from "../../../../constants/socketIO/ClientEvents.interface";
 import { effectList, EffectNames } from "../../../../model/effects/data/effects.data";
 import { IVFX, VFX } from "../../../../model/effects/VFX";
 import { IMovedFigure } from "../../../../model/figures/figures.interface";
-import { IBoardUlt } from "../../../../model/ultimate/BoardUlt"
+import { IBoardUlt } from "../../../../model/ultimate/BoardUlt";
 import { ICellUlt } from "../../../../model/ultimate/CellUlt";
-import { ISkillUsed, SkillList } from "../../../../model/ultimate/Skills";
+import { ISkillUsed } from "../../../../model/ultimate/Skills";
 
 
 export interface IUseVFX {
@@ -19,7 +18,6 @@ export interface IUseVFX {
 export const useVFX = ({ board, isUltimate, isFlipped }: IUseVFX) => {
 
     const [vfx, setVfx] = useState<IVFX[]>([])
-    // const lastMove = useRef<IMove | null>(null)
     const prevLastUsedSkill = useRef<ISkillUsed | null>(null);
     const prevLastMove = useRef<IMovedFigure | null>(null);
    

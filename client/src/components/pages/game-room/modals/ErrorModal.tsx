@@ -1,9 +1,8 @@
-import { FC,useState, useEffect } from 'react'
+import { FC, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ioClient from '../../../../api/socketApi';
 import { Errors } from '../../../../constants/constants';
 import ErrorDialog from '../../../ui/dialog/errors/ErrorDialog';
-import { IErrorModal } from './Modal.interface';
 
 export const ErrorModal: FC = () => {
 

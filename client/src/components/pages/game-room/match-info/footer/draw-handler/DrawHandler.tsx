@@ -1,10 +1,10 @@
 import { FC, useContext } from 'react';
-import { Button } from '../../../../../ui/button/Button';
-import { IDrawHandler } from './DrawHandler.interface';
-import styles from '../Handle.module.scss';
 import { IoCheckmarkOutline, IoCloseOutline } from 'react-icons/io5';
 import { AudioCtx } from '../../../../../../audio-engine/audio.provider';
 import { AudioContextType } from '../../../../../../audio-engine/audio.types';
+import { Button } from '../../../../../ui/button/Button';
+import styles from '../Handle.module.scss';
+import { IDrawHandler } from './DrawHandler.interface';
 
 export const DrawHandler: FC<IDrawHandler> = ({ onConfirm, onDecline }) => {
 

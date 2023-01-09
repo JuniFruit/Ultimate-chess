@@ -1,7 +1,4 @@
-import { IPackForm, IPackUpdateForm, ISpriteForm } from "../../components/pages/admin/packs/add-pack/pack-forms/Forms.interface";
-import { IPack } from "../../types/pack.interface";
 import { IRole } from "../../types/role.interface";
-import { IUser } from "../../types/user.interface";
 import { api } from "./api";
 
 export const ROLE = 'roles'

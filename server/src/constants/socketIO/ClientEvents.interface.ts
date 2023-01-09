@@ -1,3 +1,3 @@
-import {IOClientEvents} from '../../../../client/src/constants/socketIO/ClientEvents.interface'
+import { IOClientEvents } from '../../../../client/src/constants/socketIO/ClientEvents.interface'
 
-export interface IClientEvents extends IOClientEvents {}
+export interface IClientEvents extends IOClientEvents { }

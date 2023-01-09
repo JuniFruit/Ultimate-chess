@@ -1,14 +1,14 @@
 import { RemoteSocket, Server, Socket } from 'socket.io';
-import { IMove } from '../../../client/src/constants/socketIO/ClientEvents.interface'
-import { boardApi } from '../model/board';
+import { Requests } from '../../../client/src/constants/constants';
+import { IMove } from '../../../client/src/constants/socketIO/ClientEvents.interface';
+import { IGameData, IResultPayload } from '../../../client/src/constants/socketIO/ServerEvents.interface';
+import { Colors } from '../../../client/src/model/colors.enum';
+import { GameOverReasons, Results } from '../../../client/src/model/helper.enum';
 import { IClientEvents } from '../constants/socketIO/ClientEvents.interface';
 import { IServerEvents, ISocketDataServer } from '../constants/socketIO/ServerEvents.interface';
-import { GameOverReasons, Results } from '../../../client/src/model/helper.enum';
-import { Requests } from '../../../client/src/constants/constants';
-import { Colors } from '../../../client/src/model/colors.enum';
-import { IGameData, IResultPayload } from '../../../client/src/constants/socketIO/ServerEvents.interface';
-import { UserService } from '../user/user.service';
+import { boardApi } from '../model/board';
 import { roomApi } from '../model/room';
+import { UserService } from '../user/user.service';
 
 export const BoardService = {
     handleMove(socket: Socket<IClientEvents, IServerEvents>, move: IMove, ioServer: Server<IClientEvents, IServerEvents>) {

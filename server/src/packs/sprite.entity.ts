@@ -1,4 +1,4 @@
-import {Column, Entity, OneToOne, PrimaryColumn} from 'typeorm';
+import { Column, Entity, OneToOne } from 'typeorm';
 import { BaseEntity } from '../utils/base';
 import { PacksEntity } from './packs.entity';
 

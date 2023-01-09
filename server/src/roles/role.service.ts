@@ -1,6 +1,6 @@
-import { CreateRoleDto } from "./role.dto";
-import {roleRepository} from '../database/db.connect';
 import { FindOptionsWhereProperty } from "typeorm";
+import { roleRepository } from '../database/db.connect';
+import { CreateRoleDto } from "./role.dto";
 import { RolesEntity } from "./role.entity";
 
 export const RoleService = {

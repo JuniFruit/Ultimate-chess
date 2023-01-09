@@ -18,11 +18,12 @@ import { userHandler } from './middleware/userHandler.middleware';
 dotenv.config()
 
 const port = process.env.PORT || 3001;
-
+const clientPath = process.env.NODE_ENV === 'production' ? '../../../../client/build' : '../../client/build'
 const app = express();
 
 
 app.use(cors());
+app.use(express.static(path.join(__dirname, clientPath)))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/auth', authRouter);
@@ -30,9 +31,7 @@ app.use('/user', userRouter);
 app.use('/packs', packRouter);
 app.use('/roles', roleRouter)
 
-app.get("*", function (request, response) {
-    response.sendFile(path.resolve(__dirname, "../../../../client/build", "index.html"));
-});
+
 
 const httpServer = createServer(app);
 const ioServer = new Server<IClientEvents, IServerEvents>(httpServer, getWSconfig());
@@ -50,6 +49,12 @@ ioServer.on('connection', (socket) => {
     gameListener(socket, ioServer);
 
 })
+
+
+
+app.get("*", function (request, response) {
+    response.sendFile(path.resolve(__dirname, clientPath, "index.html"));
+});
 
 
 

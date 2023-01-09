@@ -1,4 +1,4 @@
-import {ISpritesObj} from '../../../client/src/model/figures/figures.interface'
+import { ISpritesObj } from '../../../client/src/model/figures/figures.interface'
 
 export interface IPackInfo {
     title: string;
@@ -6,7 +6,7 @@ export interface IPackInfo {
         id: number
     }
     sysName: string;
-    preview: string;    
+    preview: string;
 }
 
-export interface ISpritePack extends ISpritesObj {}
+export interface ISpritePack extends ISpritesObj { }

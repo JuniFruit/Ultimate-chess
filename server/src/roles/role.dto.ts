@@ -1,10 +1,10 @@
-import {IsString, IsUppercase, MinLength} from 'class-validator';
+import { IsString, IsUppercase, MinLength } from 'class-validator';
 
 export class CreateRoleDto {
-    
+
     @IsString()
 
-    @MinLength(3,{
+    @MinLength(3, {
         message: 'Cannot be less than 3 characters'
     })
     @IsUppercase({

@@ -1,7 +1,7 @@
-import {Socket} from 'socket.io'; 
-import { IServerEvents, ISocketDataServer } from '../constants/socketIO/ServerEvents.interface';
-import { IClientEvents } from '../constants/socketIO/ClientEvents.interface';
+import { Socket } from 'socket.io';
 import { IMessage } from '../../../client/src/constants/socketIO/ClientEvents.interface';
+import { IClientEvents } from '../constants/socketIO/ClientEvents.interface';
+import { IServerEvents, ISocketDataServer } from '../constants/socketIO/ServerEvents.interface';
 
 
 export const ChatService = {

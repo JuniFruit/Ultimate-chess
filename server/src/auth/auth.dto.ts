@@ -1,11 +1,11 @@
-import {IsString, MinLength, ValidateIf} from 'class-validator';
+import { IsString, MinLength, ValidateIf } from 'class-validator';
 
 export class AuthDto {
-    
+
     @IsString()
     username!: string
 
-    @MinLength(6,{
+    @MinLength(6, {
         message: 'Cannot be less than 6 characters'
     })
     @IsString()
@@ -17,7 +17,7 @@ export class RegisterDto {
     @IsString()
     username!: string
 
-    @MinLength(6,{
+    @MinLength(6, {
         message: 'Cannot be less than 6 characters'
     })
     @IsString()

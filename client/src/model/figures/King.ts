@@ -6,24 +6,32 @@ import { generateOffsets, isInBounds } from "../helpers";
 import { IBoardUlt } from "../ultimate/BoardUlt";
 import { ICellUlt } from "../ultimate/CellUlt";
 import { Figure } from "./Figures";
-import { FigureTypes, IFigure, ILegalMove, ISpritesObj } from "./figures.interface";
+import { FigureTypes, IFigure, IFigureStates, ILegalMove, ISpritesObj } from "./figures.interface";
 import { IRook } from "./Rook";
 
 
-export interface IKing extends IFigure {
+export interface IKingStates extends IFigureStates {
     isCastlingAvailable: boolean;
+
+}
+
+export interface IKing extends IFigure {
+    states: IKingStates;
     canPerformCastle: (target: ICell, board: IBoard) => boolean;
 }
 
 export class King extends Figure implements IKing {
     readonly type;
-    isCastlingAvailable;
+    states: IKingStates = {
+        ...this.states,
+        isCastlingAvailable: true,
+    };
 
     constructor(x: number, y: number, color: Colors, sprites?: ISpritesObj, isCastlingAvailable: boolean = true) {
         super(x, y, color, sprites);
         this.spriteSrc = color === Colors.BLACK ? sprites?.blackKing : sprites?.whiteKing;
         this.type = FigureTypes.KING;
-        this.isCastlingAvailable = isCastlingAvailable;
+        this.states.isCastlingAvailable = isCastlingAvailable;
     }
 
     public getLegalMoves(board: IBoard | IBoardUlt) {
@@ -60,12 +68,12 @@ export class King extends Figure implements IKing {
 
         if (isFake) return;
 
-        this.isCastlingAvailable = false;
+        this.states.isCastlingAvailable = false;
     }
 
     public canPerformCastle(target: ICell | ICellUlt, board: IBoard | IBoardUlt) {
         // check if none of the pieces moved and they are on the same row
-        if (!this.isCastlingAvailable || target.figure?.type !== FigureTypes.ROOK) return false;
+        if (!this.states.isCastlingAvailable || target.figure?.type !== FigureTypes.ROOK) return false;
         if (this.color !== target.figure.color) return false;
         if (board.states.isCheck) return false;
         if (this.y !== target.y) return false;

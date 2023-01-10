@@ -29,7 +29,6 @@ export const useField = ({ board, setBoard, myColor, isObserver, handleSendMove 
     const handleSelect = useCallback((cell: ICell | ICellUlt) => {
         if (isPromotion) return;
         if (isObserver) return setSelectedCell(prev => cell);
-
         if (selectedCell) {
             if (selectedCell !== cell && board.states.currentPlayer === myColor) {
                 if (!selectedCell.isCastlingMove(cell) && cell.figure?.color === myColor) {
@@ -57,7 +56,7 @@ export const useField = ({ board, setBoard, myColor, isObserver, handleSendMove 
             setSelectedCell(prev => cell);
         }
 
-    }, [board, selectedCell, isPromotion, isObserver, premoves.length])
+    }, [selectedCell, lastTargetCell, isObserver, premoves, isPromotion, board])
 
 
     const handlePremoves = useCallback(() => {
@@ -69,7 +68,7 @@ export const useField = ({ board, setBoard, myColor, isObserver, handleSendMove 
         handleMove(selectedCell, current.to);
         setPremoves(prev => [...premovesCopy]);
 
-    }, [selectedCell, premoves.length, isPromotion, board])
+    }, [selectedCell, premoves])
 
     const handlePromotion = useCallback((figureType: FigureTypes) => {
 
@@ -84,7 +83,7 @@ export const useField = ({ board, setBoard, myColor, isObserver, handleSendMove 
         setSelectedCell(prev => null);
         setLastTargetCell(prev => null);
 
-    }, [lastTargetCell, selectedCell])
+    }, [lastTargetCell, selectedCell, isObserver, isPromotion])
 
     const clearSelectedCells = useCallback(() => {
         setPremoves(prev => []);
@@ -114,12 +113,12 @@ export const useField = ({ board, setBoard, myColor, isObserver, handleSendMove 
 
         board.states.isFirstMove = false;
         board.swapPlayer();
-        handleSendMove({ from: { ...from.getCellInfo() }, to: { ...to.getCellInfo() }, options: { ...moveOptions } })
         setSelectedCell(to);
+        handleSendMove({ from: { ...from.getCellInfo() }, to: { ...to.getCellInfo() }, options: { ...moveOptions } })
 
         setBoard(prev => prev.getCopyBoard())
 
-    }, [selectedCell, lastTargetCell, isPromotion, board])
+    }, [handleSelect])
 
     useEffect(() => {
         if (!board.cells.length) return;
@@ -127,12 +126,11 @@ export const useField = ({ board, setBoard, myColor, isObserver, handleSendMove 
             playSound('gameOver')
             return clearSelectedCells()
         };
-        board.updateAllLegalMoves();
         if (board.isKingChecked()) playSound('check');
         if (isObserver) return;
         if (board.states.currentPlayer === myColor) handlePremoves();
 
-    }, [board, isObserver])
+    }, [board.states.globalMovesCount, board.states.isGameOver, board.states.currentPlayer, board.cells.length, isObserver])
 
     return {
         handlers: {

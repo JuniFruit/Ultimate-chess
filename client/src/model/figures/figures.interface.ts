@@ -24,17 +24,21 @@ export interface ILegalMoveArg {
     numCell: number;
 }
 
+export interface IFigureStates {
+    movesCount: number;
+}
+
 export interface IFigureBase {
     readonly sprites?: ISpritesObj;
     spriteSrc?: string;
     animation?: IVFX;
     ultimateStates: IFigureUltimateStates;
+    states: IFigureStates;
     x: number;
     y: number;
     prevX: number;
     prevY: number;
-    pos: string;  
-    movesCount: number;
+    pos: string;
     color: Colors;
     legalMoves: ILegalMove[];
     moveFigure: (target: ICell | ICellUlt, board: IBoard | IBoardUlt, isFake?: boolean) => void;
@@ -45,7 +49,7 @@ export interface IFigureBase {
     getLegalMovesHorizontal: (arg: ILegalMoveArg) => void;
     getLegalMovesDiagonal: (arg: ILegalMoveArg) => void;
     addLegalMove: (cell: ICell | ICellUlt) => boolean;
-    draw: (ctx: CanvasRenderingContext2D, canvas:HTMLCanvasElement, isFlipped: boolean) => void;
+    draw: (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, isFlipped: boolean) => void;
     setAnimation: (vfx: IVFX) => void;
     undo: () => void;
 
@@ -54,7 +58,7 @@ export interface IFigureBase {
     clearExpiredStates: (board: IBoardUlt) => void;
     filterDisabled: () => void;
     setEffect: (vfx: IVFX) => void;
-    drawEffect: (ctx: CanvasRenderingContext2D, canvas:HTMLCanvasElement, isFlipped: boolean) => void; 
+    drawEffect: (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, isFlipped: boolean) => void;
 }
 
 export interface IFigure extends IFigureBase {
@@ -90,5 +94,6 @@ export type ISpritesObj = typeof SPRITES;
 
 export interface IFigureUltimateStates {
     skillsApplied: ISkillApplied[]
+    prevSkillsApplied: ISkillApplied[]
     effects: IVFX[]
 }

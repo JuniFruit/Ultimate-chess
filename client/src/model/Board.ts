@@ -1,4 +1,5 @@
 import { IMove, IMoveOptions } from "../constants/socketIO/ClientEvents.interface";
+import { IBoardData } from "../constants/socketIO/ServerEvents.interface";
 import { Cell } from "./Cell";
 import { ICell } from "./Cell"
 import { Colors } from "./colors.enum";
@@ -11,6 +12,7 @@ import { Queen } from "./figures/Queen";
 import { Rook } from "./figures/Rook";
 import { convertToChar, returnColorCell } from "./helpers";
 import { BoardUlt } from "./ultimate/BoardUlt";
+import { ICellUlt } from "./ultimate/CellUlt";
 
 export interface IBoard {
     cells: ICell[][];
@@ -37,6 +39,9 @@ export interface IBoard {
     undo: () => void;
     incrementMoveCount: () => void;
     moveFigure: (from: ICell, to: ICell, options: IMoveOptions) => void;
+    mergeBoardData: (boardData: IBoardData) => void;
+    filterUncheckingMoves: () => void;
+
 
 }
 
@@ -90,7 +95,7 @@ export class Board implements IBoard {
     }
 
     public getCell(x: number, y: number) {
-        return this.cells[y][x];
+        return this.cells[Math.floor(y)][Math.floor(x)];
     }
     public swapPlayer() {
         this.states.currentPlayer = this.states.currentPlayer === Colors.WHITE ? Colors.BLACK : Colors.WHITE;
@@ -116,8 +121,8 @@ export class Board implements IBoard {
     public updateAllLegalMoves() {
         this.figures.forEach(figure => {
             figure.getLegalMoves(this);
-            figure.filterUncheckingMoves(this)
         });
+        this.filterUncheckingMoves();
 
     }
 
@@ -129,6 +134,9 @@ export class Board implements IBoard {
 
     }
 
+    public filterUncheckingMoves() {
+        this.figures.forEach(figure => figure.filterUncheckingMoves(this))
+    }
 
     public isKingChecked() {
         this.states.isCheck = this.cells.some(rows => {
@@ -140,7 +148,6 @@ export class Board implements IBoard {
 
         return this.states.isCheck;
     }
-
     public isCheckMate() {
         return !this.figures.some(figure => figure.color === this.states.currentPlayer && figure.legalMoves.length);
 
@@ -201,7 +208,7 @@ export class Board implements IBoard {
     private _initCells(fen: string) {
 
         const splited = fen.split(' ');
-        const [positions, currentPlayer, castleRules, enPassant] = splited;
+        const [positions, currentPlayer] = splited;
 
         let currentRow = 0; // current y
         let currentCol = 0; // current x
@@ -237,6 +244,7 @@ export class Board implements IBoard {
         }
         this.cells.push(row);
         this.states.currentPlayer = currentPlayer === Colors.BLACK ? Colors.BLACK : Colors.WHITE;
+
 
     }
 
@@ -302,6 +310,7 @@ export class Board implements IBoard {
             if (blankCells !== 0) FEN.push(blankCells.toString());
             FEN.push('/');
         }
+
         const finalFEN = FEN.join('');
         return finalFEN + ' ' + this.states.currentPlayer
     }
@@ -330,6 +339,20 @@ export class Board implements IBoard {
             const takenCell = this.getCell(lastMove.figureTaken?.x!, lastMove.figureTaken?.y!);
             takenCell.undo();
         }
+    }
+
+    public mergeBoardData(boardData: IBoardData) {
+
+        this.cells.forEach((row, y) => {
+            row.forEach((cell, x) => {
+                const currentBoardDataCell = boardData.board.cells[y][x];
+                if ((cell as ICellUlt).states) (cell as ICellUlt).states = { ...(currentBoardDataCell as ICellUlt).states! }
+                if (cell.figure) {
+                    cell.figure.states = { ...currentBoardDataCell.figure?.states! }
+                    cell.figure.ultimateStates = { ...currentBoardDataCell.figure?.ultimateStates! }
+                }
+            })
+        })
     }
 
     public incrementMoveCount() {

@@ -33,7 +33,7 @@ export const useUltimate = ({
     const { addMsg } = useActions()
     const {playSound} = useContext(AudioCtx) as AudioContextType
 
-    const handleSetChosenSkill = useCallback((skill: ISkillItem) => {
+    const handleSetChosenSkill = (skill: ISkillItem) => {
         if (board.states.isFirstMove) {
             _setInvalid(SkillErrorMsg.INVALID_STATE);
             return _handleClearStates();
@@ -47,7 +47,7 @@ export const useUltimate = ({
         setIsSkillTargetSelecting(prev => true);
         setIsSkillBookOpen(prev => false);
 
-    }, [isSkillTargetSelecting, board.states.currentPlayer, board.states.isFirstMove, myColor])
+    }
 
     const _handleClearStates = useCallback(() => {
         chosenSkill.current = null
@@ -60,7 +60,9 @@ export const useUltimate = ({
         playSound('invalid');
     }, [])
 
-    const handlePerformSkill = useCallback((cell: ICellUlt) => {
+    const handlePerformSkill = (cell: ICellUlt) => {
+       
+
         if (board.states.isGameOver) return _handleClearStates();
         if (!chosenSkill.current || !cell.canPerformSkill(chosenSkill.current, board)) {
             _setInvalid(SkillErrorMsg.INVALID_TARGET)
@@ -80,9 +82,9 @@ export const useUltimate = ({
         _handleClearStates();
         setBoard(prev => prev.getCopyBoard())
 
-    }, [board])
+    }
 
-    const handleSendSkillMove = useCallback((to: ICellUlt, skill: ISkillItem) => {
+    const handleSendSkillMove = (to: ICellUlt, skill: ISkillItem) => {
 
         const move: IMove = {
             from: {
@@ -98,7 +100,7 @@ export const useUltimate = ({
             options: { skill: skill.title }
         }
         handleSendMove(move);
-    }, [])
+    }
 
 
     return {

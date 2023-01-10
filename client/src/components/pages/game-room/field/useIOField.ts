@@ -6,23 +6,25 @@ import { useSound } from "./useSound";
 
 
 
-export interface IUseIOField extends Pick<IUseField, "board" | "setBoard" | "isObserver"> {}
+export interface IUseIOField extends Pick<IUseField, "board" | "setBoard" | "isObserver"> { }
 
 export const useIOField = ({ board, setBoard, isObserver }: IUseIOField) => {
 
-    const { handleMoveSound } = useSound(board);
+    const { handleMoveSound } = useSound();
 
     const handleSendMove = useCallback((move: IMove) => {
         if (isObserver) return;
+        board.updateAllLegalMoves();
         handleMoveSound(move);
         ioClient.emit("sendMove", move)
-    }, [isObserver])
+    }, [board, isObserver])
 
     const handleReceiveMove = useCallback((move: IMove) => {
         board.receiveMove(move);
         handleMoveSound(move);
         board.states.isFirstMove = false;
         board.swapPlayer();
+        board.updateAllLegalMoves();
 
         setBoard(prev => prev.getCopyBoard());
 

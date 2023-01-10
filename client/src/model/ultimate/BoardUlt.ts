@@ -23,7 +23,6 @@ export interface IBoardUlt extends IBoard {
     createFigure: (char: string, x: number, y: number) => IFigure | null;
     addUsedSkill: (skill: SkillNames, target: ICellUlt) => void;
     isSkillUsedByPlayer: (skill: SkillNames) => boolean;
-    mergeBoardData: (boardData: IBoardData) => void;
     isLastStandingPiece: (figureType: FigureTypes, color: Colors) => boolean;
     getCell: (x: number, y: number) => ICellUlt
 }
@@ -108,6 +107,29 @@ export class BoardUlt extends Board implements IBoardUlt {
 
     }
 
+    public filterUncheckingMoves() {
+        (this.cells as ICellUlt[][]).forEach(row => {
+            row.forEach(cell => {
+                cell.states.prevSkillsApplied = [...cell.states.skillsApplied];
+                if (cell.figure) {
+                    cell.figure.ultimateStates.prevSkillsApplied = [...cell.figure.ultimateStates.skillsApplied];
+                }
+            })
+        })
+        super.filterUncheckingMoves();
+        (this.cells as ICellUlt[][]).forEach(row => {
+            row.forEach(cell => {
+                cell.states.skillsApplied = [...cell.states.prevSkillsApplied];
+                cell.states.prevSkillsApplied = [];
+                if (cell.figure) {
+
+                    cell.figure.ultimateStates.skillsApplied = [...cell.figure.ultimateStates.prevSkillsApplied];
+                    cell.figure.ultimateStates.prevSkillsApplied = []
+                }
+            })
+        })
+    }
+
     public updateAllLegalMoves() {
 
         this._clearExpiredStates();
@@ -115,8 +137,8 @@ export class BoardUlt extends Board implements IBoardUlt {
         this.figures.forEach(figure => {
             figure.getLegalMoves(this);
             figure.filterDisabled();
-            figure.filterUncheckingMoves(this)
         });
+        this.filterUncheckingMoves();
     }
 
     private _clearExpiredStates() {
@@ -156,17 +178,7 @@ export class BoardUlt extends Board implements IBoardUlt {
         super.receiveMove({ from, to, options });
     }
 
-    public mergeBoardData(boardData: IBoardData) {
-        (this.cells as ICellUlt[][]).forEach((row, y) => {
-            row.forEach((cell, x) => {
-                const currentBoardDataCell = boardData.board.cells[y][x] as ICellUlt
-                cell.states = { ...currentBoardDataCell.states };
-                if (cell.figure) {
-                    cell.figure.ultimateStates = { ...currentBoardDataCell.figure?.ultimateStates! }
-                }
-            })
-        })
-    }
+
 
     public isLastStandingPiece(figureType: FigureTypes, color: Colors) {
         return this.figures.filter(figure => figure.type === figureType

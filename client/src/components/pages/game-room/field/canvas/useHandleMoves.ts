@@ -99,7 +99,7 @@ export const useHandleMoves = ({ isFlipped, onCellSelect, cells, ultimateStates,
 
         onCellSelect(target)
 
-    }, [cells.length, selected, ultimateStates.isSkillTargetSelecting, premoves, onCellSelect])
+    }, [onCellSelect, ultimateStates.isSkillTargetSelecting, isDragging])
 
     const _handleSelectEnd = useCallback((clientX: number, clientY: number, canvas: HTMLCanvasElement) => {
         if (ultimateStates.isSkillTargetSelecting) return; // only mouseDown handles skill target selection
@@ -107,7 +107,7 @@ export const useHandleMoves = ({ isFlipped, onCellSelect, cells, ultimateStates,
         if (!draggingPiece.current || !dragStartCell.current) return;
         const { x, y } = _getCellPosFromMouse(clientX, clientY, canvas);
 
-        if (!isInBounds(x,y)) return _clearDragging();
+        if (!isInBounds(x, y)) return _clearDragging();
 
         const target = cells[y][x];
         if (dragStartCell.current !== target) {
@@ -116,7 +116,7 @@ export const useHandleMoves = ({ isFlipped, onCellSelect, cells, ultimateStates,
             return;
         }
         _clearDragging();
-    }, [isDragging, cells.length, ultimateStates.isSkillTargetSelecting, premoves])
+    }, [onCellSelect, ultimateStates.isSkillTargetSelecting, isDragging])
 
     const _clearDragging = useCallback(() => {
         if (!draggingPiece.current || !dragStartCell.current) return;
@@ -140,7 +140,7 @@ export const useHandleMoves = ({ isFlipped, onCellSelect, cells, ultimateStates,
         setIsTouchOngoing(prev => true);
 
 
-    }, [isDragging, isTouchOngoing, cells.length, selected, ultimateStates.isSkillTargetSelecting, premoves, onCellSelect])
+    }, [_handleSelectStart, isTouchOngoing])
 
     const handleTouchMove: TouchEventHandler<HTMLCanvasElement> = useCallback((e) => {
         const canvas = e.target as HTMLCanvasElement;
@@ -150,7 +150,7 @@ export const useHandleMoves = ({ isFlipped, onCellSelect, cells, ultimateStates,
         draggingPiece.current && draggingPiece.current.animation!.scaleBy(2.5);
         _handleMovement(clientX, clientY, canvas);
 
-    }, [isDragging, cells.length, selected, ultimateStates.isSkillTargetSelecting])
+    }, [_handleMovement])
 
     const handleTouchEnd: TouchEventHandler<HTMLCanvasElement> = useCallback((e) => {
 
@@ -160,7 +160,7 @@ export const useHandleMoves = ({ isFlipped, onCellSelect, cells, ultimateStates,
 
         _handleSelectEnd(clientX, clientY, canvas);
 
-    }, [isDragging, cells.length, ultimateStates.isSkillTargetSelecting, premoves])
+    }, [_handleSelectEnd])
 
     const handleMouseMove: MouseEventHandler<HTMLCanvasElement> = useCallback((e) => {
         if (isTouchOngoing) return;
@@ -169,7 +169,7 @@ export const useHandleMoves = ({ isFlipped, onCellSelect, cells, ultimateStates,
         const { clientX, clientY } = e;
         _handleMovement(clientX, clientY, canvas)
 
-    }, [isDragging, isTouchOngoing, cells.length, selected, ultimateStates.isSkillTargetSelecting])
+    }, [_handleMovement, isTouchOngoing])
 
     const handleMouseOut: MouseEventHandler<HTMLCanvasElement> = useCallback((e) => {
         e.preventDefault()
@@ -186,7 +186,7 @@ export const useHandleMoves = ({ isFlipped, onCellSelect, cells, ultimateStates,
 
         _handleSelectStart(clientX, clientY, canvas);
 
-    }, [isDragging, isTouchOngoing, cells.length, selected, ultimateStates.isSkillTargetSelecting, premoves, onCellSelect])
+    }, [_handleSelectStart, isTouchOngoing])
 
 
     const handleMouseUp: MouseEventHandler<HTMLCanvasElement> = useCallback((e) => {
@@ -198,7 +198,7 @@ export const useHandleMoves = ({ isFlipped, onCellSelect, cells, ultimateStates,
 
         _handleSelectEnd(clientX, clientY, canvas)
 
-    }, [isDragging, isTouchOngoing, cells.length, ultimateStates.isSkillTargetSelecting, premoves])
+    }, [_handleSelectEnd, isTouchOngoing])
 
 
 

@@ -1,10 +1,9 @@
 import { IBoard } from "../Board";
 import { Colors } from "../colors.enum";
-import { Direction } from "../helper.enum";
 import { generateOffsets, isInBounds } from "../helpers";
 import { IBoardUlt } from "../ultimate/BoardUlt";
 import { Figure } from "./Figures";
-import { FigureTypes, IFigure, ISpritesObj } from "./figures.interface";
+import { FigureTypes, ISpritesObj } from "./figures.interface";
 
 
 export class Knight extends Figure {

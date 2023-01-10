@@ -6,7 +6,8 @@ import { Colors } from "../colors.enum";
 
 
 export interface ICellUltStates {
-    skillsApplied: ISkillApplied[]   
+    skillsApplied: ISkillApplied[]
+    prevSkillsApplied: ISkillApplied[]
 }
 
 export interface ICellUlt extends ICell {
@@ -20,7 +21,8 @@ export interface ICellUlt extends ICell {
 
 export class CellUlt extends Cell implements ICellUlt {
     states: ICellUltStates = {
-        skillsApplied: []   
+        skillsApplied: [],
+        prevSkillsApplied: []
     }
 
 
@@ -75,8 +77,9 @@ export class CellUlt extends Cell implements ICellUlt {
     }
 
     private _canLightningBolt(board: IBoardUlt) {
-        if (this.figure?.type === FigureTypes.KING) return false;
-        if (this.figure?.color === board.states.currentPlayer) return false;
+        if (!this.figure) return false;
+        if (this.figure.type === FigureTypes.KING) return false;
+        if (this.figure.color === board.states.currentPlayer) return false;
         return true;
     }
 
@@ -122,6 +125,6 @@ export class CellUlt extends Cell implements ICellUlt {
         if (skillToExpire?.onExpire) this.performSkill(skillToExpire.onExpire, board)
 
         this.states.skillsApplied = this.states.skillsApplied.filter(skill => skill.expireAt !== currentGlobalMoveCount)
-    }   
+    }
 
 }

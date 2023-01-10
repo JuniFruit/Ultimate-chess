@@ -20,7 +20,7 @@ export const useVFX = ({ board, isUltimate, isFlipped }: IUseVFX) => {
     const [vfx, setVfx] = useState<IVFX[]>([])
     const prevLastUsedSkill = useRef<ISkillUsed | null>(null);
     const prevLastMove = useRef<IMovedFigure | null>(null);
-   
+
 
     const _getEffectFromLastMove = useCallback(() => {
 
@@ -48,7 +48,7 @@ export const useVFX = ({ board, isUltimate, isFlipped }: IUseVFX) => {
         return effects;
 
 
-    }, [board.states.globalMovesCount])
+    }, [board.states.globalMovesCount, board.states.moves.length])
 
     const _getEffectFromLastSkill = useCallback(() => {
 
@@ -74,7 +74,7 @@ export const useVFX = ({ board, isUltimate, isFlipped }: IUseVFX) => {
 
         return effects;
 
-    }, [board.states.globalMovesCount])
+    }, [board.states.skillsUsed?.length])
 
     const _getEffectsOnCells = useCallback(() => {
         const result: IVFX[] = [];
@@ -106,10 +106,10 @@ export const useVFX = ({ board, isUltimate, isFlipped }: IUseVFX) => {
 
         setVfx(newEffects);
 
-    }, [board.states.globalMovesCount, isUltimate])
+    }, [board.states.globalMovesCount, isUltimate, board.states.skillsUsed?.length])
 
 
     return {
-        vfx,      
+        vfx,
     }
 }

@@ -6,14 +6,18 @@ import { isInBounds } from "../helpers";
 import { IBoardUlt } from "../ultimate/BoardUlt";
 import { ICellUlt } from "../ultimate/CellUlt";
 import { Figure } from "./Figures";
-import { FigureTypes, IFigure, ISpritesObj } from "./figures.interface";
+import { FigureTypes, IFigure, IFigureStates, ISpritesObj } from "./figures.interface";
 
-
-export interface IPawn extends IFigure {
+export interface IPawnStates extends IFigureStates {
     isFirstMove: boolean;
     cellsAdvanced: number;
     lastMove: number; // on which global move count the move was made
     isEnPassant: boolean
+}
+
+
+export interface IPawn extends IFigure {
+    states: IPawnStates
     canEnPassant: (target: ICell, board: IBoard | IBoardUlt) => boolean;
 
 }
@@ -22,18 +26,21 @@ export interface IPawn extends IFigure {
 
 export class Pawn extends Figure implements IPawn {
     readonly type;
-    isFirstMove;
-    cellsAdvanced = 0;
-    lastMove = 0;
-    isEnPassant;
+    states: IPawnStates = {
+        ...this.states,
+        isFirstMove: true,
+        cellsAdvanced: 0,
+        lastMove: 0,
+        isEnPassant: false
+    }
+    
 
 
-    constructor(x: number, y: number, color: Colors, sprites?: ISpritesObj, isEnPassant: boolean = false) {
+    constructor(x: number, y: number, color: Colors, sprites?: ISpritesObj) {
         super(x, y, color, sprites);
         this.spriteSrc = color === Colors.BLACK ? sprites?.blackPawn : sprites?.whitePawn;
         this.type = FigureTypes.PAWN;
-        this.isFirstMove = this.y === 1 || this.y === 6;
-        this.isEnPassant = isEnPassant;
+        this.states.isFirstMove = this.y === 1 || this.y === 6;        
     }
 
     public moveFigure(target: ICell | ICellUlt, board: IBoard | IBoardUlt, isFake?: boolean): void {
@@ -42,17 +49,17 @@ export class Pawn extends Figure implements IPawn {
         super.moveFigure(target, board, isFake);
 
         if (isFake) return;
-        this.isFirstMove = false;
-        this.cellsAdvanced += Math.abs(target.y - prevY);
-        this.lastMove = board.states.globalMovesCount;
-        this.isEnPassant = this.cellsAdvanced === 3;
+        this.states.isFirstMove = false;
+        this.states.cellsAdvanced += Math.abs(target.y - prevY);
+        this.states.lastMove = board.states.globalMovesCount;
+        this.states.isEnPassant = this.states.cellsAdvanced === 3;
     }
 
     public getLegalMoves(board: IBoard | IBoardUlt) {
         super.clearMoves()
 
         const direction = this.color === Colors.BLACK ? Direction.POS : Direction.NEG;
-        const numCells = this.isFirstMove ? 2 : 1;
+        const numCells = this.states.isFirstMove ? 2 : 1;
 
         super.getLegalMovesVertical({ board, direction, numCell: numCells });
         super.getLegalMovesDiagonal({ board, direction, numCell: 1 });
@@ -73,7 +80,7 @@ export class Pawn extends Figure implements IPawn {
     }
 
     public canEnPassant(target: ICell | ICellUlt, board: IBoard | IBoardUlt) {
-        if (!this.isEnPassant) return false;
+        if (!this.states.isEnPassant) return false;
         if (!target.isEmpty()) return false;
 
         const dirX = target.x < this.x ? Direction.NEG : Direction.POS;
@@ -81,9 +88,9 @@ export class Pawn extends Figure implements IPawn {
         const pawnToCapture = board.getCell(this.x + dirX, this.y).figure;
         if (pawnToCapture?.type !== FigureTypes.PAWN) return false;
         if (pawnToCapture.color === this.color) return false;
-        if ((pawnToCapture as IPawn).cellsAdvanced !== 2 ||
-            pawnToCapture.movesCount !== 1 ||
-            (pawnToCapture as IPawn).lastMove !== board.states.globalMovesCount) return false;
+        if ((pawnToCapture as IPawn).states.cellsAdvanced !== 2 ||
+            pawnToCapture.states.movesCount !== 1 ||
+            (pawnToCapture as IPawn).states.lastMove !== board.states.globalMovesCount) return false;
 
         return true;
     }

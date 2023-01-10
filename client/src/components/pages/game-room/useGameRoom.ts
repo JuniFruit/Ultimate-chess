@@ -52,7 +52,7 @@ export const useGameRoom = (id?: string, isUltimate: boolean = false) => {
             ...newBoard.states,
             ...boardData.board.states
         }
-        isUltimate && (newBoard as unknown as IBoardUlt).mergeBoardData(boardData);
+        newBoard.mergeBoardData(boardData);
         !isObserver && newBoard.updateAllLegalMoves();
         setBoard(prev => newBoard);
 

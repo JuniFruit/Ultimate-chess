@@ -69,14 +69,17 @@ export class Cell implements ICell {
 
         let isValidMove = false;
         board.incrementMoveCount()
+
         this.moveFigure(target, board, { isFake: true });
         board.updateEnemyLegalMoves();
 
         if (!board.isKingChecked()) {
             isValidMove = true;
         }
+        board.states.globalMovesCount -= 1;
         board.undo();
-        board.states.globalMovesCount--;
+        board.updateEnemyLegalMoves();
+
         return isValidMove
     }
 

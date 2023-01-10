@@ -17,7 +17,11 @@ export abstract class Figure implements IFigureBase {
     readonly sprites;
     ultimateStates: IFigureUltimateStates = {
         skillsApplied: [],
+        prevSkillsApplied: [],
         effects: []
+    }
+    states = {
+        movesCount: 0
     }
     animation?: IVFX;
     spriteSrc?: string;
@@ -29,8 +33,7 @@ export abstract class Figure implements IFigureBase {
     lastTake: IFigureInfo | null;
     takes: IFigureInfo[] = [];
     legalMoves: ILegalMove[] = [];
-    movesCount = 0;
-    cellsAdvanced = 0;
+
 
     constructor(x: number, y: number, color: Colors, sprites?: ISpritesObj) {
         this.color = color;
@@ -56,7 +59,7 @@ export abstract class Figure implements IFigureBase {
 
 
         if (isFake) return;
-        this.movesCount++;
+        this.states.movesCount++;
     }
 
     public filterUncheckingMoves(board: IBoard | IBoardUlt) {

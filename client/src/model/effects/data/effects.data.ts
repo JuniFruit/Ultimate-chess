@@ -41,7 +41,7 @@ export const effectList: IEffectItem[] = [{
 },
 {
     title: SkillNames.PLAGUE,
-    framesHold: 5,
+    framesHold: 3,
     framesMaxWidth: 10,
     framesMaxHeight: 1,
     isLooped: false,

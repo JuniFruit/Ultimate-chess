@@ -11,7 +11,7 @@ export const useSound = () => {
     const handleMoveSound = useCallback((move: IMove) => {
 
         if (move.options?.isCastling) return playSound('castle');
-        if (move.options?.isPromotion) return playSound('promotion');
+        if (move.options?.isPromotion) return playSound('promotion', 3);
         if (move.options?.isTake) return playSound('take');
         if (move.options?.skill) return playSound(move.options.skill, 4);     
         return playSound('move');

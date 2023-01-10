@@ -115,7 +115,6 @@ export const useField = ({ board, setBoard, myColor, isObserver, handleSendMove 
         board.swapPlayer();
         setSelectedCell(to);
         handleSendMove({ from: { ...from.getCellInfo() }, to: { ...to.getCellInfo() }, options: { ...moveOptions } })
-
         setBoard(prev => prev.getCopyBoard())
 
     }, [handleSelect])
@@ -123,7 +122,7 @@ export const useField = ({ board, setBoard, myColor, isObserver, handleSendMove 
     useEffect(() => {
         if (!board.cells.length) return;
         if (board.states.isGameOver) {
-            playSound('gameOver')
+            playSound('gameOver', 4)
             return clearSelectedCells()
         };
         if (board.isKingChecked()) playSound('check');

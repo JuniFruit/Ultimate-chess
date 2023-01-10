@@ -1,4 +1,4 @@
-import { FC, useContext } from 'react';
+import { FC, useContext, memo } from 'react';
 import { IoCheckmarkOutline, IoCloseOutline } from 'react-icons/io5';
 import { AudioCtx } from '../../../../../../audio-engine/audio.provider';
 import { AudioContextType } from '../../../../../../audio-engine/audio.types';
@@ -6,7 +6,7 @@ import { Button } from '../../../../../ui/button/Button';
 import styles from '../Handle.module.scss';
 import { IDrawHandler } from './DrawHandler.interface';
 
-export const DrawHandler: FC<IDrawHandler> = ({ onConfirm, onDecline }) => {
+export const DrawHandler: FC<IDrawHandler> = memo(({ onConfirm, onDecline }) => {
 
     const { playSound } = useContext(AudioCtx) as AudioContextType;
 
@@ -25,4 +25,4 @@ export const DrawHandler: FC<IDrawHandler> = ({ onConfirm, onDecline }) => {
             </div>
         </div>
     )
-}
+})

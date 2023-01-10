@@ -103,7 +103,6 @@ export const Announcer: FC<IAnnouncer> = memo(({ players, states, myColor, isUlt
     }, [states.globalMovesCount])
 
     useEffect(() => {
-
         if (states.isGameOver) return;
         if (states.globalMovesCount === 0) prevStates.current.last = null!;
 
@@ -112,7 +111,7 @@ export const Announcer: FC<IAnnouncer> = memo(({ players, states, myColor, isUlt
         const timeout = setTimeout(() => {
             setIsActive(false)
             prevStates.current.last = { ...states }
-        }, 2000);
+        }, 1000);
 
         return () => {
             clearTimeout(timeout);

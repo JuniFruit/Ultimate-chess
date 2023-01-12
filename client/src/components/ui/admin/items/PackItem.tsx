@@ -16,6 +16,7 @@ export const PackItem: FC<IPackItem> = ({ id, sysName, title, preview, ownerCoun
         <div
             className={styles.item_container}
             onClick={onClick}
+            tabIndex={0}
         >
             <ImagePreview imageSrc={preview} />
             <span>ID: {id}</span>

@@ -11,7 +11,8 @@ export const Button: FC<PropsWithChildren<IButton>> = ({
     return (
         <button
             className={className ? className : styles.button} 
-            {...rest}          
+            {...rest}   
+            tabIndex={0}       
         >
             {children}
            

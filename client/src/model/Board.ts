@@ -40,6 +40,7 @@ export interface IBoard {
     incrementMoveCount: () => void;
     moveFigure: (from: ICell, to: ICell, options: IMoveOptions) => void;
     mergeBoardData: (boardData: IBoardData) => void;
+    decrementMoveCount: () => void;
     filterUncheckingMoves: () => void;
 
 
@@ -359,4 +360,7 @@ export class Board implements IBoard {
         this.states.globalMovesCount++;
     }
 
+    public decrementMoveCount() {
+        this.states.globalMovesCount--;
+    }
 }

@@ -1,8 +1,10 @@
-import { IBoardUlt } from "./BoardUlt";
+import { IBoard } from "../Board";
 import { Cell, ICell } from "../Cell";
-import { FigureTypes } from "../figures/figures.interface";
-import { ISkillApplied, ISkillItem, SkillList, SkillNames } from "./Skills";
 import { Colors } from "../colors.enum";
+import { FigureTypes } from "../figures/figures.interface";
+import { generateOffsets, getFigureInfo, isInBounds } from "../helpers";
+import { IBoardUlt } from "./BoardUlt";
+import { ISkillApplied, ISkillItem, SkillList, SkillNames } from "./Skills";
 
 
 export interface ICellUltStates {
@@ -13,9 +15,13 @@ export interface ICellUltStates {
 export interface ICellUlt extends ICell {
     states: ICellUltStates;
     canPerformSkill: (skill: ISkillItem, board: IBoardUlt) => boolean;
-    performSkill: (skill: SkillNames, board: IBoardUlt) => void;
-    applySkill: (skill: ISkillItem, board: IBoardUlt) => void;
-    clearExpiredStates: (board: IBoardUlt) => void;
+    performSkill: (skill: SkillNames, board: IBoardUlt, isFake?: boolean) => void;
+    applySkill: (skill: ISkillItem, board: IBoardUlt, isFake?: boolean) => void;
+    clearExpiredStates: (board: IBoardUlt, isFake?: boolean) => void;
+    saveSkillsBeforeValidation: () => void;
+    undoSkills: () => void;
+    undoDetonate: (board: IBoardUlt) => void;
+    performKill: (board: IBoardUlt, isFake?: boolean) => void 
 
 }
 
@@ -38,34 +44,126 @@ export class CellUlt extends Cell implements ICellUlt {
                 return this._canSetOnFire();
             case SkillNames.PLAGUE:
                 return this._canPlague(board);
+            case SkillNames.SET_BOMB:
+                return this._canSetBomb();
+            case SkillNames.DETONATE:
+                return true
             default:
                 return false;
         }
 
     }
 
-    public performSkill(skillTitle: SkillNames, board: IBoardUlt) {
+    public performSkill(skillTitle: SkillNames, board: IBoardUlt, isFake = false) {
         const skillItem = SkillList.find(item => item.title === skillTitle);
 
-        if (!skillItem?.lasts) return this._performInstantSkill(skillTitle, board);
+        if (!skillItem?.lasts) return this._performInstantSkill(skillTitle, board, isFake);
 
         this.applySkill(skillItem!, board)
     }
 
 
-    private _performInstantSkill(skillTitle: SkillNames, board: IBoardUlt) {
+    public isEmpty(): boolean {
+        if (this._isOnFire()) return false;
+        return super.isEmpty();
+    }
+
+
+
+    public saveSkillsBeforeValidation() {
+        this.states.prevSkillsApplied = [...this.states.skillsApplied];
+        if (this.figure) this.figure.ultimateStates.prevSkillsApplied = [...this.figure.ultimateStates.skillsApplied];
+    }
+
+    public undoSkills() {
+        this.states.skillsApplied = [...this.states.prevSkillsApplied]
+        this.states.prevSkillsApplied = []
+        if (this.figure) {
+            this.figure.ultimateStates.skillsApplied = [...this.figure.ultimateStates.prevSkillsApplied];
+            this.figure.ultimateStates.prevSkillsApplied = []
+        }
+    }
+
+    public applySkill(skill: ISkillItem, board: IBoardUlt) {
+        const skillToApply: ISkillApplied = {
+            ...skill,
+            castBy: board.states.currentPlayer,
+            expireAt: skill?.lasts ? board.states.globalMovesCount + skill.lasts : -1,
+        }
+        if (skill.canBeAppliedAt === 'figure') return this.figure?.applySkill(skillToApply);
+        this.states.skillsApplied = [...this.states.skillsApplied, skillToApply];
+    }
+
+    public clearExpiredStates(board: IBoardUlt, isFake = false) {
+        const currentGlobalMoveCount = board.states.globalMovesCount;
+
+        if (this.figure) this.figure.clearExpiredStates(board);
+        const skillToExpire = this.states.skillsApplied.find(skill => skill.expireAt === currentGlobalMoveCount);
+
+        if (skillToExpire?.onExpire) {
+            this.performSkill(skillToExpire.onExpire, board, isFake)
+            board.addUsedSkill(skillToExpire.onExpire, this);
+        }
+
+        this.states.skillsApplied = this.states.skillsApplied.filter(skill => skill.expireAt !== currentGlobalMoveCount)
+    }   
+
+    public undoDetonate(board: IBoardUlt) {
+        const offsets = generateOffsets(1, 'square');
+        this.figure = this.prevFigure;
+        this.prevFigure = null;
+
+        offsets.forEach(offset => {
+            const [x, y] = offset;
+            if (!isInBounds(this.x + x, this.y + y)) return;
+            const current = board.getCell(this.x + x, this.y + y)
+            if (current.prevFigure?.type !== FigureTypes.PAWN) return;
+            current.figure = current.prevFigure
+            current.prevFigure = null;
+        })
+    }
+
+    public performKill(board: IBoardUlt, isFake = false) {
+        if (!isFake) board.addLostFigure({ ...this.figure!, takenBy: getFigureInfo(this.figure!) })
+        this.prevFigure = this.figure;
+        this.figure = null;
+    }
+
+
+    private _performDetonate(board: IBoardUlt, isFake = false) {
+        const offsets = generateOffsets(1, 'square');
+
+        if (this.figure && (this.figure?.type !== FigureTypes.KING && this.figure?.type !== FigureTypes.QUEEN)) this.performKill(board, isFake)
+
+
+        offsets.forEach(offset => {
+            const [x, y] = offset;
+            if (!isInBounds(this.x + x, this.y + y)) return;
+            const current = board.getCell(this.x + x, this.y + y);
+            
+            if (current.figure?.type === FigureTypes.PAWN) current.performKill(board, isFake);
+            const incinerate = SkillList.find(skill => skill.title === SkillNames.INCINERATE);
+            if (current.canPerformSkill(incinerate!, board)) current.applySkill(incinerate!, board, isFake);
+
+        })
+    }
+
+   
+
+
+    private _performInstantSkill(skillTitle: SkillNames, board: IBoardUlt, isFake = false) {
         switch (skillTitle) {
             case SkillNames.SACRIFICE:
-                return this._performSacrifice(board);
+                return this.performKill(board, isFake);
+            case SkillNames.DETONATE:
+                return this._performDetonate(board, isFake)
             default:
                 return;
         }
     }
 
-    private _performSacrifice(board: IBoardUlt) {
-        board.popFigure(this.figure!);
-        this.figure = null;
-        this.prevFigure = null;
+    private _canSetBomb() {
+        return this._canSetOnFire() // the same constraints
     }
 
 
@@ -100,31 +198,5 @@ export class CellUlt extends Cell implements ICellUlt {
         return true
     }
 
-    public isEmpty(): boolean {
-        if (this._isOnFire()) return false;
-        return super.isEmpty();
-    }
-
-
-    public applySkill(skill: ISkillItem, board: IBoardUlt) {
-        const skillToApply: ISkillApplied = {
-            ...skill,
-            castBy: board.states.currentPlayer,
-            expireAt: skill?.lasts ? board.states.globalMovesCount + skill.lasts : -1,
-        }
-        if (skill.canBeAppliedAt === 'figure') return this.figure?.applySkill(skillToApply);
-        this.states.skillsApplied = [...this.states.skillsApplied, skillToApply];
-    }
-
-    public clearExpiredStates(board: IBoardUlt) {
-        const currentGlobalMoveCount = board.states.globalMovesCount;
-
-        if (this.figure) this.figure.clearExpiredStates(board);
-        const skillToExpire = this.states.skillsApplied.find(skill => skill.expireAt === currentGlobalMoveCount);
-
-        if (skillToExpire?.onExpire) this.performSkill(skillToExpire.onExpire, board)
-
-        this.states.skillsApplied = this.states.skillsApplied.filter(skill => skill.expireAt !== currentGlobalMoveCount)
-    }
-
 }
+

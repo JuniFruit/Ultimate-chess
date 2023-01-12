@@ -1,5 +1,5 @@
 .logo {
-    @apply font-semibold text-main-200;
+    @apply font-semibold text-main-200 p-1;
     font-size: .85rem;
 
     >:first-child {
@@ -12,5 +12,5 @@
 
     @screen md {
         @apply text-base
-    }
+    }    
 }

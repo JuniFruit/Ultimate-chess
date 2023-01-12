@@ -71,6 +71,11 @@ input, button {
   outline: none;
   appearance: none;
 }
+a:focus-visible, 
+button:focus-visible {
+  @apply animate-hover_effect rounded-lg;
+  animation-direction: alternate;
+}
 
 
 

@@ -8,7 +8,7 @@ export const Logo: FC = () => {
 
 
     return (
-        <Link to={'/'} className={styles.logo}>
+        <Link to={'/'} className={styles.logo} tabIndex={0}>
             <span>Ultimate</span>
             <span>Chess</span>
         </Link>

@@ -6,7 +6,7 @@ export const tutorialPages: ITutorialItem[] = [
     {
         img: mockups.field_screenshot,
         title: 'Ultimate mode',
-        body: 'Ultimate mode is an addition to regular chess gameplay. This mode lets you experience Chess from a completely different angle. Some basic movements were altered and new features were added.'
+        body: 'Ultimate mode is an addition to a regular chess gameplay. This mode lets you experience Chess from a completely different angle. Some basic movements were altered and new features were added.'
     },
     {
         img: mockups.pawn_screenshot,

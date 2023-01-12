@@ -1,7 +1,6 @@
 import { SkillNames } from "../model/ultimate/Skills";
 
 export type AudioContextType = {
-  playbackFX: (buffer: AudioBuffer, stopOffset?: number) => void;
   playSound: (sound: sound, stopOffset?: number) => void;
   changeFXGain: (value: number) => void;
   changeMasterGain: (value: number) => void;
@@ -29,8 +28,13 @@ export interface ISoundBuffers {
   [SkillNames.LIGHTNING_BOLT]?: AudioBuffer;
   [SkillNames.PLAGUE]?: AudioBuffer;
   [SkillNames.SACRIFICE]?: AudioBuffer;
+  [SkillNames.DETONATE]?: AudioBuffer;
+  [SkillNames.SET_BOMB]?: AudioBuffer;
 }
+
+
 
 export type sound = 'check' | 'take' | 'move' | 'castle' | 'promotion'
   | 'promotionVoice' | 'unstoppable' | 'gameOver' | 'spree' | 'dominating' | 'firstblood' | SkillNames
   | 'invalid' | 'drawRequest' | 'turnPage' | 'newMsg' | 'bookOpen' | 'invalid';
+

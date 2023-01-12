@@ -65,7 +65,28 @@ export const effectList: IEffectItem[] = [{
     isLooped: false,
     scale: 1,
     sprite: Effects.shield
-}]
+},
+{
+    title: SkillNames.SET_BOMB,
+    framesHold: 3,
+    framesMaxWidth: 10,
+    framesMaxHeight: 1,
+    isLooped: false,
+    scale: 2,
+    sprite: Effects.explosion2
+},
+{
+    title: SkillNames.DETONATE,
+    framesHold: 3,
+    framesMaxWidth: 10,
+    framesMaxHeight: 1,
+    isLooped: false,
+    scale: 2,
+    sprite: Effects.expl_plague
+}
+
+
+]
 
 
 

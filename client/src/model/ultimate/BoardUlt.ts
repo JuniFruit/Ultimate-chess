@@ -1,5 +1,4 @@
 import { IMove } from "../../constants/socketIO/ClientEvents.interface";
-import { IBoardData } from "../../constants/socketIO/ServerEvents.interface";
 import { Board, IBoard, IBoardStates } from "../Board";
 import { Colors } from "../colors.enum";
 import { FigureTypes, IFigure } from "../figures/figures.interface";
@@ -49,18 +48,7 @@ export class BoardUlt extends Board implements IBoardUlt {
         return newBoard;
     }
 
-    private _convertBoard() {
-        this.cells.forEach((row, y) => {
-            row.forEach((cell, x) => {
-                const newCell = new CellUlt({ ...cell });
-                if (cell.figure) {
-                    const char = cell.figure.color === Colors.BLACK ? cell.figure.type : cell.figure.type.toUpperCase();
-                    newCell.figure = this.createFigure(char, cell.x, cell.y)
-                }
-                this.cells[y][x] = newCell;
-            })
-        })
-    }
+
 
     public getCell(x: number, y: number): ICellUlt {
         return this.cells[y][x] as ICellUlt
@@ -99,7 +87,6 @@ export class BoardUlt extends Board implements IBoardUlt {
         }
     }
     public updateEnemyLegalMoves(): void {
-        this._clearExpiredStates();
         super.updateEnemyLegalMoves();
         this.figures.forEach(figure => {
             figure.filterDisabled()
@@ -110,22 +97,17 @@ export class BoardUlt extends Board implements IBoardUlt {
     public filterUncheckingMoves() {
         (this.cells as ICellUlt[][]).forEach(row => {
             row.forEach(cell => {
-                cell.states.prevSkillsApplied = [...cell.states.skillsApplied];
-                if (cell.figure) {
-                    cell.figure.ultimateStates.prevSkillsApplied = [...cell.figure.ultimateStates.skillsApplied];
-                }
+                cell.saveSkillsBeforeValidation()
             })
         })
+        this.incrementMoveCount()
+        this._clearExpiredStates(true)
         super.filterUncheckingMoves();
+        this._undoLastSkill()
+        this.decrementMoveCount();
         (this.cells as ICellUlt[][]).forEach(row => {
             row.forEach(cell => {
-                cell.states.skillsApplied = [...cell.states.prevSkillsApplied];
-                cell.states.prevSkillsApplied = [];
-                if (cell.figure) {
-
-                    cell.figure.ultimateStates.skillsApplied = [...cell.figure.ultimateStates.prevSkillsApplied];
-                    cell.figure.ultimateStates.prevSkillsApplied = []
-                }
+                cell.undoSkills();
             })
         })
     }
@@ -139,12 +121,6 @@ export class BoardUlt extends Board implements IBoardUlt {
             figure.filterDisabled();
         });
         this.filterUncheckingMoves();
-    }
-
-    private _clearExpiredStates() {
-        this.cells.forEach(row => {
-            row.forEach(cell => (cell as ICellUlt).clearExpiredStates(this))
-        })
     }
 
     public addUsedSkill(skill: SkillNames, target: ICellUlt) {
@@ -185,4 +161,31 @@ export class BoardUlt extends Board implements IBoardUlt {
             && figure.color === color).length < 2
     }
 
+    private _clearExpiredStates(isFake = false) {
+        this.cells.forEach(row => {
+            row.forEach(cell => (cell as ICellUlt).clearExpiredStates(this, isFake))
+        })
+    }
+
+
+    private _undoLastSkill() {
+        const lastSkill = this.states.skillsUsed.pop();
+        if (!lastSkill) return
+        if (lastSkill.appliedAt !== this.states.globalMovesCount) return this.states.skillsUsed.push(lastSkill);
+        if (lastSkill.title === SkillNames.DETONATE) return this.getCell(lastSkill.target.x, lastSkill.target.y).undoDetonate(this);
+    }
+
+
+    private _convertBoard() {
+        this.cells.forEach((row, y) => {
+            row.forEach((cell, x) => {
+                const newCell = new CellUlt({ ...cell });
+                if (cell.figure) {
+                    const char = cell.figure.color === Colors.BLACK ? cell.figure.type : cell.figure.type.toUpperCase();
+                    newCell.figure = this.createFigure(char, cell.x, cell.y)
+                }
+                this.cells[y][x] = newCell;
+            })
+        })
+    }
 }

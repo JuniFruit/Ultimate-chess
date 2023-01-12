@@ -10,7 +10,7 @@ export enum Errors {
     CONNECTION_LOST = 'Connection lost. Trying to reestablish connection',
     NO_CONNECTION = 'No connection to the server',
     INVALID_ROOM = 'Such room cannot be created',
-    NO_PLAYERS = 'Room no longer exists due to player(s) left'
+    NO_PLAYERS = 'Room no longer exists due to player(s) having left.'
 
 }
 

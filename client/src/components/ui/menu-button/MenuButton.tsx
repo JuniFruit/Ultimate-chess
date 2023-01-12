@@ -4,14 +4,15 @@ import styles from './MenuButton.module.scss';
 
 const MenuButton: FC<PropsWithChildren<IButton>> = ({ children, ...rest }) => {
 
-   
+
 
     return (
         <button {...rest}
-            className={styles.button_wrapper}          
+            className={styles.button_wrapper}
+            tabIndex={0}           
         >
             <div>{children}</div>
-            
+
         </button>
     )
 }

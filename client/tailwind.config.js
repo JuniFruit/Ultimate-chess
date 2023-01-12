@@ -131,11 +131,11 @@ module.exports = {
         },
         openPage: {
           "0%": {
-            transform: 'rotateX(20deg) rotateY(0deg)'
+            transform: 'rotateY(0deg)'
 
           },
           "100%": {
-            transform: 'rotateX(20deg) rotateY(-180deg)',
+            transform: 'rotateY(-180deg)',
 
           }
         },

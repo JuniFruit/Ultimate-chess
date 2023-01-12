@@ -56,3 +56,14 @@ export const getCellSize = (canvas: HTMLCanvasElement) => {
   return { w, h }
 }
 
+
+
+
+export const drawCoord = (ctx: CanvasRenderingContext2D, coord: string, pos: { x: number, y: number }, fontSize: number, fillStyle:string) => {
+
+  ctx.font = `${fontSize}px serif`;
+  ctx.fillStyle = fillStyle;
+  ctx.lineWidth = 1;
+  ctx.fillText(coord, pos.x, pos.y);
+
+}

@@ -30,6 +30,10 @@
             @apply appearance-none rounded-sm h-3 bg-transparent cursor-pointer transition-all duration-150;
             width: 10rem;
 
+            &:focus-visible {
+                @apply shadow;
+            }
+
             @screen sm {
                 width: 20rem;
             }
@@ -66,13 +70,15 @@
             display: none;
             z-index: 1;
             content: '';
-        }
+        }      
+        
+        
+        
         @media (hover: hover) {
             &:hover >input {
                 @apply shadow;
             }           
         }
-
     }
 
         

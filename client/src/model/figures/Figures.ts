@@ -7,7 +7,7 @@ import { getFigureInfo, isInBounds } from "../helpers";
 import { Positions } from "../positions";
 import { IBoardUlt } from "../ultimate/BoardUlt";
 import { ICellUlt } from "../ultimate/CellUlt";
-import { ISkillApplied, SkillTypes } from "../ultimate/Skills";
+import { ISkillApplied, SkillNames, SkillTypes } from "../ultimate/Skills";
 import { IFigure, IFigureBase, IFigureInfo, IFigureUltimateStates, ILegalMove, ILegalMoveArg, ISpritesObj } from "./figures.interface";
 
 
@@ -29,9 +29,7 @@ export abstract class Figure implements IFigureBase {
     y;
     prevX;
     prevY;
-    pos;
-    lastTake: IFigureInfo | null;
-    takes: IFigureInfo[] = [];
+    pos; 
     legalMoves: ILegalMove[] = [];
 
 
@@ -40,8 +38,7 @@ export abstract class Figure implements IFigureBase {
         this.x = x;
         this.y = y;
         this.prevX = x;
-        this.prevY = y;
-        this.lastTake = null;
+        this.prevY = y;       
         this.sprites = sprites;
         this.pos = `${Positions[x]}${7 - y + 1}`;
 

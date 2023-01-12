@@ -21,6 +21,7 @@ export const PlayerItem: FC<PropsWithChildren<IPlayerItem>> = ({ user, children,
         <div
             className={styles.item_container}
             onClick={handleClick}
+            tabIndex={0}
         >
             <ImagePreview imageSrc={user.avatarLink} />
             <span>ID: {user.id}</span>

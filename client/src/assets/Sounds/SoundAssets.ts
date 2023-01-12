@@ -20,8 +20,6 @@ import newMsg from './FX/newMsg.mp3';
 import turnPage from './FX/turnPage.mp3';
 import unable from './FX/unable.mp3';
 import sacrifice from './FX/sacrifice.mp3';
-import backgr_var1 from './soundtracks/background_var1.mp3';
-import backgr_var2 from './soundtracks/background_var2.mp3';
 
 
 export const SoundData = {
@@ -46,7 +44,5 @@ export const SoundData = {
     newMsg,
     unable,
     drawRequest, 
-    sacrifice,   
-    backgr_var1,
-    backgr_var2
+    sacrifice
 }

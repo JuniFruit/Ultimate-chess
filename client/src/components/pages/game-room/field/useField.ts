@@ -7,7 +7,7 @@ import { ICell, IPremove } from "../../../../model/Cell";
 import { FigureTypes } from "../../../../model/figures/figures.interface";
 import { ICellUlt } from "../../../../model/ultimate/CellUlt";
 import { IField } from "./Field.interface";
-
+import { useSound } from './useSound';
 
 export interface IUseField extends Pick<IField, 'board' | 'setBoard' | 'myColor' | 'isObserver'> {
     handleSendMove: (move: IMove) => void;
@@ -24,6 +24,7 @@ export const useField = ({ board, setBoard, myColor, isObserver, handleSendMove 
     const { playSound } = useContext(AudioCtx) as AudioContextType;
     const maxPremoves = isMobile ? 1 : 5;
 
+    useSound(board)
 
 
     const handleSelect = useCallback((cell: ICell | ICellUlt) => {
@@ -121,11 +122,7 @@ export const useField = ({ board, setBoard, myColor, isObserver, handleSendMove 
 
     useEffect(() => {
         if (!board.cells.length) return;
-        if (board.states.isGameOver) {
-            playSound('gameOver', 4)
-            return clearSelectedCells()
-        };
-        if (board.isKingChecked()) playSound('check');
+        if (board.states.isGameOver) return clearSelectedCells()
         if (isObserver) return;
         if (board.states.currentPlayer === myColor) handlePremoves();
 

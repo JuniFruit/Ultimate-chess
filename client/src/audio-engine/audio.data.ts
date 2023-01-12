@@ -17,19 +17,13 @@ export const Sounds = {
     [SkillNames.INCINERATE]: SoundData.fire_ball,
     [SkillNames.LIGHTNING_BOLT]: SoundData.tempest,
     [SkillNames.PLAGUE]: SoundData.cast_crystal,
+    [SkillNames.DETONATE]: SoundData.fire_ball,
+    [SkillNames.SET_BOMB]: SoundData.castle,
     bookOpen: SoundData.bookOpen,
     turnPage: SoundData.turnPage,
     check: SoundData.chess_check,
     newMsg: SoundData.newMsg,
     invalid: SoundData.unable,
-    drawRequest: SoundData.drawRequest, 
+    drawRequest: SoundData.drawRequest,
 
-}
-
-
-
-
-export const Soundtracks = {
-    background_var1: '&tknv=v2',
-    background_var2: '&tknv=v2',
 }

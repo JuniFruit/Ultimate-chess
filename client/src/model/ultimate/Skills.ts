@@ -6,6 +6,8 @@ export enum SkillNames {
     INCINERATE = 'Incinerate',
     PLAGUE = 'Plague',
     LIGHTNING_BOLT = 'Lightning bolt',
+    SET_BOMB = 'Set bomb',
+    DETONATE = 'Detonate'
 }
 
 
@@ -46,6 +48,22 @@ export const SkillList: ISkillItem[] = [
         isTargeted: true,
         canBeAppliedAt: 'figure',
         onExpire: SkillNames.SACRIFICE
+    },
+    {
+        title: SkillNames.SET_BOMB,
+        lasts: 4,
+        description: 'Places a bomb on a cell that will detonate in 4 moves and affect closest cells',
+        constraints: 'Cannot be performed on an occupied square',
+        isTargeted: true,
+        canBeAppliedAt: 'cell',
+        onExpire: SkillNames.DETONATE
+    },
+    {
+        title: SkillNames.DETONATE,
+        description: 'Incinerates all cells around in the range of 1',
+        constraints: 'Cannot be performed directly by a player',
+        isTargeted: false,
+        canBeAppliedAt: 'cell'
     }
 
 ]

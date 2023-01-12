@@ -10,16 +10,14 @@
         @screen lg {
             @apply text-tiny
         }
+        
 
         @media (hover: hover){
-            &:hover,
-            &:focus {
+            &:hover {
                 @apply animate-hover_effect;
                 animation-direction: alternate;
-                transform: scale(1.05);
-    
+                transform: scale(1.05);    
             }
-
         }
     }
     

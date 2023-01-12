@@ -1,10 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { effectList, EffectNames } from "../../../../model/effects/data/effects.data";
 import { IVFX, VFX } from "../../../../model/effects/VFX";
-import { IMovedFigure } from "../../../../model/figures/figures.interface";
 import { IBoardUlt } from "../../../../model/ultimate/BoardUlt";
 import { ICellUlt } from "../../../../model/ultimate/CellUlt";
-import { ISkillUsed } from "../../../../model/ultimate/Skills";
 
 
 export interface IUseVFX {
@@ -13,24 +11,17 @@ export interface IUseVFX {
     isFlipped: boolean;
 }
 
-
-
 export const useVFX = ({ board, isUltimate, isFlipped }: IUseVFX) => {
 
     const [vfx, setVfx] = useState<IVFX[]>([])
-    const prevLastUsedSkill = useRef<ISkillUsed | null>(null);
-    const prevLastMove = useRef<IMovedFigure | null>(null);
 
 
     const _getEffectFromLastMove = useCallback(() => {
 
-        if (!board.states) return [];
-        if (!board.states.moves.length) return [];
-
         const effects: IVFX[] = []
         const lastMove = board.states.moves[board.states.moves.length - 1];
 
-        if (lastMove && lastMove !== prevLastMove.current) {
+        if (lastMove && lastMove.moveMadeAt === board.states.globalMovesCount) {
             let effectItem = effectList.find(effect => effect.title === EffectNames.ON_MOVE);
             if (lastMove.options.isCastling) effectItem = effectList.find(effect => effect.title === EffectNames.ON_CASTLE);
             const effect = new VFX({
@@ -42,7 +33,6 @@ export const useVFX = ({ board, isUltimate, isFlipped }: IUseVFX) => {
             })
             isFlipped && effect.flipPosition()
             effects.push(effect);
-            prevLastMove.current = lastMove;
         }
 
         return effects;
@@ -51,13 +41,13 @@ export const useVFX = ({ board, isUltimate, isFlipped }: IUseVFX) => {
     }, [board.states.globalMovesCount, board.states.moves.length])
 
     const _getEffectFromLastSkill = useCallback(() => {
-
-        if (!board.states) return [];
-        if (!board.states.skillsUsed) return [];
+       
+        if (!board.states.skillsUsed) return [];        
         const effects: IVFX[] = []
         const lastUsedSkill = board.states.skillsUsed[board.states.skillsUsed.length - 1];
+
         if (!lastUsedSkill) return [];
-        if (!lastUsedSkill.lasts && lastUsedSkill.title !== prevLastUsedSkill.current?.title) {
+        if (!lastUsedSkill.lasts && lastUsedSkill.appliedAt === board.states.globalMovesCount) {
             const effectItem = effectList.find(effect => effect.title === lastUsedSkill.title);
 
             const effect = new VFX({
@@ -69,12 +59,11 @@ export const useVFX = ({ board, isUltimate, isFlipped }: IUseVFX) => {
             })
             isFlipped && effect.flipPosition()
             effects.push(effect);
-            prevLastUsedSkill.current = lastUsedSkill;
         }
 
         return effects;
 
-    }, [board.states.skillsUsed?.length])
+    }, [board.states.globalMovesCount])
 
     const _getEffectsOnCells = useCallback(() => {
         const result: IVFX[] = [];
@@ -106,7 +95,7 @@ export const useVFX = ({ board, isUltimate, isFlipped }: IUseVFX) => {
 
         setVfx(newEffects);
 
-    }, [board.states.globalMovesCount, isUltimate, board.states.skillsUsed?.length])
+    }, [board.states.globalMovesCount, isUltimate])
 
 
     return {

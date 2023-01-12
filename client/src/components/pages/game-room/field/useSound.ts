@@ -1,26 +1,42 @@
-import { useCallback, useContext } from 'react';
+import { useCallback, useContext, useEffect } from 'react';
 import { AudioCtx } from '../../../../audio-engine/audio.provider';
 import { AudioContextType } from '../../../../audio-engine/audio.types';
-import { IMove } from '../../../../constants/socketIO/ClientEvents.interface';
+import { IBoard } from '../../../../model/Board';
+import { IBoardUlt } from '../../../../model/ultimate/BoardUlt';
 
 
-export const useSound = () => {
+export const useSound = (board: IBoard | IBoardUlt) => {
 
     const { playSound } = useContext(AudioCtx) as AudioContextType;
 
-    const handleMoveSound = useCallback((move: IMove) => {
 
-        if (move.options?.isCastling) return playSound('castle');
-        if (move.options?.isPromotion) return playSound('promotion', 3);
-        if (move.options?.isTake) return playSound('take');
-        if (move.options?.skill) return playSound(move.options.skill, 4);     
-        return playSound('move');
-        
-    }, []) 
+    const _handleMoveSFX = useCallback(() => {
 
-   
+        const lastMove = board.states.moves[board.states.moves.length - 1]
+        if (lastMove && lastMove.moveMadeAt === board.states.globalMovesCount) {
+            if (lastMove.options?.isCastling) return playSound('castle');
+            if (lastMove.options?.isPromotion) return playSound('promotion', 3);
+            if (lastMove.options?.isTake) return playSound('take');
+            return playSound('move');
 
-    return {
-        handleMoveSound
-    }
+        }
+
+    }, [board.states.globalMovesCount])
+
+    const _handleSkillSFX = useCallback(() => {
+        if (!(board as IBoardUlt).states.skillsUsed) return;
+        const lastSkill = (board as IBoardUlt).states.skillsUsed[(board as IBoardUlt).states.skillsUsed.length - 1];
+
+        if (lastSkill && lastSkill.appliedAt === board.states.globalMovesCount) {
+            playSound(lastSkill.title, 4);
+        }
+
+    }, [board.states.globalMovesCount])
+
+    useEffect(() => {
+        if (board.states.isGameOver) playSound('gameOver', 4);
+        if (board.isKingChecked()) playSound('check');
+        _handleMoveSFX();
+        _handleSkillSFX();
+    }, [board.states.globalMovesCount, board.states.isGameOver])
 }

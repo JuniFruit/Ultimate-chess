@@ -87,6 +87,7 @@ export interface IMovedFigure {
     to: ICellInfo;
     figureTaken?: IFigureInfo;
     figureMove: IFigureInfo;
+    moveMadeAt: number;
 }
 
 export type ISpritesObj = typeof SPRITES;

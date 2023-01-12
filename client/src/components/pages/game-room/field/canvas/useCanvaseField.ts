@@ -3,10 +3,11 @@ import { Colors } from "../../../../../model/colors.enum";
 import { effectList } from "../../../../../model/effects/data/effects.data";
 import { VFX } from "../../../../../model/effects/VFX";
 import { getFlippedPos } from "../../../../../model/helpers";
+import { Positions } from '../../../../../model/positions';
 import { SkillNames } from "../../../../../model/ultimate/Skills";
 import { ICanvasField } from "./CanvasField.interface";
 import { useHandleMoves } from "./useHandleMoves";
-import { drawCircle, drawRect, getCellSize } from "./utils/canvas.utils";
+import { drawCircle, drawCoord, drawRect, getCellSize } from "./utils/canvas.utils";
 import { COLORS } from "./utils/colors.utils";
 
 export const useCanvasField = (
@@ -65,6 +66,7 @@ export const useCanvasField = (
             });
 
             figure.setAnimation(animation);
+            
 
         })
     }, [board, isFlipped])
@@ -84,6 +86,7 @@ export const useCanvasField = (
                         }
                     })
                     figure.setEffect(skillEffect);
+                    
                 })
             }
         })
@@ -204,9 +207,34 @@ export const useCanvasField = (
                     height: h,
                     fill
                 })
+
+                if (x === 0) drawCoord(
+                    ctx,
+                    `${isFlipped ? y + 1 : 7 - y + 1}`,
+                    {
+                        x: x + 2,
+                        y: y * h + h / 4
+                    },
+                    w / 4,
+                    cell.color === Colors.BLACK ? COLORS.CELL.white : COLORS.CELL.black
+                );
+
+                if (y === 7) drawCoord(
+                    ctx,
+                    `${isFlipped ? Positions[7 - x] : Positions[x]}`,
+                    {
+                        x: x * w + w / 1.2,
+                        y: y * h + h - 5
+                    },
+                    w / 4,
+                    cell.color === Colors.BLACK ? COLORS.CELL.white : COLORS.CELL.black
+                );
+
             })
         })
     }, [cells.length, isFlipped])
+
+
 
 
     const _getCellPosFromCoord = useCallback((x: number, y: number) => {

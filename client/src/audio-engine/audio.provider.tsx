@@ -14,6 +14,8 @@ const soundsGain = ctx.createGain();
 soundsGain.gain.value = Number(window.localStorage.getItem("FXGain")) || DefaultSettings.fx;
 soundsGain.connect(masterGain);
 
+
+
 export const AudioCtx = createContext<AudioContextType | null>(null);
 
 const AudioProvider: FC<PropsWithChildren> = ({ children }) => {
@@ -29,14 +31,13 @@ const AudioProvider: FC<PropsWithChildren> = ({ children }) => {
         }
     }
 
+   
 
     useEffect(() => {
-
-        handleFetchSounds();
-
+        handleFetchSounds();    
     }, [])
 
-    const playbackFX = async (buffer: AudioBuffer, stopOffset = 2) => {
+    const _playbackFX = async (buffer: AudioBuffer, stopOffset = 2) => {
         const bufferSource = ctx.createBufferSource();
         bufferSource.buffer = buffer;
         bufferSource.connect(soundsGain);
@@ -47,12 +48,9 @@ const AudioProvider: FC<PropsWithChildren> = ({ children }) => {
 
     const playSound = (sound: sound, stopOffset = 2) => {
         if (!soundBuffers.current[sound]) return;
-        return playbackFX(soundBuffers.current[sound]!, stopOffset);
+        return _playbackFX(soundBuffers.current[sound]!, stopOffset);
     }
-
-    const playSoundtrack = () => {
-
-    }
+    
 
     // Only for settings
     const playMasterSound = () => {
@@ -71,11 +69,11 @@ const AudioProvider: FC<PropsWithChildren> = ({ children }) => {
         soundsGain.gain.value = value;
     }
 
-    
+
 
     return (
 
-        <AudioCtx.Provider value={{ playbackFX, playSound, changeFXGain, changeMasterGain, playMasterSound }}>
+        <AudioCtx.Provider value={{ playSound, changeFXGain, changeMasterGain, playMasterSound }}>
             {children}
         </AudioCtx.Provider>
 

@@ -68,7 +68,6 @@ export class Cell implements ICell {
     private _validateMove(target: ICell, board: IBoard): boolean {
 
         let isValidMove = false;
-        board.incrementMoveCount()
 
         this.moveFigure(target, board, { isFake: true });
         board.updateEnemyLegalMoves();
@@ -76,7 +75,6 @@ export class Cell implements ICell {
         if (!board.isKingChecked()) {
             isValidMove = true;
         }
-        board.states.globalMovesCount -= 1;
         board.undo();
         board.updateEnemyLegalMoves();
 
@@ -190,7 +188,8 @@ export class Cell implements ICell {
                 pos: target.pos
             },
             options,
-            figureMove: getFigureInfo(this.figure!)
+            figureMove: getFigureInfo(this.figure!),
+            moveMadeAt: board.states.globalMovesCount
         }
 
         if (options.isEnPassant) {

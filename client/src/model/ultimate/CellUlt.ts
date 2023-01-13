@@ -21,7 +21,7 @@ export interface ICellUlt extends ICell {
     saveSkillsBeforeValidation: () => void;
     undoSkills: () => void;
     undoDetonate: (board: IBoardUlt) => void;
-    performKill: (board: IBoardUlt, isFake?: boolean) => void 
+    performKill: (board: IBoardUlt, isFake?: boolean) => void
 
 }
 
@@ -48,6 +48,8 @@ export class CellUlt extends Cell implements ICellUlt {
                 return this._canSetBomb();
             case SkillNames.DETONATE:
                 return true
+            case SkillNames.BLESSING:
+                return this._canBless(board);
             default:
                 return false;
         }
@@ -106,7 +108,7 @@ export class CellUlt extends Cell implements ICellUlt {
         }
 
         this.states.skillsApplied = this.states.skillsApplied.filter(skill => skill.expireAt !== currentGlobalMoveCount)
-    }   
+    }
 
     public undoDetonate(board: IBoardUlt) {
         const offsets = generateOffsets(1, 'square');
@@ -140,15 +142,13 @@ export class CellUlt extends Cell implements ICellUlt {
             const [x, y] = offset;
             if (!isInBounds(this.x + x, this.y + y)) return;
             const current = board.getCell(this.x + x, this.y + y);
-            
+
             if (current.figure?.type === FigureTypes.PAWN) current.performKill(board, isFake);
             const incinerate = SkillList.find(skill => skill.title === SkillNames.INCINERATE);
             if (current.canPerformSkill(incinerate!, board)) current.applySkill(incinerate!, board, isFake);
 
         })
     }
-
-   
 
 
     private _performInstantSkill(skillTitle: SkillNames, board: IBoardUlt, isFake = false) {
@@ -164,6 +164,11 @@ export class CellUlt extends Cell implements ICellUlt {
 
     private _canSetBomb() {
         return this._canSetOnFire() // the same constraints
+    }
+
+    private _canBless(board: IBoardUlt) {
+        if (!this.figure || this.figure.color !== board.states.currentPlayer || this.figure.type !== FigureTypes.KNIGHT) return false;
+        return true;
     }
 
 

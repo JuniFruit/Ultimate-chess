@@ -12,7 +12,11 @@ import { IPlayerInfo } from "../../ui/player/PlayerInfo.interface";
 
 export const useGameRoom = (id?: string, isUltimate: boolean = false) => {
 
-    const [board, setBoard] = useState<IBoard | IBoardUlt>(new Board())
+    const [board, setBoard] = useState<IBoard | IBoardUlt>(() => {
+        const board = new Board();
+        board.states.globalMovesCount = -1;
+        return board
+    })
     const [isReadyToStart, setIsReadyToStart] = useState(false);
     const [result, setResult] = useState<IResultPayload | null>(null);
     const [enemyUser, setEnemyUser] = useState<IPlayerInfo>();
@@ -50,30 +54,26 @@ export const useGameRoom = (id?: string, isUltimate: boolean = false) => {
         newBoard.getFigures();
         newBoard.states = {
             ...newBoard.states,
-            ...boardData.board.states
+            ...boardData.states
         }
         newBoard.mergeBoardData(boardData);
-        !isObserver && newBoard.updateAllLegalMoves();
         setBoard(prev => newBoard);
 
     }, [request])
 
     const handleResults = useCallback((payload: IResultPayload) => {
         board.states.isGameOver = true;
-        setIsReadyToStart(true);
         setResult(prev => payload);
         setBoard(prev => prev.getCopyBoard())
     }, [board])
 
-
     const handleRequestConfirm = useCallback((request: Requests) => {
         if (isObserver) return;
-
         clearStates()
         if (request === Requests.RESIGN) return ioClient.emit("resign");
         ioClient.emit("confirmRequest", request);
 
-    }, [request, isObserver])
+    }, [isObserver])
 
     const handleSendRequest = useCallback((request: Requests) => {
         if (isObserver) return;
@@ -102,7 +102,7 @@ export const useGameRoom = (id?: string, isUltimate: boolean = false) => {
 
         }
 
-    }, [request, result, board, isObserver])
+    }, [handleUpdateGame, handleResults, board])
 
 
     return {

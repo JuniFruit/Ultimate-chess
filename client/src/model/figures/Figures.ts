@@ -7,8 +7,8 @@ import { getFigureInfo, isInBounds } from "../helpers";
 import { Positions } from "../positions";
 import { IBoardUlt } from "../ultimate/BoardUlt";
 import { ICellUlt } from "../ultimate/CellUlt";
-import { ISkillApplied, SkillNames, SkillTypes } from "../ultimate/Skills";
-import { IFigure, IFigureBase, IFigureInfo, IFigureUltimateStates, ILegalMove, ILegalMoveArg, ISpritesObj } from "./figures.interface";
+import { ISkillApplied, SkillTypes } from "../ultimate/Skills";
+import { IFigure, IFigureBase, IFigureUltimateStates, ILegalMove, ILegalMoveArg, ISpritesObj } from "./figures.interface";
 
 
 
@@ -17,19 +17,19 @@ export abstract class Figure implements IFigureBase {
     readonly sprites;
     ultimateStates: IFigureUltimateStates = {
         skillsApplied: [],
-        prevSkillsApplied: [],
-        effects: []
+        prevSkillsApplied: []
     }
     states = {
         movesCount: 0
     }
+    effects: IVFX[] = [];
     animation?: IVFX;
     spriteSrc?: string;
     x;
     y;
     prevX;
     prevY;
-    pos; 
+    pos;
     legalMoves: ILegalMove[] = [];
 
 
@@ -38,7 +38,7 @@ export abstract class Figure implements IFigureBase {
         this.x = x;
         this.y = y;
         this.prevX = x;
-        this.prevY = y;       
+        this.prevY = y;
         this.sprites = sprites;
         this.pos = `${Positions[x]}${7 - y + 1}`;
 
@@ -189,12 +189,12 @@ export abstract class Figure implements IFigureBase {
     /* Ultimate mode methods */
 
     public setEffect(vfx: IVFX) {
-        this.ultimateStates.effects.push(vfx)
+        this.effects.push(vfx)
     }
 
     public drawEffect(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, isFlipped: boolean) {
-        if (this.ultimateStates.effects.length) {
-            this.ultimateStates.effects.forEach(effect => {
+        if (this.effects.length) {
+            this.effects.forEach(effect => {
                 effect.updatePosition(this.x, this.y);
                 effect.scaleToCellSize(canvas);
                 effect.rescaleAndCenter()

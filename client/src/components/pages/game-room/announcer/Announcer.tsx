@@ -28,7 +28,7 @@ export const Announcer: FC<IAnnouncer> = memo(({ players, states, myColor, isUlt
     }, [states.lostFiguresCount])
 
     const getLastSkillApplied = useCallback(() => {
-        if (!prevStates.current.last || !states.skillsUsed) return;
+        if (!states.skillsUsed) return;
         const lastSkill = states.skillsUsed[states.skillsUsed.length - 1]
         if (!lastSkill || lastSkill.appliedAt !== states.globalMovesCount) return;
         return (

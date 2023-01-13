@@ -1,15 +1,16 @@
 import { IPlayerInfo } from "../../components/ui/player/PlayerInfo.interface";
-import { IBoard, IBoardStates } from "../../model/Board";
+import { IBoardStates } from "../../model/Board";
+import { ICellData } from "../../model/Cell";
 import { Colors } from "../../model/colors.enum";
 import { GameOverReasons, Results } from "../../model/helper.enum";
 import { IPlayer } from "../../model/Player";
-import { IBoardUlt } from "../../model/ultimate/BoardUlt";
 import { Errors, Requests } from "../constants";
 import { IDisconnectedUser, IMessage, IMove } from "./ClientEvents.interface";
 
 export interface IBoardData {
-    board: IBoard | IBoardUlt;
     FEN: string;
+    cells: ICellData[][];
+    states: IBoardStates;
 }
 
 export interface IGameData {

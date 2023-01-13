@@ -6,16 +6,17 @@ import { ITimerHandler } from "./TimerHandler.interface";
 
 
 export const TimerHandler: FC<ITimerHandler> = memo(({ states: { isFirstMove, isGameOver }, ...rest }) => {
+
     const handleTimeout = useCallback(() => {
         if (rest.isObserver) return;
         ioClient.emit("timeout")
     }, [rest.isObserver])
+    
     const handleUpdateTimer = useCallback((time: ITimerPayload) => {
         rest.board.states.blackTime = time.black;
-        rest.board.states.whiteTime = time.white;
-
-        rest.setBoard(prev => prev.getCopyBoard());
-    }, [rest.board])
+        rest.board.states.whiteTime = time.white; 
+        rest.setBoard(prev => prev.getCopyBoard())       
+    }, [rest.board.states.globalMovesCount])
 
     useEffect(() => {
         ioClient.on("updateTimer", handleUpdateTimer)
@@ -24,7 +25,7 @@ export const TimerHandler: FC<ITimerHandler> = memo(({ states: { isFirstMove, is
             ioClient.off("updateTimer");
         }
 
-    }, [rest.board])
+    }, [rest.board.states.globalMovesCount])
 
     return (
         <Timer

@@ -33,6 +33,7 @@ export interface IFigureBase {
     spriteSrc?: string;
     animation?: IVFX;
     ultimateStates: IFigureUltimateStates;
+    effects: IVFX[]
     states: IFigureStates;
     x: number;
     y: number;
@@ -95,6 +96,5 @@ export type ISpritesObj = typeof SPRITES;
 
 export interface IFigureUltimateStates {
     skillsApplied: ISkillApplied[]
-    prevSkillsApplied: ISkillApplied[]
-    effects: IVFX[]
+    prevSkillsApplied: ISkillApplied[] 
 }

@@ -3,7 +3,11 @@ import { Colors } from "../colors.enum";
 import { generateOffsets, isInBounds } from "../helpers";
 import { IBoardUlt } from "../ultimate/BoardUlt";
 import { Figure } from "./Figures";
-import { FigureTypes, ISpritesObj } from "./figures.interface";
+import { FigureTypes, IFigure, ISpritesObj } from "./figures.interface";
+
+export interface IKnight extends IFigure {
+    getLegalMoves: (board: IBoard | IBoardUlt, offsetsRange?:number) => void;
+}
 
 
 export class Knight extends Figure {
@@ -16,10 +20,10 @@ export class Knight extends Figure {
         this.type = FigureTypes.KNIGHT;
     }
 
-    public getLegalMoves(board: IBoard | IBoardUlt) {
+    public getLegalMoves(board: IBoard | IBoardUlt, offsetsRange = 1) {
         super.clearMoves()
               
-        const offsets = generateOffsets(1, 'knight');
+        const offsets = generateOffsets(offsetsRange, 'knight');
         offsets.forEach(offset => {
             const [x, y] = offset;
             if (isInBounds(this.x + x, this.y + y)) {

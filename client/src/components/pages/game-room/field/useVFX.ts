@@ -24,6 +24,7 @@ export const useVFX = ({ board, isUltimate, isFlipped }: IUseVFX) => {
         if (lastMove && lastMove.moveMadeAt === board.states.globalMovesCount) {
             let effectItem = effectList.find(effect => effect.title === EffectNames.ON_MOVE);
             if (lastMove.options.isCastling) effectItem = effectList.find(effect => effect.title === EffectNames.ON_CASTLE);
+            if (!effectItem) effectItem = effectList.find(item => item.title === EffectNames.DEFAULT)
             const effect = new VFX({
                 ...effectItem!,
                 position: {
@@ -48,8 +49,8 @@ export const useVFX = ({ board, isUltimate, isFlipped }: IUseVFX) => {
 
         if (!lastUsedSkill) return [];
         if (!lastUsedSkill.lasts && lastUsedSkill.appliedAt === board.states.globalMovesCount) {
-            const effectItem = effectList.find(effect => effect.title === lastUsedSkill.title);
-
+            let effectItem = effectList.find(effect => effect.title === lastUsedSkill.title);
+            if (!effectItem) effectItem = effectList.find(item => item.title === EffectNames.DEFAULT)
             const effect = new VFX({
                 ...effectItem!,
                 position: {
@@ -71,7 +72,8 @@ export const useVFX = ({ board, isUltimate, isFlipped }: IUseVFX) => {
         (board.cells as ICellUlt[][]).forEach((row) => {
             row.forEach((cell) => {
                 cell.states.skillsApplied.forEach(skill => {
-                    const effectItem = effectList.find(effect => effect.title === skill.title);
+                    let effectItem = effectList.find(effect => effect.title === skill.title);
+                    if (!effectItem) effectItem = effectList.find(item => item.title === EffectNames.DEFAULT)
                     const vfx = new VFX({
                         ...effectItem!,
                         position: {

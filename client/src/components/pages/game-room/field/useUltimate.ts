@@ -3,7 +3,6 @@ import { AudioCtx } from "../../../../audio-engine/audio.provider";
 import { AudioContextType } from "../../../../audio-engine/audio.types";
 import { IMove } from "../../../../constants/socketIO/ClientEvents.interface";
 import { useActions } from "../../../../hooks/useActions";
-import { IBoard } from "../../../../model/Board";
 import { Colors } from "../../../../model/colors.enum";
 import { IBoardUlt } from "../../../../model/ultimate/BoardUlt";
 import { ICellUlt } from "../../../../model/ultimate/CellUlt";
@@ -14,7 +13,6 @@ interface IUseUltimate {
     board: IBoardUlt;
     isObserver: boolean;
     myColor: Colors;
-    setBoard: Dispatch<SetStateAction<IBoard | IBoardUlt>>
     setIsSkillBookOpen: Dispatch<SetStateAction<boolean>>
     handleSendMove: (move: IMove) => void;
 }
@@ -23,7 +21,6 @@ interface IUseUltimate {
 export const useUltimate = ({
     board,
     myColor,
-    setBoard,
     setIsSkillBookOpen,
     handleSendMove
 }: IUseUltimate) => {
@@ -80,7 +77,6 @@ export const useUltimate = ({
         handleSendSkillMove(cell, chosenSkill.current);
 
         _handleClearStates();
-        setBoard(prev => prev.getCopyBoard())
 
     }
 

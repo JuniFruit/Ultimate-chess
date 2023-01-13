@@ -9,11 +9,11 @@ import { ICellUlt } from "../../../../model/ultimate/CellUlt";
 import { IField } from "./Field.interface";
 import { useSound } from './useSound';
 
-export interface IUseField extends Pick<IField, 'board' | 'setBoard' | 'myColor' | 'isObserver'> {
+export interface IUseField extends Pick<IField, 'board' | 'myColor' | 'isObserver' | "isUltimate"> {
     handleSendMove: (move: IMove) => void;
 }
 
-export const useField = ({ board, setBoard, myColor, isObserver, handleSendMove }: IUseField) => {
+export const useField = ({ board, myColor, isObserver, handleSendMove }: IUseField) => {
 
 
     const { isMobile } = useIsMobile();
@@ -57,7 +57,7 @@ export const useField = ({ board, setBoard, myColor, isObserver, handleSendMove 
             setSelectedCell(prev => cell);
         }
 
-    }, [selectedCell, lastTargetCell, isObserver, premoves, isPromotion, board])
+    }, [selectedCell, lastTargetCell, isObserver, premoves, isPromotion, board.states.globalMovesCount])
 
 
     const handlePremoves = useCallback(() => {
@@ -116,7 +116,6 @@ export const useField = ({ board, setBoard, myColor, isObserver, handleSendMove 
         board.swapPlayer();
         setSelectedCell(to);
         handleSendMove({ from: { ...from.getCellInfo() }, to: { ...to.getCellInfo() }, options: { ...moveOptions } })
-        setBoard(prev => prev.getCopyBoard())
 
     }, [handleSelect])
 

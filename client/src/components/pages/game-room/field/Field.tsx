@@ -25,7 +25,6 @@ export const GameField: FC<IField> = (props) => {
     const { ultHandlers, ultStatus } = useUltimate(
         {
             board: props.board as IBoardUlt,
-            setBoard: props.setBoard,
             myColor: props.myColor,
             setIsSkillBookOpen: props.setIsSkillBookOpen,
             isObserver: props.isObserver,

@@ -1,12 +1,12 @@
 import { IMoveOptions } from "../constants/socketIO/ClientEvents.interface";
 import { IBoard } from "./Board";
 import { Colors } from "./colors.enum";
-import { FigureTypes, IFigure, IMovedFigure } from "./figures/figures.interface";
+import { FigureTypes, IFigure, IFigureStates, IFigureUltimateStates, ILegalMove, IMovedFigure } from "./figures/figures.interface";
 import { IKing } from "./figures/King";
 import { Direction } from "./helper.enum";
 import { getFigureInfo } from "./helpers";
 import { Positions } from "./positions";
-import { ICellUlt } from "./ultimate/CellUlt";
+import { ICellUlt, ICellUltStates } from "./ultimate/CellUlt";
 
 export interface ICell {
     readonly x: number;
@@ -32,6 +32,15 @@ export interface ICell {
 }
 
 export interface ICellInfo extends Pick<ICell, "pos" | "x" | 'y'> { };
+
+export interface ICellData {
+    states?: Pick<ICellUltStates, "prevSkillsApplied" | "skillsApplied">;
+    figure?: {
+        states: IFigureStates,
+        ultimateStates: Pick<IFigureUltimateStates, "prevSkillsApplied" | 'skillsApplied'>,
+        legalMoves: ILegalMove[]
+    }
+}
 
 export interface IPremove {
     figureType: FigureTypes;

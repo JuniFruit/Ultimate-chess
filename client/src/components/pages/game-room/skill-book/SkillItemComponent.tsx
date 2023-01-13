@@ -10,8 +10,10 @@ export const SkillItemComponent: FC<ISkillItemComponent> = ({
     skillItem
 }) => {
 
-    const { title, description, lasts, constraints } = skillItem;
+    const { title, description, lasts, constraints, canBeUsedByPlayer } = skillItem;
     const isDisabled = board.states.skillsUsed.some(skill => skill.title === title && skill.castBy === myColor);
+
+    if (!canBeUsedByPlayer) return null;
 
     return (
         <button
@@ -24,7 +26,7 @@ export const SkillItemComponent: FC<ISkillItemComponent> = ({
                 <h2>{title}</h2>
                 <p>{description}</p>
                 <h3>{constraints}</h3>
-                {lasts && <span>Lasts {lasts} moves</span>}
+                {lasts && lasts > 0 && <span>Lasts {lasts} moves</span>}
             </div>
         </button>
     )

@@ -4,7 +4,8 @@ import { IVFXConstructor } from "../VFX";
 
 export enum EffectNames {
     ON_MOVE = 'onMove',
-    ON_CASTLE = 'onCastle'
+    ON_CASTLE = 'onCastle',
+    DEFAULT = 'default'
 }
 
 // Offsets: PositiveY = Upwards, PostiveX = Left, Range 0 - 1;
@@ -83,7 +84,17 @@ export const effectList: IEffectItem[] = [{
     isLooped: false,
     scale: 2,
     sprite: Effects.expl_plague
+},
+{
+    title: EffectNames.DEFAULT,
+    framesHold: 3,
+    framesMaxWidth: 10,
+    framesMaxHeight: 1,
+    isLooped: false,
+    scale: 2,
+    sprite: Effects.expl_plague
 }
+
 
 
 ]

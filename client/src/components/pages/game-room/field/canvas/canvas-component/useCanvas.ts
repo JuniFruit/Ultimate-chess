@@ -15,22 +15,11 @@ export const useCanvas = ({ onAnimate, preDraw, isAnimationStopped }: IUseCanvas
         const canvas = canvasRef.current
         const context = canvas.getContext('2d')
         let frameCount = 0
-        let animationFrameId: number;
-        let secondsPassed;
-        let oldTimeStamp: DOMHighResTimeStamp;
-        let fps;
+        let animationFrameId: number;      
         resizeCanvas(canvas);
         preDraw(context!, canvas)
         if (isAnimationStopped) return;
-        const render = (timestamp?: DOMHighResTimeStamp) => {
-
-            //Debug fps
-
-            // secondsPassed = (timestamp! - oldTimeStamp) / 1000;
-            // oldTimeStamp = timestamp!;
-
-            // fps = Math.round(1 / secondsPassed);
-            // console.log(fps)
+        const render = () => {           
 
             //Render
 

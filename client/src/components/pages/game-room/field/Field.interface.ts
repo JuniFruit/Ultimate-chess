@@ -7,7 +7,6 @@ import { ICellUlt } from '../../../../model/ultimate/CellUlt';
 
 export interface IField {
     board: IBoard | IBoardUlt;
-    setBoard: Dispatch<SetStateAction<IBoard>>   
     isObserver: boolean;
     myColor: Colors;
     isUltimate: boolean

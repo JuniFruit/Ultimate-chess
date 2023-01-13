@@ -53,7 +53,6 @@ const GameRoom: FC = () => {
                     </div>
                     <GameField
                         board={field.board}
-                        setBoard={field.setBoard}
                         myColor={status.myColor}
                         isObserver={status.isObserver}
                         isSkillBookOpen={status.isSkillBookOpen}

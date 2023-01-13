@@ -1,6 +1,6 @@
 import { useCallback, useRef } from 'react';
 import { Colors } from "../../../../../model/colors.enum";
-import { effectList } from "../../../../../model/effects/data/effects.data";
+import { effectList, EffectNames } from "../../../../../model/effects/data/effects.data";
 import { VFX } from "../../../../../model/effects/VFX";
 import { getFlippedPos } from "../../../../../model/helpers";
 import { Positions } from '../../../../../model/positions';
@@ -27,32 +27,11 @@ export const useCanvasField = (
     const { handlers } = useHandleMoves({ cells, onCellSelect, selected, isFlipped, ultimateStates, premoves })
     const prevMoveCount = useRef<number>(board.states.globalMovesCount);
 
-    const handlePreDraw = useCallback((context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
-        _setFigureAnimation(canvas);
-        if (prevMoveCount.current !== board.states.globalMovesCount) _setFigureEffects(canvas)
-        _drawBoard(context, canvas);
-        _drawPremoves(context, canvas);
-        _drawAvailable(context, canvas);
-        _drawSelected(context, canvas);
-
-        prevMoveCount.current = board.states.globalMovesCount;
-
-    }, [isFlipped, premoves.length, selected, board, isUltimate])
-
-
-    const draw = useCallback((context: CanvasRenderingContext2D, canvas: HTMLCanvasElement, frameCount: number) => {
-        context.clearRect(0, 0, context.canvas.width, context.canvas.height)
-        _drawMouseOver(context, canvas)
-        _drawFigures(context, canvas)
-        _drawEffects(context, canvas);
-
-    }, [board, isFlipped, ultimateStates.isSkillTargetSelecting, vfx])
 
 
 
 
-
-    const _setFigureAnimation = useCallback((canvas: HTMLCanvasElement) => {
+    const _setFigureAnimation = useCallback(() => {
         board.figures.forEach(figure => {
             const animation = new VFX({
                 sprite: figure.spriteSrc!,
@@ -66,18 +45,19 @@ export const useCanvasField = (
             });
 
             figure.setAnimation(animation);
-            
+
 
         })
-    }, [board, isFlipped])
+    }, [board.states.globalMovesCount, isFlipped])
 
-    const _setFigureEffects = useCallback((canvas: HTMLCanvasElement) => {
+    const _setFigureEffects = useCallback(() => {
 
         board.figures.forEach(figure => {
             if (figure.ultimateStates.skillsApplied.length) {
-                figure.ultimateStates.effects = []; // clear before add 
+                figure.effects = []; // clear before add 
                 figure.ultimateStates.skillsApplied.forEach(skill => {
-                    const effectItem = effectList.find(item => item.title === skill.title);
+                    let effectItem = effectList.find(item => item.title === skill.title);
+                    if (!effectItem) effectItem = effectList.find(item => item.title === EffectNames.DEFAULT)
                     const skillEffect = new VFX({
                         ...effectItem!,
                         position: {
@@ -86,12 +66,12 @@ export const useCanvasField = (
                         }
                     })
                     figure.setEffect(skillEffect);
-                    
+
                 })
             }
         })
 
-    }, [board, isFlipped])
+    }, [board.states.globalMovesCount, isFlipped])
 
 
     const _drawFigures = useCallback((ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
@@ -101,7 +81,7 @@ export const useCanvasField = (
             figure.drawEffect(ctx, canvas, isFlipped)
         })
 
-    }, [board, isFlipped])
+    }, [board.states.globalMovesCount, isFlipped])
 
     const _drawPremoves = useCallback((ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
         premoves.forEach(move => {
@@ -168,7 +148,7 @@ export const useCanvasField = (
             effect.rescaleAndCenter();
             effect.updateVFX(ctx)
         })
-    }, [isUltimate, board, vfx])
+    }, [isUltimate, board.states.globalMovesCount, vfx])
 
     const _drawMouseOver = useCallback((ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
 
@@ -241,6 +221,28 @@ export const useCanvasField = (
         if (isFlipped) return getFlippedPos(x, y);
         return { x, y }
     }, [isFlipped])
+
+
+    const handlePreDraw = useCallback((context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
+        _setFigureAnimation();
+        if (prevMoveCount.current !== board.states.globalMovesCount) _setFigureEffects()
+        _drawBoard(context, canvas);
+        _drawPremoves(context, canvas);
+        _drawAvailable(context, canvas);
+        _drawSelected(context, canvas);
+
+        prevMoveCount.current = board.states.globalMovesCount;
+
+    }, [_setFigureAnimation, _drawBoard, _drawPremoves, _drawAvailable, _drawSelected])
+
+
+    const draw = useCallback((context: CanvasRenderingContext2D, canvas: HTMLCanvasElement, frameCount: number) => {
+        context.clearRect(0, 0, context.canvas.width, context.canvas.height)
+        _drawMouseOver(context, canvas)
+        _drawFigures(context, canvas)
+        _drawEffects(context, canvas);
+
+    }, [_drawMouseOver, _drawFigures, _drawEffects])
 
 
 

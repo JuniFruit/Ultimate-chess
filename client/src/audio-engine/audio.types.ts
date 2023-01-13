@@ -30,6 +30,7 @@ export interface ISoundBuffers {
   [SkillNames.SACRIFICE]?: AudioBuffer;
   [SkillNames.DETONATE]?: AudioBuffer;
   [SkillNames.SET_BOMB]?: AudioBuffer;
+  [SkillNames.BLESSING]?: AudioBuffer;
 }
 
 

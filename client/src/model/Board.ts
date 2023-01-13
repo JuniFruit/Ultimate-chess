@@ -1,6 +1,6 @@
 import { IMove, IMoveOptions } from "../constants/socketIO/ClientEvents.interface";
 import { IBoardData } from "../constants/socketIO/ServerEvents.interface";
-import { Cell } from "./Cell";
+import { Cell, ICellData } from "./Cell";
 import { ICell } from "./Cell"
 import { Colors } from "./colors.enum";
 import { Bishop } from "./figures/Bishop";
@@ -12,7 +12,7 @@ import { Queen } from "./figures/Queen";
 import { Rook } from "./figures/Rook";
 import { convertToChar, returnColorCell } from "./helpers";
 import { BoardUlt } from "./ultimate/BoardUlt";
-import { ICellUlt } from "./ultimate/CellUlt";
+import { ICellUlt, ICellUltStates } from "./ultimate/CellUlt";
 
 export interface IBoard {
     cells: ICell[][];
@@ -42,7 +42,7 @@ export interface IBoard {
     mergeBoardData: (boardData: IBoardData) => void;
     decrementMoveCount: () => void;
     filterUncheckingMoves: () => void;
-
+    getBoardData: () => IBoardData;
 
 }
 
@@ -346,14 +346,41 @@ export class Board implements IBoard {
 
         this.cells.forEach((row, y) => {
             row.forEach((cell, x) => {
-                const currentBoardDataCell = boardData.board.cells[y][x];
-                if ((cell as ICellUlt).states) (cell as ICellUlt).states = { ...(currentBoardDataCell as ICellUlt).states! }
+                const currentBoardDataCell = boardData.cells[y][x];
+                if (currentBoardDataCell.states) (cell as ICellUlt).states = { ...currentBoardDataCell.states! }
                 if (cell.figure) {
                     cell.figure.states = { ...currentBoardDataCell.figure?.states! }
                     cell.figure.ultimateStates = { ...currentBoardDataCell.figure?.ultimateStates! }
+                    cell.figure.legalMoves = [...currentBoardDataCell.figure?.legalMoves!]
                 }
             })
         })
+    }
+
+    public getBoardData() {
+        const resultCells: ICellData[][] = [];
+        this.cells.forEach(row => {
+            const cellsRow: ICellData[] = [];
+            row.forEach(cell => {
+                const cellData: ICellData = {
+                    states: (cell as ICellUlt).states && {...(cell as ICellUlt).states},
+                    figure: cell.figure ? {
+                        states: {...cell.figure!.states},
+                        ultimateStates: {...cell.figure!.ultimateStates},
+                        legalMoves: [...cell.figure!.legalMoves]
+                    } : undefined
+                    
+                };
+                cellsRow.push(cellData)
+            })
+            resultCells.push(cellsRow);
+
+        })
+        return {
+            FEN: this.convertToFEN(),
+            cells: resultCells,
+            states: this.states
+        }
     }
 
     public incrementMoveCount() {

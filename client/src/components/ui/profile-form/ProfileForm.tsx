@@ -11,7 +11,7 @@ const ProfileForm: FC<IProfileForm> = ({ form, title, fieldsToExclude, buttonTit
         <Wrapper title={title!}>
                
                 <form className={styles.form_box} onSubmit={form.handleSubmit}>
-                    {!fieldsToExclude?.email && <div>
+                    {!fieldsToExclude?.username && <div>
                         <Field
                             {...form.register('username', {
                                 required: 'Please enter your username',

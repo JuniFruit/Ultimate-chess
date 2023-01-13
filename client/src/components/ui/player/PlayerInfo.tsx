@@ -16,7 +16,7 @@ export const PlayerInfo: FC<PropsWithChildren<IPlayerInfo>> = memo(({ username, 
                     </div>
                 </div>
             </div>
-            <div className={styles.book_button}>
+            <div className={styles.buttons}>
                 {children}
             </div>
             

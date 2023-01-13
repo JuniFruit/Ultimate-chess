@@ -36,7 +36,6 @@ const MatchInfo: FC<IMatchInfo> = memo(({
     }
 
     const handleNewMsg = () => {
-        console.log(activeWindow);
         if (activeWindow === 'chat') return;
         setIsNewMsg(true);
     }

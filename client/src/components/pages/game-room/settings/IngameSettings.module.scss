@@ -1,0 +1,17 @@
+
+
+.container {
+    @apply absolute top-1/2 left-1/2;
+    transform: translate(-50%, -50%); 
+    z-index: 77;
+    >div:first-child {
+        @apply flex flex-col justify-between;
+        min-height: 10rem;
+        >h1 {
+            display: none;
+        }
+        >div {
+            @apply mt-5;
+        }
+    }
+}

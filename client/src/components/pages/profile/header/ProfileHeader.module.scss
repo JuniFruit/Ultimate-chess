@@ -2,8 +2,13 @@
 
 .header_wrapper {
     @apply flex gap-8 h-full w-full items-center flex-col;
+    >button:first-child {
+        @apply w-28 h-28 p-0 bg-transparent disabled:opacity-100;       
+    }
+
     >div:first-child {
-        @apply w-28 h-28;
+        @apply w-28;
+        height: 50rem;
     }
 
     .header_user_info {
@@ -33,8 +38,8 @@
 
     @screen sm {
         @apply flex-row justify-center;
-        >div:first-child {
-            @apply w-40 h-40;
+        >button:first-child {
+            @apply w-40 h-40;       
         }
         .header_user_info {
             @apply block;

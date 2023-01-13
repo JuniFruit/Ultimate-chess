@@ -27,12 +27,20 @@
         }
     }
     
-    .book_button {
+    .buttons {
+        @apply flex gap-2 items-center;
         >button {
             @apply bg-transparent w-8 h-8 p-1;
             >img {
-                    @apply w-full h-full;   
-                    object-fit: cover;          
+                @apply w-full h-full;   
+                object-fit: cover;          
+            }
+        }
+        >button:first-child {
+            @apply flex items-center justify-center opacity-80 hover:opacity-100;
+            >svg {
+                width: calc(100% / 2);
+                height: calc(100% / 2);
             }
         }
     }
@@ -60,7 +68,7 @@
             }
         }
     
-        .book_button {          
+        .buttons {                     
             >button {
                 @apply bg-transparent w-10 h-10;               
             }
@@ -78,8 +86,7 @@
                 
             }
         }
-        .book_button {
-          
+        .buttons {          
             >button {
                 @apply bg-transparent w-14 h-14;              
             }

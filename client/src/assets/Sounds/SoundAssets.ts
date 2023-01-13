@@ -20,7 +20,13 @@ import newMsg from './FX/newMsg.mp3';
 import turnPage from './FX/turnPage.mp3';
 import unable from './FX/unable.mp3';
 import sacrifice from './FX/sacrifice.mp3';
-
+import cheer_1 from './FX/cheer_1.mp3';
+import cheer_2 from './FX/cheer_2.mp3';
+import cheer_3 from './FX/cheer_3.mp3';
+import cheer_4 from './FX/cheer_4.mp3';
+import explosion from './FX/explosion.mp3';
+import plant_timer from './FX/plant_timer.mp3';
+import cast_spell from './FX/cast_spell.mp3';
 
 export const SoundData = {
     castle,
@@ -43,6 +49,13 @@ export const SoundData = {
     chess_check,
     newMsg,
     unable,
-    drawRequest, 
-    sacrifice
+    drawRequest,
+    sacrifice,
+    cheer_1,
+    cheer_2,
+    cheer_3,
+    cheer_4,
+    explosion,
+    cast_spell,
+    plant_timer
 }

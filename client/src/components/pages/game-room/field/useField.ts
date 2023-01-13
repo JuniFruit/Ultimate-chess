@@ -21,7 +21,7 @@ export const useField = ({ board, myColor, isObserver, handleSendMove }: IUseFie
     const [isPromotion, setIsPromotion] = useState(false);
     const [lastTargetCell, setLastTargetCell] = useState<ICell | ICellUlt | null>(null);
     const [premoves, setPremoves] = useState<IPremove[]>([]);
-    const { playSound } = useContext(AudioCtx) as AudioContextType;
+    const { playAnnounce } = useContext(AudioCtx) as AudioContextType;
     const maxPremoves = isMobile ? 1 : 5;
 
     useSound(board)
@@ -98,7 +98,7 @@ export const useField = ({ board, myColor, isObserver, handleSendMove }: IUseFie
         }
 
         if (from.isPromotionMove(to) && !isPromotion) {
-            playSound('promotionVoice');
+            playAnnounce('promotionVoice');
             setLastTargetCell(prev => to);
             setIsPromotion(prev => true);
             return

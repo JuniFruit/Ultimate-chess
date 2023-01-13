@@ -12,3 +12,7 @@ export interface IUser {
     lossesCount: number
     roles: IRole[]
 }
+
+export interface IUserEdit {
+    avatarLink: string;
+}

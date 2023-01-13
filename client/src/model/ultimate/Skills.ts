@@ -6,7 +6,7 @@ export enum SkillNames {
     INCINERATE = 'Incinerate',
     PLAGUE = 'Plague',
     LIGHTNING_BOLT = 'Lightning bolt',
-    SET_BOMB = 'Set bomb',
+    SET_BOMB = 'Demolish',
     DETONATE = 'Detonate',
     BLESSING = 'Knight\'s blessing'
 }
@@ -60,13 +60,22 @@ export const SkillList: ISkillItem[] = [
     {
         title: SkillNames.SET_BOMB,
         lasts: 4,
-        description: 'Places a bomb on a cell that will detonate in 4 moves and affect closest cells',
+        description: 'Sets a bomb on a cell that will detonate in 4 moves and affect closest cells. Any piece, except for King and Queen, that is in epicentre dies. Any Pawn within the radius of 1 cell will die as well.',
         constraints: 'Cannot be performed on an occupied square',
         isTargeted: true,
         canBeAppliedAt: 'cell',
         onExpire: SkillNames.DETONATE,
         canBeUsedByPlayer: true,
 
+    },
+    {
+        title: SkillNames.BLESSING,
+        description: 'Gives a blessing to one of ally Knights, allowing to make a longer jump next time the piece moves',
+        constraints: 'Can be performed only on an ally Knight',
+        isTargeted: true,
+        canBeAppliedAt: 'figure',
+        canBeUsedByPlayer: true,
+        lasts: -2
     },
     {
         title: SkillNames.DETONATE,
@@ -78,15 +87,6 @@ export const SkillList: ISkillItem[] = [
 
     },
 
-    {
-        title: SkillNames.BLESSING,
-        description: 'Gives a blessing to one of ally Knights, allowing to make a longer jump next time the piece moves',
-        constraints: 'Can be performed only on an ally Knight',
-        isTargeted: true,
-        canBeAppliedAt: 'figure',
-        canBeUsedByPlayer: true,
-        lasts: -2
-    }
 ]
 
 

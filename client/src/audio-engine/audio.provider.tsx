@@ -14,6 +14,9 @@ const soundsGain = ctx.createGain();
 soundsGain.gain.value = Number(window.localStorage.getItem("FXGain")) || DefaultSettings.fx;
 soundsGain.connect(masterGain);
 
+const announceGain = ctx.createGain();
+announceGain.gain.value = Number(window.localStorage.getItem("announceGain")) || DefaultSettings.announce;
+announceGain.connect(masterGain);
 
 
 export const AudioCtx = createContext<AudioContextType | null>(null);
@@ -31,10 +34,10 @@ const AudioProvider: FC<PropsWithChildren> = ({ children }) => {
         }
     }
 
-   
+
 
     useEffect(() => {
-        handleFetchSounds();    
+        handleFetchSounds();
     }, [])
 
     const _playbackFX = async (buffer: AudioBuffer, stopOffset = 2) => {
@@ -43,37 +46,64 @@ const AudioProvider: FC<PropsWithChildren> = ({ children }) => {
         bufferSource.connect(soundsGain);
         bufferSource.start(0);
         bufferSource.stop(ctx.currentTime + stopOffset);
-        // soundsGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + stopOffset)
     }
 
     const playSound = (sound: sound, stopOffset = 2) => {
         if (!soundBuffers.current[sound]) return;
         return _playbackFX(soundBuffers.current[sound]!, stopOffset);
     }
-    
+
+    const _playbackAnnounce = (buffer: AudioBuffer, stopOffset = 2) => {
+        const bufferSource = ctx.createBufferSource();
+        bufferSource.buffer = buffer;
+        bufferSource.connect(announceGain);
+        bufferSource.start(0);
+        bufferSource.stop(ctx.currentTime + stopOffset);
+    }
+
+    const playAnnounce = (sound: sound, stopOffset = 3) => {
+        if (!soundBuffers.current[sound]) return;
+        return _playbackAnnounce(soundBuffers.current[sound]!, stopOffset);
+    }
 
     // Only for settings
     const playMasterSound = () => {
         const bufferSource = ctx.createBufferSource();
-        bufferSource.buffer = soundBuffers.current.castle!;
+        bufferSource.buffer = soundBuffers.current.take!;
         bufferSource.connect(masterGain);
         bufferSource.start(0);
         bufferSource.stop(ctx.currentTime + 2);
+    }   
+
+    const changeGain = (id: 'FX' | 'announce' | 'master', value: number) => {
+
+        switch (id) {
+            case 'master':
+                masterGain.gain.value = value;
+                playMasterSound();
+                window.localStorage.setItem("masterGain", value.toString())
+                break;
+            case 'FX':
+                soundsGain.gain.value = value;
+                playSound('take');
+                window.localStorage.setItem("FXGain", value.toString())
+                break;
+            case 'announce':
+                announceGain.gain.value = value;
+                playAnnounce('firstblood');
+                window.localStorage.setItem("announceGain", value.toString());
+                break;
+            default:
+                return;
+        }
     }
 
-    const changeMasterGain = (value: number) => {
-        masterGain.gain.value = value;
-    }
-
-    const changeFXGain = (value: number) => {
-        soundsGain.gain.value = value;
-    }
 
 
 
     return (
 
-        <AudioCtx.Provider value={{ playSound, changeFXGain, changeMasterGain, playMasterSound }}>
+        <AudioCtx.Provider value={{ playSound, changeGain, playAnnounce }}>
             {children}
         </AudioCtx.Provider>
 

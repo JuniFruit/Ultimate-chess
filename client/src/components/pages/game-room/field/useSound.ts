@@ -7,7 +7,7 @@ import { IBoardUlt } from '../../../../model/ultimate/BoardUlt';
 
 export const useSound = (board: IBoard | IBoardUlt) => {
 
-    const { playSound } = useContext(AudioCtx) as AudioContextType;
+    const { playSound, playAnnounce } = useContext(AudioCtx) as AudioContextType;
 
 
     const _handleMoveSFX = useCallback(() => {
@@ -34,7 +34,7 @@ export const useSound = (board: IBoard | IBoardUlt) => {
     }, [board.states.globalMovesCount])
 
     useEffect(() => {
-        if (board.states.isGameOver) playSound('gameOver', 4);
+        if (board.states.isGameOver) playAnnounce('gameOver');
         if (board.isKingChecked()) playSound('check');
         _handleMoveSFX();
         _handleSkillSFX();

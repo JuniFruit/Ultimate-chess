@@ -1,17 +1,25 @@
 import fireLoop from './fire_loop.png';
-import explosion from './explosion.png';
 import blood from './blood.png';
 import lightning from './lightning.png';
-import explosion2 from './explosion2.png';
-import expl_plague from './exp_plague.png';
 import shield from './shield.png';
+import expl_big from './expl_big.png';
+import light from './light.png';
+import light_2 from './light_2.png';
+import plague from './plague.png';
+import fire_effect_loop from './fire_effect_loop.png';
+import fire_enchant from './fire_enchant.png';
+import blood_2 from './blood_2.png'
 
 export const Effects = {
     fireLoop,
     shield,
-    explosion,
     blood,
     lightning,
-    explosion2,
-    expl_plague
+    expl_big,
+    light,
+    light_2,
+    plague,
+    fire_effect_loop,
+    fire_enchant,
+    blood_2
 }

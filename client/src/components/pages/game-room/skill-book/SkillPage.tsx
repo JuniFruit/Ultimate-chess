@@ -7,7 +7,6 @@ import { SkillItemComponent } from "./SkillItemComponent";
 
 export const SkillPage: FC<ISkillPage> = ({skills,onChooseSkill,board, myColor}) => {
 
-
     return (
         <PageItem>
             {

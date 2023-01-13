@@ -25,6 +25,7 @@ export const useGameRoom = (id?: string, isUltimate: boolean = false) => {
     const [request, setRequest] = useState<Requests | null>(null);
     const [isObserver, setIsObserver] = useState(false);
     const [isSkillBookOpen, setIsSkillBookOpen] = useState(false);
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
     const { isConnected } = useSocketConnect();
 
@@ -120,7 +121,9 @@ export const useGameRoom = (id?: string, isUltimate: boolean = false) => {
             result,
             isObserver,
             isSkillBookOpen,
-            setIsSkillBookOpen
+            setIsSkillBookOpen,
+            isSettingsOpen,
+            setIsSettingsOpen
         },
         data: {
             enemyUser,

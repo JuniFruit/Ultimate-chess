@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { BASE_URL } from '../../api/axios'
 import { IRoleAction } from '../../components/pages/admin/players/actions/Actions.interface';
 import { USER } from '../../services/user.service';
-import { IUser } from '../../types/user.interface';
+import { IUser, IUserEdit } from '../../types/user.interface';
 import { TypeRootState } from '../store';
 
 export const api = createApi({
@@ -59,7 +59,7 @@ export const api = createApi({
                     ? [...result.map(({ id }) => ({ type: 'Users' as const, id })), 'Users']
                     : ['Users']
         }),
-        addRoleToUser: builder.mutation<IUser,IRoleAction>({
+        addRoleToUser: builder.mutation<IUser, IRoleAction>({
             query: (data) => ({
                 url: `/${USER}/add-role`,
                 method: "PUT",
@@ -67,9 +67,9 @@ export const api = createApi({
                     ...data
                 }
             }),
-            invalidatesTags: (res, err, data) => [{type: "Users", id: data.userId}]
+            invalidatesTags: (res, err, data) => [{ type: "Users", id: data.userId }]
         }),
-        deleteRoleFromUser: builder.mutation<IUser,IRoleAction>({
+        deleteRoleFromUser: builder.mutation<IUser, IRoleAction>({
             query: (data) => ({
                 url: `/${USER}/delete-role`,
                 method: "PUT",
@@ -77,7 +77,17 @@ export const api = createApi({
                     ...data
                 }
             }),
-            invalidatesTags: (res, err, data) => [{type: "Users", id: data.userId}]
+            invalidatesTags: (res, err, data) => [{ type: "Users", id: data.userId }]
+        }),
+        edit: builder.mutation<IUser, IUserEdit>({
+            query: (data) => ({
+                url: `/${USER}/edit`,
+                method: "PUT",
+                body: {
+                    dto: { ...data }
+                }
+            }),
+            invalidatesTags: (res,err,data) => [{type: "Profile"}, {type: "Users", id: res?.id}]
         })
 
     })

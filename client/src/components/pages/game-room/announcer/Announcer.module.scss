@@ -2,7 +2,7 @@
 
 
 .announcer_wrapper {
-    @apply absolute left-1/2 top-1/4 text-amber-200 text-tiny w-max h-min p-2 rounded-lg select-none;
+    @apply absolute left-1/2 top-1/4 text-amber-200 text-sm w-max h-min p-2 rounded-lg select-none break-words;
     font-weight: 900; 
     z-index: 76;
     transform: translate(-50%, -50%);

@@ -23,6 +23,7 @@ export const SkillBook: FC<ISkillBook> = ({ onChooseSkill, onClose, board, myCol
                 pages.push(temp)
                 temp = []
             }
+            if (!item.canBeUsedByPlayer) return           
             temp.push(item)
         })
         pages.push(temp);

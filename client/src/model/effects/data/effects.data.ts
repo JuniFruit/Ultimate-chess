@@ -5,18 +5,21 @@ import { IVFXConstructor } from "../VFX";
 export enum EffectNames {
     ON_MOVE = 'onMove',
     ON_CASTLE = 'onCastle',
-    DEFAULT = 'default'
+    DEFAULT = 'default',
+    ON_PROMOTION = 'onPromotion',
+    ON_TAKE = 'onTake'
 }
 
 // Offsets: PositiveY = Upwards, PostiveX = Left, Range 0 - 1;
 
 export const effectList: IEffectItem[] = [{
     title: SkillNames.SACRIFICE,
-    framesHold: 5,
-    framesMaxWidth: 6,
-    framesMaxHeight: 6,
+    framesHold: 3,
+    framesMaxWidth: 8,
+    framesMaxHeight: 4,
+    scale: 2,
     isLooped: false,
-    sprite: Effects.blood,
+    sprite: Effects.blood_2,
 
 },
 
@@ -26,13 +29,15 @@ export const effectList: IEffectItem[] = [{
     framesHold: 5,
     framesMaxWidth: 6,
     framesMaxHeight: 1,
+    scale: 1.2,
+    offsetY: .105,
     isLooped: true,
     sprite: Effects.fireLoop,
 
 },
 {
     title: SkillNames.LIGHTNING_BOLT,
-    framesHold: 5,
+    framesHold: 3,
     framesMaxWidth: 16,
     framesMaxHeight: 1,
     scale: 2,
@@ -43,23 +48,23 @@ export const effectList: IEffectItem[] = [{
 {
     title: SkillNames.PLAGUE,
     framesHold: 3,
-    framesMaxWidth: 10,
-    framesMaxHeight: 1,
+    framesMaxWidth: 8,
+    framesMaxHeight: 4,
     isLooped: false,
     scale: 2,
-    sprite: Effects.expl_plague
+    sprite: Effects.plague
 },
 {
     title: EffectNames.ON_MOVE,  //Appeares after each moves
     framesHold: 3,
-    framesMaxWidth: 10,
-    framesMaxHeight: 1,
+    framesMaxWidth: 8,
+    framesMaxHeight: 4,
     isLooped: false,
     scale: 2,
-    sprite: Effects.explosion2
+    sprite: Effects.fire_enchant
 },
 {
-    title: EffectNames.ON_CASTLE,  
+    title: EffectNames.ON_CASTLE,
     framesHold: 7,
     framesMaxWidth: 5,
     framesMaxHeight: 1,
@@ -68,31 +73,58 @@ export const effectList: IEffectItem[] = [{
     sprite: Effects.shield
 },
 {
-    title: SkillNames.SET_BOMB,
+    title: EffectNames.ON_PROMOTION,
     framesHold: 3,
-    framesMaxWidth: 10,
-    framesMaxHeight: 1,
+    framesMaxWidth: 8,
+    framesMaxHeight: 2,
     isLooped: false,
     scale: 2,
-    sprite: Effects.explosion2
+    sprite: Effects.light_2,
+},
+{
+    title: SkillNames.SET_BOMB,
+    framesHold: 3,
+    framesMaxWidth: 8,
+    framesMaxHeight: 8,
+    isLooped: true,
+    scale: 1.5,
+    sprite: Effects.fire_effect_loop
 },
 {
     title: SkillNames.DETONATE,
     framesHold: 3,
-    framesMaxWidth: 10,
-    framesMaxHeight: 1,
+    framesMaxWidth: 8,
+    framesMaxHeight: 4,
     isLooped: false,
     scale: 2,
-    sprite: Effects.expl_plague
+    sprite: Effects.expl_big
+},
+{
+    title: EffectNames.ON_TAKE,
+    framesHold: 3,
+    framesMaxWidth: 8,
+    framesMaxHeight: 2,
+    isLooped: false,
+    scale: 2,
+    sprite: Effects.blood
+},
+{
+    title: SkillNames.BLESSING,
+    framesHold: 3,
+    framesMaxWidth: 8,
+    framesMaxHeight: 2,
+    isLooped: false,
+    scale: 2,
+    sprite: Effects.light
 },
 {
     title: EffectNames.DEFAULT,
     framesHold: 3,
-    framesMaxWidth: 10,
-    framesMaxHeight: 1,
+    framesMaxWidth: 8,
+    framesMaxHeight: 2,
     isLooped: false,
     scale: 2,
-    sprite: Effects.expl_plague
+    sprite: Effects.light
 }
 
 

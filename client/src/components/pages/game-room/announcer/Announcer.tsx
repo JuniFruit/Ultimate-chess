@@ -1,6 +1,6 @@
 import { FC, useState, useEffect, useCallback, useContext, useRef, memo } from 'react'
 import { AudioCtx } from '../../../../audio-engine/audio.provider';
-import { AudioContextType } from '../../../../audio-engine/audio.types';
+import { AudioContextType, sound } from '../../../../audio-engine/audio.types';
 import { Colors } from '../../../../model/colors.enum';
 import { KillThreshold } from '../../../../model/helper.enum';
 import { Announces } from './Announcer.enum';
@@ -11,13 +11,17 @@ export const Announcer: FC<IAnnouncer> = memo(({ players, states, myColor, isUlt
     const [isActive, setIsActive] = useState(false);
 
     const prevStates = useRef<{ last: IAnnouncerBoardStates | null }>({ last: null });
-    const { playSound } = useContext(AudioCtx) as AudioContextType;
+    const { playAnnounce } = useContext(AudioCtx) as AudioContextType;
+
+    const cheers: ("cheer_1" | "cheer_2" | "cheer_3" | "cheer_4")[] = ['cheer_1', 'cheer_2', 'cheer_3', 'cheer_4'];
+    cheers.sort(() => 0.5 - Math.random())
 
     const getFisrtBlood = useCallback(() => {
         if (!prevStates.current.last) return null;
         if (states.lostFiguresCount !== 1 || prevStates.current.last.lostFiguresCount === states.lostFiguresCount) return null;
         const figure = states.lostFigures[0];
-        playSound('firstblood');
+        playAnnounce('firstblood');
+        playAnnounce(cheers[0]);
         return (
             <>
                 <h2>
@@ -56,14 +60,20 @@ export const Announcer: FC<IAnnouncer> = memo(({ players, states, myColor, isUlt
             announce = Announces.SPREE;
             username = whiteKillCount === KillThreshold.SPREE && whiteKillCount !== prevWhite ? getAnnounceInfo(Colors.WHITE)
                 : blackKillCount === KillThreshold.SPREE && blackKillCount !== prevBlack && getAnnounceInfo(Colors.BLACK);
-            username && playSound('spree', 4);
+                if (username) {
+                    playAnnounce('spree', 4);
+                    playAnnounce(cheers[0]);
+                } 
         }
 
         if (whiteKillCount === KillThreshold.DOMINATING || blackKillCount === KillThreshold.DOMINATING) {
             announce = Announces.DOMINATING;
             username = whiteKillCount === KillThreshold.DOMINATING && whiteKillCount !== prevWhite ? getAnnounceInfo(Colors.WHITE)
                 : blackKillCount === KillThreshold.DOMINATING && blackKillCount !== prevBlack && getAnnounceInfo(Colors.BLACK);
-            username && playSound('dominating', 4);
+                if (username) {
+                    playAnnounce('dominating', 4);
+                    playAnnounce(cheers[0]);
+                } 
         }
 
 
@@ -71,7 +81,11 @@ export const Announcer: FC<IAnnouncer> = memo(({ players, states, myColor, isUlt
             announce = Announces.UNSTOPPABLE;
             username = whiteKillCount === KillThreshold.UNSTOPPABLE && whiteKillCount !== prevWhite ? getAnnounceInfo(Colors.WHITE)
                 : blackKillCount === KillThreshold.UNSTOPPABLE && blackKillCount !== prevBlack && getAnnounceInfo(Colors.BLACK);
-            username && playSound('unstoppable', 4);
+            if (username) {
+                playAnnounce('unstoppable', 4);
+                playAnnounce(cheers[0]);
+            } 
+        
         }
 
 
@@ -120,7 +134,7 @@ export const Announcer: FC<IAnnouncer> = memo(({ players, states, myColor, isUlt
     }, [states.globalMovesCount, states.isGameOver, myColor, states.skillsUsed]);
 
     if (!isActive) return null;
-
+    
     return (
         <div className={styles.announcer_wrapper}>
             {getFisrtBlood()}

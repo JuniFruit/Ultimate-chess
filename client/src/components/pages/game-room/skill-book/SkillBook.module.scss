@@ -5,25 +5,27 @@
     
     .skill_info {
         @apply flex flex-col;
+        line-height: 1rem;
 
         >h2 {
             font-size: .75rem;
             font-weight: 700;
         }
         >p {
-            font-size: .65rem;
+            font-size: .55rem;
             font-weight: 500;
         }
         >h3 {
             @apply opacity-90;
-            font-size: .55rem;
+            font-size: .45rem;
         }
         >span {
             @apply opacity-90;
-            font-size: .55rem;
+            font-size: .45rem;
         }
 
         @screen sm {
+            line-height: 1.5rem;
             >h2 {
                 font-size: 1rem;
             }

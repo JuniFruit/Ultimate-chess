@@ -24,6 +24,8 @@ export const useVFX = ({ board, isUltimate, isFlipped }: IUseVFX) => {
         if (lastMove && lastMove.moveMadeAt === board.states.globalMovesCount) {
             let effectItem = effectList.find(effect => effect.title === EffectNames.ON_MOVE);
             if (lastMove.options.isCastling) effectItem = effectList.find(effect => effect.title === EffectNames.ON_CASTLE);
+            if (lastMove.options.isPromotion) effectItem = effectList.find(effect => effect.title === EffectNames.ON_PROMOTION);
+            if (lastMove.options.isTake) effectItem = effectList.find(effect => effect.title === EffectNames.ON_TAKE);
             if (!effectItem) effectItem = effectList.find(item => item.title === EffectNames.DEFAULT)
             const effect = new VFX({
                 ...effectItem!,

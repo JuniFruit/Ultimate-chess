@@ -1,0 +1,30 @@
+
+
+.container {
+    @apply relative touch-none;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.2);
+    z-index: 77;
+    .wrapper {
+        @apply absolute top-1/2 left-1/2;
+        transform: translate(-50%, -50%);     
+        >div:first-child {
+            min-height: 15rem;
+            min-width: 17rem;
+
+            @screen sm {
+                min-width: 25rem;
+            }
+        }  
+        form {
+            @apply w-full;
+
+            .buttons {
+                @apply flex gap-3 items-center mt-12 justify-center;
+            }
+        }
+    }
+
+    
+}

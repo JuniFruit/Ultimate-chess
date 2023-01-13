@@ -2,9 +2,9 @@ import { SkillNames } from "../model/ultimate/Skills";
 
 export type AudioContextType = {
   playSound: (sound: sound, stopOffset?: number) => void;
-  changeFXGain: (value: number) => void;
-  changeMasterGain: (value: number) => void;
-  playMasterSound: () => void;
+  playAnnounce: (sound: sound, stopOffset?: number) => void;
+  changeGain: (id: 'FX' | 'announce' | 'master', value: number) => void;
+  
 };
 
 export interface ISoundBuffers {
@@ -31,11 +31,15 @@ export interface ISoundBuffers {
   [SkillNames.DETONATE]?: AudioBuffer;
   [SkillNames.SET_BOMB]?: AudioBuffer;
   [SkillNames.BLESSING]?: AudioBuffer;
+  cheer_1?: AudioBuffer;
+  cheer_2?: AudioBuffer;
+  cheer_3?: AudioBuffer;
+  cheer_4?: AudioBuffer;
 }
 
 
 
 export type sound = 'check' | 'take' | 'move' | 'castle' | 'promotion'
   | 'promotionVoice' | 'unstoppable' | 'gameOver' | 'spree' | 'dominating' | 'firstblood' | SkillNames
-  | 'invalid' | 'drawRequest' | 'turnPage' | 'newMsg' | 'bookOpen' | 'invalid';
+  | 'invalid' | 'drawRequest' | 'turnPage' | 'newMsg' | 'bookOpen' | 'invalid' | "cheer_1" | "cheer_2" | "cheer_3" | "cheer_4";
 

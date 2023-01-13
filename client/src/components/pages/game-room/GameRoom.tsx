@@ -1,4 +1,5 @@
 import { FC, useCallback, useContext } from "react";
+import { IoSettingsSharp } from "react-icons/io5";
 import { useParams } from "react-router-dom";
 import { iconsGeneral } from "../../../assets/icons/general/iconsGeneral";
 import { AudioCtx } from "../../../audio-engine/audio.provider";
@@ -17,6 +18,7 @@ import { ConfirmModal } from "./modals/ConfirmModal";
 import { ErrorModal } from "./modals/ErrorModal";
 import { GameOverModal } from "./modals/GameOverModal";
 import { WaitingModal } from "./modals/WaitingModal";
+import { IngameSettings } from "./settings/IngameSettings";
 import { useGameRoom } from "./useGameRoom";
 import { TimerHandler } from "./utils/TimerHandler/TimerHandler";
 
@@ -67,6 +69,11 @@ const GameRoom: FC = () => {
                                 key={'clientInfo'}
                                 {...data.clientUser}>
 
+                                <Button
+                                    onClick={() => status.setIsSettingsOpen(true)}
+                                >
+                                    <IoSettingsSharp />
+                                </Button>
                                 {
                                     isUltimate && !status.isObserver
                                         ?
@@ -133,6 +140,7 @@ const GameRoom: FC = () => {
                 /> : null
             }
             {!status.isReadyToStart && status.isConnected ? <WaitingModal /> : null}
+            {status.isSettingsOpen ? <IngameSettings onClose={() => status.setIsSettingsOpen(false)} /> : null}
 
 
         </Layout>

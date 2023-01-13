@@ -2,7 +2,7 @@ import express from 'express';
 import { UserService } from '../user/user.service';
 import { authGuard } from '../auth/auth.guard';
 import { adminGuard } from '../guards/role.guard';
-import { isSameUser } from '../middleware/user/role.middleware';
+import { isNotCreator, isSameUser } from '../middleware/user/role.middleware';
 const router = express.Router();
 
 
@@ -47,6 +47,15 @@ router.get('/by-term', async (req, res) => {
     }
 })
 
+router.put('/edit', async (req, res) => {
+    try {
+        const user = await UserService.update(Number(req.body.currentUser), req.body.dto);
+        res.send(user);
+    } catch (error: any) {
+        res.status(500).send({ message: error.message });
+    }
+})
+
 router.put('/increase-wins', async (req, res) => {
     try {
         const user = await UserService.increaseWins(Number(req.body.currentUser));
@@ -69,7 +78,7 @@ router.put('/increase-losses', async (req, res) => {
 
 router.use(adminGuard, isSameUser)
 
-router.put('/add-role', async (req, res) => {
+router.put('/add-role', isNotCreator, async (req, res) => {
     try {
         const user = await UserService.addRole(Number(req.body.userId), req.body.roleValue);
         res.send(user);
@@ -79,7 +88,7 @@ router.put('/add-role', async (req, res) => {
     }
 })
 
-router.put('/delete-role', async (req, res) => {
+router.put('/delete-role', isNotCreator, async (req, res) => {
     try {
         const user = await UserService.deleteRole(Number(req.body.userId), req.body.roleValue);
         res.send(user);

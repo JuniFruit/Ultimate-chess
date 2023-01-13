@@ -36,27 +36,27 @@ export const BoardService = {
         const loser = roomApi(roomId).getPlayer(socket.data.user.username)?.color;
 
         if (!loser) return;
-        
-        
+
+
         if (!boardApi(roomId).isTimeout(loser)) {
-            
+
             if (ioServer.of('/').adapter.rooms.get(roomId)?.size! < 2) {
                 const players = roomApi(roomId).getRoomInfo().players;
                 const opponent = players?.find(player => player.username !== loser);
                 return this.onResign(ioServer, roomId, opponent?.username!);
             }
-            
+
             ioServer.to([roomId, `${roomId}_obs`]).emit("updateTimer", boardApi(roomId).getTime());
             return;
         }
-        
+
         const results = {
             result: Results.CHECKMATE,
             loser,
             reason: GameOverReasons.TIMEOUT
         }
         const isDraw = !boardApi(roomId).isSufficientMaterial(); //if enemy has insufficient material game is draw on timeout, else current p. loses
-        
+
 
         if (isDraw) return ioServer.to([roomId, `${roomId}_obs`]).emit('results', { ...results, result: Results.DRAW });
 
@@ -65,17 +65,18 @@ export const BoardService = {
     },
     async onConfirmRequest(ioServer: Server<IClientEvents, IServerEvents>, payload: Requests, roomId: string) {
 
-        
+
         if (payload === Requests.DRAW) {
-            if (roomApi(roomId).getRoomInfo().result) return;
+            if (boardApi(roomId).getBoard().states.isGameOver) return;
             const results = {
                 result: Results.DRAW,
                 loser: Colors.BLACK
             }
             this.onGameOver(roomId, results);
-            return ioServer.to([roomId, `${roomId}_obs`]).emit("results", results);
+            ioServer.to([roomId, `${roomId}_obs`]).emit("results", results);
         }
 
+        boardApi(roomId).createBoard();
         if (payload === Requests.REMATCH) {
             const sockets = await ioServer.in([roomId, `${roomId}_obs`]).fetchSockets();
             sockets.forEach(socket => socket.emit("updateGame", this.getUpdateGamePayload(socket, roomId)));
@@ -87,7 +88,7 @@ export const BoardService = {
 
     onResign(ioServer: Server<IClientEvents, IServerEvents>, roomId: string, username: string) {
 
-        if (roomApi(roomId).getRoomInfo().result) return;
+        if (boardApi(roomId).getBoard().states.isGameOver) return;
         const loser = roomApi(roomId).getPlayer(username)?.color;
         if (!loser) return;
 
@@ -117,7 +118,7 @@ export const BoardService = {
 
         users.forEach(async (user) => {
             try {
-                
+
                 const isAuthed = user.user?.id && user.user?.id !== 0
                 if (user.color === results.loser) {
                     isAuthed && await UserService.increaseLoses(user.user.id);
@@ -166,7 +167,7 @@ export const BoardService = {
 
 
     onGameOver(roomId: string, results: IResultPayload) {
-        boardApi(roomId).createBoard();
+        boardApi(roomId).getBoard().states.isGameOver = true;
         roomApi(roomId).updateRoomInfo({ result: results });
     }
 }

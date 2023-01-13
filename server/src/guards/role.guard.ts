@@ -22,7 +22,7 @@ export const creatorGuard: RequestHandler = async (req,res,next) => {
     if (!userRoles.length) return res.status(403).send({message: 'Forbidden resource'})
 
     const creatorRole = userRoles.find((userRole: RolesEntity) => userRole.role === 'CREATOR');
-    if (!creatorRole) return res.status(403).send({message: 'Forbidden'})
+    if (!creatorRole) return res.status(403).send({message: 'Only for Creator'})
 
     next();
 }

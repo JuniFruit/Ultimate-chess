@@ -1,6 +1,7 @@
 import { Like } from "typeorm"
 import { RegisterDto } from "../auth/auth.dto"
 import { roleRepository, userRepository } from "../database/db.connect"
+import { UserEditDto } from './user.dto';
 
 export const UserService = {
     async getById(id: number) {
@@ -20,8 +21,9 @@ export const UserService = {
         if (!user) throw new Error('User doesn\'t exist')
         return user
     },
-    async update(id: number) {
-        const user = await this.getById(id);
+    async update(id: number, data: UserEditDto) {
+        const user = await this.getById(id)
+        return await userRepository.save({ ...user, ...data });
 
     },
     async increaseWins(id: number) {

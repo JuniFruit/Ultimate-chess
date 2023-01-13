@@ -32,7 +32,7 @@ export const boardApi = (roomId: string) => {
 
     const getResults = () => {
         const board = getBoard();
-
+        if (board.states.isGameOver) return;
         board.updateAllLegalMoves();
         if (board.isKingChecked()) {
             if (board.isCheckMate()) return {
@@ -48,6 +48,7 @@ export const boardApi = (roomId: string) => {
 
     const moveFigure = (move: IMove) => {
         const board = getBoard();
+        if (board.states.isGameOver) return;
         updateTime(board)
         board.receiveMove(move);
         board.states.isFirstMove = false;
@@ -58,11 +59,7 @@ export const boardApi = (roomId: string) => {
     const getBoardData = () => {
         const board = getBoard();
         updateTime(board);
-        const boardFEN = board.convertToFEN();
-        return {
-            FEN: boardFEN,
-            board
-        };
+        return board.getBoardData()
     }
 
     const updateTime = (board: IBoard) => {

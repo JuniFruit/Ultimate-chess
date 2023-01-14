@@ -42,6 +42,7 @@ ioServer.use(userHandler)
 
 
 ioServer.on('connection', (socket) => {
+    console.log(`New connection`,socket.data)
 
     serverListener(socket, ioServer);
     roomListener(socket, ioServer);

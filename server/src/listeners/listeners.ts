@@ -123,13 +123,10 @@ export const serverListener = (socket: Socket<IClientEvents, IServerEvents>, ioS
 
     socket.on('disconnect', (reason) => {
         try {
-            console.log(reason);
+            console.log(reason, socket.data);
             RoomService.onRoomLeave(socket, ioServer)
         } catch (error) {
             socket.emit('error', Errors.INTERNAL)
         }
-    });
-    // socket.onAny(() => console.log(ioServer.of('/').adapter.rooms))
-
-
+    });  
 }

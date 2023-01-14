@@ -35,11 +35,10 @@ export const useAdminHome = () => {
         return () => {
             ioClient.off("currentGames");
         }
-    }, [])
+    }, [data])
 
     useEffect(() => {
-        ioClient.emit("currentGames");
-
+        ioClient.emit("currentGames");       
     }, [])
 
     return {

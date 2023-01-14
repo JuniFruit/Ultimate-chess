@@ -6,7 +6,7 @@ import { Button } from '../../../../../ui/button/Button';
 import styles from '../Handle.module.scss';
 import { IDrawHandler } from './DrawHandler.interface';
 
-export const DrawHandler: FC<IDrawHandler> = memo(({ onConfirm, onDecline }) => {
+const DrawHandler: FC<IDrawHandler> = memo(({ onConfirm, onDecline }) => {
 
     const { playSound } = useContext(AudioCtx) as AudioContextType;
 
@@ -26,3 +26,5 @@ export const DrawHandler: FC<IDrawHandler> = memo(({ onConfirm, onDecline }) => 
         </div>
     )
 })
+
+export default DrawHandler

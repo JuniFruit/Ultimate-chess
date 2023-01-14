@@ -1,9 +1,7 @@
 import { ITutorialItem } from "./tutorialData";
 
 
-export interface ITutorialPage extends ITutorialItem {
-    currentPage: number;
-    pageTotal: number;
+export interface ITutorialPage extends ITutorialItem {   
 }
 
 export interface ITutorialComp {

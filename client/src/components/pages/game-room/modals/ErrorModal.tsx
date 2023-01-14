@@ -4,7 +4,7 @@ import ioClient from '../../../../api/socketApi';
 import { Errors } from '../../../../constants/constants';
 import ErrorDialog from '../../../ui/dialog/errors/ErrorDialog';
 
-export const ErrorModal: FC = () => {
+const ErrorModal: FC = () => {
 
     const [errorMsg, setErrorMsg] = useState<Errors | null>()
 
@@ -38,3 +38,5 @@ export const ErrorModal: FC = () => {
         </>
     )
 }
+
+export default ErrorModal;

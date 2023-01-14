@@ -1,7 +1,7 @@
 import { FC } from 'react';
-import { ImagePreview } from '../../../ui/image-preview/ImagePreview';
 import { IPackSlide } from './PacksCarousel.interface';
 import styles from '../Packs.module.scss';
+import { ImagePreview } from '../../../ui/SuspenseWrapper';
 
 export const PackSlide: FC<IPackSlide> = ({ onChoosePack, preview, packId, title, isInUse }) => {
 

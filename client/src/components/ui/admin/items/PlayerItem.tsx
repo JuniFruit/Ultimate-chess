@@ -1,6 +1,6 @@
 import { FC, PropsWithChildren, MouseEventHandler } from "react";
 import { IUser } from "../../../../types/user.interface";
-import { ImagePreview } from "../../image-preview/ImagePreview";
+import { ImagePreview } from "../../SuspenseWrapper";
 import styles from './Items.module.scss';
 
 

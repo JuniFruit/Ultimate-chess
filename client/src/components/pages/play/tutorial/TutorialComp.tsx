@@ -12,11 +12,10 @@ export const TutorialComp: FC<ITutorialComp> = ({ onClose }) => {
 
     const [currentPage, setCurrentPage] = useState(0);
 
-    const pages = tutorialPages.map((page, ind) => (
+    const pages = tutorialPages.map((page) => (
         <TutorialPage
-            {...{ ...page }}
-            currentPage={ind + 1}
-            pageTotal={tutorialPages.length}
+            {...{ ...page }}         
+          
         />
     ));
 

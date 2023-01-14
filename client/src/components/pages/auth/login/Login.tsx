@@ -3,10 +3,10 @@ import { FC, useEffect } from 'react';
 import { useActions } from "../../../../hooks/useActions";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { IAuthDto } from "../../../../types/auth.interface";
-import RegisterForm from '../../../ui/profile-form/ProfileForm'
-import styles from '../register/Register.module.scss';
 import { useAuth } from "../../../../hooks/useAuth";
 import { Link, useNavigate } from "react-router-dom";
+import { ProfileForm } from "../../../ui/SuspenseWrapper";
+import styles from '../register/Register.module.scss';
 
 const Login: FC = () => {
 
@@ -31,7 +31,7 @@ const Login: FC = () => {
     return (
         <Layout title="Ultimate Chess registration">
             <section className={styles.container}>
-                <RegisterForm
+                <ProfileForm
                     form={{
                         handleSubmit: handleSubmit(onSubmit),
                         setValue,

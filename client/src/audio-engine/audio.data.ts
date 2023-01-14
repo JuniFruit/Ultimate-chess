@@ -12,16 +12,7 @@ export const Sounds = {
     spree: SoundData.spree,
     dominating: SoundData.dominating,
     firstblood: SoundData.firstblood,
-    take: SoundData.chess_take,
-    [SkillNames.SACRIFICE]: SoundData.sacrifice,
-    [SkillNames.INCINERATE]: SoundData.fire_ball,
-    [SkillNames.LIGHTNING_BOLT]: SoundData.tempest,
-    [SkillNames.PLAGUE]: SoundData.cast_crystal,
-    [SkillNames.DETONATE]: SoundData.explosion,
-    [SkillNames.SET_BOMB]: SoundData.plant_timer,
-    [SkillNames.BLESSING]: SoundData.cast_spell,
-    bookOpen: SoundData.bookOpen,
-    turnPage: SoundData.turnPage,
+    take: SoundData.chess_take,  
     check: SoundData.chess_check,
     newMsg: SoundData.newMsg,
     invalid: SoundData.unable,
@@ -31,4 +22,16 @@ export const Sounds = {
     cheer_3: SoundData.cheer_3,
     cheer_4: SoundData.cheer_4
 
+}
+
+export const UltimateSounds = {
+    [SkillNames.SACRIFICE]: SoundData.sacrifice,
+    [SkillNames.INCINERATE]: SoundData.fire_ball,
+    [SkillNames.LIGHTNING_BOLT]: SoundData.tempest,
+    [SkillNames.PLAGUE]: SoundData.cast_crystal,
+    [SkillNames.DETONATE]: SoundData.explosion,
+    [SkillNames.SET_BOMB]: SoundData.plant_timer,
+    [SkillNames.BLESSING]: SoundData.cast_spell,
+    bookOpen: SoundData.bookOpen,
+    turnPage: SoundData.turnPage,
 }

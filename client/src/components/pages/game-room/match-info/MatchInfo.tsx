@@ -1,14 +1,15 @@
-import { FC, memo, MouseEvent, useState } from "react";
+import { FC, memo, MouseEvent, useState, lazy, Suspense, useTransition } from "react";
 import { GiDiceShield, GiKneeling } from "react-icons/gi";
 import { IoChatboxEllipsesOutline, IoGameControllerOutline, IoNotificationsCircleSharp } from "react-icons/io5";
 import { Requests } from "../../../../constants/constants";
 import { Button } from "../../../ui/button/Button";
-import Chat from "./chat/Chat";
-import { DisconnectUser } from "./footer/disconnect-user/DisconnectUser";
-import { DrawHandler } from "./footer/draw-handler/DrawHandler";
-import { GameInfo } from "./game-info/GameInfo";
-import { IMatchInfo } from "./MatchInfo.interfact";
+import { IMatchInfo } from "./MatchInfo.interface";
 import styles from './MatchInfo.module.scss';
+
+const DisconnectUser = lazy(() => import("./footer/disconnect-user/DisconnectUser"));
+const DrawHandler = lazy(() => import("./footer/draw-handler/DrawHandler"));
+const GameInfo = lazy(() => import("./game-info/GameInfo"));
+const Chat = lazy(() => import("./chat/Chat"));
 
 type activeWindow = 'game' | 'chat';
 
@@ -28,11 +29,14 @@ const MatchInfo: FC<IMatchInfo> = memo(({
 }) => {
     const [activeWindow, setActiveWindow] = useState<activeWindow>('game');
     const [isNewMsg, setIsNewMsg] = useState(false);
+    const [isPending, setStartTransition] = useTransition()
 
     const handleSetWindow = (e: MouseEvent<HTMLButtonElement>) => {
-        const currentValue = e.currentTarget.value as activeWindow;
-        currentValue === 'chat' && setIsNewMsg(false);
-        setActiveWindow(currentValue);
+        setStartTransition(() => {
+            const currentValue = e.currentTarget.value as activeWindow;
+            currentValue === 'chat' && setIsNewMsg(false);
+            setActiveWindow(currentValue);
+        })
     }
 
     const handleNewMsg = () => {
@@ -86,17 +90,19 @@ const MatchInfo: FC<IMatchInfo> = memo(({
                 </div>
             </div>
 
-            {activeWindow === 'game' ? <GameInfo {...{ lostFigures, currentPlayer, moves }} /> : null}
+            <Suspense fallback={null}>
+                {activeWindow === 'game' ? <GameInfo {...{ lostFigures, currentPlayer, moves }} /> : null}
+                <div
+                    className={`${activeWindow === 'chat' ? styles.chat_wrapper_active : styles.chat_wrapper_disabled}`}
+                >
+                    <Chat onNewMsg={handleNewMsg} />
+                </div>
+                <div className={styles.match_info_footer}>
+                    {request === Requests.DRAW ? <DrawHandler onConfirm={onConfirmDraw} onDecline={onDeclineDraw} /> : null}
+                    <DisconnectUser {...{ currentPlayer, isFirstMove, isGameOver, isObserver }} />
+                </div>
+            </Suspense>
 
-            <div
-                className={`${activeWindow === 'chat' ? styles.chat_wrapper_active : styles.chat_wrapper_disabled}`}
-            >
-                <Chat onNewMsg={handleNewMsg} />
-            </div>
-            <div className={styles.match_info_footer}>
-                {request === Requests.DRAW ? <DrawHandler onConfirm={onConfirmDraw} onDecline={onDeclineDraw} /> : null}
-                <DisconnectUser {...{ currentPlayer, isFirstMove, isGameOver, isObserver }} />
-            </div>
 
 
 

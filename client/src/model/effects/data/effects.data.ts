@@ -57,11 +57,11 @@ export const effectList: IEffectItem[] = [{
 {
     title: EffectNames.ON_MOVE,  //Appeares after each moves
     framesHold: 3,
-    framesMaxWidth: 8,
-    framesMaxHeight: 4,
+    framesMaxWidth: 5,
+    framesMaxHeight: 1,
     isLooped: false,
-    scale: 2,
-    sprite: Effects.fire_enchant
+    scale: 1,
+    sprite: Effects.onMove_5
 },
 {
     title: EffectNames.ON_CASTLE,
@@ -84,11 +84,11 @@ export const effectList: IEffectItem[] = [{
 {
     title: SkillNames.SET_BOMB,
     framesHold: 3,
-    framesMaxWidth: 8,
-    framesMaxHeight: 8,
-    isLooped: true,
-    scale: 1.5,
-    sprite: Effects.fire_effect_loop
+    framesMaxWidth: 7,
+    framesMaxHeight: 2,
+    isLooped: false,
+    scale: .5,
+    sprite: Effects.bomb
 },
 {
     title: SkillNames.DETONATE,
@@ -96,7 +96,7 @@ export const effectList: IEffectItem[] = [{
     framesMaxWidth: 8,
     framesMaxHeight: 4,
     isLooped: false,
-    scale: 2,
+    scale: 3,
     sprite: Effects.expl_big
 },
 {

@@ -1,5 +1,5 @@
-import { createContext, FC, PropsWithChildren, useEffect, useRef } from 'react';
-import { Sounds } from './audio.data';
+import { createContext, FC, PropsWithChildren, useRef } from 'react';
+import { Sounds, UltimateSounds } from './audio.data';
 import { AudioService } from './audio.service';
 import { DefaultSettings } from './audio.settings';
 import { AudioContextType, ISoundBuffers, sound } from './audio.types';
@@ -25,20 +25,32 @@ const AudioProvider: FC<PropsWithChildren> = ({ children }) => {
 
     const soundBuffers = useRef<ISoundBuffers>({});
 
-    const handleFetchSounds = async () => {
+    const fetchMainSounds = () => {
         for (let [sound, link] of Object.entries(Sounds)) {
-            await AudioService.fetchAudio(link)
+            AudioService.fetchAudio(link)
                 .then(arrayBuffer => ctx.decodeAudioData(arrayBuffer))
                 .then(audioBuffer => (soundBuffers.current as any)[sound] = audioBuffer)
                 .catch(e => console.log(e));
         }
     }
 
+    const fetchUltimateSounds = () => {
+        for (let [sound, link] of Object.entries(UltimateSounds)) {
+            AudioService.fetchAudio(link)
+                .then(arrayBuffer => ctx.decodeAudioData(arrayBuffer))
+                .then(audioBuffer => (soundBuffers.current as any)[sound] = audioBuffer)
+                .catch(e => console.log(e));
+        }
+    }
 
+    const fetchSound = (sound: sound, isUltimate = false) => {
+        let link = isUltimate ? (UltimateSounds as any)[sound] : (Sounds as any)[sound];
+        AudioService.fetchAudio(link)
+            .then(arrayBuffer => ctx.decodeAudioData(arrayBuffer))
+            .then(audioBuffer => (soundBuffers.current as any)[sound] = audioBuffer)
+            .catch(e => console.log(e));
+    }
 
-    useEffect(() => {
-        handleFetchSounds();
-    }, [])
 
     const _playbackFX = async (buffer: AudioBuffer, stopOffset = 2) => {
         const bufferSource = ctx.createBufferSource();
@@ -73,7 +85,7 @@ const AudioProvider: FC<PropsWithChildren> = ({ children }) => {
         bufferSource.connect(masterGain);
         bufferSource.start(0);
         bufferSource.stop(ctx.currentTime + 2);
-    }   
+    }
 
     const changeGain = (id: 'FX' | 'announce' | 'master', value: number) => {
 
@@ -103,7 +115,7 @@ const AudioProvider: FC<PropsWithChildren> = ({ children }) => {
 
     return (
 
-        <AudioCtx.Provider value={{ playSound, changeGain, playAnnounce }}>
+        <AudioCtx.Provider value={{ playSound, changeGain, playAnnounce, fetchMainSounds, fetchUltimateSounds, fetchSound }}>
             {children}
         </AudioCtx.Provider>
 

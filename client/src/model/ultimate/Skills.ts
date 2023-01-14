@@ -29,7 +29,7 @@ export const SkillList: ISkillItem[] = [
         title: SkillNames.INCINERATE,
         description: 'Sets a square on fire, making it unreachable for any pieces. Acts like a wall',
         constraints: 'Cannot be performed on an occupied square',
-        lasts: 4,
+        lasts: 5,
         isTargeted: true,
         canBeAppliedAt: 'cell',
         canBeUsedByPlayer: true,

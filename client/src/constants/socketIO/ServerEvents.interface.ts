@@ -60,4 +60,5 @@ export interface IOServerEvents {
     reconnect: () => void;
     noPlayers: () => void;
     updateTimer: (payload:ITimerPayload ) => void;
+    
 }

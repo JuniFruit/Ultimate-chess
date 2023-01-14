@@ -14,9 +14,8 @@ export const useIOField = ({ board, isObserver }: IUseIOField) => {
 
     const handleSendMove = useCallback((move: IMove) => {
         if (isObserver) return;
-        board.updateAllLegalMoves();
         ioClient.emit("sendMove", move)
-    }, [board.states.globalMovesCount, isObserver])
+    }, [isObserver])
 
     const handleReceiveMove = useCallback((move: IMove) => {
         board.receiveMove(move);

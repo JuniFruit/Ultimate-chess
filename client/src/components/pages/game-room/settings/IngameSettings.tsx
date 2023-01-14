@@ -6,7 +6,7 @@ import { SettingsComp } from '../../settings/SettingsComp';
 import styles from './IngameSettings.module.scss';
 
 
-export const IngameSettings: FC<{ onClose: () => void }> = ({ onClose }) => {
+const IngameSettings: FC<{ onClose: () => void }> = ({ onClose }) => {
 
 
     return (
@@ -23,3 +23,5 @@ export const IngameSettings: FC<{ onClose: () => void }> = ({ onClose }) => {
         </Portal>
     )
 }
+
+export default IngameSettings

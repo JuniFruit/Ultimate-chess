@@ -5,9 +5,9 @@ import { IBoard } from '../../../../model/Board';
 import { IBoardUlt } from '../../../../model/ultimate/BoardUlt';
 
 
-export const useSound = (board: IBoard | IBoardUlt) => {
+export const useSound = (board: IBoard | IBoardUlt, isUltimate: boolean) => {
 
-    const { playSound, playAnnounce } = useContext(AudioCtx) as AudioContextType;
+    const { playSound, playAnnounce, fetchMainSounds, fetchUltimateSounds } = useContext(AudioCtx) as AudioContextType;
 
 
     const _handleMoveSFX = useCallback(() => {
@@ -39,4 +39,9 @@ export const useSound = (board: IBoard | IBoardUlt) => {
         _handleMoveSFX();
         _handleSkillSFX();
     }, [board.states.globalMovesCount, board.states.isGameOver])
+
+    useEffect(() => {
+        fetchMainSounds && fetchMainSounds();
+        if (isUltimate && fetchUltimateSounds) fetchUltimateSounds();
+    }, [isUltimate])
 }

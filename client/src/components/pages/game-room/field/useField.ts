@@ -13,7 +13,7 @@ export interface IUseField extends Pick<IField, 'board' | 'myColor' | 'isObserve
     handleSendMove: (move: IMove) => void;
 }
 
-export const useField = ({ board, myColor, isObserver, handleSendMove }: IUseField) => {
+export const useField = ({ board, myColor, isObserver, handleSendMove, isUltimate }: IUseField) => {
 
 
     const { isMobile } = useIsMobile();
@@ -24,7 +24,7 @@ export const useField = ({ board, myColor, isObserver, handleSendMove }: IUseFie
     const { playAnnounce } = useContext(AudioCtx) as AudioContextType;
     const maxPremoves = isMobile ? 1 : 5;
 
-    useSound(board)
+    useSound(board, isUltimate)
 
 
     const handleSelect = useCallback((cell: ICell | ICellUlt) => {
@@ -116,6 +116,8 @@ export const useField = ({ board, myColor, isObserver, handleSendMove }: IUseFie
         board.swapPlayer();
         setSelectedCell(to);
         handleSendMove({ from: { ...from.getCellInfo() }, to: { ...to.getCellInfo() }, options: { ...moveOptions } })
+        board.updateAllLegalMoves();
+
 
     }, [handleSelect])
 

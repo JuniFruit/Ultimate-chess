@@ -4,7 +4,7 @@ import ConfirmationDialog from '../../../ui/dialog/confirm/ConfirmDialog';
 
 import { IConfirmModal } from './Modal.interface';
 
-export const ConfirmModal: FC<IConfirmModal> = ({ onConfirm, request, onClose }) => {
+const ConfirmModal: FC<IConfirmModal> = ({ onConfirm, request, onClose }) => {
 
     const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -32,3 +32,5 @@ export const ConfirmModal: FC<IConfirmModal> = ({ onConfirm, request, onClose })
         </>
     )
 }
+
+export default ConfirmModal;

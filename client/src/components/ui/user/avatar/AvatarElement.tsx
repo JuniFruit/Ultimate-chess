@@ -8,7 +8,7 @@ const AvatarElement: FC<{avatarPath?:string}> = memo(({avatarPath}) => {
         <div className={styles.avatar}>
             <img
                 src={avatarPath || mockups.defaultAvatar}
-                
+                alt={'avatar'}
                 onError={(e:any) => {e.target.onerror = null; e.target.src = mockups.defaultAvatar}}
             />
         </div>

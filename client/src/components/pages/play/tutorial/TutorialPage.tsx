@@ -1,9 +1,9 @@
 import { FC } from 'react';
-import { ImagePreview } from '../../../ui/image-preview/ImagePreview';
+import { ImagePreview } from '../../../ui/SuspenseWrapper';
 import { ITutorialPage } from './Tutorial.interface';
 import styles from './Tutorial.module.scss';
 
-export const TutorialPage: FC<ITutorialPage> = ({ pageTotal, currentPage, body, title, img }) => {
+export const TutorialPage: FC<ITutorialPage> = ({ body, title, img }) => {
 
     return (
         <div className={styles.tutorial_page}>

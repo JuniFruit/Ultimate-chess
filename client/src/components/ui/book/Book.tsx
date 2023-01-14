@@ -7,7 +7,7 @@ import { IBook } from "./Book.interface";
 import styles from './Book.module.scss';
 
 
-export const Book: FC<PropsWithChildren<IBook>> = ({ pages, children }) => {
+const Book: FC<PropsWithChildren<IBook>> = ({ pages, children }) => {
     const [currentPage, setCurrentPage] = useState(0);
     const dummyPages = new Array(5).fill('').map((item, ind) => <div className={styles.dummy_page} key={ind}></div>)
     const { playSound } = useContext(AudioCtx) as AudioContextType;
@@ -55,3 +55,5 @@ export const Book: FC<PropsWithChildren<IBook>> = ({ pages, children }) => {
     )
 
 }
+
+export default Book;

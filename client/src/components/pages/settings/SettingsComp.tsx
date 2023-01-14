@@ -1,4 +1,4 @@
-import { FC, useContext } from "react";
+import { FC, useContext, useEffect } from "react";
 import { AudioCtx } from "../../../audio-engine/audio.provider";
 import { DefaultSettings } from "../../../audio-engine/audio.settings";
 import { AudioContextType } from "../../../audio-engine/audio.types";
@@ -7,12 +7,17 @@ import styles from './Settings.module.scss';
 
 export const SettingsComp: FC = () => {
 
-    const { changeGain } = useContext(AudioCtx) as AudioContextType;
+    const { changeGain, fetchSound } = useContext(AudioCtx) as AudioContextType;
 
     const handleChangeGain = (target: HTMLInputElement) => {
         const { id, value } = target;
         changeGain(id as any, Number(value))
     }
+
+    useEffect(() => {
+        fetchSound('take')
+        fetchSound('firstblood');
+    }, [])
 
     return (
         <div className={styles.wrapper}>

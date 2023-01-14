@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { useNavigate } from "react-router-dom";
 import { PieChart } from "../../../ui/charts/pie/PieChart";
-import { ImagePreview } from "../../../ui/image-preview/ImagePreview";
+import { ImagePreview } from "../../../ui/SuspenseWrapper";
 import { IProfileBody } from "./ProfileBody.interface";
 import styles from './ProfileBody.module.scss';
 

@@ -23,9 +23,9 @@ export const useVFX = ({ board, isUltimate, isFlipped }: IUseVFX) => {
 
         if (lastMove && lastMove.moveMadeAt === board.states.globalMovesCount) {
             let effectItem = effectList.find(effect => effect.title === EffectNames.ON_MOVE);
+            if (lastMove.options.isTake) effectItem = effectList.find(effect => effect.title === EffectNames.ON_TAKE);
             if (lastMove.options.isCastling) effectItem = effectList.find(effect => effect.title === EffectNames.ON_CASTLE);
             if (lastMove.options.isPromotion) effectItem = effectList.find(effect => effect.title === EffectNames.ON_PROMOTION);
-            if (lastMove.options.isTake) effectItem = effectList.find(effect => effect.title === EffectNames.ON_TAKE);
             if (!effectItem) effectItem = effectList.find(item => item.title === EffectNames.DEFAULT)
             const effect = new VFX({
                 ...effectItem!,
@@ -44,8 +44,8 @@ export const useVFX = ({ board, isUltimate, isFlipped }: IUseVFX) => {
     }, [board.states.globalMovesCount, board.states.moves.length])
 
     const _getEffectFromLastSkill = useCallback(() => {
-       
-        if (!board.states.skillsUsed) return [];        
+
+        if (!board.states.skillsUsed) return [];
         const effects: IVFX[] = []
         const lastUsedSkill = board.states.skillsUsed[board.states.skillsUsed.length - 1];
 
@@ -75,7 +75,7 @@ export const useVFX = ({ board, isUltimate, isFlipped }: IUseVFX) => {
             row.forEach((cell) => {
                 cell.states.skillsApplied.forEach(skill => {
                     let effectItem = effectList.find(effect => effect.title === skill.title);
-                    if (!effectItem) effectItem = effectList.find(item => item.title === EffectNames.DEFAULT)
+                    if (!effectItem) effectItem = effectList.find(effect => effect.title === EffectNames.DEFAULT)
                     const vfx = new VFX({
                         ...effectItem!,
                         position: {
@@ -90,7 +90,7 @@ export const useVFX = ({ board, isUltimate, isFlipped }: IUseVFX) => {
         })
 
         return result;
-    }, [board.states.globalMovesCount])
+    }, [board.states.globalMovesCount, board.states?.skillsUsed?.length])
 
 
     useEffect(() => {

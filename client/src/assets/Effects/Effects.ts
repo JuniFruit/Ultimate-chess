@@ -9,6 +9,8 @@ import plague from './plague.png';
 import fire_effect_loop from './fire_effect_loop.png';
 import fire_enchant from './fire_enchant.png';
 import blood_2 from './blood_2.png'
+import onMove_5 from './onMove_5.png';
+import bomb from './bomb.png'
 
 export const Effects = {
     fireLoop,
@@ -21,5 +23,7 @@ export const Effects = {
     plague,
     fire_effect_loop,
     fire_enchant,
-    blood_2
+    blood_2,
+    onMove_5,
+    bomb
 }

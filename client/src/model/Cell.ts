@@ -72,24 +72,6 @@ export class Cell implements ICell {
         return this.figure === null;
     }
 
-
-
-    private _validateMove(target: ICell, board: IBoard): boolean {
-
-        let isValidMove = false;
-
-        this.moveFigure(target, board, { isFake: true });
-        board.updateEnemyLegalMoves();
-
-        if (!board.isKingChecked()) {
-            isValidMove = true;
-        }
-        board.undo();
-        board.updateEnemyLegalMoves();
-
-        return isValidMove
-    }
-
     public isUnderAttack(board: IBoard) {
         return board.figures.some(figure => {
             return figure.legalMoves.some(move => move.pos === this.pos && figure.color !== board.states.currentPlayer);
@@ -129,18 +111,52 @@ export class Cell implements ICell {
         }
 
     }
-
-    private _isEnPassantMove(target: ICell) {
-        if ((target as ICellUlt).states) return false // Temporary solution
-        if (this.figure?.type !== FigureTypes.PAWN || !target.isEmpty() || !this.isTargetDiagonal(target)) return false;
-        return true;
-    }
-
+    
 
     public isCastlingMove(target: ICell) {
         if ((this.figure?.type === FigureTypes.KING && target.figure?.type === FigureTypes.ROOK)
             && this.figure.color === target.figure.color) return true;
         return false
+    }
+    
+
+
+    public moveFigure(target: ICell, board: IBoard, options: IMoveOptions) {
+
+        if (this.isCastlingMove(target)) return this._performCastle(target, board, options);
+        if (this._isEnPassantMove(target)) return this._performEnPassant(target, board, options);
+        this._makeMove(target, board, options);
+        if (!options.isFake && options.isPromotion) target.promote(options.figureToPromote!, board);
+    }
+    
+
+    public undo() {
+        if (this.figure) this.figure.undo();
+
+        this.figure = this.prevFigure;
+        this.prevFigure = null;
+    }
+
+    public isPromotionMove(target: ICell) {
+        return this.figure?.type === FigureTypes.PAWN && (target.y === 0 || target.y === 7);
+
+    }
+
+    public promote(figureToPromote: FigureTypes, board: IBoard) {
+        if (!this.figure) return;
+
+        const type = this.figure.color === Colors.WHITE ? figureToPromote.toUpperCase() : figureToPromote;
+        board.popFigure(this.figure);
+        this.figure = board.createFigure(type, this.x, this.y);
+        board.figures.push(this.figure!);
+    }
+
+    public getCellInfo(): ICellInfo {
+        return {
+            x: this.x,
+            y: this.y,
+            pos: this.pos
+        }
     }
 
     private _performEnPassant(target: ICell, board: IBoard, options: IMoveOptions) {
@@ -149,6 +165,27 @@ export class Cell implements ICell {
         const cellToCapture = board.getCell(target.x, this.y);
         cellToCapture.prevFigure = cellToCapture.figure;
         cellToCapture.figure = null;
+    }
+    private _isEnPassantMove(target: ICell) {
+        if ((target as ICellUlt).states) return false // Temporary solution
+        if (this.figure?.type !== FigureTypes.PAWN || !target.isEmpty() || !this.isTargetDiagonal(target)) return false;
+        return true;
+    }
+
+    private _validateMove(target: ICell, board: IBoard): boolean {
+
+        let isValidMove = false;
+
+        this.moveFigure(target, board, { isFake: true });
+        board.updateEnemyLegalMoves();
+
+        if (!board.isKingChecked()) {
+            isValidMove = true;
+        }
+        board.undo();
+        board.updateEnemyLegalMoves();
+
+        return isValidMove
     }
 
     private _performCastle(target: ICell, board: IBoard, options: IMoveOptions) {
@@ -173,15 +210,6 @@ export class Cell implements ICell {
         target.figure = this.figure;
         this.prevFigure = this.figure;
         this.figure = null;
-    }
-
-
-    public moveFigure(target: ICell, board: IBoard, options: IMoveOptions) {
-
-        if (this.isCastlingMove(target)) return this._performCastle(target, board, options);
-        if (this._isEnPassantMove(target)) return this._performEnPassant(target, board, options);
-        this._makeMove(target, board, options);
-        if (!options.isFake && options.isPromotion) target.promote(options.figureToPromote!, board);
     }
 
     private _handleAddMove(target: ICell, board: IBoard, options: IMoveOptions) {
@@ -217,34 +245,5 @@ export class Cell implements ICell {
             return;
         }
         board.addMove(moveToAdd);
-    }
-
-    public undo() {
-        if (this.figure) this.figure.undo();
-
-        this.figure = this.prevFigure;
-        this.prevFigure = null;
-    }
-
-    public isPromotionMove(target: ICell) {
-        return this.figure?.type === FigureTypes.PAWN && (target.y === 0 || target.y === 7);
-
-    }
-
-    public promote(figureToPromote: FigureTypes, board: IBoard) {
-        if (!this.figure) return;
-
-        const type = this.figure.color === Colors.WHITE ? figureToPromote.toUpperCase() : figureToPromote;
-        board.popFigure(this.figure);
-        this.figure = board.createFigure(type, this.x, this.y);
-        board.figures.push(this.figure!);
-    }
-
-    public getCellInfo(): ICellInfo {
-        return {
-            x: this.x,
-            y: this.y,
-            pos: this.pos
-        }
     }
 }

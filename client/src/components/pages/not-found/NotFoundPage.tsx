@@ -5,7 +5,7 @@ import styles from './NotFound.module.scss';
 import { IoTelescopeOutline } from 'react-icons/io5';
 import MenuButton from '../../ui/menu-button/MenuButton';
 
-export const NotFoundPage: FC = () => {
+const NotFoundPage: FC = () => {
 
     const navigate = useNavigate()
 
@@ -27,3 +27,5 @@ export const NotFoundPage: FC = () => {
     )
 
 }
+
+export default NotFoundPage

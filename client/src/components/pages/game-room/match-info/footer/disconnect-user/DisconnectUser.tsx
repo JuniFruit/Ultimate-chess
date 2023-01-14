@@ -1,10 +1,10 @@
 import { FC, memo } from "react";
-import { Timer } from "../../../../../ui/timer/Timer";
+import { Timer } from "../../../../../ui/SuspenseWrapper";
 import styles from '../Handle.module.scss';
 import { IDisconnectUserComponent } from "./DisconnectUser.interface";
 import { useDisconnectedUser } from "./useDisconnectedUser";
 
-export const DisconnectUser: FC<IDisconnectUserComponent> = memo((props) => {
+const DisconnectUser: FC<IDisconnectUserComponent> = memo((props) => {
 
     const { handleDisconnectTimeout, disconnectedUser } = useDisconnectedUser(props);
 
@@ -24,3 +24,5 @@ export const DisconnectUser: FC<IDisconnectUserComponent> = memo((props) => {
 
     )
 })
+
+export default DisconnectUser;

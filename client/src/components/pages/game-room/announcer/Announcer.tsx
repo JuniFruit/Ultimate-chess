@@ -1,10 +1,10 @@
-import { FC, useState, useEffect, useCallback, useContext, useRef, memo } from 'react'
+import { FC, memo, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { AudioCtx } from '../../../../audio-engine/audio.provider';
-import { AudioContextType, sound } from '../../../../audio-engine/audio.types';
+import { AudioContextType } from '../../../../audio-engine/audio.types';
 import { Colors } from '../../../../model/colors.enum';
 import { KillThreshold } from '../../../../model/helper.enum';
 import { Announces } from './Announcer.enum';
-import { IAnnouncer, IAnnouncerBoardStates } from './Announcer.interface'
+import { IAnnouncer, IAnnouncerBoardStates } from './Announcer.interface';
 import styles from './Announcer.module.scss';
 
 export const Announcer: FC<IAnnouncer> = memo(({ players, states, myColor, isUltimate }) => {

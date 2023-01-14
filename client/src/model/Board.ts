@@ -1,7 +1,6 @@
 import { IMove, IMoveOptions } from "../constants/socketIO/ClientEvents.interface";
 import { IBoardData } from "../constants/socketIO/ServerEvents.interface";
-import { Cell, ICellData } from "./Cell";
-import { ICell } from "./Cell"
+import { Cell, ICell, ICellData } from "./Cell";
 import { Colors } from "./colors.enum";
 import { Bishop } from "./figures/Bishop";
 import { FigureTypes, IFigure, IFigureInfo, ILostFigure, IMovedFigure, ISpritesObj } from "./figures/figures.interface";
@@ -12,7 +11,7 @@ import { Queen } from "./figures/Queen";
 import { Rook } from "./figures/Rook";
 import { convertToChar, returnColorCell } from "./helpers";
 import { BoardUlt } from "./ultimate/BoardUlt";
-import { ICellUlt, ICellUltStates } from "./ultimate/CellUlt";
+import { ICellUlt } from "./ultimate/CellUlt";
 
 export interface IBoard {
     cells: ICell[][];
@@ -152,14 +151,7 @@ export class Board implements IBoard {
     public isCheckMate() {
         return !this.figures.some(figure => figure.color === this.states.currentPlayer && figure.legalMoves.length);
 
-    }
-
-    private _isStalemate() {
-        if (this.states.isCheck) return false;
-        return !this.figures.some(figure => {
-            return figure.color === this.states.currentPlayer && figure.legalMoves.length
-        })
-    }
+    }   
 
     public isSufficientMaterial(player: Colors) {
         const playerMaterial = this.figures.filter(figure => figure.color === player);
@@ -204,50 +196,7 @@ export class Board implements IBoard {
         this.figures = [];
         this.states.isCheck = false;
     }
-
-
-    private _initCells(fen: string) {
-
-        const splited = fen.split(' ');
-        const [positions, currentPlayer] = splited;
-
-        let currentRow = 0; // current y
-        let currentCol = 0; // current x
-        let currentInd = 0;
-        let row: ICell[] = [];
-
-        while (currentInd < positions.length) {
-            const currentPos = positions[currentInd]; //current char
-            currentCol = currentCol > 7 ? 0 : currentCol;
-            if (currentPos === '/') {
-                this.cells.push(row);
-                currentRow++;
-                row = [];
-            } else {
-                if (isNaN(+currentPos)) {
-
-                    const figure = this.createFigure(currentPos, currentCol, currentRow);
-                    const cell = new Cell({ x: currentCol, y: currentRow, color: returnColorCell(currentRow, currentCol), figure: figure });
-                    row.push(cell);
-                    currentCol++;
-                } else {
-                    const blankCells = new Array(+currentPos).fill(null)
-                        .map((spot, ind) => new Cell({
-                            x: currentCol + ind,
-                            y: currentRow, color: returnColorCell(currentRow, currentCol + ind), figure: null
-                        }))
-
-                    row.push(...blankCells);
-                    currentCol += +currentPos;
-                }
-            }
-            currentInd++;
-        }
-        this.cells.push(row);
-        this.states.currentPlayer = currentPlayer === Colors.BLACK ? Colors.BLACK : Colors.WHITE;
-
-
-    }
+   
 
     public createFigure(char: string, x: number, y: number) {
 
@@ -389,5 +338,55 @@ export class Board implements IBoard {
 
     public decrementMoveCount() {
         this.states.globalMovesCount--;
+    }
+
+    private _initCells(fen: string) {
+
+        const splited = fen.split(' ');
+        const [positions, currentPlayer] = splited;
+
+        let currentRow = 0; // current y
+        let currentCol = 0; // current x
+        let currentInd = 0;
+        let row: ICell[] = [];
+
+        while (currentInd < positions.length) {
+            const currentPos = positions[currentInd]; //current char
+            currentCol = currentCol > 7 ? 0 : currentCol;
+            if (currentPos === '/') {
+                this.cells.push(row);
+                currentRow++;
+                row = [];
+            } else {
+                if (isNaN(+currentPos)) {
+
+                    const figure = this.createFigure(currentPos, currentCol, currentRow);
+                    const cell = new Cell({ x: currentCol, y: currentRow, color: returnColorCell(currentRow, currentCol), figure: figure });
+                    row.push(cell);
+                    currentCol++;
+                } else {
+                    const blankCells = new Array(+currentPos).fill(null)
+                        .map((spot, ind) => new Cell({
+                            x: currentCol + ind,
+                            y: currentRow, color: returnColorCell(currentRow, currentCol + ind), figure: null
+                        }))
+
+                    row.push(...blankCells);
+                    currentCol += +currentPos;
+                }
+            }
+            currentInd++;
+        }
+        this.cells.push(row);
+        this.states.currentPlayer = currentPlayer === Colors.BLACK ? Colors.BLACK : Colors.WHITE;
+
+
+    }
+
+    private _isStalemate() {
+        if (this.states.isCheck) return false;
+        return !this.figures.some(figure => {
+            return figure.color === this.states.currentPlayer && figure.legalMoves.length
+        })
     }
 }

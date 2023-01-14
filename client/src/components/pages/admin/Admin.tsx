@@ -1,4 +1,4 @@
-import { FC, useState } from 'react'
+import { FC, useState, lazy, Suspense, useTransition } from 'react'
 import { useAdminAuth } from '../../../hooks/useAdminAuth'
 import { useIsMobile } from '../../../hooks/useMobile'
 import ProfileMenu from '../../layout/header/right-elements/profile-menu/ProfileMenu'
@@ -6,18 +6,21 @@ import { Layout } from '../../layout/Layout'
 import { Button } from '../../ui/button/Button'
 import styles from './Admin.module.scss'
 import { adminMenuData } from './adminMenuData'
-import AdminHome from './home/AdminHome'
-import AdminPacks from './packs/AdminPacks'
-import AdminPlayers from './players/AdminPlayers'
+const AdminHome = lazy(() => import('./home/AdminHome'));
+const AdminPacks = lazy(() => import('./packs/AdminPacks'));
+const AdminPlayers = lazy(() => import('./players/AdminPlayers'));
 
 const AdminPage: FC = () => {
 
     useAdminAuth();
     const [activeWindow, setActiveWindow] = useState<"Packs" | "Home" | "Players">('Home')
     const { isMobile } = useIsMobile()
+    const [isPending, setStartTransition] = useTransition()
 
     const handleChangePage = (page: "Packs" | "Home" | "Players") => {
-        setActiveWindow(page);
+        setStartTransition(() => {
+            setActiveWindow(page);
+        })
     }
 
     return (
@@ -33,9 +36,11 @@ const AdminPage: FC = () => {
                         </div>
                         <div className={styles.line}></div>
                         <div className={styles.admin_body}>
-                            {activeWindow === 'Home' ? <AdminHome /> : null}
-                            {activeWindow === 'Packs' ? <AdminPacks /> : null}
-                            {activeWindow === 'Players' ? <AdminPlayers /> : null}
+                            <Suspense fallback={null}>
+                                {activeWindow === 'Home' ? <AdminHome /> : null}
+                                {activeWindow === 'Packs' ? <AdminPacks /> : null}
+                                {activeWindow === 'Players' ? <AdminPlayers /> : null}
+                            </Suspense>
                         </div>
                     </div>
                     <nav className={styles.menu_wrapper}>

@@ -1,7 +1,7 @@
 import { FC, useCallback, useEffect, memo } from "react";
 import ioClient from "../../../../../api/socketApi";
 import { ITimerPayload } from "../../../../../constants/socketIO/ServerEvents.interface";
-import { Timer } from "../../../../ui/timer/Timer";
+import { Timer } from "../../../../ui/SuspenseWrapper";
 import { ITimerHandler } from "./TimerHandler.interface";
 
 

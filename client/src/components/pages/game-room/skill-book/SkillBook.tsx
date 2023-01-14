@@ -2,14 +2,14 @@ import { FC, useCallback } from "react";
 import { IoCloseCircle } from "react-icons/io5";
 import { useIsMobile } from "../../../../hooks/useMobile";
 import { ISkillItem, SkillList } from "../../../../model/ultimate/Skills";
-import { Book } from "../../../ui/book/Book";
 import { Button } from "../../../ui/button/Button";
 import { Portal } from "../../../ui/portal/Portal";
+import { Book } from "../../../ui/SuspenseWrapper";
 import { ISkillBook } from "./SkillBook.interface";
 import { SkillPage } from "./SkillPage";
 
 
-export const SkillBook: FC<ISkillBook> = ({ onChooseSkill, onClose, board, myColor }) => {
+const SkillBook: FC<ISkillBook> = ({ onChooseSkill, onClose, board, myColor }) => {
 
     const { isLaptopSmall } = useIsMobile();
 
@@ -23,7 +23,7 @@ export const SkillBook: FC<ISkillBook> = ({ onChooseSkill, onClose, board, myCol
                 pages.push(temp)
                 temp = []
             }
-            if (!item.canBeUsedByPlayer) return           
+            if (!item.canBeUsedByPlayer) return
             temp.push(item)
         })
         pages.push(temp);
@@ -47,3 +47,5 @@ export const SkillBook: FC<ISkillBook> = ({ onChooseSkill, onClose, board, myCol
         </Portal>
     )
 }
+
+export default SkillBook

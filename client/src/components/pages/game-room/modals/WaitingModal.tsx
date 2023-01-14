@@ -27,3 +27,5 @@ export const WaitingModal: FC = () => {
         </>
     )
 }
+
+export default WaitingModal

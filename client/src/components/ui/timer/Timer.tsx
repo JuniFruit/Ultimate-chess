@@ -3,7 +3,7 @@ import { IoTimer } from "react-icons/io5";
 import { ITimer } from "./Timer.interface";
 import styles from './Timer.module.scss';
 
-export const Timer: FC<ITimer> = ({ initTime, isStopped, onTimeout }) => {
+const Timer: FC<ITimer> = ({ initTime, isStopped, onTimeout }) => {
     const [currentTime, setCurrentTime] = useState(initTime)
 
     useEffect(() => {
@@ -39,3 +39,5 @@ export const Timer: FC<ITimer> = ({ initTime, isStopped, onTimeout }) => {
         </div>
     )
 }
+
+export default Timer

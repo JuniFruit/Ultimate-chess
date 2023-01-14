@@ -40,3 +40,5 @@ export const GameOverModal: FC<IGameOverModal> = ({result, onRematch, isObserver
         </>
     )
 }
+
+export default GameOverModal

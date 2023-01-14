@@ -3,7 +3,7 @@ import AvatarElement from "../user/avatar/AvatarElement";
 import { IPlayerInfo } from "./PlayerInfo.interface";
 import styles from './PlayerInfo.module.scss';
 
-export const PlayerInfo: FC<PropsWithChildren<IPlayerInfo>> = memo(({ username, avatarLink, winsCount, lossesCount, children }) => {
+const PlayerInfo: FC<PropsWithChildren<IPlayerInfo>> = memo(({ username, avatarLink, winsCount, lossesCount, children }) => {
     return (
         <div className={styles.info_container}>
             <div className={styles.info_wrapper}>
@@ -24,3 +24,5 @@ export const PlayerInfo: FC<PropsWithChildren<IPlayerInfo>> = memo(({ username, 
         </div>
     )
 })
+
+export default PlayerInfo;

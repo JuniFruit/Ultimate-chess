@@ -41,4 +41,5 @@ export interface IOClientEvents {
     ping: (cb: () => void) => void;
     disconnectTimeout: (user: IDisconnectedUser) => void;
     currentGames: () => void;
+   
 }

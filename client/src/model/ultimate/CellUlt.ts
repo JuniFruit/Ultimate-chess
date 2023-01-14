@@ -1,4 +1,3 @@
-import { IBoard } from "../Board";
 import { Cell, ICell } from "../Cell";
 import { Colors } from "../colors.enum";
 import { FigureTypes } from "../figures/figures.interface";
@@ -22,6 +21,12 @@ export interface ICellUlt extends ICell {
     undoSkills: () => void;
     undoDetonate: (board: IBoardUlt) => void;
     performKill: (board: IBoardUlt, isFake?: boolean) => void
+    performDetonate: (board: IBoardUlt, isFake?: boolean) => void;
+    canBless: (board: IBoardUlt) => boolean;
+    canSacrifice: (board: IBoardUlt) => boolean;
+    canLightningBolt: (board: IBoardUlt) => boolean;
+    isOccupied: () => boolean;
+    canPlague: (board: IBoardUlt) => boolean;
 
 }
 
@@ -37,19 +42,19 @@ export class CellUlt extends Cell implements ICellUlt {
 
         switch (skill.title) {
             case SkillNames.SACRIFICE:
-                return this._canSacrifice(board);
+                return this.canSacrifice(board);
             case SkillNames.LIGHTNING_BOLT:
-                return this._canLightningBolt(board);
+                return this.canLightningBolt(board);
             case SkillNames.INCINERATE:
-                return this._canSetOnFire();
+                return !this.isOccupied();
             case SkillNames.PLAGUE:
-                return this._canPlague(board);
+                return this.canPlague(board);
             case SkillNames.SET_BOMB:
-                return this._canSetBomb();
+                return !this.isOccupied();
             case SkillNames.DETONATE:
                 return true
             case SkillNames.BLESSING:
-                return this._canBless(board);
+                return this.canBless(board);
             default:
                 return false;
         }
@@ -94,6 +99,7 @@ export class CellUlt extends Cell implements ICellUlt {
         }
         if (skill.canBeAppliedAt === 'figure') return this.figure?.applySkill(skillToApply);
         this.states.skillsApplied = [...this.states.skillsApplied, skillToApply];
+
     }
 
     public clearExpiredStates(board: IBoardUlt, isFake = false) {
@@ -112,16 +118,21 @@ export class CellUlt extends Cell implements ICellUlt {
 
     public undoDetonate(board: IBoardUlt) {
         const offsets = generateOffsets(1, 'square');
-        this.figure = this.prevFigure;
-        this.prevFigure = null;
+
+        if (this.prevFigure) {
+            this.figure = this.prevFigure;
+            this.prevFigure = null;
+        }
 
         offsets.forEach(offset => {
             const [x, y] = offset;
             if (!isInBounds(this.x + x, this.y + y)) return;
             const current = board.getCell(this.x + x, this.y + y)
-            if (current.prevFigure?.type !== FigureTypes.PAWN) return;
-            current.figure = current.prevFigure
-            current.prevFigure = null;
+            if (current.prevFigure?.type === FigureTypes.PAWN) {
+                current.figure = current.prevFigure
+                current.prevFigure = null;
+            };
+            // current.states.skillsApplied = current.states.skillsApplied.filter(skill => skill.title !== SkillNames.INCINERATE);
         })
     }
 
@@ -132,75 +143,73 @@ export class CellUlt extends Cell implements ICellUlt {
     }
 
 
-    private _performDetonate(board: IBoardUlt, isFake = false) {
+    public performDetonate(board: IBoardUlt, isFake = false) {
         const offsets = generateOffsets(1, 'square');
 
-        if (this.figure && (this.figure?.type !== FigureTypes.KING && this.figure?.type !== FigureTypes.QUEEN)) this.performKill(board, isFake)
+        if (this.figure
+            && (this.figure.type !== FigureTypes.KING && this.figure.type !== FigureTypes.QUEEN)) this.performKill(board, isFake)
 
 
         offsets.forEach(offset => {
             const [x, y] = offset;
             if (!isInBounds(this.x + x, this.y + y)) return;
             const current = board.getCell(this.x + x, this.y + y);
-
+            if (current.prevFigure) current.prevFigure = current.figure;
             if (current.figure?.type === FigureTypes.PAWN) current.performKill(board, isFake);
             const incinerate = SkillList.find(skill => skill.title === SkillNames.INCINERATE);
-            if (current.canPerformSkill(incinerate!, board)) current.applySkill(incinerate!, board, isFake);
+            if (!current.isOccupied()) current.applySkill(incinerate!, board);
 
         })
     }
 
 
-    private _performInstantSkill(skillTitle: SkillNames, board: IBoardUlt, isFake = false) {
-        switch (skillTitle) {
-            case SkillNames.SACRIFICE:
-                return this.performKill(board, isFake);
-            case SkillNames.DETONATE:
-                return this._performDetonate(board, isFake)
-            default:
-                return;
-        }
-    }
-
-    private _canSetBomb() {
-        return this._canSetOnFire() // the same constraints
-    }
-
-    private _canBless(board: IBoardUlt) {
+    public canBless(board: IBoardUlt) {
         if (!this.figure || this.figure.color !== board.states.currentPlayer || this.figure.type !== FigureTypes.KNIGHT) return false;
         return true;
     }
 
 
-    private _canSacrifice(board: IBoardUlt) {
+    public canSacrifice(board: IBoardUlt) {
         if (this.figure?.type !== FigureTypes.PAWN) return false;
         if (this.figure.color !== board.states.currentPlayer) return false;
         if (board.isLastStandingPiece(FigureTypes.PAWN, board.states.currentPlayer)) return false;
         return true;
     }
 
-    private _canLightningBolt(board: IBoardUlt) {
+    public canLightningBolt(board: IBoardUlt) {
         if (!this.figure) return false;
         if (this.figure.type === FigureTypes.KING) return false;
         if (this.figure.color === board.states.currentPlayer) return false;
         return true;
     }
 
-    private _canSetOnFire() {
-        if (this.figure || this._isOnFire()) return false;
-        return true;
-    }
-    private _isOnFire() {
-        return this.states.skillsApplied.some(skill => skill.title === SkillNames.INCINERATE)
+
+    public isOccupied() {
+        if (this.figure || this.states.skillsApplied.length) return true;
+        return false;
     }
 
-
-    private _canPlague(board: IBoardUlt) {
+    public canPlague(board: IBoardUlt) {
         if (this.figure?.type !== FigureTypes.PAWN) return false;
         const enemyColor = board.states.currentPlayer === Colors.WHITE ? Colors.BLACK : Colors.WHITE
         if (this.figure.color !== enemyColor) return false;
         if (board.isLastStandingPiece(FigureTypes.PAWN, enemyColor)) return false;
         return true
+    }
+
+    private _isOnFire() {
+        return this.states.skillsApplied.some(skill => skill.title === SkillNames.INCINERATE)
+    }
+
+    private _performInstantSkill(skillTitle: SkillNames, board: IBoardUlt, isFake = false) {
+        switch (skillTitle) {
+            case SkillNames.SACRIFICE:
+                return this.performKill(board, isFake);
+            case SkillNames.DETONATE:
+                return this.performDetonate(board, isFake)
+            default:
+                return;
+        }
     }
 
 }

@@ -1,7 +1,7 @@
 import { FC } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { iconsGeneral } from '../../../assets/icons/general/iconsGeneral'
-import { ImagePreview } from '../../ui/image-preview/ImagePreview'
+import { ImagePreview } from '../../ui/SuspenseWrapper';
 import { IRoomItem } from './WatchPage.interface'
 import styles from './WatchPage.module.scss';
 

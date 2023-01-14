@@ -1,26 +1,26 @@
-import { FC } from 'react';
+import { FC, lazy, Suspense } from 'react';
 import { Colors } from '../../../../model/colors.enum';
 import { IBoardUlt } from '../../../../model/ultimate/BoardUlt';
-import PromotionWindow from '../../../ui/piece/promotion/PromotionWindow';
-import { SkillBook } from '../skill-book/SkillBook';
-import CanvasField from './canvas/CanvasField';
 import { IField } from "./Field.interface";
-import styles from './Field.module.scss';
 import { useField } from './useField';
 import { useIOField } from './useIOField';
 import { useUltimate } from './useUltimate';
 import { useVFX } from './useVFX';
+import CanvasField from './canvas/CanvasField';
+import styles from './Field.module.scss';
+
+const SkillBook = lazy(() => import('../skill-book/SkillBook'));
+const PromotionWindow = lazy(() => import('../../../ui/piece/promotion/PromotionWindow'));
 
 
-
-export const GameField: FC<IField> = (props) => {
+const GameField: FC<IField> = (props) => {
 
     const { vfx } = useVFX({
         board: props.board as IBoardUlt,
         isUltimate: props.isUltimate,
         isFlipped: props.myColor === Colors.BLACK
     });
-    const { handleSendMove } = useIOField({ ...props});
+    const { handleSendMove } = useIOField({ ...props });
     const { handlers, status } = useField({ ...props, handleSendMove })
     const { ultHandlers, ultStatus } = useUltimate(
         {
@@ -53,15 +53,19 @@ export const GameField: FC<IField> = (props) => {
                 }
             />
 
-            {status.isPromotion && <PromotionWindow handlePromotion={handlers.handlePromotion} />}
-            {props.isSkillBookOpen &&
-                <SkillBook
-                    onChooseSkill={ultHandlers.handleSetChosenSkill}
-                    onClose={() => props.setIsSkillBookOpen(prev => false)}
-                    board={props.board as IBoardUlt}
-                    myColor={props.myColor}
-                />
-            }
+            <Suspense fallback={null}>
+                {status.isPromotion && <PromotionWindow handlePromotion={handlers.handlePromotion} />}
+                {props.isSkillBookOpen &&
+                    <SkillBook
+                        onChooseSkill={ultHandlers.handleSetChosenSkill}
+                        onClose={() => props.setIsSkillBookOpen(prev => false)}
+                        board={props.board as IBoardUlt}
+                        myColor={props.myColor}
+                    />
+                }
+            </Suspense>
         </div>
     )
 }
+
+export default GameField;

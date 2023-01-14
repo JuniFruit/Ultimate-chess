@@ -6,7 +6,7 @@ import { Button } from '../button/Button';
 import { useActions } from '../../../hooks/useActions';
 
 
-export const InfoPop: FC = () => {
+const InfoPop: FC = () => {
 
     const { message, type } = useTypedSelector(state => state.message);
     const { clearMsg } = useActions();
@@ -49,3 +49,5 @@ export const InfoPop: FC = () => {
     )
 
 } 
+
+export default InfoPop;

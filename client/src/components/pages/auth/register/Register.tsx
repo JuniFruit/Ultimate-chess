@@ -4,8 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useActions } from "../../../../hooks/useActions";
 import { useAuth } from "../../../../hooks/useAuth";
 import { Layout } from "../../../layout/Layout"
-import RegisterForm from "../../../ui/profile-form/ProfileForm";
 import { IRegisterDto } from "../../../../types/auth.interface";
+import { ProfileForm } from "../../../ui/SuspenseWrapper";
 import styles from './Register.module.scss';
 
 const RegisterPage: FC = () => {
@@ -37,7 +37,7 @@ const RegisterPage: FC = () => {
 
         <Layout title="Ultimate Chess registration">
             <section className={styles.container}>
-                <RegisterForm
+                <ProfileForm
                     form={{
                         handleSubmit: handleSubmit(onSubmit),
                         setValue,

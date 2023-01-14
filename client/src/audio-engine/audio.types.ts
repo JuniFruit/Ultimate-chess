@@ -4,7 +4,9 @@ export type AudioContextType = {
   playSound: (sound: sound, stopOffset?: number) => void;
   playAnnounce: (sound: sound, stopOffset?: number) => void;
   changeGain: (id: 'FX' | 'announce' | 'master', value: number) => void;
-  
+  fetchMainSounds: () => void;
+  fetchUltimateSounds: () => void;
+  fetchSound: (sound: sound, isUltimate?:boolean) => void;
 };
 
 export interface ISoundBuffers {

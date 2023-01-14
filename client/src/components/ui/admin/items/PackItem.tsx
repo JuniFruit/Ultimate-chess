@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { IPack } from "../../../../types/pack.interface";
 import { formatToKilo } from "../../../../utils/format.utils";
-import { ImagePreview } from "../../image-preview/ImagePreview";
+import { ImagePreview } from "../../SuspenseWrapper";
 import styles from './Items.module.scss';
 
 interface IPackItem extends Pick<IPack, "id" | "sysName" | "title" | "preview"> {

@@ -3,7 +3,7 @@ import { mockups } from '../../../../assets/mockups/images';
 import { ROLES } from '../../../../constants/constants';
 import { useAuth } from '../../../../hooks/useAuth';
 import { Button } from '../../../ui/button/Button';
-import { ImagePreview } from '../../../ui/image-preview/ImagePreview'
+import { ImagePreview } from '../../../ui/SuspenseWrapper';
 import { StatColumnItem } from '../../../ui/user/stat/StatColumn'
 import { EditForm } from './edit/EditForm';
 import { IProfileHeader } from './ProfileHeader.interface'

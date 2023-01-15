@@ -3,11 +3,11 @@ import { Link } from "react-router-dom";
 import { useActions } from "../../../../../hooks/useActions";
 import { useAuth } from "../../../../../hooks/useAuth";
 import { useClickOutside } from "../../../../../hooks/useClickOutside";
-import { IoChevronUp, IoChevronDown } from 'react-icons/io5'
 import { api } from "../../../../../store/api/api";
 import styles from './ProfileMenu.module.scss';
 import { useIsMobile } from "../../../../../hooks/useMobile";
 import AvatarElement from "../../../../ui/user/avatar/AvatarElement";
+import { IoChevronDown, IoChevronUp } from "react-icons/io5";
 
 const ProfileMenu: FC = () => {
 
@@ -20,7 +20,7 @@ const ProfileMenu: FC = () => {
     const { ref, isShow, setIsShow } = useClickOutside(false);
     const { isMobile } = useIsMobile();
 
-    const isAdmin = data?.roles.some(item => item.role === "ADMIN" || item.role === "CREATOR" );
+    const isAdmin = data?.roles.some(item => item.role === "ADMIN" || item.role === "CREATOR");
 
     return (
         <div ref={ref} className={styles.wrapper}>
@@ -32,7 +32,10 @@ const ProfileMenu: FC = () => {
                 {!isMobile && <span>
                     {data?.username || ''}
                 </span>}
-                {isShow ? <IoChevronUp className={styles.icon} /> : <IoChevronDown className={styles.icon} />}
+                {isShow
+                    ? <IoChevronUp className={styles.icon} />
+                    : <IoChevronDown className={styles.icon} />
+                }
             </button>
             {isShow
                 ?

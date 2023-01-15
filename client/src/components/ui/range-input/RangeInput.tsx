@@ -1,4 +1,4 @@
-import { FC, useState, useRef, ChangeEventHandler, TouchEventHandler } from 'react';
+import { ChangeEventHandler, FC, useRef, useState } from 'react';
 import { IRangeInput } from './RangeInput.interface';
 import styles from './RangeInput.module.scss';
 

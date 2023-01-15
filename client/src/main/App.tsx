@@ -1,5 +1,6 @@
 import { FC, lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
+
 import { SuspenseLoading } from '../components/ui/loading/SuspenseLoading';
 
 const Settings = lazy(() => import('../components/pages/settings/Settings'));

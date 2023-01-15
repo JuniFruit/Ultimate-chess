@@ -1,10 +1,10 @@
 import { FC } from "react";
 import { useClickOutside } from "../../../../../hooks/useClickOutside";
-import { FaUserCircle } from 'react-icons/fa';
 import styles from './AuthForm.module.scss';
 import styleElements from '../RightElements.module.scss';
 import { Link } from "react-router-dom";
 import { IoLogInOutline } from "react-icons/io5";
+import { FaUserCircle } from 'react-icons/fa';
 
 export const AuthForm: FC = () => {
 

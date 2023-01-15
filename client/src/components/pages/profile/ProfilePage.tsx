@@ -2,7 +2,6 @@ import { FC } from 'react';
 import { useParams } from 'react-router-dom';
 import { api } from '../../../store/api/api';
 import { Layout } from '../../layout/Layout';
-import { Spinner } from '../../ui/loading/Spinner';
 import Wrapper from '../../ui/wrapper/Wrapper';
 import { ProfileBody } from './body/ProfileBody';
 import { ProfileHeader } from './header/ProfileHeader';

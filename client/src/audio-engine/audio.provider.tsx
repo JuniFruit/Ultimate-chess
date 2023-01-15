@@ -27,6 +27,7 @@ const AudioProvider: FC<PropsWithChildren> = ({ children }) => {
 
     const fetchMainSounds = () => {
         for (let [sound, link] of Object.entries(Sounds)) {
+            if ((soundBuffers.current as any)[sound]) return;
             AudioService.fetchAudio(link)
                 .then(arrayBuffer => ctx.decodeAudioData(arrayBuffer))
                 .then(audioBuffer => (soundBuffers.current as any)[sound] = audioBuffer)
@@ -36,6 +37,8 @@ const AudioProvider: FC<PropsWithChildren> = ({ children }) => {
 
     const fetchUltimateSounds = () => {
         for (let [sound, link] of Object.entries(UltimateSounds)) {
+            if ((soundBuffers.current as any)[sound]) return;
+
             AudioService.fetchAudio(link)
                 .then(arrayBuffer => ctx.decodeAudioData(arrayBuffer))
                 .then(audioBuffer => (soundBuffers.current as any)[sound] = audioBuffer)
@@ -44,6 +47,8 @@ const AudioProvider: FC<PropsWithChildren> = ({ children }) => {
     }
 
     const fetchSound = (sound: sound, isUltimate = false) => {
+        if ((soundBuffers.current as any)[sound]) return;
+        console.log(soundBuffers)
         let link = isUltimate ? (UltimateSounds as any)[sound] : (Sounds as any)[sound];
         AudioService.fetchAudio(link)
             .then(arrayBuffer => ctx.decodeAudioData(arrayBuffer))

@@ -26,11 +26,11 @@
   ],
   "include": [
     "**/*.ts",
-    "**/*.tsx",      
+    "**/*.tsx",
     "custom-types"
   ],
   "exclude": [
     "node_modules",
-    "/assets/*"
+    "/assets/*",
   ]
 }

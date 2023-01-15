@@ -2,8 +2,8 @@ import { FC, useState, useRef } from "react";
 import { Button } from "../button/Button";
 import { ICarousel } from "./Carousel.interface";
 import styles from './Carousel.module.scss';
-import { IoArrowRedoOutline, IoArrowUndoOutline } from "react-icons/io5";
 import { useIsMobile } from "../../../hooks/useMobile";
+import { IoArrowRedoOutline, IoArrowUndoOutline } from "react-icons/io5";
 
 
 export const Carousel: FC<ICarousel> = ({ slides }) => {
@@ -18,7 +18,7 @@ export const Carousel: FC<ICarousel> = ({ slides }) => {
     }
 
     if (viewportRef.current) viewportRef.current.style.transform = `translateX(calc(${current}* -100%))`;
-    
+
     return (
         <div className={styles.carousel_container}>
             <Button

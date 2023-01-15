@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "postbuild": "cd client && npm install && npm run build",
-    "build": "cd server && npm install && npm run tsc && cd .. && npm run postbuild",
+    "build": "CI=false cd server && npm install && npm run tsc && cd .. && npm run postbuild",
     "start": "NODE_ENV=production node server/build/server/src/app.js"
   },
   "repository": {

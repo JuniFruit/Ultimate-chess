@@ -47,10 +47,14 @@ export interface ITimerPayload {
     black: number;
 }
 
+export interface IServerMove extends IMove {
+    time: ITimerPayload
+}
+
 export interface IOServerEvents {
     updateGame: (payload: IGameData) => void;
     noOpponent: (user: IDisconnectedUser) => void;
-    move: (move: IMove) => void;
+    move: (move: IServerMove) => void;
     error: (err: Errors) => void;
     gameError: (err: Errors) => void;
     results: (payload: IResultPayload) => void;

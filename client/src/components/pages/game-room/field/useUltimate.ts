@@ -28,9 +28,9 @@ export const useUltimate = ({
     const chosenSkill = useRef<ISkillItem | null>(null);
     const [isSkillTargetSelecting, setIsSkillTargetSelecting] = useState(false);
     const { addMsg } = useActions()
-    const {playSound} = useContext(AudioCtx) as AudioContextType
+    const { playSound } = useContext(AudioCtx) as AudioContextType
 
-    const handleSetChosenSkill = (skill: ISkillItem) => {
+    const handleSetChosenSkill = useCallback((skill: ISkillItem) => {
         if (board.states.isFirstMove) {
             _setInvalid(SkillErrorMsg.INVALID_STATE);
             return _handleClearStates();
@@ -44,7 +44,7 @@ export const useUltimate = ({
         setIsSkillTargetSelecting(prev => true);
         setIsSkillBookOpen(prev => false);
 
-    }
+    }, [board.states.isFirstMove, board.states.currentPlayer, chosenSkill.current?.title])
 
     const _handleClearStates = useCallback(() => {
         chosenSkill.current = null
@@ -57,30 +57,7 @@ export const useUltimate = ({
         playSound('invalid');
     }, [])
 
-    const handlePerformSkill = (cell: ICellUlt) => {
-       
-
-        if (board.states.isGameOver) return _handleClearStates();
-        if (!chosenSkill.current || !cell.canPerformSkill(chosenSkill.current, board)) {
-            _setInvalid(SkillErrorMsg.INVALID_TARGET)
-            return _handleClearStates();
-        }
-        if (board.isKingChecked()) {
-            _setInvalid(SkillErrorMsg.IN_CHECK)
-            return _handleClearStates()
-        }
-
-        board.incrementMoveCount();
-        board.addUsedSkill(chosenSkill.current.title, cell);
-        cell.performSkill(chosenSkill.current.title, board);
-        board.swapPlayer();
-        handleSendSkillMove(cell, chosenSkill.current);
-
-        _handleClearStates();
-
-    }
-
-    const handleSendSkillMove = (to: ICellUlt, skill: ISkillItem) => {
+    const handleSendSkillMove = useCallback((to: ICellUlt, skill: ISkillItem) => {
 
         const move: IMove = {
             from: {
@@ -96,7 +73,30 @@ export const useUltimate = ({
             options: { skill: skill.title }
         }
         handleSendMove(move);
-    }
+    }, [handleSendMove])
+
+    const handlePerformSkill = useCallback((cell: ICellUlt) => {
+
+        if (board.states.isGameOver) return _handleClearStates();
+        if (!chosenSkill.current || !cell.canPerformSkill(chosenSkill.current, board)) {
+            _setInvalid(SkillErrorMsg.INVALID_TARGET)
+            return _handleClearStates();
+        }
+        if (board.isKingChecked()) {
+            _setInvalid(SkillErrorMsg.IN_CHECK)
+            return _handleClearStates()
+        }
+
+        board.incrementMoveCount();
+        board.addUsedSkill(chosenSkill.current.title, cell);
+        cell.performSkill(chosenSkill.current.title, board);
+        board.swapPlayer();
+        board.updateAllLegalMoves();
+        handleSendSkillMove(cell, chosenSkill.current);
+
+        _handleClearStates();
+
+    }, [handleSendSkillMove, chosenSkill.current?.title])
 
 
     return {

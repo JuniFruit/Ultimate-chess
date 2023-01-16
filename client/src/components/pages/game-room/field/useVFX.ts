@@ -101,6 +101,23 @@ export const useVFX = ({ board, isUltimate, isFlipped }: IUseVFX) => {
 
     }, [board.states.globalMovesCount, isUltimate])
 
+    useEffect(() => {
+        if (!isUltimate) return;
+        const fetchEffectAssets = () => {
+            effectList.forEach(effect => {
+                const img = new Image();
+                img.src = effect.sprite;
+
+            })
+        }
+        fetchEffectAssets()
+        const deferTimeout = setTimeout(() => {
+            fetchEffectAssets()
+        }, 2000);
+        return () => {
+            clearTimeout(deferTimeout);
+        }
+    }, [isUltimate])
 
     return {
         vfx,

@@ -25,7 +25,7 @@ const ProfileMenu: FC = () => {
     return (
         <div ref={ref} className={styles.wrapper}>
 
-            <button onClick={(e) => { e.preventDefault(); setIsShow(!isShow) }}>
+            <button aria-label="profile-menu" onClick={(e) => { e.preventDefault(); setIsShow(!isShow) }}>
                 <AvatarElement
                     avatarPath={data?.avatarLink}
                 />

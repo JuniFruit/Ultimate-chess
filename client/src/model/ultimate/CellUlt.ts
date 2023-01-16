@@ -98,6 +98,7 @@ export class CellUlt extends Cell implements ICellUlt {
             expireAt: skill?.lasts ? board.states.globalMovesCount + skill.lasts : -1,
         }
         if (skill.canBeAppliedAt === 'figure') return this.figure?.applySkill(skillToApply);
+        this.prevFigure.push(this.figure);
         this.states.skillsApplied = [...this.states.skillsApplied, skillToApply];
 
     }
@@ -117,28 +118,27 @@ export class CellUlt extends Cell implements ICellUlt {
     }
 
     public undoDetonate(board: IBoardUlt) {
-        const offsets = generateOffsets(1, 'square');
-
-        if (this.prevFigure) {
-            this.figure = this.prevFigure;
-            this.prevFigure = null;
-        }
+        const offsets = generateOffsets(1, 'square')
 
         offsets.forEach(offset => {
             const [x, y] = offset;
             if (!isInBounds(this.x + x, this.y + y)) return;
             const current = board.getCell(this.x + x, this.y + y)
-            if (current.prevFigure?.type === FigureTypes.PAWN) {
-                current.figure = current.prevFigure
-                current.prevFigure = null;
-            };
-            // current.states.skillsApplied = current.states.skillsApplied.filter(skill => skill.title !== SkillNames.INCINERATE);
+            if (current.states.skillsApplied.some(skill => skill.title === SkillNames.INCINERATE)) current.prevFigure.pop();
+            const lastPrevFigureCurrent = current.prevFigure.stack.head?.value;
+            if (lastPrevFigureCurrent?.type === FigureTypes.PAWN) {
+                current.figure = current.prevFigure.pop();
+            }
+
         })
+        const lastPrevFigure = this.prevFigure.stack.head?.value;
+        if (!lastPrevFigure || lastPrevFigure?.type === FigureTypes.KING || lastPrevFigure?.type === FigureTypes.QUEEN) return;
+        this.figure = this.prevFigure.pop();
     }
 
     public performKill(board: IBoardUlt, isFake = false) {
         if (!isFake) board.addLostFigure({ ...this.figure!, takenBy: getFigureInfo(this.figure!) })
-        this.prevFigure = this.figure;
+        this.prevFigure.push(this.figure);
         this.figure = null;
     }
 
@@ -154,10 +154,10 @@ export class CellUlt extends Cell implements ICellUlt {
             const [x, y] = offset;
             if (!isInBounds(this.x + x, this.y + y)) return;
             const current = board.getCell(this.x + x, this.y + y);
-            if (current.prevFigure) current.prevFigure = current.figure;
-            if (current.figure?.type === FigureTypes.PAWN) current.performKill(board, isFake);
+            current.prevFigure.push(current.figure);
+            if (current.figure && current.figure.type === FigureTypes.PAWN) current.performKill(board, isFake);
             const incinerate = SkillList.find(skill => skill.title === SkillNames.INCINERATE);
-            if (!current.isOccupied()) current.applySkill(incinerate!, board);
+            if (!current.figure) current.applySkill(incinerate!, board);
 
         })
     }

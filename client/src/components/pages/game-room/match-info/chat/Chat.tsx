@@ -43,7 +43,7 @@ const Chat: FC<IChat> = (props) => {
             <form
                 onSubmit={(e) => { e.preventDefault(); handleSubmit(onSubmit)() }}
                 className={styles.chat_form}
-                >
+            >
                 <Field
                     {...register("body", {
                         required: 'Please enter your message'
@@ -51,7 +51,7 @@ const Chat: FC<IChat> = (props) => {
                     error={errors.body}
                     placeholder={'Send a message'}
                 />
-                <Button>
+                <Button aria-label={'send a message'}>
                     <IoSend />
                 </Button>
             </form>

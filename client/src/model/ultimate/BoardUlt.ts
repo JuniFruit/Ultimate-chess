@@ -51,7 +51,7 @@ export class BoardUlt extends Board implements IBoardUlt {
 
 
     public getCell(x: number, y: number): ICellUlt {
-        return this.cells[y][x] as ICellUlt
+        return this.cells[Math.floor(y)][Math.floor(x)] as ICellUlt
     }
 
     public createFigure(char: string, x: number, y: number) {
@@ -101,7 +101,7 @@ export class BoardUlt extends Board implements IBoardUlt {
             })
         })
         this.incrementMoveCount()
-        this._clearExpiredStates(true)
+        this._clearExpiredStates(true);
         super.filterUncheckingMoves();
         this._undoLastSkill()
         this.decrementMoveCount();
@@ -115,11 +115,7 @@ export class BoardUlt extends Board implements IBoardUlt {
     public updateAllLegalMoves() {
 
         this._clearExpiredStates();
-
-        this.figures.forEach(figure => {
-            figure.getLegalMoves(this);
-            figure.filterDisabled();
-        });
+        this._getLegalMoves();
         this.filterUncheckingMoves();
     }
 
@@ -187,5 +183,12 @@ export class BoardUlt extends Board implements IBoardUlt {
                 this.cells[y][x] = newCell;
             })
         })
+    }
+
+    private _getLegalMoves() {
+        this.figures.forEach(figure => {
+            figure.getLegalMoves(this);
+            figure.filterDisabled();
+        });
     }
 }

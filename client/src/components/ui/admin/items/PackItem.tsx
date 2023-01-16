@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, KeyboardEventHandler } from "react";
 import { IPack } from "../../../../types/pack.interface";
 import { formatToKilo } from "../../../../utils/format.utils";
 import { ImagePreview } from "../../SuspenseWrapper";
@@ -11,11 +11,19 @@ interface IPackItem extends Pick<IPack, "id" | "sysName" | "title" | "preview"> 
 
 export const PackItem: FC<IPackItem> = ({ id, sysName, title, preview, ownerCount, onClick }) => {
 
+    const handleKeyPress:KeyboardEventHandler<HTMLDivElement> = (e) => {
+        if (e.key === 'Enter') {
+            onClick()
+        }
+    }
 
     return (
         <div
             className={styles.item_container}
             onClick={onClick}
+            title={title}
+            aria-label={`edit pack ${title}`}
+            onKeyDown={handleKeyPress}
             tabIndex={0}
         >
             <ImagePreview imageSrc={preview} />

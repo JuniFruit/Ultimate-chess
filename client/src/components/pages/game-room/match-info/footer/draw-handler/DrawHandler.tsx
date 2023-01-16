@@ -16,10 +16,15 @@ const DrawHandler: FC<IDrawHandler> = memo(({ onConfirm, onDecline }) => {
         <div className={styles.handler_wrapper}>
             <h4>Your opponent is offering a draw. Accept?</h4>
             <div className={styles.buttons}>
-                <Button onClick={onConfirm}>
+                <Button
+                    onClick={onConfirm}
+                    aria-label={'confirm request'}
+                >
                     <IoCheckmarkOutline />
                 </Button>
-                <Button onClick={onDecline}>
+                <Button onClick={onDecline}
+                    aria-label={'decline request'}
+                >
                     <IoCloseOutline />
                 </Button>
             </div>

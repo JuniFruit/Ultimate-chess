@@ -6,6 +6,7 @@ import { IKing } from "./figures/King";
 import { Direction } from "./helper.enum";
 import { getFigureInfo } from "./helpers";
 import { Positions } from "./positions";
+import { FigureStack, IFigureStack } from "./stack/Stack";
 import { ICellUlt, ICellUltStates } from "./ultimate/CellUlt";
 
 export interface ICell {
@@ -13,7 +14,7 @@ export interface ICell {
     readonly y: number;
     readonly pos: string;
     readonly color: Colors;
-    prevFigure: IFigure | null;
+    prevFigure: IFigureStack;
     figure: IFigure | null;
     isAvailable: boolean;
     isMouseOver: boolean
@@ -53,7 +54,7 @@ export class Cell implements ICell {
     readonly x: number;
     readonly y: number;
     readonly pos: string;
-    prevFigure: IFigure | null = null;
+    prevFigure = new FigureStack();
     color: Colors;
     figure: IFigure | null;
     isAvailable = false;
@@ -111,14 +112,14 @@ export class Cell implements ICell {
         }
 
     }
-    
+
 
     public isCastlingMove(target: ICell) {
         if ((this.figure?.type === FigureTypes.KING && target.figure?.type === FigureTypes.ROOK)
             && this.figure.color === target.figure.color) return true;
         return false
     }
-    
+
 
 
     public moveFigure(target: ICell, board: IBoard, options: IMoveOptions) {
@@ -128,13 +129,13 @@ export class Cell implements ICell {
         this._makeMove(target, board, options);
         if (!options.isFake && options.isPromotion) target.promote(options.figureToPromote!, board);
     }
-    
+
 
     public undo() {
         if (this.figure) this.figure.undo();
 
-        this.figure = this.prevFigure;
-        this.prevFigure = null;
+        this.figure = this.prevFigure.pop();
+        // this.prevFigure = this.figure;
     }
 
     public isPromotionMove(target: ICell) {
@@ -163,7 +164,7 @@ export class Cell implements ICell {
         this._makeMove(target, board, { isEnPassant: true, ...options });
 
         const cellToCapture = board.getCell(target.x, this.y);
-        cellToCapture.prevFigure = cellToCapture.figure;
+        cellToCapture.prevFigure.push(cellToCapture.figure);
         cellToCapture.figure = null;
     }
     private _isEnPassantMove(target: ICell) {
@@ -206,9 +207,9 @@ export class Cell implements ICell {
         this._handleAddMove(target, board, options);
 
         this.figure!.moveFigure(target, board, options.isFake);
-        target.prevFigure = target.figure;
+        target.prevFigure.push(target.figure)
         target.figure = this.figure;
-        this.prevFigure = this.figure;
+        this.prevFigure.push(this.figure);
         this.figure = null;
     }
 

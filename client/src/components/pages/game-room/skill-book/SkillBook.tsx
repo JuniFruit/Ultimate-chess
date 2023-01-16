@@ -4,9 +4,9 @@ import { useIsMobile } from "../../../../hooks/useMobile";
 import { ISkillItem, SkillList } from "../../../../model/ultimate/Skills";
 import { Button } from "../../../ui/button/Button";
 import { Portal } from "../../../ui/portal/Portal";
-import { Book } from "../../../ui/SuspenseWrapper";
 import { ISkillBook } from "./SkillBook.interface";
 import { SkillPage } from "./SkillPage";
+import Book from "../../../ui/book/Book";
 
 
 const SkillBook: FC<ISkillBook> = ({ onChooseSkill, onClose, board, myColor }) => {

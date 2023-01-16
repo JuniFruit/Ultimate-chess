@@ -1,4 +1,4 @@
-import { FC, lazy, Suspense, useCallback, useContext } from "react";
+import { FC, lazy, Suspense, useCallback, useContext, useEffect } from "react";
 import { IoSettingsSharp } from "react-icons/io5";
 import { useParams } from "react-router-dom";
 import { iconsGeneral } from "../../../assets/icons/general/iconsGeneral";
@@ -19,9 +19,9 @@ import styles from './GameRoom.module.scss';
 const GameField = lazy(() => import("./field/Field"));
 const IngameSettings = lazy(() => import("./settings/IngameSettings"));
 const MatchInfo = lazy(() => import("./match-info/MatchInfo"));
-const ConfirmModal = lazy(() => import("./modals/ConfirmModal"));
-const GameOverModal = lazy(() => import("./modals/GameOverModal"));
 const WaitingModal = lazy(() => import("./modals/WaitingModal"));
+let ConfirmModal: FC<any>;
+let GameOverModal: FC<any>
 
 
 const GameRoom: FC = () => {
@@ -29,6 +29,16 @@ const GameRoom: FC = () => {
     const { id } = useParams()
     const { field, status, data } = useGameRoom(id, isUltimate);
     const { playSound } = useContext(AudioCtx) as AudioContextType
+
+    useEffect(() => {
+        const deferModals = async () => {
+            const confirmMod = await import("./modals/ConfirmModal");
+            ConfirmModal = confirmMod.default
+            const gameOverMod = await import("./modals/GameOverModal");
+            GameOverModal = gameOverMod.default;
+        }
+        deferModals()
+    }, [])
 
     return (
         <Layout title="Ultimate Chess Game Room">
@@ -63,7 +73,7 @@ const GameRoom: FC = () => {
                                 isSkillBookOpen={status.isSkillBookOpen}
                                 setIsSkillBookOpen={status.setIsSkillBookOpen}
                                 isUltimate={isUltimate}
-
+                                setBoard={field.setBoard}
                             /> : null
                         }
 
@@ -75,13 +85,18 @@ const GameRoom: FC = () => {
 
                                     <Button
                                         onClick={() => status.setIsSettingsOpen(true)}
+                                        aria-label={'open audio settings'}
                                     >
                                         <IoSettingsSharp />
                                     </Button>
                                     {
                                         isUltimate && !status.isObserver
                                             ?
-                                            <Button onClick={() => { playSound('bookOpen'); status.setIsSkillBookOpen(prev => true) }}>
+                                            <Button
+                                                onClick={() => { playSound('bookOpen'); status.setIsSkillBookOpen(prev => true) }}
+                                                aria-label={'open skill book'}
+
+                                            >
                                                 <img src={iconsGeneral.book} alt="skill book" />
                                             </Button> : null
                                     }
@@ -135,13 +150,13 @@ const GameRoom: FC = () => {
             <ErrorModal />
             <Suspense fallback={null}>
                 {
-                    field.board.states.isGameOver ? <GameOverModal
+                    field.board.states.isGameOver && GameOverModal ? <GameOverModal
                         {...{ ...status }}
                         onRematch={() => field.handleSendRequest(Requests.REMATCH)}
                     /> : null
                 }
                 {
-                    data.request ? <ConfirmModal
+                    data.request && ConfirmModal ? <ConfirmModal
                         request={data.request}
                         onConfirm={field.handleRequestConfirm}
                         onClose={() => data.setRequest(null)}

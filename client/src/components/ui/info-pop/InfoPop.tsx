@@ -37,7 +37,10 @@ const InfoPop: FC = () => {
                 <div className={styles.message}>
                     <p>{message}</p>
                 </div>
-                <Button className={styles.message_close} onClick={(e) => { e.preventDefault(); clearMsg() }}>
+                <Button
+                    className={styles.message_close}
+                    onClick={(e) => { e.preventDefault(); clearMsg() }}
+                    aria-label={'close'}>
                     X
                 </Button>
             </div>
@@ -48,6 +51,6 @@ const InfoPop: FC = () => {
 
     )
 
-} 
+}
 
 export default InfoPop;

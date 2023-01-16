@@ -9,11 +9,11 @@ import { ICellUlt } from "../../../../model/ultimate/CellUlt";
 import { IField } from "./Field.interface";
 import { useSound } from './useSound';
 
-export interface IUseField extends Pick<IField, 'board' | 'myColor' | 'isObserver' | "isUltimate"> {
+export interface IUseField extends Pick<IField, 'board' | 'myColor' | 'isObserver' | "isUltimate" | "setBoard"> {
     handleSendMove: (move: IMove) => void;
 }
 
-export const useField = ({ board, myColor, isObserver, handleSendMove, isUltimate }: IUseField) => {
+export const useField = ({ board, myColor, isObserver, handleSendMove, isUltimate, setBoard }: IUseField) => {
 
 
     const { isMobile } = useIsMobile();
@@ -57,7 +57,7 @@ export const useField = ({ board, myColor, isObserver, handleSendMove, isUltimat
             setSelectedCell(prev => cell);
         }
 
-    }, [selectedCell, lastTargetCell, isObserver, premoves, isPromotion, board.states.globalMovesCount])
+    }, [selectedCell, lastTargetCell, isObserver, premoves.length, isPromotion, board])
 
 
     const handlePremoves = useCallback(() => {
@@ -69,7 +69,7 @@ export const useField = ({ board, myColor, isObserver, handleSendMove, isUltimat
         handleMove(selectedCell, current.to);
         setPremoves(prev => [...premovesCopy]);
 
-    }, [selectedCell, premoves])
+    }, [selectedCell, premoves.length])
 
     const handlePromotion = useCallback((figureType: FigureTypes) => {
 
@@ -114,9 +114,9 @@ export const useField = ({ board, myColor, isObserver, handleSendMove, isUltimat
 
         board.states.isFirstMove = false;
         board.swapPlayer();
+        board.updateAllLegalMoves();
         setSelectedCell(to);
         handleSendMove({ from: { ...from.getCellInfo() }, to: { ...to.getCellInfo() }, options: { ...moveOptions } })
-        board.updateAllLegalMoves();
 
 
     }, [handleSelect])

@@ -150,7 +150,7 @@ export abstract class Figure implements IFigureBase {
 
     public convertToLegalMove(cell: ICell | ICellUlt) {
         const figure = cell.figure ? getFigureInfo(cell.figure) : null;
-        const prevFigure = cell.prevFigure ? getFigureInfo(cell.prevFigure) : null;
+        const prevFigure = cell.prevFigure.stack.head?.value ? getFigureInfo(cell.prevFigure.stack.head.value) : null;
 
         return {
             pos: cell.pos,

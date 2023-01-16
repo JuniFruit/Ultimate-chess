@@ -24,7 +24,9 @@ export const Carousel: FC<ICarousel> = ({ slides }) => {
             <Button
                 onClick={() => handleChange('prev')}
                 disabled={current === -1}
+                aria-label={'previous slide'}
                 className={styles.nav_button}>
+                
                 <IoArrowUndoOutline />
             </Button>
             <div className={styles.carousel_overlay}>
@@ -36,6 +38,7 @@ export const Carousel: FC<ICarousel> = ({ slides }) => {
             <Button
                 onClick={() => handleChange('next')}
                 className={styles.nav_button}
+                aria-label={'next slide'}
                 disabled={current === (Math.floor((slides.length / itemsPerScreen) - 1))}>
                 <IoArrowRedoOutline />
             </Button>

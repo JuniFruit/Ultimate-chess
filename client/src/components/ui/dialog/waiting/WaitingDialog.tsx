@@ -20,7 +20,10 @@ const WaitingDialog: FC<IDialog> = ({ message, onDialog, isOpen, onClose }) => {
                         {message}
                     </Dialog.Description>
 
-                    <img src={mockups.waitingGIF} />
+                    <img
+                        src={mockups.waitingGIF}
+                        alt={'waiting icon'}
+                    />
                     <div className={styles.panel_buttons}>
                         <Button onClick={() => { onDialog(); setIsCopied(true) }}>{isCopied ? 'Copied' : 'Copy'}</Button>
                         <Button onClick={onClose}>Back</Button>

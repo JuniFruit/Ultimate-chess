@@ -41,7 +41,14 @@ export const useSound = (board: IBoard | IBoardUlt, isUltimate: boolean) => {
     }, [board.states.globalMovesCount, board.states.isGameOver])
 
     useEffect(() => {
-        fetchMainSounds && fetchMainSounds();
-        if (isUltimate && fetchUltimateSounds) fetchUltimateSounds();
+        const deferTimeout = setTimeout(() => {
+            fetchMainSounds && fetchMainSounds();
+            if (isUltimate && fetchUltimateSounds) fetchUltimateSounds();
+
+        }, 3000)
+
+        return () => {
+            clearTimeout(deferTimeout)
+        }
     }, [isUltimate])
 }

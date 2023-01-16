@@ -32,7 +32,6 @@ export const useGameRoom = (id?: string, isUltimate: boolean = false) => {
 
     const handleUpdateGame = useCallback((payload: IGameData) => {
         if (!payload) return; // payload with info about the client and the board
-        clearStates();
         setIsReadyToStart(true);
         setEnemyUser(prev => payload.playerTwo!);
         setClientUser(prev => payload.playerOne);
@@ -59,10 +58,11 @@ export const useGameRoom = (id?: string, isUltimate: boolean = false) => {
         }
         newBoard.mergeBoardData(boardData);
         setBoard(prev => newBoard);
-
+        // clearStates();
     }, [request])
 
     const handleResults = useCallback((payload: IResultPayload) => {
+        clearStates()
         board.states.isGameOver = true;
         setResult(prev => payload);
         setBoard(prev => prev.getCopyBoard())
@@ -70,7 +70,6 @@ export const useGameRoom = (id?: string, isUltimate: boolean = false) => {
 
     const handleRequestConfirm = useCallback((request: Requests) => {
         if (isObserver) return;
-        clearStates()
         if (request === Requests.RESIGN) return ioClient.emit("resign");
         ioClient.emit("confirmRequest", request);
 

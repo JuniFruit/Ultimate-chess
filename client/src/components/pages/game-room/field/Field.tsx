@@ -1,4 +1,4 @@
-import { FC, lazy, Suspense } from 'react';
+import { FC, Suspense, useEffect } from 'react';
 import { Colors } from '../../../../model/colors.enum';
 import { IBoardUlt } from '../../../../model/ultimate/BoardUlt';
 import { IField } from "./Field.interface";
@@ -7,19 +7,16 @@ import { useIOField } from './useIOField';
 import { useUltimate } from './useUltimate';
 import { useVFX } from './useVFX';
 import CanvasField from './canvas/CanvasField';
+import PromotionWindow from '../../../ui/piece/promotion/PromotionWindow';
 import styles from './Field.module.scss';
 
-const SkillBook = lazy(() => import('../skill-book/SkillBook'));
-const PromotionWindow = lazy(() => import('../../../ui/piece/promotion/PromotionWindow'));
+let SkillBook: FC<any>;
 
 
 const GameField: FC<IField> = (props) => {
 
-    const { vfx } = useVFX({
-        board: props.board as IBoardUlt,
-        isUltimate: props.isUltimate,
-        isFlipped: props.myColor === Colors.BLACK
-    });
+
+   
     const { handleSendMove } = useIOField({ ...props });
     const { handlers, status } = useField({ ...props, handleSendMove })
     const { ultHandlers, ultStatus } = useUltimate(
@@ -31,6 +28,22 @@ const GameField: FC<IField> = (props) => {
             handleSendMove: handlers.handleSendMove,
         }
     )
+   
+
+    const { vfx } = useVFX({
+        board: props.board as IBoardUlt,
+        isUltimate: props.isUltimate,
+        isFlipped: props.myColor === Colors.BLACK
+    });
+
+    useEffect(() => {
+        if (!props.isUltimate || props.isObserver) return;
+        const deferSkillBook = async () => {
+            const book = await import('../skill-book/SkillBook')
+            SkillBook = book.default
+        }
+        deferSkillBook()
+    }, [props.isUltimate, props.isObserver])
 
 
     return (
@@ -53,15 +66,17 @@ const GameField: FC<IField> = (props) => {
                 }
             />
 
+            {status.isPromotion && <PromotionWindow handlePromotion={handlers.handlePromotion} />}
             <Suspense fallback={null}>
-                {status.isPromotion && <PromotionWindow handlePromotion={handlers.handlePromotion} />}
-                {props.isSkillBookOpen &&
+                {props.isSkillBookOpen && SkillBook
+                    ?
                     <SkillBook
                         onChooseSkill={ultHandlers.handleSetChosenSkill}
                         onClose={() => props.setIsSkillBookOpen(prev => false)}
                         board={props.board as IBoardUlt}
                         myColor={props.myColor}
                     />
+                    : null
                 }
             </Suspense>
         </div>

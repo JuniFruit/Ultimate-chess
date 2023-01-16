@@ -13,7 +13,7 @@ export const AuthForm: FC = () => {
 
     return (
         <div className={styles.wrapper} ref={ref}>
-            <button className={styleElements.button} onClick={() => setIsShow(!isShow)}>
+            <button aria-label="login-menu" className={styleElements.button} onClick={() => setIsShow(!isShow)}>
                 <FaUserCircle />
             </button>
 

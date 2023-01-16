@@ -34,6 +34,8 @@ export const TutorialComp: FC<ITutorialComp> = ({ onClose }) => {
                             onClick={() => handleChangePage('prev')}
                             disabled={currentPage <= 0}
                             title={'Previous page'}
+                            aria-label={'previous page'}
+
                         >
                             <IoArrowBackCircle />
                         </Button>
@@ -44,6 +46,8 @@ export const TutorialComp: FC<ITutorialComp> = ({ onClose }) => {
                             onClick={() => handleChangePage('next')}
                             disabled={currentPage >= pages.length - 1}
                             title={'Next page'}
+                            aria-label={'next page'}
+
                         >
                             <IoArrowForwardCircle />
                         </Button>

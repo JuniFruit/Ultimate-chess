@@ -49,6 +49,7 @@ const MatchInfo: FC<IMatchInfo> = memo(({
                 <div className={styles.match_buttons}>
                     <Button
                         value={'game'}
+                        aria-label={'open game log'}
                         onClick={handleSetWindow}
                         className={`${styles.button} ${activeWindow === 'game' && styles.button_active}`} >
                         <span>Game</span>
@@ -57,6 +58,7 @@ const MatchInfo: FC<IMatchInfo> = memo(({
                     </Button>
                     <Button
                         value={'chat'}
+                        aria-label={'open chat window'}
                         onClick={handleSetWindow}
                         className={`${styles.button} ${activeWindow === 'chat' && styles.button_active}`}  >
                         <span>Chat</span>
@@ -72,14 +74,14 @@ const MatchInfo: FC<IMatchInfo> = memo(({
                         <>
                             <Button
                                 onClick={onRequestDraw}
-
+                                aria-label={'request a draw'}
                                 className={styles.button}>
                                 <span>Draw</span>
                                 <GiDiceShield />
                             </Button>
                             <Button
                                 onClick={onRequestResign}
-
+                                aria-label={'resign'}
                                 className={styles.button}>
                                 <span>Resign</span>
                                 <GiKneeling />

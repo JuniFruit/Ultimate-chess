@@ -1,4 +1,4 @@
-import { FC, PropsWithChildren, MouseEventHandler } from "react";
+import { FC, PropsWithChildren, MouseEventHandler, KeyboardEventHandler } from "react";
 import { IUser } from "../../../../types/user.interface";
 import { ImagePreview } from "../../SuspenseWrapper";
 import styles from './Items.module.scss';
@@ -17,10 +17,20 @@ export const PlayerItem: FC<PropsWithChildren<IPlayerItem>> = ({ user, children,
         onClick();
     }
 
+    const handleKeyPress: KeyboardEventHandler<HTMLDivElement> = (e) => {
+        if (e.key === 'Enter') {
+            if ((e.target as any).className.includes('Button')) return;
+            onClick()
+        }
+    }
+
     return (
         <div
             className={styles.item_container}
             onClick={handleClick}
+            title={user.username}
+            aria-label={`open ${user.username} profile`}
+            onKeyDown={handleKeyPress}
             tabIndex={0}
         >
             <ImagePreview imageSrc={user.avatarLink} />

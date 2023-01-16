@@ -51,6 +51,7 @@ export const RangeInput: FC<IRangeInput> = ({ max, min, label, id, onRangeChange
                     step={step}
                     value={value}
                     id={id}
+                    aria-label={`change ${label} level`}
                     onTouchStart={(e) => onActivate(e.currentTarget)}
                     onTouchEnd={(e) => onDisable()}
                     onMouseDown={(e) => onActivate(e.currentTarget)}

@@ -51,6 +51,7 @@ const AdminPage: FC = () => {
                                     className={`${activeWindow === item.title ? styles.link_active : ''}`}
                                     title={item.title}
                                     value={item.title}
+                                    aria-label={item.title}
                                     onClick={() => handleChangePage(item.title as any)}
                                 >
                                     <span>{<item.icon />}</span>

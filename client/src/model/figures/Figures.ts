@@ -27,6 +27,8 @@ export abstract class Figure implements IFigureBase {
     spriteSrc?: string;
     x;
     y;
+    visualX;
+    visualY;
     prevX;
     prevY;
     pos;
@@ -37,6 +39,8 @@ export abstract class Figure implements IFigureBase {
         this.color = color;
         this.x = x;
         this.y = y;
+        this.visualX = x;
+        this.visualY = y;
         this.prevX = x;
         this.prevY = y;
         this.sprites = sprites;
@@ -52,6 +56,8 @@ export abstract class Figure implements IFigureBase {
 
         this.x = target.x;
         this.y = target.y;
+        this.visualX = target.x;
+        this.visualY = target.y;
         this.pos = `${Positions[target.x]}${7 - target.y + 1}`;
 
 
@@ -164,6 +170,8 @@ export abstract class Figure implements IFigureBase {
     public undo() {
         this.x = this.prevX;
         this.y = this.prevY;
+        this.visualX = this.prevX;
+        this.visualY = this.prevY;
         this.pos = `${Positions[this.prevX]}${7 - this.prevY + 1}`;
 
 
@@ -176,7 +184,7 @@ export abstract class Figure implements IFigureBase {
 
     public draw(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, isFlipped: boolean) {
         if (this.animation) {
-            this.animation.updatePosition(this.x, this.y);
+            this.animation.updatePosition(this.visualX, this.visualY);
             this.animation.scaleToCellSize(canvas);
             this.animation.rescaleAndCenter()
             isFlipped && this.animation.flipPosition();
@@ -195,7 +203,7 @@ export abstract class Figure implements IFigureBase {
     public drawEffect(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, isFlipped: boolean) {
         if (this.effects.length) {
             this.effects.forEach(effect => {
-                effect.updatePosition(this.x, this.y);
+                effect.updatePosition(this.visualX, this.visualY);
                 effect.scaleToCellSize(canvas);
                 effect.rescaleAndCenter()
                 isFlipped && effect.flipPosition();

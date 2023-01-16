@@ -37,8 +37,8 @@ export const useCanvasField = (
                 sprite: figure.spriteSrc!,
                 framesMaxWidth: figure.sprites?.frames!,
                 position: {
-                    x: figure.x,
-                    y: figure.y
+                    x: figure.visualX,
+                    y: figure.visualY
                 },
                 title: SkillNames.INCINERATE, // Any
                 isLooped: true
@@ -61,8 +61,8 @@ export const useCanvasField = (
                     const skillEffect = new VFX({
                         ...effectItem!,
                         position: {
-                            x: figure.x,
-                            y: figure.y
+                            x: figure.visualX,
+                            y: figure.visualY
                         }
                     })
                     figure.setEffect(skillEffect);

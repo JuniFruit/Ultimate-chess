@@ -1,7 +1,6 @@
 import { useCallback, useEffect } from 'react';
 import ioClient from "../../../../api/socketApi";
 import { IMove } from "../../../../constants/socketIO/ClientEvents.interface";
-import { IServerMove } from '../../../../constants/socketIO/ServerEvents.interface';
 import { IUseField } from "./useField";
 
 
@@ -16,17 +15,16 @@ export const useIOField = ({ board, isObserver, setBoard }: IUseIOField) => {
     const handleSendMove = useCallback((move: IMove) => {
         if (isObserver) return;
         ioClient.emit("sendMove", move)
-        setBoard(prev => prev.getCopyBoard())
-    }, [isObserver, board])
+        // setBoard(prev => prev.getCopyBoard())
+    }, [isObserver])
 
-    const handleReceiveMove = useCallback((move: IServerMove) => {
+    const handleReceiveMove = useCallback((move: IMove) => {
         board.receiveMove(move);
         board.states.isFirstMove = false;
-        board.states.blackTime = move.time.black;
-        board.states.whiteTime = move.time.white;
+ 
         board.swapPlayer();
         board.updateAllLegalMoves();
-        setBoard(prev => prev.getCopyBoard())
+        // setBoard(prev => prev.getCopyBoard())
 
     }, [board])
 

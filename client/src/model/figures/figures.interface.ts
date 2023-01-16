@@ -37,6 +37,8 @@ export interface IFigureBase {
     states: IFigureStates;
     x: number;
     y: number;
+    visualX: number;
+    visualY: number;
     prevX: number;
     prevY: number;
     pos: string;

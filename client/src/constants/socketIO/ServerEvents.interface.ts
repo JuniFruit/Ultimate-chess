@@ -54,7 +54,7 @@ export interface IServerMove extends IMove {
 export interface IOServerEvents {
     updateGame: (payload: IGameData) => void;
     noOpponent: (user: IDisconnectedUser) => void;
-    move: (move: IServerMove) => void;
+    move: (move: IMove) => void;
     error: (err: Errors) => void;
     gameError: (err: Errors) => void;
     results: (payload: IResultPayload) => void;

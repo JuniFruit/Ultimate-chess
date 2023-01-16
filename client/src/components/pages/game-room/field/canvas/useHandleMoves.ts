@@ -53,8 +53,8 @@ export const useHandleMoves = ({ isFlipped, onCellSelect, cells, ultimateStates,
         const { x, y } = _getPosWithinBoard(clientX, clientY, canvas);
         const offset = .3;
 
-        draggingPiece.current.x = isFlipped ? 7 - x + offset : x - offset;
-        draggingPiece.current.y = isFlipped ? 7 - y + offset : y - offset;
+        draggingPiece.current.visualX = isFlipped ? 7 - x + offset : x - offset;
+        draggingPiece.current.visualY = isFlipped ? 7 - y + offset : y - offset;
 
     }, [draggingPiece.current, cells.length])
 
@@ -120,8 +120,8 @@ export const useHandleMoves = ({ isFlipped, onCellSelect, cells, ultimateStates,
 
     const _clearDragging = useCallback(() => {
         if (!draggingPiece.current || !dragStartCell.current) return;
-        draggingPiece.current.x = dragStartCell.current.x;
-        draggingPiece.current.y = dragStartCell.current.y;
+        draggingPiece.current.visualX = dragStartCell.current.x;
+        draggingPiece.current.visualY = dragStartCell.current.y;
         dragStartCell.current = null;
         draggingPiece.current = null;
         setIsDragging(prev => false);

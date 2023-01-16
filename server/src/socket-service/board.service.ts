@@ -16,7 +16,8 @@ export const BoardService = {
         boardApi(roomId).moveFigure(move);
         if (boardApi(roomId).isTimeout(socket.data.color)) return this.onTimeout(ioServer, socket);
 
-        socket.to([roomId, `${roomId}_obs`]).emit("move", { ...move, time: boardApi(roomId).getTime() });
+        socket.to([roomId, `${roomId}_obs`]).emit("move", move);
+        ioServer.to([roomId, `${roomId}_obs`]).emit("updateTimer", boardApi(roomId).getTime());
     },
 
     checkResults(ioServer: Server<IClientEvents, IServerEvents>, roomId: string) {

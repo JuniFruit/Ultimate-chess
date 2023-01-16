@@ -1,4 +1,4 @@
-# [Ultimate chess - Multiplayer game ](https://ultimate-chess.onrender.com)
+# [Ultimate chess - Multiplayer game ](https://ultimate-chess.up.railway.app/)
 ## Description
 
 Web-site where you can play chess, as well as keep track of your stats, watch other chess games live, play with different skin packs and manage the web-site from admin panel.
@@ -9,7 +9,7 @@ Attempt to turn a regular chess gameplay into an immersive battle with modern in
 
 ## How to play
 
-This is app is hosted on a free hosting platform. You can check it out [here](https://ultimate-chess.onrender.com).
+This is app is hosted on a free hosting platform. You can check it out [here](https://ultimate-chess.up.railway.app/).
 
 
 To start a game, choose a mode you want to play, copy the link and send it to your friend. As soon as your opponent connects game starts. Clock starts after the first move. If you lost connection, you have 1 minute (or 10 sec if the clock wasn't started) for reconnection, just open the same link and join the game back. Fail to do so will result in auto resign. If the clock wasn't started game will be aborted.
@@ -66,13 +66,14 @@ In order to save space in DB, matches are not recorded, therefore, cannot be ana
 ## Technologies used:
 * React
 * SocketIO
-* Node Expresss
+* Node Express
 * TypeORM
 * Postgres database
 * Typescript
-* Tailwind for css
+* Tailwind
 * JWT and bcrypt for auth
 * RTK query etc
+* Redux
 
 
 

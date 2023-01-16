@@ -16,8 +16,7 @@ export const BoardService = {
         boardApi(roomId).moveFigure(move);
         if (boardApi(roomId).isTimeout(socket.data.color)) return this.onTimeout(ioServer, socket);
 
-        socket.to([roomId, `${roomId}_obs`]).emit("move", move);
-        ioServer.to([roomId, `${roomId}_obs`]).emit("updateTimer", boardApi(roomId).getTime());
+        socket.to([roomId, `${roomId}_obs`]).emit("move", { ...move, time: boardApi(roomId).getTime() });
     },
 
     checkResults(ioServer: Server<IClientEvents, IServerEvents>, roomId: string) {
@@ -76,8 +75,8 @@ export const BoardService = {
             ioServer.to([roomId, `${roomId}_obs`]).emit("results", results);
         }
 
-        boardApi(roomId).createBoard();
         if (payload === Requests.REMATCH) {
+            boardApi(roomId).createBoard();
             const sockets = await ioServer.in([roomId, `${roomId}_obs`]).fetchSockets();
             sockets.forEach(socket => socket.emit("updateGame", this.getUpdateGamePayload(socket, roomId)));
 

@@ -2,15 +2,15 @@ import * as dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
 import path from 'path'
-import { createServer } from 'http';
-import { Server } from 'socket.io';
-import { getWSconfig } from './config/socketIo.config';
-import { chatListener, gameListener, roomListener, serverListener } from './listeners/listeners';
 import authRouter from './routes/auth.route';
 import userRouter from './routes/user.route';
 import packRouter from './routes/packs.route';
 import roleRouter from './routes/role.route';
 import bodyParser from 'body-parser';
+import { createServer } from 'http';
+import { Server } from 'socket.io';
+import { getWSconfig } from './config/socketIo.config';
+import { chatListener, gameListener, roomListener, serverListener } from './listeners/listeners';
 import { IClientEvents } from './constants/socketIO/ClientEvents.interface'
 import { IServerEvents } from './constants/socketIO/ServerEvents.interface'
 import { userHandler } from './middleware/userHandler.middleware';
@@ -42,12 +42,13 @@ ioServer.use(userHandler)
 
 
 ioServer.on('connection', (socket) => {
-    console.log(`New connection`,socket.data)
+    console.log(`New connection`, socket.data.user.username);
 
     serverListener(socket, ioServer);
     roomListener(socket, ioServer);
     chatListener(socket);
     gameListener(socket, ioServer);
+    ioServer.of('/').adapter.on("leave-room", (room) => console.log(room))
 
 })
 

@@ -1,4 +1,4 @@
-import { FC, memo, MouseEvent, useState, lazy, Suspense, useTransition } from "react";
+import { FC, lazy, MouseEvent, Suspense, useTransition } from "react";
 import { GiDiceShield, GiKneeling } from "react-icons/gi";
 import { IoChatboxEllipsesOutline, IoGameControllerOutline, IoNotificationsCircleSharp } from "react-icons/io5";
 import { Requests } from "../../../../../constants/constants";
@@ -11,9 +11,6 @@ import styles from './MatchInfo.module.scss';
 const DisconnectUser = lazy(() => import("./footer/disconnect-user/DisconnectUser"));
 const DrawHandler = lazy(() => import("./footer/draw-handler/DrawHandler"));
 const GameInfo = lazy(() => import("./game-info/GameInfo"));
-
-
-
 
 const MatchInfo: FC<IMatchInfo> = ({
     onConfirmDraw,
@@ -43,7 +40,6 @@ const MatchInfo: FC<IMatchInfo> = ({
             setActiveWindow(currentValue);
         })
     }
-    console.log(isNewMsg)
    
     return (
         <div className={styles.match_info_wrapper}>

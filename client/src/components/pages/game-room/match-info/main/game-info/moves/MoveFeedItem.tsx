@@ -1,9 +1,10 @@
-import { IMoveFeedItem } from "./MoveFeed.interface"
 import { FC } from 'react';
-import { PieceInfo } from "../../../../../ui/piece/piece-info/PieceInfo";
-import { getDefaultSprite } from "../../../../../../utils/game.utils";
-import { Positions } from "../../../../../../model/positions";
-import { iconsGeneral } from "../../../../../../assets/icons/general/iconsGeneral";
+import { iconsGeneral } from "../../../../../../../assets/icons/general/iconsGeneral";
+import { Positions } from "../../../../../../../model/positions";
+import { getDefaultSprite } from "../../../../../../../utils/game.utils";
+import { PieceInfo } from "../../../../../../ui/piece/piece-info/PieceInfo";
+import { IMoveFeedItem } from "./MoveFeed.interface";
+
 
 
 export const MoveFeedItem: FC<IMoveFeedItem> = ({ piece, listCount }) => {

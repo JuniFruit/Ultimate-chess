@@ -51,7 +51,7 @@ export class Sprite implements ISprite {
 
 
     private _draw({ ctx, x, y, imgHeight, imgWidth }: IDrawArgs) {
-        // console.log(imgHeight, this.image.height)
+        if (!this.image || !this.image.complete) return;
         ctx.drawImage(
             this.image!,
             this.framesCurrentWidth * (this.image!.width / this.framesMaxWidth),

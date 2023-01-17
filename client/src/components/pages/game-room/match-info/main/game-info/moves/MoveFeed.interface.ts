@@ -1,5 +1,5 @@
-import { IMovedFigure } from "../../../../../../model/figures/figures.interface";
-import { ISkillUsed } from "../../../../../../model/ultimate/Skills";
+
+import { IMovedFigure } from "../../../../../../../model/figures/figures.interface";
 import { IGameInfo } from "../GameInfo.interface";
 
 export interface IMoveFeed extends Pick<IGameInfo, "moves"> {}

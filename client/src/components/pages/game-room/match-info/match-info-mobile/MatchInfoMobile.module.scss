@@ -1,0 +1,21 @@
+
+
+
+.container {
+    @apply absolute;
+    height: 100vh;
+    width: 100vw;
+   
+    z-index: 50;
+    background: rgba(0, 0, 0, 0.3);
+
+    .wrapper {
+        @apply relative top-1/2 left-1/2 p-5 flex flex-col items-center;
+        transform: translate(-50%, -50%);
+        max-width: 30rem;
+
+        >button {
+            @apply bg-main-800 mt-2
+        }
+    }
+}

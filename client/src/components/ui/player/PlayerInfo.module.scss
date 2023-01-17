@@ -28,7 +28,7 @@
     }
     
     .buttons {
-        @apply flex gap-2 items-center;
+        @apply flex items-center;
         >button {
             @apply bg-transparent w-8 h-8 p-1;
             >img {
@@ -36,8 +36,9 @@
                 object-fit: cover;          
             }
         }
-        >button:first-child {
-            @apply flex items-center justify-center opacity-80 hover:opacity-100;
+        >button:nth-child(2),
+        >button:nth-child(1) {
+            @apply flex items-center justify-center opacity-80 p-0 hover:opacity-100;
             >svg {
                 width: calc(100% / 2);
                 height: calc(100% / 2);
@@ -89,6 +90,10 @@
         .buttons {          
             >button {
                 @apply bg-transparent w-14 h-14;              
+            }
+            >button:nth-child(2),
+            >button:nth-child(1) {
+                @apply p-1;
             }
         }
     }

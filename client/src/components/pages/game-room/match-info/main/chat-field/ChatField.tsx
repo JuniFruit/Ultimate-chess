@@ -1,20 +1,21 @@
 import { FC, useEffect, useRef } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { IoSend } from 'react-icons/io5';
-import { IMessage } from '../../../../../constants/socketIO/ClientEvents.interface';
-import { Button } from '../../../../ui/button/Button';
-import { MessageItem } from '../../../../ui/chat/MessageItem';
-import Field from '../../../../ui/field/Field';
-import { IChat } from './Chat.interface';
+import { IMessage } from '../../../../../../constants/socketIO/ClientEvents.interface';
+import { Button } from '../../../../../ui/button/Button';
+import { MessageItem } from '../../../../../ui/chat/MessageItem';
+import Field from '../../../../../ui/field/Field';
+
 import styles from './Chat.module.scss';
-import { useChat } from './useChat';
+import { IChatField } from './ChatField.interface';
 
-const Chat: FC<IChat> = (props) => {
 
-    const { messages, handleSendMessage } = useChat(props)
+export const ChatField: FC<IChatField> = ({ onSend, messages }) => {
+
+
     const { register, formState: { errors }, handleSubmit, setValue } = useForm<IMessage>()
     const onSubmit: SubmitHandler<IMessage> = (data) => {
-        handleSendMessage(data);
+        onSend(data);
         setValue('body', '');
     }
     const messagesRef = useRef<HTMLDivElement>(null);
@@ -60,4 +61,3 @@ const Chat: FC<IChat> = (props) => {
 }
 
 
-export default Chat;

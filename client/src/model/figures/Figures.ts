@@ -178,7 +178,7 @@ export abstract class Figure implements IFigureBase {
     }
 
     public setAnimation(vfx: IVFX) {
-        this.animation = vfx
+        this.animation = vfx        
     }
 
 

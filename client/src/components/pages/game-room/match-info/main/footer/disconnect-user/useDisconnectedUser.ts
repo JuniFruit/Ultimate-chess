@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ioClient from '../../../../../../api/socketApi';
-import { IDisconnectedUser } from '../../../../../../constants/socketIO/ClientEvents.interface';
+import ioClient from '../../../../../../../api/socketApi';
+import { IDisconnectedUser } from '../../../../../../../constants/socketIO/ClientEvents.interface';
+
 import { IDisconnectUserComponent } from './DisconnectUser.interface';
 
 export const useDisconnectedUser = ({isFirstMove, isGameOver ,isObserver}:IDisconnectUserComponent) => {

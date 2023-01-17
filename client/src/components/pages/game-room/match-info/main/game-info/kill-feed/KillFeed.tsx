@@ -1,7 +1,7 @@
 import { FC, memo } from 'react';
-import { Colors } from '../../../../../../model/colors.enum';
-import { getDefaultSprite, getFilteredLostFigures } from '../../../../../../utils/game.utils';
-import { PieceInfo } from '../../../../../ui/piece/piece-info/PieceInfo';
+import { getDefaultSprite, getFilteredLostFigures } from '../../../../../../../utils/game.utils';
+import { PieceInfo } from '../../../../../../ui/piece/piece-info/PieceInfo';
+
 import { IKillFeed } from './KillFeed.interface';
 import styles from './KillFeed.module.scss';
 

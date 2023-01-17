@@ -1,24 +1,25 @@
 import { FC, lazy, Suspense, useCallback, useContext, useEffect } from "react";
-import { IoSettingsSharp } from "react-icons/io5";
+import { IoGridSharp, IoOptions } from "react-icons/io5";
 import { useParams } from "react-router-dom";
 import { iconsGeneral } from "../../../assets/icons/general/iconsGeneral";
 import { AudioCtx } from "../../../audio-engine/audio.provider";
 import { AudioContextType } from "../../../audio-engine/audio.types";
 import { Requests } from "../../../constants/constants";
+import { useIsMobile } from "../../../hooks/useMobile";
 import { Colors } from "../../../model/colors.enum";
 import { IBoardUlt } from "../../../model/ultimate/BoardUlt";
 import { Layout } from "../../layout/Layout";
 import { Button } from "../../ui/button/Button";
+import PlayerInfo from "../../ui/player/PlayerInfo";
 import { Announcer } from "./announcer/Announcer";
+import styles from './GameRoom.module.scss';
+import ErrorModal from "./modals/ErrorModal";
 import { useGameRoom } from "./useGameRoom";
 import { TimerHandler } from "./utils/TimerHandler/TimerHandler";
-import PlayerInfo from "../../ui/player/PlayerInfo";
-import ErrorModal from "./modals/ErrorModal";
-import styles from './GameRoom.module.scss';
 
 const GameField = lazy(() => import("./field/Field"));
 const IngameSettings = lazy(() => import("./settings/IngameSettings"));
-const MatchInfo = lazy(() => import("./match-info/MatchInfo"));
+const MatchInfoContainer = lazy(() => import("./match-info/MatchInfoContainer"));
 const WaitingModal = lazy(() => import("./modals/WaitingModal"));
 let ConfirmModal: FC<any>;
 let GameOverModal: FC<any>
@@ -27,6 +28,7 @@ let GameOverModal: FC<any>
 const GameRoom: FC = () => {
     const isUltimate = window.location.href.includes('_ult');
     const { id } = useParams()
+    const { isMobile } = useIsMobile()
     const { field, status, data } = useGameRoom(id, isUltimate);
     const { playSound } = useContext(AudioCtx) as AudioContextType
 
@@ -83,22 +85,31 @@ const GameRoom: FC = () => {
                                     key={'clientInfo'}
                                     {...data.clientUser}>
 
+                                    {isMobile ?
+                                        <Button
+                                            onClick={() => status.setMobileMatchInfoOpen(true)}
+                                            aria-label={'open game log'}
+                                        >
+                                            <IoGridSharp />
+                                        </Button> : null
+                                    }
+
                                     <Button
                                         onClick={() => status.setIsSettingsOpen(true)}
                                         aria-label={'open audio settings'}
                                     >
-                                        <IoSettingsSharp />
+                                        <IoOptions />
                                     </Button>
-                                    {
-                                        isUltimate && !status.isObserver
-                                            ?
-                                            <Button
-                                                onClick={() => { playSound('bookOpen'); status.setIsSkillBookOpen(prev => true) }}
-                                                aria-label={'open skill book'}
 
-                                            >
-                                                <img src={iconsGeneral.book} alt="skill book" />
-                                            </Button> : null
+                                    {isUltimate && !status.isObserver
+                                        ?
+                                        <Button
+                                            onClick={() => { playSound('bookOpen'); status.setIsSkillBookOpen(prev => true) }}
+                                            aria-label={'open skill book'}
+
+                                        >
+                                            <img src={iconsGeneral.book} alt="skill book" />
+                                        </Button> : null
                                     }
 
                                 </PlayerInfo>
@@ -118,12 +129,12 @@ const GameRoom: FC = () => {
                             }
                         </div>
                     </div>
-
-                    <MatchInfo
+                    <MatchInfoContainer
                         onRequestDraw={useCallback(() => field.handleSendRequest(Requests.DRAW), [field.handleSendRequest])}
                         onRequestResign={useCallback(() => field.handleSendRequest(Requests.RESIGN), [field.handleSendRequest])}
                         onConfirmDraw={useCallback(() => field.handleRequestConfirm(Requests.DRAW), [field.handleRequestConfirm])}
                         onDeclineDraw={useCallback(() => data.setRequest(null), [])}
+                        onCloseMobile={useCallback(() => status.setMobileMatchInfoOpen(false), [])}
                         request={data.request}
                         isFirstMove={field.board.states.isFirstMove}
                         isGameOver={field.board.states.isGameOver}
@@ -131,6 +142,7 @@ const GameRoom: FC = () => {
                         moves={field.board.states.moves}
                         currentPlayer={field.board.states.currentPlayer}
                         isObserver={status.isObserver}
+                        isMobileOpen={status.isMobileMatchInfoOpen}
                     />
 
                     <Announcer
@@ -167,7 +179,7 @@ const GameRoom: FC = () => {
             </Suspense>
 
 
-        </Layout>
+        </Layout >
     )
 }
 

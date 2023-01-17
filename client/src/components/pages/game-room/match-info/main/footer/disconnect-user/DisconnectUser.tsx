@@ -1,5 +1,5 @@
 import { FC, memo } from "react";
-import { Timer } from "../../../../../ui/SuspenseWrapper";
+import { Timer } from "../../../../../../ui/SuspenseWrapper";
 import styles from '../Handle.module.scss';
 import { IDisconnectUserComponent } from "./DisconnectUser.interface";
 import { useDisconnectedUser } from "./useDisconnectedUser";

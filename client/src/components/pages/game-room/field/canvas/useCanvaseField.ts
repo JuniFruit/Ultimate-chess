@@ -5,6 +5,7 @@ import { VFX } from "../../../../../model/effects/VFX";
 import { getFlippedPos } from "../../../../../model/helpers";
 import { Positions } from '../../../../../model/positions';
 import { SkillNames } from "../../../../../model/ultimate/Skills";
+import { getDefaultSprite } from '../../../../../utils/game.utils';
 import { ICanvasField } from "./CanvasField.interface";
 import { useHandleMoves } from "./useHandleMoves";
 import { drawCircle, drawCoord, drawRect, getCellSize } from "./utils/canvas.utils";
@@ -43,7 +44,10 @@ export const useCanvasField = (
                 title: SkillNames.INCINERATE, // Any
                 isLooped: true
             });
-
+            animation.image.onerror = ((e: any) => {
+                e.target.onerror = null;
+                e.target.src = getDefaultSprite({ ...(figure) })
+            })
             figure.setAnimation(animation);
 
 

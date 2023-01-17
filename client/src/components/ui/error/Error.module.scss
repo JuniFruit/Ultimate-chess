@@ -1,0 +1,34 @@
+
+.container {
+    @apply w-full flex justify-center items-center;
+    height: 100vh;
+    .wrapper {
+        @apply w-full my-auto flex items-center flex-col gap-7;
+
+        .body {
+            @apply text-main-200 flex flex-col opacity-90 items-center gap-5 text-center;
+            >h2 {
+                @apply text-xl;
+                line-height: 1.8rem;
+                font-weight: 700;
+            }
+    
+            >svg {
+                @apply text-4xl opacity-70;
+            }
+
+            @screen md {
+                >h2 {
+                    @apply text-4xl;
+                }
+                >svg {
+                    @apply text-6xl;
+                }
+            }
+        }
+        >button {
+            max-width: 10rem;
+        }
+    }
+
+}

@@ -23,7 +23,7 @@ export const PackSlide: FC<IPackSlide> = ({ onChoosePack, preview, packId, title
         >
             <h2>{title}</h2>
             <ImagePreview imageSrc={preview} />
-            {isInUse ? <h3>in use</h3> : null}
+            {isInUse ? <h3>In use</h3> : null}
         </div>
     )
 }

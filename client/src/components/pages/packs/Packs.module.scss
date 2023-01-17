@@ -27,8 +27,9 @@
     }   
 
     >h3 {
-        @apply absolute bottom-2 left-0 text-center w-full break-words text-emerald-400 italic;
+        @apply absolute bottom-2 left-0 text-center w-full break-words text-emerald-400;
         z-index: 5;
+        font-weight: 600;
 
     }
 

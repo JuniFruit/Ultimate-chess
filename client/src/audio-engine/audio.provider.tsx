@@ -7,15 +7,18 @@ import { AudioContextType, ISoundBuffers, sound } from './audio.types';
 const ctx = new window.AudioContext()
 
 const masterGain = ctx.createGain();
-masterGain.gain.value = Number(window.localStorage.getItem("masterGain")) || DefaultSettings.master;
+masterGain.gain.value = Number(window.localStorage.getItem("masterGain")) >= 0
+    ? Number(window.localStorage.getItem("masterGain")) : DefaultSettings.master;
 masterGain.connect(ctx.destination);
 
 const soundsGain = ctx.createGain();
-soundsGain.gain.value = Number(window.localStorage.getItem("FXGain")) || DefaultSettings.fx;
+soundsGain.gain.value = Number(window.localStorage.getItem("FXGain")) >= 0
+    ? Number(window.localStorage.getItem("FXGain")) : DefaultSettings.fx;
 soundsGain.connect(masterGain);
 
 const announceGain = ctx.createGain();
-announceGain.gain.value = Number(window.localStorage.getItem("announceGain")) || DefaultSettings.announce;
+announceGain.gain.value = Number(window.localStorage.getItem("announceGain")) >= 0
+    ? Number(window.localStorage.getItem("announceGain")) : DefaultSettings.announce;
 announceGain.connect(masterGain);
 
 

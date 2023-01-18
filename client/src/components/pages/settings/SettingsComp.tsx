@@ -28,7 +28,8 @@ export const SettingsComp: FC = () => {
                 label={'Master'}
                 id={'master'}
                 onRangeChange={handleChangeGain}
-                defaultValue={Number(window.localStorage.getItem("masterGain")) || DefaultSettings.master}
+                defaultValue={Number(window.localStorage.getItem("masterGain")) >= 0
+                    ? Number(window.localStorage.getItem("masterGain")) : DefaultSettings.master}
                 key='master'
             />
             <RangeInput
@@ -38,7 +39,8 @@ export const SettingsComp: FC = () => {
                 label={'Sounds'}
                 id={'FX'}
                 onRangeChange={handleChangeGain}
-                defaultValue={Number(window.localStorage.getItem("FXGain")) || DefaultSettings.fx}
+                defaultValue={Number(window.localStorage.getItem("FXGain")) >= 0
+                    ? Number(window.localStorage.getItem("FXGain")) : DefaultSettings.fx}
                 key='fx'
             />
             <RangeInput
@@ -48,7 +50,8 @@ export const SettingsComp: FC = () => {
                 label={'Announcer'}
                 id={'announce'}
                 onRangeChange={handleChangeGain}
-                defaultValue={Number(window.localStorage.getItem("announceGain")) || DefaultSettings.announce}
+                defaultValue={Number(window.localStorage.getItem("announceGain")) >= 0
+                ? Number(window.localStorage.getItem("announceGain")) : DefaultSettings.announce}
                 key='announce'
             />
 

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import ioClient from "../../../api/socketApi";
 import { Requests } from "../../../constants/constants";
 import { IBoardData, IGameData, IResultPayload } from "../../../constants/socketIO/ServerEvents.interface";
+import { useIsMobile } from "../../../hooks/useMobile";
 import { useSocketConnect } from "../../../hooks/useSocketConnect";
 import { Board, IBoard } from "../../../model/Board";
 import { Colors } from "../../../model/colors.enum";
@@ -27,8 +28,15 @@ export const useGameRoom = (id?: string, isUltimate: boolean = false) => {
     const [isSkillBookOpen, setIsSkillBookOpen] = useState(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [isMobileMatchInfoOpen, setMobileMatchInfoOpen] = useState(false);
+    const [isNotification, setIsNotification] = useState(false);
     const { isConnected } = useSocketConnect();
+    const { isMobile } = useIsMobile()
 
+
+    const handleSetNotification = useCallback((value: boolean) => {
+        if (!isMobile) return;
+        setIsNotification(value)
+    }, [isMobile])
 
     const handleUpdateGame = useCallback((payload: IGameData) => {
         if (!payload) return; // payload with info about the client and the board
@@ -83,6 +91,11 @@ export const useGameRoom = (id?: string, isUltimate: boolean = false) => {
 
     }, [isObserver])
 
+    const handleReceiveRequest = useCallback((request: Requests) => {
+        if (request === Requests.DRAW) handleSetNotification(true);
+        setRequest(request);
+    }, [handleSetNotification])
+
     useEffect(() => {
 
         if (!isConnected || !id) return;
@@ -92,7 +105,7 @@ export const useGameRoom = (id?: string, isUltimate: boolean = false) => {
 
     useEffect(() => {
         ioClient.on("updateGame", handleUpdateGame);
-        ioClient.on("inGameRequest", (request) => setRequest(request));
+        ioClient.on("inGameRequest", handleReceiveRequest);
         ioClient.on("results", handleResults);
 
         return () => {
@@ -102,7 +115,7 @@ export const useGameRoom = (id?: string, isUltimate: boolean = false) => {
 
         }
 
-    }, [handleUpdateGame, handleResults, board])
+    }, [handleUpdateGame, handleResults, board, handleReceiveRequest])
 
 
     return {
@@ -124,7 +137,10 @@ export const useGameRoom = (id?: string, isUltimate: boolean = false) => {
             isSettingsOpen,
             setIsSettingsOpen,
             isMobileMatchInfoOpen,
-            setMobileMatchInfoOpen
+            setMobileMatchInfoOpen,
+            isNotification,
+            handleSetNotification,
+            isMobile
         },
         data: {
             enemyUser,

@@ -5,9 +5,10 @@ import { IMatchInfoContainer } from './Container.interface';
 import { activeWindow } from './main/MatchInfo.interface';
 import MatchInfo from './main/MatchInfo';
 import MatchInfoMobile from './match-info-mobile/MatchInfoMobile';
+import { Requests } from '../../../../constants/constants';
 
 
-const MatchInfoContainer: FC<IMatchInfoContainer> = memo(({ onCloseMobile, isMobileOpen, ...rest }) => {
+const MatchInfoContainer: FC<IMatchInfoContainer> = memo(({ onCloseMobile, isMobileOpen, onNewNotification, ...rest }) => {
 
     const [activeWindow, setActiveWindow] = useState<activeWindow>('game');
 
@@ -16,6 +17,7 @@ const MatchInfoContainer: FC<IMatchInfoContainer> = memo(({ onCloseMobile, isMob
     const handleNewMsg = useCallback(() => {
         if (activeWindow === 'chat') return;
         setIsNewMsg(true);
+        onNewNotification(true);
     }, [activeWindow])
 
     const handleSetIsNewMsg = useCallback((value: boolean) => {

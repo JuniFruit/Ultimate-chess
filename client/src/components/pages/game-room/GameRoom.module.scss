@@ -17,6 +17,14 @@
     
         .player_bar {
             @apply flex gap-3;
+            button {
+                @apply relative;
+            }
+            .new_msg_pop {
+                @apply absolute rounded-full w-2 h-2 text-complimentary;
+                right: 15%;    
+                top: 10%;            
+            }
         }
     }
  

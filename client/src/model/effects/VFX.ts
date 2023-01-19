@@ -1,4 +1,5 @@
 import { getCellSize } from "../../components/pages/game-room/field/canvas/utils/canvas.utils";
+import { Direction } from "../helper.enum";
 import { SkillNames } from "../ultimate/Skills";
 import { EffectNames } from "./data/effects.data";
 import { ISprite, ISpriteConstructor, Sprite } from "./Sprite";
@@ -17,7 +18,8 @@ export interface IVFX extends ISprite {
     rescaleAndCenter: () => void;
     flipPosition: () => void;
     updatePosition: (x: number, y: number) => void;
-    scaleBy: (value:number) => void;
+    scaleBy: (value: number) => void;
+    moveEffect: (to: IVFXPosition) => void;
 }
 
 export interface IVFXPosition {
@@ -69,7 +71,7 @@ export class VFX extends Sprite implements IVFX {
         this.position.y = 7 - this.position.y;
     }
 
-    public scaleBy(value:number) {
+    public scaleBy(value: number) {
         this._scale = value;
     }
 
@@ -112,4 +114,25 @@ export class VFX extends Sprite implements IVFX {
         this.destImgHeight = newImgH;
         this.destImgWidth = newimgW;
     }
+
+    public moveEffect(to: IVFXPosition) {
+        const speedScale = 1.5;
+
+        if (Number(this.position.x.toFixed(0)) !== to.x) {
+            const dirX = to.x > this.position.x ? Direction.POS : Direction.NEG;
+            const diffX = Math.abs(to.x - this.position.x)
+            this.position.x += ((0.25 * (diffX / speedScale)) * dirX)
+        } else if (Number(this.position.x.toFixed(0)) === to.x) {
+            this.position.x = to.x;
+        };
+        if (Number(this.position.y.toFixed(0)) !== to.y) {
+            const dirY = to.y > this.position.y ? Direction.POS : Direction.NEG;
+            const diffY = Math.abs(to.y - this.position.y);
+            this.position.y += ((0.25 * (diffY / speedScale)) * dirY);
+        } else if (Number(this.position.y.toFixed()) === to.y) {
+            this.position.y = to.y;
+
+        }
+    }
+
 }

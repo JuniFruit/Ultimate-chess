@@ -14,6 +14,7 @@ export const useHandleMoves = ({ isFlipped, onCellSelect, cells, ultimateStates,
     const [isTouchOngoing, setIsTouchOngoing] = useState(false);
     const draggingPiece = useRef<IFigure | null>(null);
     const dragStartCell = useRef<ICell | null>(null);
+    const prevScale = useRef<number | null>(null);
     const prevMouseOver = useRef<ICell | ICellUlt | null>(null);
 
     useEffect(() => {
@@ -52,9 +53,7 @@ export const useHandleMoves = ({ isFlipped, onCellSelect, cells, ultimateStates,
 
         const { x, y } = _getPosWithinBoard(clientX, clientY, canvas);
         const offset = .3;
-
-        draggingPiece.current.visualX = isFlipped ? 7 - x + offset : x - offset;
-        draggingPiece.current.visualY = isFlipped ? 7 - y + offset : y - offset;
+        draggingPiece.current.animation?.updatePosition(x - offset, y - offset);
 
     }, [draggingPiece.current, cells.length])
 
@@ -115,17 +114,21 @@ export const useHandleMoves = ({ isFlipped, onCellSelect, cells, ultimateStates,
             onCellSelect(target);
             return;
         }
+        _resetPos()
         _clearDragging();
     }, [onCellSelect, ultimateStates.isSkillTargetSelecting, isDragging])
 
     const _clearDragging = useCallback(() => {
-        if (!draggingPiece.current || !dragStartCell.current) return;
-        draggingPiece.current.visualX = dragStartCell.current.x;
-        draggingPiece.current.visualY = dragStartCell.current.y;
         dragStartCell.current = null;
         draggingPiece.current = null;
         setIsDragging(prev => false);
-    }, [isDragging])
+    }, [])
+
+    const _resetPos = useCallback(() => {
+        if (!draggingPiece.current) return;
+        draggingPiece.current.animation?.updatePosition(draggingPiece.current.x, draggingPiece.current.y);
+        isFlipped && draggingPiece.current.animation?.flipPosition();
+    }, [draggingPiece.current, isFlipped])
 
     // Handlers ..............................
 
@@ -134,6 +137,7 @@ export const useHandleMoves = ({ isFlipped, onCellSelect, cells, ultimateStates,
         const touch = e.changedTouches[0]
         const { clientX, clientY } = touch;
         _handleSelectStart(clientX, clientY, canvas);
+        prevScale.current = draggingPiece.current?.animation?._scale!
         draggingPiece.current && draggingPiece.current.animation!.scaleBy(draggingPiece.current.animation!._scale * 2.5);
         if (isTouchOngoing) return;
 
@@ -157,8 +161,9 @@ export const useHandleMoves = ({ isFlipped, onCellSelect, cells, ultimateStates,
         const canvas = e.target as HTMLCanvasElement;
         const touch = e.changedTouches[0]
         const { clientX, clientY } = touch;
-
+        draggingPiece.current && draggingPiece.current.animation!.scaleBy(prevScale.current || 1);
         _handleSelectEnd(clientX, clientY, canvas);
+        prevScale.current = null
 
     }, [_handleSelectEnd])
 
@@ -173,6 +178,7 @@ export const useHandleMoves = ({ isFlipped, onCellSelect, cells, ultimateStates,
 
     const handleMouseOut: MouseEventHandler<HTMLCanvasElement> = useCallback((e) => {
         e.preventDefault()
+        _resetPos();
         _clearDragging();
 
     }, [_clearDragging])
@@ -212,6 +218,9 @@ export const useHandleMoves = ({ isFlipped, onCellSelect, cells, ultimateStates,
             handleTouchStart,
             handleTouchEnd,
             handleTouchMove
+        },
+        status: {
+            draggingPiece: draggingPiece.current
         }
     }
 

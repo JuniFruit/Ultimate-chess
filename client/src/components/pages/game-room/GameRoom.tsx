@@ -1,11 +1,10 @@
 import { FC, lazy, Suspense, useCallback, useContext, useEffect } from "react";
-import { IoGridSharp, IoOptions } from "react-icons/io5";
+import { IoGridSharp, IoNotificationsCircleSharp, IoOptions } from "react-icons/io5";
 import { useParams } from "react-router-dom";
 import { iconsGeneral } from "../../../assets/icons/general/iconsGeneral";
 import { AudioCtx } from "../../../audio-engine/audio.provider";
 import { AudioContextType } from "../../../audio-engine/audio.types";
 import { Requests } from "../../../constants/constants";
-import { useIsMobile } from "../../../hooks/useMobile";
 import { Colors } from "../../../model/colors.enum";
 import { IBoardUlt } from "../../../model/ultimate/BoardUlt";
 import { Layout } from "../../layout/Layout";
@@ -28,7 +27,6 @@ let GameOverModal: FC<any>
 const GameRoom: FC = () => {
     const isUltimate = window.location.href.includes('_ult');
     const { id } = useParams()
-    const { isMobile } = useIsMobile()
     const { field, status, data } = useGameRoom(id, isUltimate);
     const { playSound } = useContext(AudioCtx) as AudioContextType
 
@@ -75,7 +73,6 @@ const GameRoom: FC = () => {
                                 isSkillBookOpen={status.isSkillBookOpen}
                                 setIsSkillBookOpen={status.setIsSkillBookOpen}
                                 isUltimate={isUltimate}
-                                setBoard={field.setBoard}
                             /> : null
                         }
 
@@ -85,12 +82,17 @@ const GameRoom: FC = () => {
                                     key={'clientInfo'}
                                     {...data.clientUser}>
 
-                                    {isMobile ?
+                                    {status.isMobile ?
                                         <Button
-                                            onClick={() => status.setMobileMatchInfoOpen(true)}
+                                            onClick={() => { status.setMobileMatchInfoOpen(true); status.handleSetNotification(false) }}
                                             aria-label={'open game log'}
                                         >
                                             <IoGridSharp />
+                                            {status.isNotification ?
+                                                <div className={styles.new_msg_pop}>
+                                                    <IoNotificationsCircleSharp />
+                                                </div> : null
+                                            }
                                         </Button> : null
                                     }
 
@@ -135,6 +137,7 @@ const GameRoom: FC = () => {
                         onConfirmDraw={useCallback(() => field.handleRequestConfirm(Requests.DRAW), [field.handleRequestConfirm])}
                         onDeclineDraw={useCallback(() => data.setRequest(null), [])}
                         onCloseMobile={useCallback(() => status.setMobileMatchInfoOpen(false), [])}
+                        onNewNotification={status.handleSetNotification}
                         request={data.request}
                         isFirstMove={field.board.states.isFirstMove}
                         isGameOver={field.board.states.isGameOver}

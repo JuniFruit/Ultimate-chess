@@ -4,16 +4,17 @@ import { AudioContextType } from "../../../../audio-engine/audio.types";
 import { IMove, IMoveOptions } from "../../../../constants/socketIO/ClientEvents.interface";
 import { useIsMobile } from "../../../../hooks/useMobile";
 import { ICell, IPremove } from "../../../../model/Cell";
-import { FigureTypes } from "../../../../model/figures/figures.interface";
+import { Colors } from '../../../../model/colors.enum';
+import { FigureTypes, IFigure } from "../../../../model/figures/figures.interface";
 import { ICellUlt } from "../../../../model/ultimate/CellUlt";
 import { IField } from "./Field.interface";
 import { useSound } from './useSound';
 
-export interface IUseField extends Pick<IField, 'board' | 'myColor' | 'isObserver' | "isUltimate" | "setBoard"> {
+export interface IUseField extends Pick<IField, 'board' | 'myColor' | 'isObserver' | "isUltimate"> {
     handleSendMove: (move: IMove) => void;
 }
 
-export const useField = ({ board, myColor, isObserver, handleSendMove, isUltimate, setBoard }: IUseField) => {
+export const useField = ({ board, myColor, isObserver, handleSendMove, isUltimate }: IUseField) => {
 
 
     const { isMobile } = useIsMobile();
@@ -91,14 +92,21 @@ export const useField = ({ board, myColor, isObserver, handleSendMove, isUltimat
         setSelectedCell(prev => null)
     }, [])
 
+    const resetAnimationPos = useCallback((figure: IFigure) => {
+        figure.animation?.updatePosition(figure.x, figure.y);
+        myColor === Colors.BLACK && figure.animation?.flipPosition();
+    }, [myColor])
+
     const handleMove = useCallback((from: ICell | ICellUlt, to: ICell | ICellUlt, options?: IMoveOptions) => {
         if (!from || !to || isObserver || board.states.isGameOver) return;
         if (!from.canMoveFigure(to, board)) {
+            resetAnimationPos(from.figure!)
             return clearSelectedCells();
         }
 
         if (from.isPromotionMove(to) && !isPromotion) {
             playAnnounce('promotionVoice');
+            resetAnimationPos(from.figure!)
             setLastTargetCell(prev => to);
             setIsPromotion(prev => true);
             return
@@ -111,7 +119,6 @@ export const useField = ({ board, myColor, isObserver, handleSendMove, isUltimat
         }
         board.incrementMoveCount();
         board.moveFigure(from, to, moveOptions);
-
         board.states.isFirstMove = false;
         board.swapPlayer();
         board.updateAllLegalMoves();

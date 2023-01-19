@@ -36,9 +36,7 @@ export interface IFigureBase {
     effects: IVFX[]
     states: IFigureStates;
     x: number;
-    y: number;
-    visualX: number;
-    visualY: number;
+    y: number;   
     prevX: number;
     prevY: number;
     pos: string;
@@ -51,17 +49,14 @@ export interface IFigureBase {
     getLegalMovesVertical: (arg: ILegalMoveArg) => void;
     getLegalMovesHorizontal: (arg: ILegalMoveArg) => void;
     getLegalMovesDiagonal: (arg: ILegalMoveArg) => void;
-    addLegalMove: (cell: ICell | ICellUlt) => boolean;
-    draw: (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, isFlipped: boolean) => void;
-    setAnimation: (vfx: IVFX) => void;
+    addLegalMove: (cell: ICell | ICellUlt) => boolean;   
     undo: () => void;
 
     /* ultimate methods */
     applySkill: (skill: ISkillApplied) => void;
     clearExpiredStates: (board: IBoardUlt) => void;
     filterDisabled: () => void;
-    setEffect: (vfx: IVFX) => void;
-    drawEffect: (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, isFlipped: boolean) => void;
+
 }
 
 export interface IFigure extends IFigureBase {

@@ -7,12 +7,15 @@
     >div {
      
         >h3 {
-            @apply text-center text-main-200;
+            @apply text-center text-main-200 mt-1 mb-1;
             font-size: .75rem;
             font-weight: 600;
 
             @screen sm {
-                @apply text-sm;
+                @apply text-sm mt-2;
+            }
+            @screen md {
+                @apply mt-3;
             }
         }
 

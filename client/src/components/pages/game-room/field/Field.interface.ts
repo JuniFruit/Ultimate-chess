@@ -12,7 +12,6 @@ export interface IField {
     isUltimate: boolean
     isSkillBookOpen: boolean;
     setIsSkillBookOpen: Dispatch<SetStateAction<boolean>>  
-    setBoard: Dispatch<SetStateAction<IBoard | IBoardUlt>>
 }
 
 export interface IFieldUltimateStates {

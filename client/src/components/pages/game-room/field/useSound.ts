@@ -16,7 +16,7 @@ export const useSound = (board: IBoard | IBoardUlt, isUltimate: boolean) => {
         if (lastMove && lastMove.moveMadeAt === board.states.globalMovesCount) {
             if (lastMove.options?.isCastling) return playSound('castle');
             if (lastMove.options?.isPromotion) return playSound('promotion', 3);
-            if (lastMove.options?.isTake) return playSound('take');
+            if (lastMove.options?.isTake || lastMove.options.isEnPassant) return playSound('take');
             return playSound('move');
 
         }

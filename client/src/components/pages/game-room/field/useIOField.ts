@@ -5,9 +5,9 @@ import { IUseField } from "./useField";
 
 
 
-export interface IUseIOField extends Pick<IUseField, "board" | "isObserver" | "setBoard"> { }
+export interface IUseIOField extends Pick<IUseField, "board" | "isObserver"> { }
 
-export const useIOField = ({ board, isObserver, setBoard }: IUseIOField) => {
+export const useIOField = ({ board, isObserver }: IUseIOField) => {
 
 
 
@@ -15,7 +15,6 @@ export const useIOField = ({ board, isObserver, setBoard }: IUseIOField) => {
     const handleSendMove = useCallback((move: IMove) => {
         if (isObserver) return;
         ioClient.emit("sendMove", move)
-        // setBoard(prev => prev.getCopyBoard())
     }, [isObserver])
 
     const handleReceiveMove = useCallback((move: IMove) => {
@@ -24,7 +23,6 @@ export const useIOField = ({ board, isObserver, setBoard }: IUseIOField) => {
  
         board.swapPlayer();
         board.updateAllLegalMoves();
-        // setBoard(prev => prev.getCopyBoard())
 
     }, [board])
 

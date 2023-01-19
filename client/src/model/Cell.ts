@@ -135,7 +135,7 @@ export class Cell implements ICell {
         if (this.figure) this.figure.undo();
 
         this.figure = this.prevFigure.pop();
-        // this.prevFigure = this.figure;
+        
     }
 
     public isPromotionMove(target: ICell) {

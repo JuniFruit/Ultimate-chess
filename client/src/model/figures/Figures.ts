@@ -26,9 +26,7 @@ export abstract class Figure implements IFigureBase {
     animation?: IVFX;
     spriteSrc?: string;
     x;
-    y;
-    visualX;
-    visualY;
+    y;   
     prevX;
     prevY;
     pos;
@@ -38,9 +36,7 @@ export abstract class Figure implements IFigureBase {
     constructor(x: number, y: number, color: Colors, sprites?: ISpritesObj) {
         this.color = color;
         this.x = x;
-        this.y = y;
-        this.visualX = x;
-        this.visualY = y;
+        this.y = y;       
         this.prevX = x;
         this.prevY = y;
         this.sprites = sprites;
@@ -55,9 +51,7 @@ export abstract class Figure implements IFigureBase {
         this.prevY = this.y;
 
         this.x = target.x;
-        this.y = target.y;
-        this.visualX = target.x;
-        this.visualY = target.y;
+        this.y = target.y;     
         this.pos = `${Positions[target.x]}${7 - target.y + 1}`;
 
 
@@ -169,48 +163,16 @@ export abstract class Figure implements IFigureBase {
 
     public undo() {
         this.x = this.prevX;
-        this.y = this.prevY;
-        this.visualX = this.prevX;
-        this.visualY = this.prevY;
+        this.y = this.prevY;     
         this.pos = `${Positions[this.prevX]}${7 - this.prevY + 1}`;
 
 
     }
-
-    public setAnimation(vfx: IVFX) {
-        this.animation = vfx        
-    }
-
-
-    public draw(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, isFlipped: boolean) {
-        if (this.animation) {
-            this.animation.updatePosition(this.visualX, this.visualY);
-            this.animation.scaleToCellSize(canvas);
-            this.animation.rescaleAndCenter()
-            isFlipped && this.animation.flipPosition();
-            this.animation.updateVFX(ctx);
-        }
-
-    }
-
+    
 
     /* Ultimate mode methods */
 
-    public setEffect(vfx: IVFX) {
-        this.effects.push(vfx)
-    }
-
-    public drawEffect(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, isFlipped: boolean) {
-        if (this.effects.length) {
-            this.effects.forEach(effect => {
-                effect.updatePosition(this.visualX, this.visualY);
-                effect.scaleToCellSize(canvas);
-                effect.rescaleAndCenter()
-                isFlipped && effect.flipPosition();
-                effect.updateVFX(ctx);
-            })
-        }
-    }
+    
 
     public applySkill(skill: ISkillApplied) {
         this.ultimateStates.skillsApplied = [...this.ultimateStates.skillsApplied, skill];

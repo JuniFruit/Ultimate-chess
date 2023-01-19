@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect } from 'react';
 import { Colors } from "../../../../../model/colors.enum";
 import { effectList, EffectNames } from "../../../../../model/effects/data/effects.data";
 import { VFX } from "../../../../../model/effects/VFX";
@@ -21,16 +21,11 @@ export const useCanvasField = (
         selected,
         ultimateStates,
         isUltimate,
-        vfx
+        vfx,
 
     }: ICanvasField) => {
 
-    const { handlers } = useHandleMoves({ cells, onCellSelect, selected, isFlipped, ultimateStates, premoves })
-    const prevMoveCount = useRef<number>(board.states.globalMovesCount);
-
-
-
-
+    const { handlers, status } = useHandleMoves({ cells, onCellSelect, selected, isFlipped, ultimateStates, premoves })
 
     const _setFigureAnimation = useCallback(() => {
         board.figures.forEach(figure => {
@@ -38,8 +33,8 @@ export const useCanvasField = (
                 sprite: figure.spriteSrc!,
                 framesMaxWidth: figure.sprites?.frames!,
                 position: {
-                    x: figure.visualX,
-                    y: figure.visualY
+                    x: figure.x,
+                    y: figure.y,
                 },
                 title: SkillNames.INCINERATE, // Any
                 isLooped: true
@@ -48,11 +43,14 @@ export const useCanvasField = (
                 e.target.onerror = null;
                 e.target.src = getDefaultSprite({ ...(figure) })
             })
-            figure.setAnimation(animation);
+            if (isFlipped) animation.flipPosition();
+            figure.animation = animation;
 
 
         })
-    }, [board])
+    }, [board, isFlipped])
+
+
 
     const _setFigureEffects = useCallback(() => {
 
@@ -65,23 +63,36 @@ export const useCanvasField = (
                     const skillEffect = new VFX({
                         ...effectItem!,
                         position: {
-                            x: figure.visualX,
-                            y: figure.visualY
+                            x: figure.animation!.position.x,
+                            y: figure.animation!.position.y
                         }
                     })
-                    figure.setEffect(skillEffect);
-
+                    if (isFlipped) skillEffect.flipPosition();
+                    figure.effects.push(skillEffect);
                 })
             }
         })
 
-    }, [board])
+    }, [board, isFlipped])
 
 
     const _drawFigures = useCallback((ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
         board.figures.forEach((figure) => {
-            figure.draw(ctx, canvas, isFlipped);
-            figure.drawEffect(ctx, canvas, isFlipped)
+
+            if (figure.animation) {
+                figure.animation.scaleToCellSize(canvas);
+                figure.animation.rescaleAndCenter()
+                figure.animation.updateVFX(ctx);
+
+                if (figure.effects.length) {
+                    figure.effects.forEach(effect => {
+                        effect.updatePosition(figure.animation!.position.x, figure.animation!.position.y);
+                        effect.scaleToCellSize(canvas);
+                        effect.rescaleAndCenter()
+                        effect.updateVFX(ctx);
+                    })
+                }
+            }
         })
 
     }, [board])
@@ -102,20 +113,55 @@ export const useCanvasField = (
         })
     }, [premoves.length])
 
+    const _drawLastMove = useCallback((ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
+
+        const lastMove = board.states.moves[board.states.moves.length - 1];
+        if (!lastMove) return;
+        const { w, h } = getCellSize(canvas)
+        const { x: initX, y: initY } = _getCellPosFromCoord(lastMove.from.x, lastMove.from.y);
+        const { x: targetX, y: targetY } = _getCellPosFromCoord(lastMove.to.x, lastMove.to.y);
+        const args = {
+            ctx,
+            width: w,
+            height: h,
+        }
+        drawRect({ ...args, x: initX * w, y: initY * h, fill: COLORS.CELL.lastMoveFrom });
+        drawRect({ ...args, x: targetX * w, y: targetY * h, fill: COLORS.CELL.lastMoveTo });
+
+    }, [board.states.moves.length])
+
+    const _drawMovement = useCallback((ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
+
+        board.figures.forEach(figure => {
+            if (status.draggingPiece === figure) return;
+            figure.animation?.moveEffect({
+                x: isFlipped ? 7 - figure.x : figure.x,
+                y: isFlipped ? 7 - figure.y : figure.y
+            });
+
+        })
+
+    }, [board.states.globalMovesCount, status.draggingPiece])
+
     const _drawAvailable = useCallback((ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
 
         cells.forEach(row => {
             row.forEach(cell => {
-                const isAvailable = selected?.figure?.legalMoves.some(move => move.pos === cell.pos)
-                if (isAvailable) {
+                const available = selected?.figure?.legalMoves.find(move => move.pos === cell.pos)
+                if (available) {
                     const { w, h } = getCellSize(canvas)
                     const { x, y } = _getCellPosFromCoord(cell.x, cell.y)
-                    drawCircle({
-                        ctx, x: (x * w) + w / 2,
+                    const args = {
+                        ctx,
+                        x: (x * w) + w / 2,
                         y: (y * h) + h / 2,
-                        radius: w / 6,
                         fill: COLORS.CELL.available,
-                        stroke: 'blue'
+                        stroke: "#44403c00"
+                    }
+                    drawCircle({ ...args, radius: w / 6 });
+
+                    if (available.figure) drawCircle({
+                        ...args, radius: w / 2, strokeWidth: 2
                     })
                 }
             })
@@ -191,6 +237,16 @@ export const useCanvasField = (
                     fill
                 })
 
+            })
+        })
+    }, [cells.length, isFlipped])
+
+    const _drawCoordinates = useCallback((ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
+
+        cells.forEach((row, y) => {
+            return row.forEach((cell, x) => {
+                const { w, h } = getCellSize(canvas);
+
                 if (x === 0) drawCoord(
                     ctx,
                     `${isFlipped ? y + 1 : 7 - y + 1}`,
@@ -215,9 +271,7 @@ export const useCanvasField = (
 
             })
         })
-    }, [cells.length, isFlipped])
-
-
+    }, [_drawBoard])
 
 
     const _getCellPosFromCoord = useCallback((x: number, y: number) => {
@@ -227,27 +281,33 @@ export const useCanvasField = (
 
 
     const handlePreDraw = useCallback((context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
-        _setFigureAnimation();
-        if (prevMoveCount.current !== board.states.globalMovesCount) _setFigureEffects()
         _drawBoard(context, canvas);
+        _drawLastMove(context, canvas);
         _drawPremoves(context, canvas);
         _drawAvailable(context, canvas);
         _drawSelected(context, canvas);
-
-        prevMoveCount.current = board.states.globalMovesCount;
-
-    }, [_setFigureAnimation, _drawBoard, _drawPremoves, _drawAvailable, _drawSelected])
+        _drawCoordinates(context, canvas);
+    }, [_drawBoard, _drawPremoves, _drawAvailable, _drawSelected, _drawLastMove])
 
 
     const draw = useCallback((context: CanvasRenderingContext2D, canvas: HTMLCanvasElement, frameCount: number) => {
         context.clearRect(0, 0, context.canvas.width, context.canvas.height)
         _drawMouseOver(context, canvas)
-        _drawFigures(context, canvas)
+        _drawFigures(context, canvas);
+        _drawMovement(context, canvas);
         _drawEffects(context, canvas);
 
-    }, [_drawMouseOver, _drawFigures, _drawEffects])
+    }, [_drawMouseOver, _drawFigures, _drawEffects, _drawMovement])
 
+    useEffect(() => {
+        _setFigureAnimation()
+    }, [board.figures.length, board.states.isGameOver])
 
+    useEffect(() => {
+
+        _setFigureEffects()
+
+    }, [_setFigureEffects])
 
     return {
 

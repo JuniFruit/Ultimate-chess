@@ -8,7 +8,7 @@ import { Board, IBoard } from "../../../model/Board";
 import { Colors } from "../../../model/colors.enum";
 import { ISpritesObj } from "../../../model/figures/figures.interface";
 import { BoardUlt, IBoardUlt } from "../../../model/ultimate/BoardUlt";
-import { assignSpritePack } from "../../../utils/game.utils";
+import { assignSpritePack, setFigureAnimation } from "../../../utils/game.utils";
 import { IPlayerInfo } from "../../ui/player/PlayerInfo.interface";
 
 export const useGameRoom = (id?: string, isUltimate: boolean = false) => {
@@ -65,8 +65,10 @@ export const useGameRoom = (id?: string, isUltimate: boolean = false) => {
             ...boardData.states
         }
         newBoard.mergeBoardData(boardData);
+        setFigureAnimation(newBoard, myColor === Colors.BLACK)
         setBoard(prev => newBoard);
-        // clearStates();
+
+
     }, [request])
 
     const handleResults = useCallback((payload: IResultPayload) => {

@@ -11,7 +11,7 @@ export interface IField {
     myColor: Colors;
     isUltimate: boolean
     isSkillBookOpen: boolean;
-    setIsSkillBookOpen: Dispatch<SetStateAction<boolean>>  
+    setIsSkillBookOpen: Dispatch<SetStateAction<boolean>>;  
 }
 
 export interface IFieldUltimateStates {

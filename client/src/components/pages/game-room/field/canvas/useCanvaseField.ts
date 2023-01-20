@@ -4,8 +4,7 @@ import { effectList, EffectNames } from "../../../../../model/effects/data/effec
 import { VFX } from "../../../../../model/effects/VFX";
 import { getFlippedPos } from "../../../../../model/helpers";
 import { Positions } from '../../../../../model/positions';
-import { SkillNames } from "../../../../../model/ultimate/Skills";
-import { getDefaultSprite } from '../../../../../utils/game.utils';
+import { setFigureAnimation } from '../../../../../utils/game.utils';
 import { ICanvasField } from "./CanvasField.interface";
 import { useHandleMoves } from "./useHandleMoves";
 import { drawCircle, drawCoord, drawRect, getCellSize } from "./utils/canvas.utils";
@@ -22,33 +21,12 @@ export const useCanvasField = (
         ultimateStates,
         isUltimate,
         vfx,
+        
 
     }: ICanvasField) => {
 
     const { handlers, status } = useHandleMoves({ cells, onCellSelect, selected, isFlipped, ultimateStates, premoves })
 
-    const _setFigureAnimation = useCallback(() => {
-        board.figures.forEach(figure => {
-            const animation = new VFX({
-                sprite: figure.spriteSrc!,
-                framesMaxWidth: figure.sprites?.frames!,
-                position: {
-                    x: figure.x,
-                    y: figure.y,
-                },
-                title: SkillNames.INCINERATE, // Any
-                isLooped: true
-            });
-            animation.image.onerror = ((e: any) => {
-                e.target.onerror = null;
-                e.target.src = getDefaultSprite({ ...(figure) })
-            })
-            if (isFlipped) animation.flipPosition();
-            figure.animation = animation;
-
-
-        })
-    }, [board, isFlipped])
 
 
 
@@ -300,8 +278,10 @@ export const useCanvasField = (
     }, [_drawMouseOver, _drawFigures, _drawEffects, _drawMovement])
 
     useEffect(() => {
-        _setFigureAnimation()
-    }, [board.figures.length, board.states.isGameOver])
+
+        setFigureAnimation(board, isFlipped);
+
+    }, [board.states.moves[board.states.moves.length - 1]?.options?.isPromotion])
 
     useEffect(() => {
 

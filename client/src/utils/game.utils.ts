@@ -1,7 +1,10 @@
 import { SPRITES } from "../assets/Packs/Default/sprites";
 import { IPlayerInfo } from "../components/ui/player/PlayerInfo.interface";
+import { IBoard } from "../model/Board";
 import { Colors } from "../model/colors.enum";
+import { VFX } from "../model/effects/VFX";
 import { FigureTypes, ILostFigure } from "../model/figures/figures.interface";
+import { SkillNames } from "../model/ultimate/Skills";
 
 
 export const assignSpritePack = (userColor: Colors, user: IPlayerInfo, opponent: IPlayerInfo) => {
@@ -51,3 +54,25 @@ export const getFilteredLostFigures = (lostFigures: ILostFigure[]) => {
 }
 
 
+export const setFigureAnimation = (board: IBoard, isFlipped:boolean) => {
+    board.figures.forEach(figure => {
+        const animation = new VFX({
+            sprite: figure.spriteSrc!,
+            framesMaxWidth: figure.sprites?.frames!,
+            position: {
+                x: figure.x,
+                y: figure.y,
+            },
+            title: SkillNames.INCINERATE, // Any
+            isLooped: true
+        });
+        animation.image.onerror = ((e: any) => {
+            e.target.onerror = null;
+            e.target.src = getDefaultSprite({ ...(figure) })
+        })
+        if (isFlipped) animation.flipPosition();
+        figure.animation = animation;
+
+
+    })
+}

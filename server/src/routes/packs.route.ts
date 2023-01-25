@@ -2,7 +2,7 @@ import express from 'express';
 import { PackService } from '../packs/pack.service';
 import { authGuard } from '../auth/auth.guard';
 import { adminGuard, creatorGuard } from '../guards/role.guard';
-
+import { packValidation, spritePackValidation } from '../pipes/pack.pipe';
 const router = express.Router();
 
 
@@ -24,7 +24,9 @@ router.get('/by-id/:id', async (req, res) => {
     }
 })
 
-router.post('/add', authGuard, async (req, res) => {
+router.use(authGuard)
+
+router.post('/add', async (req, res) => {
     try {
         const user = await PackService.setInUse(Number(req.body.currentUser), Number(req.body.id))
         res.send(user);
@@ -33,16 +35,6 @@ router.post('/add', authGuard, async (req, res) => {
     }
 })
 
-router.use(authGuard, adminGuard);
-
-router.post('/create', async (req, res) => {
-    try {
-        const newPack = await PackService.create(req.body);
-        res.status(200).send();
-    } catch (error: any) {
-        res.status(500).send({ message: error.message })
-    }
-})
 router.get('/sprite/by-id/:id', async (req, res) => {
     try {
         const pack = await PackService.getSpritePackById(Number(req.params.id));
@@ -51,18 +43,28 @@ router.get('/sprite/by-id/:id', async (req, res) => {
         res.status(500).send({ message: error.message })
     }
 })
+router.use(adminGuard);
 
-router.post('/sprite/create', async (req, res) => {
+router.post('/create', packValidation, async (req, res) => {
     try {
-        const result = await PackService.createSpritePack(req.body);
-        console.log(result);
-        res.send({id: result});
+        const newPack = await PackService.create(req.body);
+        res.status(200).send();
     } catch (error: any) {
         res.status(500).send({ message: error.message })
     }
 })
 
-router.put('/sprite/update/:id', async (req, res) => {
+router.post('/sprite/create', spritePackValidation, async (req, res) => {
+    try {
+        const result = await PackService.createSpritePack(req.body);
+        console.log(result);
+        res.send({ id: result });
+    } catch (error: any) {
+        res.status(500).send({ message: error.message })
+    }
+})
+
+router.put('/sprite/update/:id', spritePackValidation, async (req, res) => {
     try {
         const result = await PackService.updateSpritePack(req.body, Number(req.params.id));
         res.send(result);
@@ -72,9 +74,9 @@ router.put('/sprite/update/:id', async (req, res) => {
 })
 
 
-router.put('/update/:id', async (req, res) => {
+router.put('/update/:id', packValidation, async (req, res) => {
     try {
-        const pack = await PackService.updatePack(req.body.dto, Number(req.params.id));
+        const pack = await PackService.updatePack(req.body, Number(req.params.id));
         res.send(pack);
     } catch (error: any) {
         res.status(500).send({ message: error.message });

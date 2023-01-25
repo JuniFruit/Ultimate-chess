@@ -7,7 +7,7 @@ import { adminGuard } from '../guards/role.guard';
 const router = express.Router();
 
 
-router.use(authGuard, adminGuard)
+router.use(authGuard)
 
 router.get('/all', async (req, res) => {
     try {
@@ -19,6 +19,7 @@ router.get('/all', async (req, res) => {
     }
 })
 
+router.use(adminGuard)
 
 router.post('/create', roleValidation, async (req, res) => {
     try {

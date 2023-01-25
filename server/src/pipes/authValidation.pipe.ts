@@ -1,21 +1,18 @@
+import { ValidationError } from 'class-validator';
 import { RequestHandler } from "express";
 import { AuthDto, RegisterDto } from "../auth/auth.dto";
-import { validate } from 'class-validator';
-import { formErrorMessage } from "../utils/utils";
 import { UserEditDto } from "../user/user.dto";
+import { formErrorMessage } from "../utils/utils";
+import { validationPipe } from "./validationPipe";
 
 
 export const authRegisterPipe: RequestHandler = async (req, res, next) => {
     if (!req.body.dto) return res.status(500).send({ message: 'Please send the required information' });
-    const user = new RegisterDto();
-    user.avatarLink = req.body.dto.avatarLink;
-    user.password = req.body.dto.password;
-    user.username = req.body.dto.username;
 
-    const errors = await validate(user);
+    const result = await validationPipe(RegisterDto, { ...req.body.dto })
 
-    if (errors.length) {
-        return res.status(500).send({ message: formErrorMessage(errors) });
+    if ((result as ValidationError[]).length) {
+        return res.status(500).send({ message: formErrorMessage(result as ValidationError[]) });
 
     }
     next()
@@ -23,28 +20,26 @@ export const authRegisterPipe: RequestHandler = async (req, res, next) => {
 
 export const authLoginPipe: RequestHandler = async (req, res, next) => {
     if (!req.body.dto) return res.status(500).send({ message: 'Please send the required information' });
-    const user = new AuthDto();
-    user.password = req.body.dto.password;
-    user.username = req.body.dto.username;
 
 
-    const errors = await validate(user);
+    const result = await validationPipe(AuthDto, { ...req.body.dto })
 
-    if (errors.length) {
-        return res.status(500).send({ message: formErrorMessage(errors) });
+    if ((result as ValidationError[]).length) {
+        return res.status(500).send({ message: formErrorMessage(result as ValidationError[]) });
+
     }
     next()
 }
 
-export const userEditPipe:RequestHandler = async (req,res,next) => {
+export const userEditPipe: RequestHandler = async (req, res, next) => {
     if (!req.body.dto) return res.status(500).send({ message: 'Please send the required information' });
-    const user = new UserEditDto();
-    user.avatarLink = req.body.dto.avatarLink;
 
-    const errors = await validate(user);
 
-    if (errors.length) {
-        return res.status(500).send({ message: formErrorMessage(errors) });
+    const result = await validationPipe(UserEditDto, { ...req.body.dto })
+
+    if ((result as ValidationError[]).length) {
+        return res.status(500).send({ message: formErrorMessage(result as ValidationError[]) });
+
     }
     next()
 }

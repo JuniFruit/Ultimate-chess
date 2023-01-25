@@ -27,7 +27,7 @@ router.get('/profile', async (req, res) => {
     }
 })
 
-router.get('/all', adminGuard, async (req, res) => {
+router.get('/all', async (req, res) => {
     try {
         const users = await UserService.getAll()
         res.send(users);

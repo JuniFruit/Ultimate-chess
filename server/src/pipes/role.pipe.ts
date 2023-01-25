@@ -1,22 +1,15 @@
-import { validate } from "class-validator";
 import { RequestHandler } from "express";
 import { CreateRoleDto } from "../roles/role.dto";
 import { formErrorMessage } from "../utils/utils";
-
+import { ValidationError, validationPipe } from './validationPipe';
 
 export const roleValidation: RequestHandler = async (req, res, next) => {
     if (!req.body.dto) return res.status(500).send({ message: 'Please send the required information' });
-    const role = new CreateRoleDto();
 
-    role.description = req.body.dto.description;
-    role.role = req.body.dto.role
+    const result = await validationPipe(CreateRoleDto, { ...req.body.dto })
 
-    
-
-    const errors = await validate(role);
-
-    if (errors.length) {
-        return res.status(500).send({ message: formErrorMessage(errors) });
+    if ((result as ValidationError[]).length) {
+        return res.status(500).send({ message: formErrorMessage(result as ValidationError[]) });
 
     }
     next()

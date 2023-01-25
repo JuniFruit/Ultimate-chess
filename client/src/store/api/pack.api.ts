@@ -26,7 +26,7 @@ export const packApi = api.injectEndpoints({
         getSpritePackById: builder.query<ISpritesObj, number>({
             query: (id) => ({
                 url: `/${PACK}/sprite/by-id/${id}`,
-                method: "GET"                
+                method: "GET"
             })
         }),
         addPackToProfile: builder.mutation<IUser, number>({
@@ -37,9 +37,9 @@ export const packApi = api.injectEndpoints({
                     id: id
                 }
             }),
-            invalidatesTags: (result, err, id) => [{ type: 'Profile' }, {type: "Users", id: result?.id}]
+            invalidatesTags: (result, err, id) => [{ type: 'Profile' }, { type: "Users", id: result?.id }]
         }),
-        createSpritePack: builder.mutation<{id: number}, ISpriteForm>({
+        createSpritePack: builder.mutation<{ id: number }, ISpriteForm>({
             query: (data) => ({
                 url: `/${PACK}/sprite/create`,
                 method: "POST",
@@ -57,7 +57,7 @@ export const packApi = api.injectEndpoints({
                 }
             })
         }),
-        
+
         createPack: builder.mutation<IPack, IPackForm>({
             query: (data) => ({
                 url: `/${PACK}/create`,
@@ -73,9 +73,9 @@ export const packApi = api.injectEndpoints({
                 url: `/${PACK}/update/${data.id}`,
                 method: "PUT",
                 body: {
-                    dto: {
-                        ...data
-                    }
+
+                    ...data
+
                 }
             }),
             invalidatesTags: (res, err, data) => [{ type: "Packs", id: data.id }]

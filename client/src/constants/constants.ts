@@ -18,7 +18,7 @@ export enum MatchDuration {
     FIVE_MIN = 300,
     ONE_MIN = 60,
     THREE_MIN = 180,
-    TEN_MIN = 600, 
+    TEN_MIN = 600,
 }
 
 export enum Requests {
@@ -36,5 +36,6 @@ export enum RequestMessages {
 export enum ROLES {
     USER = 'Chess player',
     ADMIN = 'Administrator',
-    CREATOR = 'Creator'
+    CREATOR = 'Creator',
+    SHOWCASE = 'Valuable visitor'
 }

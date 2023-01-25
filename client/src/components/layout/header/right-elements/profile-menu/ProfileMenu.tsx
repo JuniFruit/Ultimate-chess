@@ -20,7 +20,7 @@ const ProfileMenu: FC = () => {
     const { ref, isShow, setIsShow } = useClickOutside(false);
     const { isMobile } = useIsMobile();
 
-    const isAdmin = data?.roles.some(item => item.role === "ADMIN" || item.role === "CREATOR");
+    const isAdmin = data?.roles.some(item => item.role === "ADMIN" || item.role === "CREATOR" || item.role === "SHOWCASE");
 
     return (
         <div ref={ref} className={styles.wrapper}>

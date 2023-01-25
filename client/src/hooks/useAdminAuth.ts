@@ -15,7 +15,7 @@ export const useAdminAuth = () => {
 
     useEffect(() => {
         if (!user) return navigate('/');
-        const isAdmin = profile?.roles.some(item => item.role === 'ADMIN' || item.role === "CREATOR");
+        const isAdmin = profile?.roles.some(item => item.role === 'ADMIN' || item.role === "CREATOR" || item.role === "SHOWCASE");
         if (!isAdmin) return navigate('/');
 
     }, [user, profile])

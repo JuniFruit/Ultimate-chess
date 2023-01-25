@@ -5,7 +5,7 @@ import Field from '../../../../../ui/field/Field';
 import { IPackFormComponent } from './Forms.interface';
 import styles from './Forms.module.scss';
 
-const ERR_MSG = 'Cannot be empty include whitespaces'
+const ERR_MSG = 'Cannot be empty or include whitespaces'
 
 const PackForm: FC<IPackFormComponent> = ({ form: { register, handleSubmit, errors }, defaultValues }) => {
 

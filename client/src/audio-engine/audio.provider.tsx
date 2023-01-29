@@ -5,7 +5,7 @@ import { AudioService } from './audio.service';
 import { DefaultSettings } from './audio.settings';
 import { AudioContextType, ISoundBuffers, sound } from './audio.types';
 
-const ctx = new window.AudioContext()
+const ctx = new window.AudioContext();
 
 const masterGain = ctx.createGain();
 masterGain.gain.value = getUserAudioSettings("masterGain") !== null
@@ -27,7 +27,6 @@ export const AudioCtx = createContext<AudioContextType | null>(null);
 const AudioProvider: FC<PropsWithChildren> = ({ children }) => {
 
     const soundBuffers = useRef<ISoundBuffers>({});
-
     const fetchMainSounds = () => {
         for (let [sound, link] of Object.entries(Sounds)) {
             if ((soundBuffers.current as any)[sound]) return;
@@ -96,6 +95,7 @@ const AudioProvider: FC<PropsWithChildren> = ({ children }) => {
     }
 
     const changeGain = (id: 'FX' | 'announce' | 'master', value: number) => {
+
 
         switch (id) {
             case 'master':

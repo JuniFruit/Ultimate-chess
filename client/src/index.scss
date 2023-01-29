@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap'); */
-
 
 
 *,*::after,*::before {
@@ -11,6 +9,60 @@
   margin: 0;
   padding: 0;
 }
+@font-face {
+  font-family: 'OperatorMono';
+  src: local('assets'), url(./assets/fonts/OperatorMono/OperatorMono-XLight.otf) format('opentype');
+
+  font-weight: 300;
+}
+@font-face {
+  font-family: 'OperatorMono';
+  src: local('assets'), url(./assets/fonts/OperatorMono/OperatorMono-XLightItalic.otf) format('opentype');
+
+  font-weight: 300;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'OperatorMono';
+  src: local('assets'), url(./assets/fonts/OperatorMono/OperatorMono-Light.otf) format('opentype');
+
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'OperatorMono';
+  src: local('assets'), url(./assets/fonts/OperatorMono/OperatorMono-LightItalic.otf) format('opentype');
+
+  font-weight: 400;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'OperatorMono';
+  src: local('assets'), url(./assets/fonts/OperatorMono/OperatorMono-Medium.otf) format('opentype');
+
+  font-weight: 500;
+}
+@font-face {
+  font-family: 'OperatorMono';
+  src: local('assets'), url(./assets/fonts/OperatorMono/OperatorMono-MediumItalic.otf) format('opentype');
+
+  font-weight: 500;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'OperatorMono';
+  src: local('assets'), url(./assets/fonts/OperatorMono/OperatorMono-Bold.otf) format('opentype');
+
+  font-weight: bold;
+}
+@font-face {
+  font-family: 'OperatorMono';
+  src: local('assets'), url(./assets/fonts/OperatorMono/OperatorMono-BoldItalic.otf) format('opentype');
+
+  font-weight: bold;
+  font-style: italic;
+}
+
 
 html { 
   height: 100%;
@@ -37,7 +89,7 @@ body {
   width: 100%;
   line-height: 1.3rem;
   letter-spacing: .05rem;
-  font-family: 'Open Sans', sans-serif;
+  font-family: "OperatorMono";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 

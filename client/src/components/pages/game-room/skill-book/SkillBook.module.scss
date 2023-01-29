@@ -10,10 +10,12 @@
         >h2 {
             font-size: .75rem;
             font-weight: 700;
+           
         }
         >p {
             font-size: .55rem;
             font-weight: 500;
+            line-height: .85rem;
         }
         >h3 {
             @apply opacity-90;
@@ -31,6 +33,7 @@
             }
             >p {
                 font-size: .7rem;
+                line-height: 1rem;
             }
             >h3 {
                 font-size: .75rem;

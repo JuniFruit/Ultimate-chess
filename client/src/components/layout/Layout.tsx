@@ -5,7 +5,7 @@ import styles from './Layout.module.scss';
 
 const Header = lazy(() => import("./header/Header"));
 
-export const Layout: FC = () => {
+const Layout: FC = () => {
     return (
         <main className={styles.main}>
             <div className={styles.page}>
@@ -20,3 +20,5 @@ export const Layout: FC = () => {
         </main>
     )
 }
+
+export default Layout;

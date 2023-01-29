@@ -1,10 +1,10 @@
 import { FC, lazy, Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Route, Routes } from 'react-router-dom';
-import { Layout } from '../components/layout/Layout';
 import { ErrorFallback } from '../components/ui/error/ErrorFallback';
 import { Spinner } from '../components/ui/loading/Spinner';
 
+const Layout = lazy(() => import('../components/layout/Layout'));
 const Settings = lazy(() => import('../components/pages/settings/Settings'));
 const AdminPage = lazy(() => import('../components/pages/admin/Admin'));
 const GameRoom = lazy(() => import('../components/pages/game-room/GameRoom'));

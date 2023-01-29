@@ -15,7 +15,7 @@
 }
 
 .slide_wrapper {
-    @apply relative text-main-200 cursor-pointer transition-all duration-200 shadow rounded-lg m-2 bg-main-900;
+    @apply relative text-main-200 cursor-pointer transition-all duration-200 shadow rounded-lg bg-main-900;
 
     >h2 {
         @apply text-tiny absolute top-2 left-0 text-center w-full break-words transition-all duration-200 opacity-80;

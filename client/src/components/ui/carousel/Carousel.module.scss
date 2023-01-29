@@ -20,18 +20,22 @@
         .carousel_viewport {
             --items-per-screen: 1;
 
-            @apply flex justify-center h-full transition-transform duration-300 ease-out  px-2;
-            height: 15rem;
+            @apply flex transition-transform duration-500 ease-in-out  py-1 ;
+            height: 18rem;
             transform: translateX(0%);
-            >div {                
-                flex: 0 0 calc(100% / var(--items-per-screen));
-                width: 25%;
-                aspect-ratio: 16/9;                
+            >div {     
+                @apply my-2;           
+                flex: 0 0 calc(100% / var(--items-per-screen));               
+               
             }
+            /* >div:last-child {
+                @apply hidden;
+            } */
+           
 
             @screen md {
                 --items-per-screen: 3;
-                @apply px-7;
+           
             }
             
         }     

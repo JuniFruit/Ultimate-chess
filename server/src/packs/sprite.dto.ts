@@ -51,9 +51,7 @@ export class SpriteDto {
         message: "Please provide a valid URL"
     })
     whiteKnight!: string;
-    @Matches(validURL, {
-        message: "Please provide a valid URL"
-    })
+
     @IsNumber()
     frames!: number;
 }

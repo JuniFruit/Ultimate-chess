@@ -1,8 +1,10 @@
-import { FC, lazy } from 'react';
+import { FC, lazy, Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Route, Routes } from 'react-router-dom';
+import { Layout } from '../components/layout/Layout';
 import { ErrorFallback } from '../components/ui/error/ErrorFallback';
-import { SuspenseLoading } from '../components/ui/loading/SuspenseLoading';
+import { Spinner } from '../components/ui/loading/Spinner';
+
 const Settings = lazy(() => import('../components/pages/settings/Settings'));
 const AdminPage = lazy(() => import('../components/pages/admin/Admin'));
 const GameRoom = lazy(() => import('../components/pages/game-room/GameRoom'));
@@ -21,78 +23,33 @@ const WatchPage = lazy(() => import('../components/pages/watch/WatchPage'));
 const App: FC = () => {
 
   return (
-    <>
-      <ErrorBoundary FallbackComponent={ErrorFallback}>
-        <Routes>
-          <Route path='/' element={
-            <SuspenseLoading isSpinner={true}>
-              <Home />
-            </SuspenseLoading>
-          } />
-          <Route path='/play' element={
-            <SuspenseLoading>
-              <PlayChess />
-            </SuspenseLoading>
-          } />
-          <Route path='/play-ultimate' element={
-            <SuspenseLoading>
-              <PlayChess isUltimate={true} />
-            </SuspenseLoading>
-          } />
 
-          <Route path='/game-room/:id' element={
-            <SuspenseLoading isSpinner={true}>
-              <GameRoom />
-            </SuspenseLoading>
-          } />
-          <Route path='/packs' element={
-            <SuspenseLoading isSpinner={true}>
-              <Packs />
-            </SuspenseLoading>
-          } />
-          <Route path='/admin' element={
-            <SuspenseLoading isSpinner={true}>
-              <AdminPage />
-            </SuspenseLoading>
-          } />
+    <ErrorBoundary FallbackComponent={ErrorFallback}>
+      <Routes>
+        <Route path='/' element={
+          <Suspense fallback={<Spinner />}>
+            <Layout />
+          </Suspense>
+        }>
 
+          <Route path='/' element={<Home />} />
+          <Route path='/play' element={<PlayChess />} />
+          <Route path='/play-ultimate' element={<PlayChess isUltimate={true} />} />
+          <Route path='/game-room/:id' element={<GameRoom />} />
+          <Route path='/packs' element={<Packs />} />
+          <Route path='/admin' element={<AdminPage />} />
+          <Route path='/registration' element={<RegisterPage />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/watch' element={<WatchPage />} />
+          <Route path='/user/:id' element={<ProfilePage />} />
+          <Route path='/settings' element={<Settings />} />
+          <Route path='*' element={<NotFoundPage />} />
+        </Route>
 
-          <Route path='/registration' element={
-            <SuspenseLoading>
-              <RegisterPage />
-            </SuspenseLoading>
-          } />
-          <Route path='/login' element={
-            <SuspenseLoading>
-              <Login />
-            </SuspenseLoading>
-          } />
-          <Route path='/watch' element={
-            <SuspenseLoading>
-              <WatchPage />
-            </SuspenseLoading>
-          } />
-          <Route path='/user/:id' element={
-            <SuspenseLoading>
-              <ProfilePage />
-            </SuspenseLoading>
-          } />
-          <Route path='/settings' element={
-            <SuspenseLoading>
-              <Settings />
-            </SuspenseLoading>
-          } />
+      </Routes>
 
-          <Route path='*' element={
-            <SuspenseLoading isSpinner={true}>
-              <NotFoundPage />
-            </SuspenseLoading>
-          } />
+    </ErrorBoundary>
 
-        </Routes>
-
-      </ErrorBoundary>
-    </>
   )
 }
 

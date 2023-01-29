@@ -1,18 +1,19 @@
-import { FC, PropsWithChildren } from "react";
-import { setTabTitle } from "../../utils/general.utils";
-import styles from './Layout.module.scss';
-import Header from "./header/Header";
+import { FC, lazy, Suspense } from "react";
+import { Outlet } from "react-router-dom";
 import { InfoPop } from "../ui/SuspenseWrapper";
+import styles from './Layout.module.scss';
 
+const Header = lazy(() => import("./header/Header"));
 
-export const Layout: FC<PropsWithChildren<{ title: string }>> = ({ title, children }) => {
-    setTabTitle(title);
+export const Layout: FC = () => {
     return (
         <main className={styles.main}>
             <div className={styles.page}>
                 <Header />
                 <div className={styles.wrapper}>
-                    {children}
+                    <Suspense fallback={null}>
+                        <Outlet />
+                    </Suspense>
                 </div>
                 <InfoPop />
             </div>

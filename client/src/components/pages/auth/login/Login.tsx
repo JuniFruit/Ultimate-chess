@@ -1,10 +1,10 @@
-import { Layout } from "../../../layout/Layout"
 import { FC, useEffect } from 'react';
-import { useActions } from "../../../../hooks/useActions";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { IAuthDto } from "../../../../types/auth.interface";
-import { useAuth } from "../../../../hooks/useAuth";
 import { Link, useNavigate } from "react-router-dom";
+import { useActions } from "../../../../hooks/useActions";
+import { useAuth } from "../../../../hooks/useAuth";
+import { IAuthDto } from "../../../../types/auth.interface";
+import { setTabTitle } from "../../../../utils/general.utils";
 import { ProfileForm } from "../../../ui/SuspenseWrapper";
 import styles from '../register/Register.module.scss';
 
@@ -22,34 +22,32 @@ const Login: FC = () => {
     }
 
     const navigate = useNavigate()
-
+    setTabTitle("Ultimate Chess registration");
     useEffect(() => {
         if (user) navigate('/');
     }, [user])
 
 
     return (
-        <Layout title="Ultimate Chess registration">
-            <section className={styles.container}>
-                <ProfileForm
-                    form={{
-                        handleSubmit: handleSubmit(onSubmit),
-                        setValue,
-                        control,
-                        register,
-                        errors,
+        <section className={styles.container}>
+            <ProfileForm
+                form={{
+                    handleSubmit: handleSubmit(onSubmit),
+                    setValue,
+                    control,
+                    register,
+                    errors,
 
-                    }}
-                    fieldsToExclude={{
-                        avatar: 'avatar'
-                    }}
-                    title={"Please enter your username and password to log in"}
-                    buttonTitle="Log in"
-                    buttons={[<Link key={'/register'} className={styles.link} to={'/registration'}>Sign Up</Link>]}
-                />
-            </section>
+                }}
+                fieldsToExclude={{
+                    avatar: 'avatar'
+                }}
+                title={"Please enter your username and password to log in"}
+                buttonTitle="Log in"
+                buttons={[<Link key={'/register'} className={styles.link} to={'/registration'}>Sign Up</Link>]}
+            />
+        </section>
 
-        </Layout>
     )
 }
 

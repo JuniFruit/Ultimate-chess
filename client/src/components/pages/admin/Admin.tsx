@@ -1,8 +1,8 @@
-import { FC, useState, lazy, Suspense, useTransition } from 'react'
+import { FC, lazy, Suspense, useState, useTransition } from 'react'
 import { useAdminAuth } from '../../../hooks/useAdminAuth'
 import { useIsMobile } from '../../../hooks/useMobile'
+import { setTabTitle } from '../../../utils/general.utils'
 import ProfileMenu from '../../layout/header/right-elements/profile-menu/ProfileMenu'
-import { Layout } from '../../layout/Layout'
 import { Button } from '../../ui/button/Button'
 import styles from './Admin.module.scss'
 import { adminMenuData } from './adminMenuData'
@@ -22,48 +22,46 @@ const AdminPage: FC = () => {
             setActiveWindow(page);
         })
     }
+    setTabTitle(`Ultimate Chess Admin ${activeWindow}`);
 
     return (
 
-        <Layout title={`Ultimate Chess Admin ${activeWindow}`}>
-
-            <section className={styles.admin_container}>
-                <div className={styles.main_wrapper}>
-                    <div className={styles.admin_wrapper}>
-                        <div className={styles.admin_header}>
-                            <h2>{activeWindow}</h2>
-                            <ProfileMenu />
-                        </div>
-                        <div className={styles.line}></div>
-                        <div className={styles.admin_body}>
-                            <Suspense fallback={null}>
-                                {activeWindow === 'Home' ? <AdminHome /> : null}
-                                {activeWindow === 'Packs' ? <AdminPacks /> : null}
-                                {activeWindow === 'Players' ? <AdminPlayers /> : null}
-                            </Suspense>
-                        </div>
+        <section className={styles.admin_container}>
+            <div className={styles.main_wrapper}>
+                <div className={styles.admin_wrapper}>
+                    <div className={styles.admin_header}>
+                        <h2>{activeWindow}</h2>
+                        <ProfileMenu />
                     </div>
-                    <nav className={styles.menu_wrapper}>
-                        {
-                            adminMenuData.map(item => {
-                                if (isMobile && item.title === 'Players') return null;
-                                return <Button key={item.title}
-                                    className={`${activeWindow === item.title ? styles.link_active : ''}`}
-                                    title={item.title}
-                                    value={item.title}
-                                    aria-label={item.title}
-                                    onClick={() => handleChangePage(item.title as any)}
-                                >
-                                    <span>{<item.icon />}</span>
-                                </Button>
-                            })
-                        }
-                    </nav>
-
+                    <div className={styles.line}></div>
+                    <div className={styles.admin_body}>
+                        <Suspense fallback={null}>
+                            {activeWindow === 'Home' ? <AdminHome /> : null}
+                            {activeWindow === 'Packs' ? <AdminPacks /> : null}
+                            {activeWindow === 'Players' ? <AdminPlayers /> : null}
+                        </Suspense>
+                    </div>
                 </div>
-            </section>
+                <nav className={styles.menu_wrapper}>
+                    {
+                        adminMenuData.map(item => {
+                            if (isMobile && item.title === 'Players') return null;
+                            return <Button key={item.title}
+                                className={`${activeWindow === item.title ? styles.link_active : ''}`}
+                                title={item.title}
+                                value={item.title}
+                                aria-label={item.title}
+                                onClick={() => handleChangePage(item.title as any)}
+                            >
+                                <span>{<item.icon />}</span>
+                            </Button>
+                        })
+                    }
+                </nav>
 
-        </Layout>
+            </div>
+        </section>
+
 
 
     )

@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { useParams } from 'react-router-dom';
 import { api } from '../../../store/api/api';
-import { Layout } from '../../layout/Layout';
+import { setTabTitle } from '../../../utils/general.utils';
 import Wrapper from '../../ui/wrapper/Wrapper';
 import { ProfileBody } from './body/ProfileBody';
 import { ProfileHeader } from './header/ProfileHeader';
@@ -12,27 +12,26 @@ const ProfilePage: FC = () => {
     const { id } = useParams();
 
     const { data: profile } = api.useGetByIdQuery(id!);
+    setTabTitle('Ultimate Chess Profile');
 
     return (
-        <Layout title='Ultimate Chess Profile'>
-            <section className={styles.page_wrapper}>
-                <Wrapper title='Profile Card'>
+        <section className={styles.page_wrapper}>
+            <Wrapper title='Profile Card'>
 
-                    {
-                        profile
-                            ?
-                            <>
-                                <ProfileHeader
-                                    {...{ ...profile }}
-                                />
-                                <ProfileBody {...{ ...profile }} />
-                            </>
-                            : null
-                    }
+                {
+                    profile
+                        ?
+                        <>
+                            <ProfileHeader
+                                {...{ ...profile }}
+                            />
+                            <ProfileBody {...{ ...profile }} />
+                        </>
+                        : null
+                }
 
-                </Wrapper>
-            </section>
-        </Layout>
+            </Wrapper>
+        </section>
     )
 }
 

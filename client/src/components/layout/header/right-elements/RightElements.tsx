@@ -1,15 +1,15 @@
-import { FC } from "react";
+import { FC, lazy } from "react";
 import { useActions } from "../../../../hooks/useActions";
 import { useAuth } from "../../../../hooks/useAuth";
-import { AuthForm } from "./auth-form/AuthForm";
-import ProfileMenu from "./profile-menu/ProfileMenu";
 import styles from './RightElements.module.scss';
 
+const ProfileMenu = lazy(() => import("./profile-menu/ProfileMenu"));
+const AuthForm = lazy(() => import("./auth-form/AuthForm"));
 
-export const RightElements: FC = () => {
+const RightElements: FC = () => {
 
-    const {user, expirationDate} = useAuth();
-    const {logout} = useActions()
+    const { user, expirationDate } = useAuth();
+    const { logout } = useActions()
 
     if (expirationDate && Number(expirationDate) < Date.now()) logout(null);
 
@@ -19,3 +19,5 @@ export const RightElements: FC = () => {
         </div>
     )
 }
+
+export default RightElements

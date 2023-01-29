@@ -1,17 +1,15 @@
 import { FC } from 'react';
-import { Layout } from "../../layout/Layout";
+import { setTabTitle } from '../../../utils/general.utils';
 import Wrapper from "../../ui/wrapper/Wrapper";
 import { SettingsComp } from "./SettingsComp";
 
-const Settings: FC = () => {  
-   
+const Settings: FC = () => {
 
+    setTabTitle("Ultimate Chess Audio Settings")
     return (
-        <Layout title="Ultimate Chess Audio Settings">
-            <Wrapper title="Audio Settings">
-                <SettingsComp />
-            </Wrapper>
-        </Layout >
+        <Wrapper title="Audio Settings">
+            <SettingsComp />
+        </Wrapper>
     )
 }
 

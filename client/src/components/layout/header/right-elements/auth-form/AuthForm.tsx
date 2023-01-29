@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { IoLogInOutline } from "react-icons/io5";
 import { FaUserCircle } from 'react-icons/fa';
 
-export const AuthForm: FC = () => {
+const AuthForm: FC = () => {
 
     const { ref, isShow, setIsShow } = useClickOutside(false);
 
@@ -22,7 +22,7 @@ export const AuthForm: FC = () => {
                 <div className={styles.menu}>
                     <ul>
                         <li>
-                            <Link to={`/login`}><IoLogInOutline /> Login</Link>
+                            <Link onClick={() => setIsShow(false)} to={`/login`}><IoLogInOutline /> Login</Link>
                         </li>
                     </ul>
                 </div>
@@ -33,3 +33,5 @@ export const AuthForm: FC = () => {
         </div>
     )
 }
+
+export default AuthForm

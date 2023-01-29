@@ -7,7 +7,7 @@ import { AudioContextType } from "../../../audio-engine/audio.types";
 import { Requests } from "../../../constants/constants";
 import { Colors } from "../../../model/colors.enum";
 import { IBoardUlt } from "../../../model/ultimate/BoardUlt";
-import { Layout } from "../../layout/Layout";
+import { setTabTitle } from "../../../utils/general.utils";
 import { Button } from "../../ui/button/Button";
 import PlayerInfo from "../../ui/player/PlayerInfo";
 import { Announcer } from "./announcer/Announcer";
@@ -31,6 +31,8 @@ const GameRoom: FC = () => {
     const { field, status, data } = useGameRoom(id, isUltimate);
     const { playSound } = useContext(AudioCtx) as AudioContextType
 
+    setTabTitle("Ultimate Chess Game Room");
+
     useEffect(() => {
         const deferModals = async () => {
             const confirmMod = await import("./modals/ConfirmModal");
@@ -42,7 +44,8 @@ const GameRoom: FC = () => {
     }, [])
 
     return (
-        <Layout title="Ultimate Chess Game Room">
+        <>
+
             <Suspense fallback={null}>
                 <div className={styles.room_wrapper}>
                     <div className={styles.board_wrapper}>
@@ -187,9 +190,9 @@ const GameRoom: FC = () => {
                 {!status.isReadyToStart && status.isConnected ? <WaitingModal /> : null}
                 {status.isSettingsOpen ? <IngameSettings onClose={() => status.setIsSettingsOpen(false)} /> : null}
             </Suspense>
+        </>
 
 
-        </Layout >
     )
 }
 

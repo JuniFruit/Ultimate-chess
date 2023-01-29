@@ -42,13 +42,13 @@ const ProfileMenu: FC = () => {
                 <div className={styles.menu}>
                     <ul>
                         <li>
-                            <Link to={`/user/${user?.id}`}>My Profile</Link>
+                            <Link onClick={(() => setIsShow(false))} to={`/user/${user?.id}`}>My Profile</Link>
                         </li>
                         <li>
-                            {isAdmin ? <Link to={`/admin`}>Admin Panel</Link> : null}
+                            {isAdmin ? <Link onClick={(() => setIsShow(false))} to={`/admin`}>Admin Panel</Link> : null}
                         </li>
                         <li>
-                            <button onClick={() => logout(null)}>Logout</button>
+                            <button onClick={() => { logout(null); setIsShow(false) }}>Logout</button>
                         </li>
                     </ul>
                 </div>

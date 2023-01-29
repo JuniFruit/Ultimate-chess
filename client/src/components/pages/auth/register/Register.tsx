@@ -1,10 +1,10 @@
-import { FC, useEffect } from "react"
+import { FC, useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { useActions } from "../../../../hooks/useActions";
 import { useAuth } from "../../../../hooks/useAuth";
-import { Layout } from "../../../layout/Layout"
 import { IRegisterDto } from "../../../../types/auth.interface";
+import { setTabTitle } from "../../../../utils/general.utils";
 import { ProfileForm } from "../../../ui/SuspenseWrapper";
 import styles from './Register.module.scss';
 
@@ -18,6 +18,7 @@ const RegisterPage: FC = () => {
         if (user) navigate('/');
     }, [user])
 
+    setTabTitle("Ultimate Chess registration");
     const {
         formState: { errors },
         register,
@@ -35,23 +36,21 @@ const RegisterPage: FC = () => {
 
     return (
 
-        <Layout title="Ultimate Chess registration">
-            <section className={styles.container}>
-                <ProfileForm
-                    form={{
-                        handleSubmit: handleSubmit(onSubmit),
-                        setValue,
-                        control,
-                        register,
-                        errors
-                    }}
-                    title={"Please fill out fields to register an account"}
-                    buttonTitle="Create account"
-                    buttons={[<Link key={'/login'} className={styles.link} to={'/login'}>Log In</Link>]}
-                />
-            </section>
+        <section className={styles.container}>
+            <ProfileForm
+                form={{
+                    handleSubmit: handleSubmit(onSubmit),
+                    setValue,
+                    control,
+                    register,
+                    errors
+                }}
+                title={"Please fill out fields to register an account"}
+                buttonTitle="Create account"
+                buttons={[<Link key={'/login'} className={styles.link} to={'/login'}>Log In</Link>]}
+            />
+        </section>
 
-        </Layout>
     )
 }
 

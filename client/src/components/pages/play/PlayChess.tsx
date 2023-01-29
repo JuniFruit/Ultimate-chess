@@ -1,8 +1,7 @@
 //@ts-nocheck
 import { FC, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { randomize } from "../../../utils/general.utils";
-import { Layout } from "../../layout/Layout";
+import { randomize, setTabTitle } from "../../../utils/general.utils";
 import { IMenuData } from "../home/main-menu/Menu.interface";
 import Menu from "../home/main-menu/MenuWrapper";
 import { menuData } from "./menuData";
@@ -28,14 +27,15 @@ const PlayChess: FC<{ isUltimate?: boolean }> = ({ isUltimate = false }) => {
         if (item.title === 'Back') return navigate(item.link);
         window.location.href = item.link;
     }
+    setTabTitle("Play Chess");
 
     return (
-        <Layout title="Play Chess">
+        <>
             <Menu<IMenuData>
                 onClick={handleClick}
                 items={filtered} />
             {isTutorialOpen ? <TutorialComp onClose={() => setIsTutorialOpen(false)} /> : null}
-        </Layout>
+        </>
     )
 }
 

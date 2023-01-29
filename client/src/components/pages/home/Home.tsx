@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../hooks/useAuth";
-import { Layout } from "../../layout/Layout";
+import { setTabTitle } from "../../../utils/general.utils";
 import { menuData } from "./main-menu/menu.data";
 import { IMenuData } from "./main-menu/Menu.interface";
 import Menu from "./main-menu/MenuWrapper";
@@ -16,16 +16,16 @@ const Home: FC = () => {
         if ((item.link === '/registration' && user)) return false
         return true;
     })
+    setTabTitle("Ultimate Chess Home Page");
+
     const handleClick = (item: IMenuData) => {
         navigate(item.link);
     }
 
     return (
-        <Layout title="Ultimate Chess Home Page">
-                <Menu<IMenuData>
-                    onClick={handleClick}
-                    items={filteredData} />
-        </Layout>
+        <Menu<IMenuData>
+            onClick={handleClick}
+            items={filteredData} />
     )
 }
 

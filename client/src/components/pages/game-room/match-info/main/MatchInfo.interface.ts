@@ -1,4 +1,3 @@
-import { Dispatch, SetStateAction } from "react";
 import { Requests } from "../../../../../constants/constants";
 import { Colors } from "../../../../../model/colors.enum";
 import { ILostFigure, IMovedFigure } from "../../../../../model/figures/figures.interface";
@@ -17,8 +16,6 @@ export interface IMatchInfo {
     lostFigures: ILostFigure[]
     isObserver: boolean;
     currentPlayer: Colors;
-    isFirstMove: boolean;
-    isGameOver: boolean;
     chatProps: IChatField;
     activeWindow: activeWindow;
     isNewMsg: boolean;

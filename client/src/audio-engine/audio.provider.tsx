@@ -1,4 +1,5 @@
 import { createContext, FC, PropsWithChildren, useRef } from 'react';
+import { getUserAudioSettings } from '../utils/general.utils';
 import { Sounds, UltimateSounds } from './audio.data';
 import { AudioService } from './audio.service';
 import { DefaultSettings } from './audio.settings';
@@ -7,20 +8,19 @@ import { AudioContextType, ISoundBuffers, sound } from './audio.types';
 const ctx = new window.AudioContext()
 
 const masterGain = ctx.createGain();
-masterGain.gain.value = Number(window.localStorage.getItem("masterGain")) >= 0
-    ? Number(window.localStorage.getItem("masterGain")) : DefaultSettings.master;
+masterGain.gain.value = getUserAudioSettings("masterGain") !== null
+    ? Number(getUserAudioSettings("masterGain")) : DefaultSettings.master;
 masterGain.connect(ctx.destination);
 
 const soundsGain = ctx.createGain();
-soundsGain.gain.value = Number(window.localStorage.getItem("FXGain")) >= 0
-    ? Number(window.localStorage.getItem("FXGain")) : DefaultSettings.fx;
+soundsGain.gain.value = getUserAudioSettings("FXGain") !== null
+    ? Number(getUserAudioSettings("FXGain")) : DefaultSettings.fx;
 soundsGain.connect(masterGain);
 
 const announceGain = ctx.createGain();
-announceGain.gain.value = Number(window.localStorage.getItem("announceGain")) >= 0
-    ? Number(window.localStorage.getItem("announceGain")) : DefaultSettings.announce;
-announceGain.connect(masterGain);
-
+announceGain.gain.value = getUserAudioSettings("announceGain") !== null
+    ? Number(getUserAudioSettings("announceGain")) : DefaultSettings.announce;
+announceGain.connect(masterGain)
 
 export const AudioCtx = createContext<AudioContextType | null>(null);
 
@@ -51,7 +51,7 @@ const AudioProvider: FC<PropsWithChildren> = ({ children }) => {
 
     const fetchSound = (sound: sound, isUltimate = false) => {
         if ((soundBuffers.current as any)[sound]) return;
-        console.log(soundBuffers)
+
         let link = isUltimate ? (UltimateSounds as any)[sound] : (Sounds as any)[sound];
         AudioService.fetchAudio(link)
             .then(arrayBuffer => ctx.decodeAudioData(arrayBuffer))

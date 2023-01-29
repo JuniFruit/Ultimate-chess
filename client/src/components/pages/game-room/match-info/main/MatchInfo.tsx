@@ -8,7 +8,6 @@ import { ChatField } from "./chat-field/ChatField";
 import { activeWindow, IMatchInfo } from "./MatchInfo.interface";
 import styles from './MatchInfo.module.scss';
 
-const DisconnectUser = lazy(() => import("./footer/disconnect-user/DisconnectUser"));
 const DrawHandler = lazy(() => import("./footer/draw-handler/DrawHandler"));
 const GameInfo = lazy(() => import("./game-info/GameInfo"));
 
@@ -22,13 +21,11 @@ const MatchInfo: FC<IMatchInfo> = ({
     lostFigures,
     isObserver,
     currentPlayer,
-    isFirstMove,
-    isGameOver,
     chatProps,
     activeWindow,
     setActiveWindow,
     isNewMsg,
-    setIsNewMsg,  
+    setIsNewMsg,
 
 }) => {
     const [isPending, setStartTransition] = useTransition()
@@ -40,7 +37,7 @@ const MatchInfo: FC<IMatchInfo> = ({
             setActiveWindow(currentValue);
         })
     }
-   
+
     return (
         <div className={styles.match_info_wrapper}>
             <div className={styles.match_header}>
@@ -95,11 +92,10 @@ const MatchInfo: FC<IMatchInfo> = ({
                 <div
                     className={`${activeWindow === 'chat' ? styles.chat_wrapper_active : styles.chat_wrapper_disabled}`}
                 >
-                    <ChatField {...{...chatProps}} />
+                    <ChatField {...{ ...chatProps }} />
                 </div>
                 <div className={styles.match_info_footer}>
                     {request === Requests.DRAW ? <DrawHandler onConfirm={onConfirmDraw} onDecline={onDeclineDraw} /> : null}
-                    <DisconnectUser {...{ currentPlayer, isFirstMove, isGameOver, isObserver }} />
                 </div>
             </Suspense>
 

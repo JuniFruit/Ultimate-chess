@@ -2,6 +2,7 @@ import { FC, useContext, useEffect } from "react";
 import { AudioCtx } from "../../../audio-engine/audio.provider";
 import { DefaultSettings } from "../../../audio-engine/audio.settings";
 import { AudioContextType } from "../../../audio-engine/audio.types";
+import { getUserAudioSettings } from "../../../utils/general.utils";
 import { RangeInput } from "../../ui/range-input/RangeInput";
 import styles from './Settings.module.scss';
 
@@ -28,8 +29,8 @@ export const SettingsComp: FC = () => {
                 label={'Master'}
                 id={'master'}
                 onRangeChange={handleChangeGain}
-                defaultValue={Number(window.localStorage.getItem("masterGain")) >= 0
-                    ? Number(window.localStorage.getItem("masterGain")) : DefaultSettings.master}
+                defaultValue={getUserAudioSettings("masterGain") !== null
+                    ? Number(getUserAudioSettings("masterGain")) : DefaultSettings.master}
                 key='master'
             />
             <RangeInput
@@ -39,8 +40,8 @@ export const SettingsComp: FC = () => {
                 label={'Sounds'}
                 id={'FX'}
                 onRangeChange={handleChangeGain}
-                defaultValue={Number(window.localStorage.getItem("FXGain")) >= 0
-                    ? Number(window.localStorage.getItem("FXGain")) : DefaultSettings.fx}
+                defaultValue={getUserAudioSettings("FXGain") !== null
+                    ? Number(getUserAudioSettings("FXGain")) : DefaultSettings.fx}
                 key='fx'
             />
             <RangeInput
@@ -50,8 +51,8 @@ export const SettingsComp: FC = () => {
                 label={'Announcer'}
                 id={'announce'}
                 onRangeChange={handleChangeGain}
-                defaultValue={Number(window.localStorage.getItem("announceGain")) >= 0
-                ? Number(window.localStorage.getItem("announceGain")) : DefaultSettings.announce}
+                defaultValue={getUserAudioSettings("announceGain") !== null
+                    ? Number(getUserAudioSettings("announceGain")) : DefaultSettings.announce}
                 key='announce'
             />
 

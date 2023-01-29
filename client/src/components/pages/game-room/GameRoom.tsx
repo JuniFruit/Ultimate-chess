@@ -20,6 +20,7 @@ const GameField = lazy(() => import("./field/Field"));
 const IngameSettings = lazy(() => import("./settings/IngameSettings"));
 const MatchInfoContainer = lazy(() => import("./match-info/MatchInfoContainer"));
 const WaitingModal = lazy(() => import("./modals/WaitingModal"));
+const DisconnectUser = lazy(() => import("./disconnect-user/DisconnectUser"));
 let ConfirmModal: FC<any>;
 let GameOverModal: FC<any>
 
@@ -45,25 +46,32 @@ const GameRoom: FC = () => {
             <Suspense fallback={null}>
                 <div className={styles.room_wrapper}>
                     <div className={styles.board_wrapper}>
-                        <div className={styles.player_bar}>
-                            {
-                                data.enemyUser && <PlayerInfo
-                                    key={'enemyInfo'}
-                                    {...data.enemyUser}
-                                />
-                            }
-                            {
-                                status.isReadyToStart && <TimerHandler
-                                    states={field.board.states}
-                                    initTime={status.myColor === Colors.WHITE ? field.board.states.blackTime : field.board.states.whiteTime}
-                                    board={field.board}
-                                    setBoard={field.setBoard}
-                                    isObserver={status.isObserver}
-                                    myColor={status.myColor}
-                                    isStopped={status.myColor === field.board.states.currentPlayer}
-                                    key={'opponent'}
-                                />
-                            }
+                        <div className={styles.player_bar_wrapper}>
+                            <div className={styles.player_bar}>
+                                {
+                                    data.enemyUser && <PlayerInfo
+                                        key={'enemyInfo'}
+                                        {...data.enemyUser}
+                                    />
+                                }
+                                {
+                                    status.isReadyToStart && <TimerHandler
+                                        states={field.board.states}
+                                        initTime={status.myColor === Colors.WHITE ? field.board.states.blackTime : field.board.states.whiteTime}
+                                        board={field.board}
+                                        setBoard={field.setBoard}
+                                        isObserver={status.isObserver}
+                                        myColor={status.myColor}
+                                        isStopped={status.myColor === field.board.states.currentPlayer}
+                                        key={'opponent'}
+                                    />
+                                }
+                            </div>
+                            <DisconnectUser
+                                isFirstMove={field.board.states.isFirstMove}
+                                isGameOver={field.board.states.isGameOver}
+                                isObserver={status.isObserver}
+                            />
                         </div>
                         {
                             status.isReadyToStart ? <GameField
@@ -130,6 +138,7 @@ const GameRoom: FC = () => {
                                 />
                             }
                         </div>
+
                     </div>
                     <MatchInfoContainer
                         onRequestDraw={useCallback(() => field.handleSendRequest(Requests.DRAW), [field.handleSendRequest])}
@@ -139,8 +148,6 @@ const GameRoom: FC = () => {
                         onCloseMobile={useCallback(() => status.setMobileMatchInfoOpen(false), [])}
                         onNewNotification={status.handleSetNotification}
                         request={data.request}
-                        isFirstMove={field.board.states.isFirstMove}
-                        isGameOver={field.board.states.isGameOver}
                         lostFigures={field.board.states.lostFigures}
                         moves={field.board.states.moves}
                         currentPlayer={field.board.states.currentPlayer}

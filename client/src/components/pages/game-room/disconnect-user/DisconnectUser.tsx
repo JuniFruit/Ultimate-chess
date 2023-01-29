@@ -1,6 +1,6 @@
 import { FC, memo } from "react";
-import { Timer } from "../../../../../../ui/SuspenseWrapper";
-import styles from '../Handle.module.scss';
+import { Timer } from "../../../ui/SuspenseWrapper";
+import styles from '../match-info/main/footer/Handle.module.scss';
 import { IDisconnectUserComponent } from "./DisconnectUser.interface";
 import { useDisconnectedUser } from "./useDisconnectedUser";
 

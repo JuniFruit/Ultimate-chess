@@ -14,7 +14,10 @@
         >div:last-child {
             @apply animate-slideInBottom;
         }
-    
+        
+        .player_bar_wrapper {
+            @apply flex flex-col gap-2;
+        }
         .player_bar {
             @apply flex gap-3;
             button {

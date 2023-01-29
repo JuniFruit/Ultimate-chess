@@ -12,7 +12,7 @@ const ErrorDialog: FC<IDialog> = ({ message, onDialog, isOpen, onClose }) => {
             onClose={onClose}
             className={styles.container}
         >
-            <div className={styles.wrapper} style={{ zIndex: '75' }}>
+            <div className={styles.wrapper} style={{ zIndex: 105 }}>
                 <Dialog.Panel className={styles.panel_wrapper}>
                     <Dialog.Title className={styles.panel_title}>Error</Dialog.Title>
                     <Dialog.Description className={styles.panel_msg}>

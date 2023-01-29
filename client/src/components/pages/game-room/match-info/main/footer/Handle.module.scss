@@ -1,7 +1,7 @@
 
 
 .handler_wrapper {
-    @apply p-2;
+    @apply p-1;
     >h4 {
         @apply text-main-200;
         font-size: .75rem;
@@ -22,7 +22,7 @@
 
     .timer {
         >div {
-            @apply shadow-sm;
+            @apply shadow-sm bg-transparent;
             >span {
                 font-size: .65rem;
 
